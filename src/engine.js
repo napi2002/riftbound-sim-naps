@@ -6,21 +6,13 @@ var RT = (function () {
   var norm = function (s) { return String(s).toLowerCase().replace(/[^a-z0-9]/g, ''); };
 
   /* ---------------- decks ---------------- */
-  // Names missing from Riftcodex, mapped to the closest real card (same role / domain / cost).
-  var FIXES = {
-    'Riven, The Exile': 'Vex - Gloomist',
-    'Riven, Broken Blade': 'Riven, Shattered',
-    'Rakelstake': "Targon's Peak",
-    'Bedeviling Stranger': 'Mister Root',
-    'Reckless Innovator': 'Corrupt Enforcer',
-    'Blade of the Exile': 'Brutalizer',
-    'Battle Preparations': 'Rune Prison'
-  };
+  // Decklist names missing from Riftcodex, mapped to the closest real card. Currently none are needed.
+  var FIXES = {};
   function L(s) { return s.split(';').map(function (x) { x = x.trim(); var i = x.indexOf(' '); return [+x.slice(0, i), x.slice(i + 1)]; }); }
   var DECKS = [
-    { id: 'riven', name: 'Riven', label: 'Sacramento Showdown 1st', legend: 'Riven, The Exile', champion: 'Riven, Broken Blade', runes: { Calm: 5, Chaos: 7 },
-      bfs: ["Emperor's Dais", 'Rakelstake', 'Star Spring'],
-      list: L("1 Riven, Broken Blade; 2 Bedeviling Stranger; 3 Scuttle Crab; 3 Tideturner; 2 Reckless Innovator; 3 Stellacorn Herder; 2 Blitzcrank, Impassive; 3 Astral Heron; 3 Zhonya's Hourglass; 3 Blade of the Exile; 3 Defy; 2 Gust; 2 Battle Preparations; 3 Discipline; 1 Not So Fast; 1 Rebuke; 2 Switcheroo; 1 Star-Crossed") },
+    { id: 'kennen', name: 'Kennen', label: 'LA Regional 27th', legend: 'Heart of the Tempest', champion: 'Kennen, Storm of Shuriken', runes: { Chaos: 9, Order: 3 },
+      bfs: ['Zaun Warrens', 'Minefield', 'Shadow Temple'],
+      list: L("1 Kennen, Storm of Shuriken; 3 Lightning Rush; 3 Rhasa the Sunderer; 3 Seal of Discord; 3 Shadow Order Disciple; 3 Tail-Cloaked Matriarch; 3 Traveling Merchant; 2 Fizz - Trickster; 2 Last Rites; 2 Star-Crossed; 2 Switcheroo; 2 Tornado Warrior; 1 Baron Nashor; 1 Existential Dread; 1 Ezreal, Prodigy; 1 Flash; 1 Gust; 1 Ride The Wind; 1 Salvage; 1 Shadows of the Past; 1 The Harrowing; 1 Tideturner; 1 Treasure Hunter") },
     { id: 'leblanc', name: 'LeBlanc', label: 'LA Regional 12th', legend: 'LeBlanc, Deceiver', champion: 'LeBlanc, Fragmented', runes: { Mind: 4, Order: 8 },
       bfs: ['Dusk Rose Lab', 'Star Spring', 'Windswept Hillock'],
       list: L('1 LeBlanc, Fragmented; 2 Honest Broker; 3 Soaring Scout; 2 Watchful Sentry; 3 Black Rose Dignitary; 3 Karthus, Eternal; 3 Glasc Mixologist; 3 Vi, Peacekeeper; 3 Ruined Rex; 1 Thousand-Tailed Watcher; 3 Harnessed Dragon; 3 Rift Herald; 3 Baited Hook; 3 Sacrifice; 1 Deathgrip; 1 Hidden Blade; 2 Mirror Image') },
