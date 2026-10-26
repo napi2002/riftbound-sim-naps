@@ -138,6 +138,8 @@
     if (u.buff) flags.push('★');
     if (u.equips.length) flags.push('⚔');
     if (k.tank) flags.push('T');
+    if (u.empowered) flags.push('✦');
+    if (u.ctrl === 0 && u.c.P.unitAct && G.active === 0 && RT.canUseUnit(G, 0, u.uid).ok) cls += ' can';
     return '<button class="' + cls + '" data-uid="' + u.uid + '" aria-label="' + esc(u.c.name) + '">' +
       '<span class="art">' + art(u.c, 50, 58) + '</span>' +
       '<span class="mt' + (m > base ? ' up' : m < base ? ' down' : '') + '">' + m + '</span>' +
@@ -145,7 +147,7 @@
       (flags.length ? '<span class="fl">' + flags.map(function (f) { return '<span>' + f + '</span>'; }).join('') + '</span>' : '') +
       '<span class="nm">' + esc(shortName(u.c.name)) + '</span></button>';
   }
-  function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
+  function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + (S.G && S.G.players[0].gear.indexOf(g) >= 0 && g.c.P.gearAct && RT.canUseGear(S.G, 0, g.iid).ok ? ' can' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
   function runesHtml(p, label) {
     return '<span class="lbl">' + label + '</span>' + p.runes.map(function (r) { return '<i class="' + (r.ex ? 'ex' : '') + '" style="--rc:' + DC[r.d] + '" title="' + r.d + '"></i>'; }).join('') +
@@ -214,9 +216,11 @@
     } else if (S.sel.length) {
       var d = destOptions();
       h = '<div class="scroll">' + (d.length ? d.map(function (x) { return '<button class="btn me" data-move="' + x + '">Move → ' + esc(x === 'base' ? 'Base' : shortName(G.bfs[x].c.name)) + '</button>'; }).join('') : '<span class="msg">No common destination</span>') + '</div>' +
+        (S.sel.length === 1 && RT.canUseUnit(G, 0, S.sel[0]).ok ? '<button class="btn small primary" data-unitact="' + S.sel[0] + '">Ability</button>' : '') +
         (S.sel.length === 1 ? '<button class="btn small" data-act="info">Info</button>' : '') + '<button class="btn small" data-act="clear">✕</button>';
     } else {
-      h = '<button class="btn" data-act="log">Log</button><span class="msg" style="text-align:center;color:var(--muted);font-size:13px">Tap ready units to move</span><button class="btn primary" data-act="end">End turn</button>';
+      var flowable = G.players[0].trash.some(function (x) { return RT.canFlow(G, 0, x.iid).ok; });
+      h = '<button class="btn" data-act="log">Log</button><button class="btn' + (flowable ? ' primary' : '') + '" data-act="trash">Trash ' + G.players[0].trash.length + '</button><span class="msg" style="text-align:center;color:var(--muted);font-size:13px">Tap units or gear to move or use them</span><button class="btn primary" data-act="end">End turn</button>';
     }
     $('actions').innerHTML = h;
   }
@@ -285,7 +289,28 @@
       '<span>Location</span><span>' + (u.loc === 'base' ? 'Base' : esc(G.bfs[u.loc].c.name)) + '</span>' +
       (u.equips.length ? '<span>Gear</span><span>' + u.equips.map(function (g) { return esc(g.c.name) + ' (+' + g.c.P.equipBonus + ')'; }).join(', ') + '</span>' : '') +
       '</div>' + linesHtml(c);
-    openSheet(body, '<button class="btn" data-act="close">Close</button>');
+    var foot = '';
+    if (c.P.unitAct && u.ctrl === 0) {
+      var chk = RT.canUseUnit(G, 0, u.uid); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
+      foot += '<button class="btn primary" data-unitact="' + u.uid + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(c.P.unitAct.label) + '</button>';
+      if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
+    }
+    if (u.ctrl === 0 && !u.ex && G.active === 0 && !S.busy && !S.prompt && G.winner == null) foot += '<button class="btn me" data-selectu="' + u.uid + '">Select to move</button>';
+    openSheet(body, foot + '<button class="btn" data-act="close">Close</button>');
+  }
+  function trashSheet() {
+    var G = S.G, p = G.players[0];
+    var rows = p.trash.slice().reverse().map(function (card) {
+      var c = card.c, btn = '';
+      if (c.P.flow) {
+        var chk = RT.canFlow(G, 0, card.iid); if (S.busy || S.prompt) chk = { ok: false };
+        btn = '<button class="btn small' + (chk.ok ? ' primary' : '') + '" data-flow="' + card.iid + '"' + (chk.ok ? '' : ' disabled') + '>Flow: ' + c.P.flow.energy + ' energy' + (c.P.flow.power ? ' + ' + c.P.flow.power + ' power' : '') + '</button>';
+      }
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)"><span style="width:28px;height:28px;border-radius:6px;overflow:hidden;flex:none">' + art(c, 28, 28) + '</span>' +
+        '<span style="flex:1;min-width:0"><b>' + esc(c.name) + '</b><br><small style="color:var(--muted)">' + esc(c.type) + '</small></span>' + btn + '</div>';
+    }).join('');
+    openSheet('<h2>Your trash (' + p.trash.length + ')</h2>' + (rows || '<p style="color:var(--muted)">Empty.</p>') +
+      '<p style="font-size:13px;color:var(--muted)">Spells with Flow can be cast again from here, then they\'re banished.</p>', '<button class="btn" data-act="close">Close</button>');
   }
   function bfSheet(i) {
     var G = S.G, b = G.bfs[i];
@@ -318,6 +343,7 @@
       foot += '<button class="btn primary" data-gearact="' + iid + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(g.c.P.gearAct.label) + '</button>';
       if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
     }
+    if (g.c.P.addPower) foot += '<span class="why" style="color:var(--muted)">Used automatically when you pay ' + g.c.P.addPower + ' power, so you keep a rune.</span>';
     openSheet(cardHead(g.c) + (g.ex ? '<p class="chip">Exhausted</p>' : '') + linesHtml(g.c), foot + '<button class="btn" data-act="close">Close</button>');
   }
   function logSheet() {
@@ -381,6 +407,7 @@
       if (a === 'end') endMyTurn();
       else if (a === 'log') { $('end').classList.add('hidden'); logSheet(); }
       else if (a === 'cancel') { S.targeting = null; render(); }
+      else if (a === 'trash') trashSheet();
       else if (a === 'skipslot' && S.targeting) { S.targeting.picks.push(null); S.targeting.i++; advanceTargeting(); if (S.targeting) render(); }
       else if (a === 'reprompt' && S.prompt) promptSheet(S.prompt.req);
       else if (a === 'clear') { S.sel = []; render(); }
@@ -391,6 +418,12 @@
       else if (a === 'menu') { S.G = null; closeSheet(); $('end').classList.add('hidden'); $('game').classList.add('hidden'); $('menu').classList.remove('hidden'); renderMenu(); }
       return;
     }
+    var ua = t.closest('[data-unitact]');
+    if (ua) { closeSheet(); var uid0 = +ua.dataset.unitact; run(function () { return RT.useUnit(G, 0, uid0); }); return; }
+    var fl = t.closest('[data-flow]');
+    if (fl) { closeSheet(); var fid = +fl.dataset.flow; run(function () { return RT.playFlow(G, 0, fid); }); return; }
+    var su0 = t.closest('[data-selectu]');
+    if (su0) { closeSheet(); S.sel = [+su0.dataset.selectu]; render(); return; }
     var ga = t.closest('[data-gearact]');
     if (ga) { closeSheet(); var gid = +ga.dataset.gearact; run(function () { return RT.useGear(G, 0, gid); }); return; }
     var la = t.closest('[data-legact]');

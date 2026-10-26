@@ -232,7 +232,7 @@ var RT = (function () {
   function equipBonus(u) { return u.equips.reduce(function (s, g) { return s + (g.c.P.equipBonus || 0); }, 0); }
   function might(u, role) {
     var k = kwOf(u);
-    var m = (u.c.might || 0) + u.buff + u.temp + equipBonus(u);
+    var m = (u.c.might || 0) + u.buff + u.temp + equipBonus(u) + (u.empowered && u.c.P.empoweredMight || 0);
     if (role === 'att') m += (k.assault || 0) + (u.tempAssault || 0);
     if (role === 'def') m += (k.shield || 0);
     return Math.max(0, m);
@@ -526,13 +526,17 @@ var RT = (function () {
     },
     reanimate: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi];
-      var units = p.trash.filter(function (x) { return x.c.type === 'Unit' && canPay(p, 0, x.c.power || 0, cardDomains(x.c)); });
+      var units = p.trash.filter(function (x) {
+        if (x.c.type !== 'Unit') return false;
+        if (e.free) return (x.c.energy || 0) <= e.maxEnergy && (x.c.power || 0) <= e.maxPower;
+        return canPay(p, 0, x.c.power || 0, cardDomains(x.c));
+      });
       if (!units.length) { log(G, (ctx.srcName || 'Effect') + ': no unit in your trash you can pay for.', pi); return; }
       var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
-      var k = await choose(G, pi, ctx.srcName, 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), false, auto);
+      var k = await choose(G, pi, ctx.srcName, e.free ? 'Play a unit from your trash to your base for free?' : 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), !!e.optional, auto);
       if (k == null) return;
       var card = units[k];
-      pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
+      if (!e.free) pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
       p.trash.splice(p.trash.indexOf(card), 1);
       await playFree(G, pi, card, 'base', ctx.srcName);
     },
@@ -617,6 +621,14 @@ var RT = (function () {
       if (chosen) await playFree(G, pi, chosen, 'base', ctx.srcName);
       else log(G, (ctx.srcName || 'Effect') + ': nothing played; the cards are recycled.', pi);
     },
+    empowerSelf: async function (G, pi, e, tg, ctx) { if (ctx.src) { ctx.src.empowered = true; log(G, ctx.src.c.name + ' is empowered.', pi); } },
+    extraCost: async function (G, pi, e, tg, ctx) {
+      var u = ctx.src, p = G.players[pi];
+      if (!u || u.dead || !canPay(p, 0, 1, [e.domain])) return;
+      if (!(await confirm(G, pi, u.c.name, 'Pay 1 ' + e.domain + ' power as an extra cost to ready ' + u.c.name + ' and give it +2 Might this turn?', true))) return;
+      pay(G, pi, 0, 1, [e.domain]); u.ex = false; u.temp += 2;
+      log(G, u.c.name + ': extra cost paid, ready with +2 Might.', pi);
+    },
     drawIf: async function (G, pi, e) { for (var i = 0; i < e.n; i++) drawOne(G, pi); log(G, G.players[pi].name + ' draw' + (pi === 0 ? '' : 's') + ' ' + e.n + '.', pi); }
   };
   var OPS_VALUE = {
@@ -658,6 +670,11 @@ var RT = (function () {
     shurikenflip: { sim: [0], effs: [{ op: 'deal', n: 2, t: T('enemy', 'bf'), opt: true }, { op: 'moveUnit', t: T('friendly') }] },
     maskofforesight: { sim: [0], aloneBonus: 1 },
     backoff: { sim: [3], effs: null, extra: [{ op: 'drawIf', n: 1 }] },
+    tailcloakedmatriarch: { sim: [0, 1], unitAct: { label: 'Empower (2 energy + 1 Chaos power)', energy: 2, power: 1, domain: 'Chaos', exhaust: false,
+      req: function (G, u) { return u.empowered ? 'Already empowered.' : null; },
+      effs: [{ op: 'empowerSelf' }, { op: 'reanimate', maxEnergy: 3, maxPower: 1, free: true, optional: true }] } },
+    mournfulwitness: { sim: [0, 1], combatEnd: 'empower', empoweredMight: 2 },
+    pykedocksidebutcher: { sim: [2, 3], play: [{ op: 'extraCost', domain: 'Fury' }] },
     baitedhook: { sim: [0], gearAct: { label: '1 energy + 1 Order power, exhaust: kill a friendly unit, then maybe play a unit from your top 5', energy: 1, power: 1, domain: 'Order',
       effs: [{ op: 'kill', t: T('friendly'), selfOk: true }, { op: 'hook' }] } },
     // Counters: offered as reactions when the opponent casts a spell.
@@ -666,6 +683,13 @@ var RT = (function () {
     notsofast: { sim: [1], counter: { targetsFriendly: true } }
   };
   function applyCardScript(c) {
+    // [Flow] N energy (+ rainbow runes): cast again from your trash, then banish. [Repeat] N energy: pay again to repeat.
+    c.P.lines.forEach(function (l) {
+      var m = l.text.match(/^\[Flow\] (\d+) energy((?: rainbow rune)*)$/);
+      if (m && c.type === 'Spell') { c.P.flow = { energy: +m[1], power: (m[2].match(/rune/g) || []).length }; l.sim = true; }
+      var r = l.text.match(/^\[Repeat\] (\d+) energy$/);
+      if (r && c.type === 'Spell') { c.P.repeat = +r[1]; l.sim = true; }
+    });
     var sc = CARD_SCRIPTS[norm(c.name)];
     if (!sc || c.type === 'Legend') return;
     (sc.sim || []).forEach(function (i) { if (c.P.lines[i]) c.P.lines[i].sim = true; });
@@ -677,6 +701,10 @@ var RT = (function () {
     if (sc.saveUnit) c.P.saveUnit = true;
     if (sc.aloneBonus) c.P.aloneBonus = sc.aloneBonus;
     if (sc.gearAct) c.P.gearAct = sc.gearAct;
+    if (sc.unitAct) c.P.unitAct = sc.unitAct;
+    if (sc.empoweredMight) c.P.empoweredMight = sc.empoweredMight;
+    if (sc.combatEnd) c.P.combatEnd = sc.combatEnd;
+    if (sc.play) (c.P.trig.play = c.P.trig.play || []).push({ effs: sc.play });
   }
 
   // Reaction window: may the opponent (pi) counter this spell or targeting? Returns true if countered.
@@ -725,6 +753,52 @@ var RT = (function () {
     pay(G, pi, a.energy, a.power, [a.domain]); g.ex = true;
     log(G, p.name + ' activate' + (pi === 0 ? '' : 's') + ' ' + g.c.name + '.', pi);
     await resolveEffects(G, pi, a.effs, { src: null, loc: null, srcName: g.c.name });
+    return { ok: true };
+  }
+
+  /* ---------------- manual abilities: units and Flow ---------------- */
+  function canUseUnit(G, pi, uid) {
+    var u = G.units.filter(function (x) { return x.uid === uid; })[0], p = G.players[pi];
+    if (!u || u.ctrl !== pi || !u.c.P.unitAct) return { ok: false, why: 'No activated ability.' };
+    var a = u.c.P.unitAct;
+    if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
+    if (a.exhaust && u.ex) return { ok: false, why: 'It is exhausted.' };
+    if (a.req) { var w = a.req(G, u); if (w) return { ok: false, why: w }; }
+    if (!canPay(p, a.energy, a.power, [a.domain])) return { ok: false, why: 'Needs ' + a.energy + ' energy and ' + a.power + ' ' + a.domain + ' power.' };
+    return { ok: true };
+  }
+  async function useUnit(G, pi, uid) {
+    var chk = canUseUnit(G, pi, uid);
+    if (!chk.ok) return chk;
+    var u = G.units.filter(function (x) { return x.uid === uid; })[0], a = u.c.P.unitAct;
+    pay(G, pi, a.energy, a.power, [a.domain]); if (a.exhaust) u.ex = true;
+    log(G, G.players[pi].name + ' use' + (pi === 0 ? '' : 's') + ' ' + u.c.name + ': ' + a.label + '.', pi);
+    await resolveEffects(G, pi, a.effs, { src: u, loc: u.loc, srcName: u.c.name });
+    return { ok: true };
+  }
+  function canFlow(G, pi, iid) {
+    var p = G.players[pi], card = p.trash.filter(function (x) { return x.iid === iid; })[0];
+    if (!card || !card.c.P.flow) return { ok: false, why: 'This card has no Flow.' };
+    if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
+    var f = card.c.P.flow;
+    if (p.runes.filter(function (r) { return !r.ex; }).length < f.energy || p.runes.length < f.power + (f.energy ? 0 : 0)) return { ok: false, why: 'Flow costs ' + f.energy + ' energy' + (f.power ? ' + ' + f.power + ' power' : '') + '.' };
+    return { ok: true };
+  }
+  async function playFlow(G, pi, iid) {
+    var chk = canFlow(G, pi, iid);
+    if (!chk.ok) return chk;
+    var p = G.players[pi], card = p.trash.filter(function (x) { return x.iid === iid; })[0], c = card.c, f = c.P.flow;
+    pay(G, pi, f.energy, 0, []);
+    for (var i = 0; i < f.power; i++) recycleAnyRune(p);
+    p.trash.splice(p.trash.indexOf(card), 1);
+    G.playedThisTurn++;
+    log(G, p.name + ' cast' + (pi === 0 ? '' : 's') + ' ' + c.name + ' from the trash (Flow); it will be banished.', pi);
+    var sc = p.legend.c && p.legend.c.P.script;
+    if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, 'trash');
+    var sctx = { src: null, loc: null, srcName: c.name, spell: card, caster: pi };
+    if (!(await reactTo(G, opp(pi), sctx, null))) { await resolveEffects(G, pi, c.P.spell, sctx); await fireLegend(G, pi, 'playSpell', {}); }
+    if (sctx.countered === 'hand') p.hand.push(card);
+    await checkDeaths(G);
     return { ok: true };
   }
 
@@ -1079,7 +1153,14 @@ var RT = (function () {
       if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, f.from);
       var sctx = { src: null, loc: null, targets: opts.targets, srcName: c.name, spell: card, caster: pi };
       if (await reactTo(G, opp(pi), sctx, null)) sctx.countered = true;
-      else await resolveEffects(G, pi, c.P.spell, sctx);
+      else {
+        await resolveEffects(G, pi, c.P.spell, sctx);
+        if (c.P.repeat && !sctx.countered && G.winner == null && canPay(p, c.P.repeat, 0, []) &&
+            (await confirm(G, pi, c.name, 'Pay ' + c.P.repeat + ' energy to repeat ' + c.name + '?', evalEffects(G, pi, c.P.spell, { src: null, loc: null }).value >= 1.5))) {
+          pay(G, pi, c.P.repeat, 0, []); log(G, p.name + ' repeat' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
+          await resolveEffects(G, pi, c.P.spell, { src: null, loc: null, srcName: c.name, noReact: true });
+        }
+      }
       if (sctx.countered === 'hand') p.hand.push(card); else p.trash.push(card);
       if (!sctx.countered) await fireLegend(G, pi, 'playSpell', {});
     } else if (c.type === 'Gear') {
@@ -1188,6 +1269,7 @@ var RT = (function () {
     }
     if (G.winner != null) return;
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
+    att.concat(def).forEach(function (u) { if (u.c.P.combatEnd === 'empower' && !u.empowered) { u.empowered = true; log(G, u.c.name + ' is empowered.', u.ctrl); } });
     if (att.length && !def.length) { await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
     else if (att.length && def.length) {
       att.forEach(function (u) { u.loc = 'base'; });
@@ -1274,7 +1356,22 @@ var RT = (function () {
         var ch = aiCardChoice(G, pi, card);
         if (ch && (!best || ch.value > best.value)) best = { value: ch.value, card: card, opts: ch.opts };
       });
-      if (!best) return;
+      if (!best) {
+        var did = false;
+        for (var ui = 0; ui < G.units.length && !did; ui++) {
+          var uu = G.units[ui];
+          if (uu.ctrl === pi && canUseUnit(G, pi, uu.uid).ok) { await useUnit(G, pi, uu.uid); did = true; }
+        }
+        for (var ti = 0; ti < p.trash.length && !did; ti++) {
+          var tc = p.trash[ti];
+          if (canFlow(G, pi, tc.iid).ok) {
+            var fe = evalEffects(G, pi, tc.c.P.spell, { src: null, loc: null });
+            if (fe.good && fe.value >= 1.5) { await playFlow(G, pi, tc.iid); did = true; }
+          }
+        }
+        if (!did) return;
+        await wait(); continue;
+      }
       var r = await playCard(G, pi, best.card.iid, best.opts);
       if (!r.ok) return;
       await wait();
@@ -1374,7 +1471,7 @@ var RT = (function () {
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
-    canUseGear: canUseGear, useGear: useGear, legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
+    canUseGear: canUseGear, useGear: useGear, canUseUnit: canUseUnit, useUnit: useUnit, canFlow: canFlow, playFlow: playFlow, legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
     equipBonus: equipBonus, describeEffect: describeEffect, cardCost: cardCost, aiTurn: aiTurn, deckCoverage: deckCoverage, cardDomains: cardDomains
   };
 })();
