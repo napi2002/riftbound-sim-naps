@@ -12,7 +12,7 @@
     get: function (k) { try { return localStorage.getItem('rifttable.' + k); } catch (e) { return null; } },
     set: function (k, v) { try { localStorage.setItem('rifttable.' + k, v); } catch (e) { /* ignore */ } }
   };
-  var S = { G: null, mine: store.get('mine') || 'irelia', ai: store.get('ai') || 'rengar', sel: [], targeting: null, busy: false, sheet: null };
+  var S = { G: null, mine: store.get('mine') || 'irelia', ai: store.get('ai') || 'rengar', sel: [], targeting: null, busy: false, sheet: null, prompt: null };
 
   /* ---------- generated art ---------- */
   var artCache = {};
@@ -64,13 +64,41 @@
   $('theme').onclick = function () { var cur = store.get('theme') || 'auto'; var nx = themes[(themes.indexOf(cur) + 1) % 3]; store.set('theme', nx); applyTheme(nx); };
 
   /* ---------- game flow ---------- */
-  function startGame() {
+  async function startGame() {
     closeSheet(); $('end').classList.add('hidden');
-    S.sel = []; S.targeting = null; S.busy = false;
-    S.G = RT.newGame(deckById(S.mine), deckById(S.ai), { onLog: function () { /* rendered on demand */ } });
+    S.sel = []; S.targeting = null; S.prompt = null; S.busy = true;
     $('menu').classList.add('hidden'); $('game').classList.remove('hidden');
+    S.G = null;
+    var G = await RT.newGame(deckById(S.mine), deckById(S.ai), { human: 0, ask: askHuman });
+    S.G = G; S.busy = false;
     render();
-    if (S.G.active === 1) runAI();
+    if (G.active === 1) runAI();
+  }
+  // The engine calls this whenever you have a choice: confirm an optional effect or pick a target.
+  function askHuman(req) {
+    return new Promise(function (resolve) {
+      S.prompt = { req: req, resolve: resolve };
+      if (req.type === 'confirm') promptSheet(req);
+      render();
+    });
+  }
+  function answer(v) {
+    var P = S.prompt; if (!P) return;
+    S.prompt = null; closeSheet();
+    P.resolve(v);
+  }
+  function promptSheet(req) {
+    openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
+      '<button class="btn primary" data-ans="yes">Yes</button><button class="btn" data-ans="no">No</button>');
+  }
+  // Run a human action through the engine, blocking other input until it (and any prompts) finish.
+  async function run(fn) {
+    if (S.busy) return;
+    S.busy = true; S.sel = []; render();
+    var r;
+    try { r = await fn(); } finally { S.busy = false; }
+    if (r && r.ok === false) toast(r.why);
+    afterAction();
   }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   async function runAI() {
@@ -79,18 +107,17 @@
     await sleep(600);
     await RT.aiTurn(G, 1, function () { render(); return sleep(800); });
     if (G !== S.G) return;
-    if (G.winner == null) { RT.endTurn(G); await sleep(300); }
+    if (G.winner == null) { await RT.endTurn(G); await sleep(300); }
     S.busy = false; render();
   }
   function afterAction() {
     S.sel = S.sel.filter(function (uid) { return S.G.units.some(function (u) { return u.uid === uid && !u.ex; }); });
     render();
   }
-  function endMyTurn() {
+  async function endMyTurn() {
     if (S.busy || S.G.active !== 0 || S.G.winner != null) return;
-    S.sel = []; S.targeting = null;
-    RT.endTurn(S.G);
-    render();
+    S.targeting = null;
+    await run(function () { return RT.endTurn(S.G); });
     if (S.G.winner == null && S.G.active === 1) runAI();
   }
 
@@ -99,6 +126,7 @@
     var m = RT.might(u), base = (u.c.might || 0), k = RT.kwOf(u);
     var cls = 'u ' + (u.ctrl === 0 ? 'mine' : 'theirs') + (u.ex ? ' ex' : '') + (S.sel.indexOf(u.uid) >= 0 ? ' sel' : '');
     if (S.targeting && S.targeting.slots[S.targeting.i].cands.some(function (x) { return x.uid === u.uid; })) cls += ' target';
+    if (S.prompt && S.prompt.req.type === 'target' && S.prompt.req.cands.indexOf(u.uid) >= 0) cls += ' target';
     var flags = [];
     if (u.stun) flags.push('⚡');
     if (u.buff) flags.push('★');
@@ -139,7 +167,8 @@
     h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.map(gearHtml).join('') + '</div></div>';
     h += '<div class="runes">' + runesHtml(me, 'Runes') + '</div>';
     var canLeg = RT.canUseLegend(G, 0).ok && !S.busy;
-    h += '<div class="legrow"><button class="legbtn' + (me.legend.exhausted ? ' ex' : '') + (canLeg ? ' can' : '') + '" data-legend="0"><span class="art">' + art(me.legend.c, 30, 30) + '</span><span class="t"><b>' + esc(shortName(me.legend.c.name)) + '</b><small>Legend' + (me.legend.exhausted ? ' · exhausted' : '') + '</small></span></button>' +
+    var legState = [me.legend.exhausted ? 'exhausted' : '', me.legend.empowered ? 'empowered' : ''].filter(Boolean).join(' · ');
+    h += '<div class="legrow"><button class="legbtn' + (me.legend.exhausted ? ' ex' : '') + (canLeg ? ' can' : '') + '" data-legend="0"><span class="art">' + art(me.legend.c, 30, 30) + '</span><span class="t"><b>' + esc(shortName(me.legend.c.name)) + '</b><small>Legend' + (legState ? ' · ' + legState : '') + '</small></span></button>' +
       (me.champion ? '<button class="champ" data-iid="' + me.champion.iid + '"><span class="art">' + art(me.champion.c, 30, 30) + '</span><span class="t"><b>' + esc(me.champion.c.name) + '</b><small>Champion · ' + me.champion.c.energy + ' energy</small></span></button>'
         : '<div class="champ empty"><span class="t"><b>Champion</b><small>played</small></span></div>') + '</div>';
     h += stripHtml(me, 0, G);
@@ -159,18 +188,23 @@
   }
   function destOptions() {
     var G = S.G;
-    if (!S.sel.length || S.targeting) return [];
+    if (!S.sel.length || S.targeting || S.prompt) return [];
     var units = G.units.filter(function (u) { return S.sel.indexOf(u.uid) >= 0; });
     return ['base', 0, 1].filter(function (d) { return units.length && units.every(function (u) { return RT.canMove(G, u, d); }); });
   }
   function renderActions() {
     var G = S.G, h = '';
     if (G.winner != null) h = '<span class="msg">Game over</span><button class="btn" data-act="log">Log</button><button class="btn primary" data-act="menu">Menu</button>';
-    else if (S.targeting) {
+    else if (S.prompt && S.prompt.req.type === 'target') {
+      var rq = S.prompt.req;
+      h = '<span class="msg"><b>' + esc(rq.title) + '</b><br>' + esc(rq.text) + ' — tap a glowing unit</span>' + (rq.optional ? '<button class="btn" data-ans="skip">Skip</button>' : '');
+    } else if (S.prompt) {
+      h = '<span class="msg">Waiting for your choice…</span><button class="btn primary" data-act="reprompt">Show</button>';
+    } else if (S.targeting) {
       var slot = S.targeting.slots[S.targeting.i];
-      h = '<span class="msg"><b>Choose a target</b><br>' + esc(RT.describeEffect(slot.e)) + '</span><button class="btn danger" data-act="cancel">Cancel</button>';
+      h = '<span class="msg"><b>Choose a target</b><br>' + esc(RT.describeEffect(slot.e)) + '</span>' + (slot.e.opt ? '<button class="btn" data-act="skipslot">Skip</button>' : '') + '<button class="btn danger" data-act="cancel">Cancel</button>';
     } else if (S.busy || G.active !== 0) {
-      h = '<span class="msg">AI is playing…</span><button class="btn" data-act="log">Log</button>';
+      h = '<span class="msg">' + (G.active === 0 ? 'Resolving…' : 'AI is playing…') + '</span><button class="btn" data-act="log">Log</button>';
     } else if (S.sel.length) {
       var d = destOptions();
       h = '<div class="scroll">' + (d.length ? d.map(function (x) { return '<button class="btn me" data-move="' + x + '">Move → ' + esc(x === 'base' ? 'Base' : shortName(G.bfs[x].c.name)) + '</button>'; }).join('') : '<span class="msg">No common destination</span>') + '</div>' +
@@ -188,7 +222,7 @@
     $('sheet').classList.remove('hidden'); $('scrim').classList.remove('hidden');
   }
   function closeSheet() { S.sheet = null; $('sheet').classList.add('hidden'); $('scrim').classList.add('hidden'); }
-  $('scrim').onclick = closeSheet;
+  $('scrim').onclick = function () { if (!(S.prompt && S.prompt.req.type === 'confirm')) closeSheet(); };
   function linesHtml(c) {
     if (!c.P.lines.length) return '<p style="color:var(--muted)">No rules text.</p>';
     return '<ul class="lines">' + c.P.lines.map(function (l) {
@@ -253,10 +287,14 @@
   function legendSheet() {
     var G = S.G, L = G.players[0].legend;
     var body = cardHead(L.c) + linesHtml(L.c), foot = '';
-    if (L.c.P.legendAct) {
-      var chk = RT.canUseLegend(G, 0); if (S.busy) chk = { ok: false, why: 'Wait for your turn.' };
-      foot = chk.ok ? '<button class="btn primary" data-act="legend">Activate (' + L.c.P.legendAct.energy + ' energy, exhaust)</button>' : '<span class="why">' + esc(chk.why) + '</span>';
-    } else foot = '<span class="why" style="color:var(--muted)">' + (Object.keys(L.c.P.legendTrig).length ? 'Triggered abilities resolve automatically.' : 'No simulated abilities.') + '</span>';
+    var acts = RT.legendActs(G, 0);
+    if (L.empowered) body = body.replace('</h2>', ' <span class="chip">Empowered</span></h2>');
+    acts.forEach(function (a, i) {
+      var chk = RT.canUseLegend(G, 0, i); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
+      foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(a.label) + '</button>';
+      if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
+    });
+    if (!acts.length) foot = '<span class="why" style="color:var(--muted)">' + (L.c.P.lines.some(function (l) { return l.sim; }) ? 'Triggered abilities ask you to confirm when they happen.' : 'No simulated abilities.') + '</span>';
     var ai = G.players[1].legend.c;
     body += '<h2 style="margin-top:14px;font-size:18px">AI legend: ' + esc(ai.name) + '</h2>' + linesHtml(ai);
     openSheet(body, foot + '<button class="btn" data-act="close">Close</button>');
@@ -291,16 +329,14 @@
     closeSheet();
     var slots = RT.targetSlots(G, 0, card.c, { loc: loc });
     if (slots.some(function (s) { return s.cands.length; })) { S.sel = []; S.targeting = { kind: 'play', iid: iid, accel: accel, loc: loc, slots: slots, picks: [], i: 0 }; advanceTargeting(); render(); return; }
-    var r = RT.playCard(G, 0, iid, { accel: accel, loc: loc });
-    if (!r.ok) toast(r.why);
-    afterAction();
+    run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc }); });
   }
-  function beginLegend() {
-    var G = S.G, c = G.players[0].legend.c;
+  function beginLegend(idx) {
+    var G = S.G;
     closeSheet();
-    var slots = RT.targetSlots(G, 0, c, { legend: true });
-    if (slots.some(function (s) { return s.cands.length; })) { S.sel = []; S.targeting = { kind: 'legend', slots: slots, picks: [], i: 0 }; advanceTargeting(); render(); return; }
-    RT.useLegend(G, 0, []); afterAction();
+    var slots = RT.targetSlots(G, 0, null, { act: idx });
+    if (slots.some(function (s) { return s.cands.length; })) { S.sel = []; S.targeting = { kind: 'legend', act: idx, slots: slots, picks: [], i: 0 }; advanceTargeting(); render(); return; }
+    run(function () { return RT.useLegend(G, 0, idx, []); });
   }
   // skip slots without candidates
   function advanceTargeting() {
@@ -310,37 +346,48 @@
   }
   function finishTargeting() {
     var T = S.targeting, G = S.G; S.targeting = null;
-    var r = T.kind === 'legend' ? RT.useLegend(G, 0, T.picks) : RT.playCard(G, 0, T.iid, { accel: T.accel, loc: T.loc, targets: T.picks });
-    if (!r.ok) toast(r.why);
-    afterAction();
+    run(function () { return T.kind === 'legend' ? RT.useLegend(G, 0, T.act, T.picks) : RT.playCard(G, 0, T.iid, { accel: T.accel, loc: T.loc, targets: T.picks }); });
   }
-  function toast(msg) { S.G.log.push({ t: msg, p: -1, turn: S.G.turnNo }); }
+  function toast(msg) { if (S.G && msg) S.G.log.push({ t: msg, p: -1, turn: S.G.turnNo }); }
 
   /* ---------- input ---------- */
   document.addEventListener('click', function (ev) {
     var G = S.G; if (!G) return;
     var t = ev.target;
+    var an = t.closest('[data-ans]');
+    if (an) { var v = an.dataset.ans; answer(v === 'yes' ? true : v === 'no' ? false : null); return; }
+    if (S.prompt && S.prompt.req.type === 'target') {
+      var pu = t.closest('[data-uid]');
+      if (pu && S.prompt.req.cands.indexOf(+pu.dataset.uid) >= 0) answer(+pu.dataset.uid);
+      else if (t.closest('[data-act=log]')) logSheet();
+      return;
+    }
     var act = t.closest('[data-act]');
     if (act) {
       var a = act.dataset.act;
       if (a === 'end') endMyTurn();
       else if (a === 'log') { $('end').classList.add('hidden'); logSheet(); }
       else if (a === 'cancel') { S.targeting = null; render(); }
+      else if (a === 'skipslot' && S.targeting) { S.targeting.picks.push(null); S.targeting.i++; advanceTargeting(); if (S.targeting) render(); }
+      else if (a === 'reprompt' && S.prompt) promptSheet(S.prompt.req);
       else if (a === 'clear') { S.sel = []; render(); }
       else if (a === 'close') closeSheet();
       else if (a === 'info') { var su = G.units.filter(function (u) { return u.uid === S.sel[0]; })[0]; if (su) unitSheet(su); }
-      else if (a === 'legend') beginLegend();
+      else if (a === 'close' || a === 'legend') closeSheet();
       else if (a === 'again') startGame();
       else if (a === 'menu') { S.G = null; closeSheet(); $('end').classList.add('hidden'); $('game').classList.add('hidden'); $('menu').classList.remove('hidden'); renderMenu(); }
       return;
     }
+    var la = t.closest('[data-legact]');
+    if (la) { beginLegend(+la.dataset.legact); return; }
+    if (S.prompt) return;
     var pl = t.closest('[data-play]');
     if (pl) { beginPlay(+pl.dataset.play, !!pl.dataset.accel, pl.dataset.loc != null ? +pl.dataset.loc : undefined); return; }
     var mv = t.closest('[data-move]');
     if (mv) {
       var dest = mv.dataset.move === 'base' ? 'base' : +mv.dataset.move;
       var uids = S.sel.slice(); S.sel = [];
-      RT.moveUnits(G, 0, uids, dest); afterAction(); return;
+      run(function () { return RT.moveUnits(G, 0, uids, dest); }); return;
     }
     if (t.closest('#sheet') || t.closest('#end')) return;
     var ue = t.closest('[data-uid]');
@@ -352,7 +399,7 @@
         if (T.slots[T.i].cands.some(function (x) { return x.uid === uid; })) { T.picks.push(uid); T.i++; advanceTargeting(); if (S.targeting) render(); }
         return;
       }
-      var movable = u.ctrl === 0 && G.active === 0 && !S.busy && G.winner == null && !u.ex && ['base', 0, 1].some(function (d) { return RT.canMove(G, u, d); });
+      var movable = u.ctrl === 0 && G.active === 0 && !S.busy && !S.prompt && G.winner == null && !u.ex && ['base', 0, 1].some(function (d) { return RT.canMove(G, u, d); });
       if (movable) { var i = S.sel.indexOf(uid); if (i >= 0) S.sel.splice(i, 1); else S.sel.push(uid); render(); }
       else unitSheet(u);
       return;
@@ -372,11 +419,11 @@
     var be = t.closest('[data-bf]');
     if (be) {
       var bi = +be.dataset.bf;
-      if (S.sel.length && destOptions().indexOf(bi) >= 0) { var ids = S.sel.slice(); S.sel = []; RT.moveUnits(G, 0, ids, bi); afterAction(); }
+      if (S.sel.length && destOptions().indexOf(bi) >= 0) { var ids = S.sel.slice(); run(function () { return RT.moveUnits(G, 0, ids, bi); }); }
       else bfSheet(bi);
       return;
     }
-    if (t.closest('[data-base]') && S.sel.length && destOptions().indexOf('base') >= 0) { var ib = S.sel.slice(); S.sel = []; RT.moveUnits(G, 0, ib, 'base'); afterAction(); }
+    if (t.closest('[data-base]') && S.sel.length && destOptions().indexOf('base') >= 0) { var ib = S.sel.slice(); run(function () { return RT.moveUnits(G, 0, ib, 'base'); }); }
   });
 
   renderMenu();

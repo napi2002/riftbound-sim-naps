@@ -25,8 +25,8 @@ const RT = ctx.RT;
     const a = RT.DECKS[g % 5], b = RT.DECKS[Math.floor(g / 5 + g) % 5];
     let G;
     try {
-      G = RT.newGame(a, b, { maxTurns: MAX, names: ['P1', 'P2'] });
-      while (G.winner == null) { await RT.aiTurn(G, G.active); RT.endTurn(G); }
+      G = await RT.newGame(a, b, { maxTurns: MAX, names: ["P1", "P2"] });
+      while (G.winner == null) { await RT.aiTurn(G, G.active); await RT.endTurn(G); }
     } catch (e) { crashes++; console.error('CRASH', a.name, 'vs', b.name, e.stack); continue; }
     if (G.winner === -1) unfinished++;
     const w = G.winner === 0 ? a.name : G.winner === 1 ? b.name : 'none';
