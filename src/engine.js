@@ -34,6 +34,7 @@ var RT = (function () {
     arr.forEach(function (c) { BYNORM[norm(c.name)] = c; });
     arr.forEach(function (c) {
       c.P = parseCard(c);
+      applyCardScript(c);
       var sc = c.type === 'Legend' && LEGEND_SCRIPTS[norm(c.name)];
       if (sc) {
         c.P.script = sc;
@@ -298,14 +299,18 @@ var RT = (function () {
     return got;
   }
   function recycleRune(p, r) { p.runes.splice(p.runes.indexOf(r), 1); p.runeDeck.push(r.d); }
+  // Ready gear that can [Add] power of one of these domains (Seal of Discord).
+  function powerGear(p, domains) { return p.gear.filter(function (g) { return !g.ex && g.c.P.addPower && domains.indexOf(g.c.P.addPower) >= 0; }); }
   function canPay(p, energy, power, domains) {
     var ready = p.runes.filter(function (r) { return !r.ex; }).length;
-    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length;
+    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length;
     return ready >= energy && match >= power;
   }
   function pay(G, pi, energy, power, domains) {
     var p = G.players[pi];
     var isMatch = function (r) { return domains.indexOf(r.d) >= 0; };
+    var seals = powerGear(p, domains);
+    while (power > 0 && seals.length) { var g = seals.shift(); g.ex = true; power--; log(G, g.c.name + ' adds ' + g.c.P.addPower + ' power.', pi); }
     for (var i = 0; i < energy; i++) {
       var ready = p.runes.filter(function (r) { return !r.ex; });
       var exMatch = p.runes.filter(function (r) { return r.ex && isMatch(r); }).length;
@@ -429,6 +434,300 @@ var RT = (function () {
     leblancdeceiver: LEBLANC
   };
 
+  /* ---------------- scripted spells & gear ---------------- */
+  async function choose(G, pi, title, text, options, optional, auto) {
+    if (!options.length) return null;
+    var r = await ask(G, pi, { type: 'choice', title: title, text: text, options: options, optional: !!optional, auto: auto == null ? (optional ? null : 0) : auto });
+    return r == null ? null : r;
+  }
+  function destinations(G, u) {
+    var d = [];
+    if (u.loc !== 'base') d.push('base');
+    G.bfs.forEach(function (b, i) { if (i !== u.loc) d.push(i); });
+    return d;
+  }
+  // Move a unit by an effect (no exhaust). Arriving at a battlefield works like a normal move for its controller.
+  async function effectMove(G, u, dest) {
+    var pi = u.ctrl;
+    u.loc = dest;
+    log(G, u.c.name + ' moves to ' + locName(G, dest) + '.', pi);
+    updateControl(G);
+    await fireUnit(G, u, 'move'); if (dest !== 'base') await fireUnit(G, u, 'moveBf');
+    if (dest !== 'base' && !u.dead && G.winner == null) {
+      var enemies = unitsAt(G, dest, opp(pi));
+      if (enemies.length) await combat(G, pi, dest, [u], enemies);
+      else if (G.bfs[dest].ctrl !== pi) await conquer(G, pi, dest, [u]);
+    }
+  }
+  async function moveChosen(G, pi, u, title) {
+    var ds = destinations(G, u);
+    var auto = u.ctrl === pi ? ds.indexOf(ds.filter(function (d) { return d !== 'base' && G.bfs[d].ctrl !== pi && !unitsAt(G, d, opp(pi)).length; })[0]) : ds.indexOf('base');
+    var k = await choose(G, pi, title, 'Move ' + u.c.name + ' to:', ds.map(function (d) { return d === 'base' ? (u.ctrl === pi ? 'Your base' : 'Its base') : bfName(G, d); }), false, auto < 0 ? 0 : auto);
+    if (k == null) return;
+    await effectMove(G, u, ds[k]);
+  }
+  function reflectionOf(G, pi, src, loc) {
+    var r = makeUnit(G, pi, src.c, UID++, loc, true, true);
+    r.kwx = { temporary: true }; r.reflection = true;
+    return r;
+  }
+  async function playFree(G, pi, card, loc, title) {
+    var c = card.c, p = G.players[pi];
+    var u = makeUnit(G, pi, c, card.iid, loc, !!c.P.kw.entersready, false);
+    log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + ' for free.', pi);
+    await fireLegend(G, pi, 'playUnit', { loc: loc });
+    await resolveEffects(G, pi, playEffects(c), { src: u, loc: loc, srcName: c.name });
+    if (loc !== 'base' && !u.dead && G.winner == null) {
+      var enemies = unitsAt(G, loc, opp(pi));
+      if (enemies.length) await combat(G, pi, loc, [u], enemies);
+      else if (G.bfs[loc].ctrl !== pi) await conquer(G, pi, loc, [u]);
+    }
+    return u;
+  }
+  var OPS = {
+    mark: async function () {},
+    swapIt: async function (G, pi, e, tg, ctx) {
+      var a = ctx.it, b = tg[0];
+      if (!a || !b || a === b) return;
+      var ma = might(a), mb = might(b);
+      a.temp += mb - ma; b.temp += ma - mb;
+      log(G, (ctx.srcName || 'Effect') + ' swaps the Might of ' + a.c.name + ' and ' + b.c.name + '.', pi);
+    },
+    dread: async function (G, pi, e, tg, ctx) {
+      var u = tg[0];
+      if (u.stun) { removeUnit(G, u); if (!u.token) G.players[u.owner].hand.push({ iid: u.iid, c: u.c }); u.dead = true; updateControl(G); log(G, u.c.name + ' was already stunned: returned to hand.', pi); }
+      else { u.stun = G.active === u.ctrl ? 2 : 1; log(G, (ctx.srcName || 'Effect') + ' stuns ' + u.c.name + '.', pi); }
+    },
+    moveUnit: async function (G, pi, e, tg, ctx) { await moveChosen(G, pi, tg[0], ctx.srcName); if (e.ready && !tg[0].dead) { tg[0].ex = false; log(G, tg[0].c.name + ' readies.', pi); } },
+    killGear: async function (G, pi, e, tg, ctx) {
+      var all = [];
+      G.players.forEach(function (pl) { pl.gear.forEach(function (g) { all.push({ g: g, pl: pl, host: null }); }); });
+      G.units.forEach(function (u) { u.equips.forEach(function (g) { all.push({ g: g, pl: G.players[u.owner], host: u }); }); });
+      if (!all.length) return;
+      var auto = all.map(function (x) { return x.pl.pi !== pi; }).indexOf(true);
+      var k = await choose(G, pi, ctx.srcName, 'Kill a gear?', all.map(function (x) { return x.g.c.name + (x.pl.pi === pi ? ' (yours)' : ' (AI)') + (x.host ? ' on ' + x.host.c.name : ''); }), true, auto < 0 ? null : auto);
+      if (k == null) return;
+      var x = all[k];
+      if (x.host) x.host.equips.splice(x.host.equips.indexOf(x.g), 1); else x.pl.gear.splice(x.pl.gear.indexOf(x.g), 1);
+      x.pl.trash.push(x.g);
+      log(G, (ctx.srcName || 'Effect') + ' kills ' + x.g.c.name + '.', pi);
+    },
+    recur: async function (G, pi, e, tg, ctx) {
+      var p = G.players[pi];
+      for (var n = 0; n < e.n; n++) {
+        var units = p.trash.filter(function (x) { return x.c.type === 'Unit'; });
+        if (!units.length) return;
+        var best = units.map(function (x) { return x.c.energy || 0; }); var auto = best.indexOf(Math.max.apply(null, best));
+        var k = await choose(G, pi, ctx.srcName, 'Return a unit from your trash to your hand (' + (n + 1) + ' of ' + e.n + ')', units.map(function (x) { return x.c.name; }), true, auto);
+        if (k == null) return;
+        p.trash.splice(p.trash.indexOf(units[k]), 1); p.hand.push(units[k]);
+        log(G, (ctx.srcName || 'Effect') + ' returns ' + units[k].c.name + ' to hand.', pi);
+      }
+    },
+    reanimate: async function (G, pi, e, tg, ctx) {
+      var p = G.players[pi];
+      var units = p.trash.filter(function (x) { return x.c.type === 'Unit' && canPay(p, 0, x.c.power || 0, cardDomains(x.c)); });
+      if (!units.length) { log(G, (ctx.srcName || 'Effect') + ': no unit in your trash you can pay for.', pi); return; }
+      var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
+      var k = await choose(G, pi, ctx.srcName, 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), false, auto);
+      if (k == null) return;
+      var card = units[k];
+      pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
+      p.trash.splice(p.trash.indexOf(card), 1);
+      await playFree(G, pi, card, 'base', ctx.srcName);
+    },
+    mightOfKilled: async function (G, pi, e, tg, ctx) {
+      var n = ctx.killedMight || 0;
+      tg.forEach(function (u) { u.temp += n; });
+      log(G, (ctx.srcName || 'Effect') + ' gives ' + tg[0].c.name + ' +' + n + ' Might this turn.', pi);
+    },
+    ctrlDraw: async function (G, pi, e, tg, ctx) {
+      if (ctx.killedCtrl == null) return;
+      for (var i = 0; i < e.n; i++) drawOne(G, ctx.killedCtrl);
+      log(G, G.players[ctx.killedCtrl].name + ' draw' + (ctx.killedCtrl === 0 ? '' : 's') + ' ' + e.n + '.', ctx.killedCtrl);
+    },
+    reflect: async function (G, pi, e, tg, ctx) {
+      var r = reflectionOf(G, pi, tg[0], 'base');
+      log(G, (ctx.srcName || 'Effect') + ': a ready Reflection of ' + tg[0].c.name + ' appears in base (Temporary).', pi);
+      return r;
+    },
+    sabotage: async function (G, pi, e, tg, ctx) {
+      var o = G.players[opp(pi)];
+      log(G, o.name + ' reveal' + (opp(pi) === 0 ? '' : 's') + ' their hand: ' + (o.hand.map(function (x) { return x.c.name; }).join(', ') || 'empty') + '.', pi);
+      var non = o.hand.filter(function (x) { return x.c.type !== 'Unit'; });
+      if (!non.length) return;
+      var v = non.map(function (x) { return x.c.energy || 0; }); var auto = v.indexOf(Math.max.apply(null, v));
+      var k = await choose(G, pi, ctx.srcName, 'Recycle a non-unit card from their hand:', non.map(function (x) { return x.c.name; }), false, auto);
+      if (k == null) return;
+      o.hand.splice(o.hand.indexOf(non[k]), 1); o.deck.push(non[k]);
+      log(G, (ctx.srcName || 'Effect') + ' recycles ' + non[k].c.name + ' from ' + o.name + "'s hand.", pi);
+    },
+    thrill: async function (G, pi, e, tg, ctx) {
+      var u = tg[0];
+      var k = await choose(G, pi, ctx.srcName, 'Play ' + u.c.name + ' to which battlefield?', G.bfs.map(function (b) { return b.c.name; }), false,
+        G.bfs.map(function (b, i) { return i; }).filter(function (i) { return G.bfs[i].ctrl !== pi; })[0] || 0);
+      if (k == null) return;
+      removeUnit(G, u); u.dead = true; updateControl(G);
+      log(G, u.c.name + ' is banished and played again.', pi);
+      if (u.token) return;
+      await playFree(G, pi, { iid: u.iid, c: u.c }, k, ctx.srcName);
+    },
+    payBonus: async function (G, pi, e, tg, ctx) {
+      var p = G.players[pi], u = ctx.it;
+      if (!u || u.dead || !canPay(p, 0, 1, [e.domain])) return;
+      if (!(await confirm(G, pi, ctx.srcName, 'Pay 1 ' + e.domain + ' power to give ' + u.c.name + ' +' + e.n + ' Might this turn?', true))) return;
+      pay(G, pi, 0, 1, [e.domain]); u.temp += e.n;
+      log(G, (ctx.srcName || 'Effect') + ': paid extra, ' + u.c.name + ' gets +' + e.n + ' Might.', pi);
+    },
+    fight: async function (G, pi, e, tg, ctx) {
+      var a = ctx.it, b = tg[0];
+      if (!a || a.dead || !b) return;
+      var ma = might(a), mb = might(b);
+      b.damage += ma; a.damage += mb;
+      log(G, a.c.name + ' and ' + b.c.name + ' deal ' + ma + ' and ' + mb + ' damage to each other.', pi);
+    },
+    engarde: async function (G, pi, e, tg, ctx) {
+      var u = tg[0], extra = unitsAt(G, u.loc, pi).length === 1 ? 1 : 0;
+      u.temp += 1 + extra;
+      log(G, (ctx.srcName || 'Effect') + ' gives ' + u.c.name + ' +' + (1 + extra) + ' Might this turn' + (extra ? ' (alone there)' : '') + '.', pi);
+    },
+    shroud: async function (G, pi, e, tg, ctx) {
+      tg[0].temp += 1; tg[0].shrouded = true;
+      log(G, (ctx.srcName || 'Effect') + ' gives ' + tg[0].c.name + ' +1 Might; enemies can\'t choose it this turn.', pi);
+    },
+    lookDraw: async function (G, pi, e, tg, ctx) {
+      var p = G.players[pi], top = p.deck.splice(0, e.n);
+      if (!top.length) return;
+      var v = top.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
+      var k = await choose(G, pi, ctx.srcName, 'Choose a card to draw; the rest go to your trash.', top.map(function (x) { return x.c.name + ' (' + x.c.type + ')'; }), true, auto);
+      if (k != null) { p.hand.push(top[k]); top.splice(k, 1); }
+      top.forEach(function (x) { p.trash.push(x); });
+      log(G, (ctx.srcName || 'Effect') + ': ' + p.name + ' draw' + (pi === 0 ? '' : 's') + ' 1 and trash' + (pi === 0 ? '' : 'es') + ' ' + top.length + '.', pi);
+    },
+    hook: async function (G, pi, e, tg, ctx) {
+      var p = G.players[pi], top = p.deck.splice(0, 5), lim = (ctx.killedMight || 0) + 1;
+      var ok = top.filter(function (x) { return x.c.type === 'Unit' && (x.c.might || 0) <= lim; });
+      var k = null;
+      if (ok.length) {
+        var v = ok.map(function (x) { return x.c.might || 0; });
+        k = await choose(G, pi, ctx.srcName, 'Top 5: ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Play a unit with Might ≤ ' + lim + ' for free?', ok.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), true, v.indexOf(Math.max.apply(null, v)));
+      }
+      var chosen = k != null ? ok[k] : null;
+      top.forEach(function (x) { if (x !== chosen) p.deck.push(x); });
+      if (chosen) await playFree(G, pi, chosen, 'base', ctx.srcName);
+      else log(G, (ctx.srcName || 'Effect') + ': nothing played; the cards are recycled.', pi);
+    },
+    drawIf: async function (G, pi, e) { for (var i = 0; i < e.n; i++) drawOne(G, pi); log(G, G.players[pi].name + ' draw' + (pi === 0 ? '' : 's') + ' ' + e.n + '.', pi); }
+  };
+  var OPS_VALUE = {
+    lookDraw: function () { return 1.8; },
+    recur: function (G, pi, e) { return Math.min(e.n, G.players[pi].trash.filter(function (x) { return x.c.type === 'Unit'; }).length) * 1.6; },
+    reanimate: function (G, pi) { var u = G.players[pi].trash.filter(function (x) { return x.c.type === 'Unit'; }); return u.length ? Math.max.apply(null, u.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); })) : -5; },
+    sabotage: function (G, pi) { return G.players[opp(pi)].hand.some(function (x) { return x.c.type !== 'Unit'; }) ? 1.5 : 0; },
+    killGear: function (G, pi) { return G.players[opp(pi)].gear.length || G.units.some(function (u) { return u.ctrl !== pi && u.equips.length; }) ? 1.5 : 0; },
+    drawIf: function (G, pi, e) { return 1.6 * e.n; },
+    ctrlDraw: function (G, pi, e) { return -1.2 * e.n; }
+  };
+  function T(sel, where, extra) { var t = { sel: sel, where: where || null }; if (extra) Object.keys(extra).forEach(function (k) { t[k] = extra[k]; }); return t; }
+  // Hand-written effects for cards whose text the generic parser can't read. sim: indexes of rules lines now simulated.
+  var CARD_SCRIPTS = {
+    lightningrush: { sim: [0], effs: [{ op: 'lookDraw', n: 3 }] },
+    sealofdiscord: { sim: [0], addPower: 'Chaos' },
+    starcrossed: { sim: [1], effs: [{ op: 'tohand', t: T('friendly') }, { op: 'tohand', t: T('enemy') }] },
+    switcheroo: { sim: [2], effs: [{ op: 'mark', t: T('enemy', 'bf') }, { op: 'swapIt', t: T('friendly', 'itloc') }] },
+    existentialdread: { sim: [2], effs: [{ op: 'dread', t: T('enemy', 'bf', { attacking: true }) }] },
+    flash: { sim: [1], effs: [{ op: 'tobase', t: T('friendly', 'bf'), opt: true }, { op: 'tobase', t: T('friendly', 'bf'), opt: true }] },
+    ridethewind: { sim: [1], effs: [{ op: 'moveUnit', t: T('friendly'), ready: true }] },
+    salvage: { sim: [1], effs: [{ op: 'killGear' }, { op: 'draw', n: 1 }] },
+    shadowsofthepast: { sim: [0], effs: [{ op: 'recur', n: 2 }] },
+    theharrowing: { sim: [0], effs: [{ op: 'reanimate' }] },
+    sacrifice: { sim: [1], requires: function (G, pi) { return unitsOf(G, pi).some(function (u) { return might(u) >= 5; }) ? null : 'Needs a friendly Mighty unit (5+ Might) to kill as the extra cost.'; },
+      effs: [{ op: 'kill', t: T('friendly', null, { minMight: 5 }), selfOk: true }, { op: 'draw', n: 2 }, { op: 'channel', n: 1 }] },
+    deathgrip: { sim: [1], requires: function (G, pi) { return unitsOf(G, pi).length >= 2 ? null : 'Needs two friendly units.'; },
+      effs: [{ op: 'kill', t: T('friendly'), selfOk: true }, { op: 'mightOfKilled', t: T('friendly') }, { op: 'draw', n: 1 }] },
+    hiddenblade: { sim: [2], effs: [{ op: 'kill', t: T('any', 'bf') }, { op: 'ctrlDraw', n: 2 }] },
+    mirrorimage: { sim: [0], effs: [{ op: 'reflect', t: T('any') }] },
+    sabotage: { sim: [0], effs: [{ op: 'sabotage' }] },
+    thrillofthehunt: { sim: [1], effs: [{ op: 'thrill', t: T('friendly') }] },
+    rampage: { sim: [0, 1], effs: [{ op: 'mark', t: T('friendly') }, { op: 'payBonus', n: 2, domain: 'Body' }, { op: 'fight', t: T('enemy') }] },
+    zhonyashourglass: { sim: [1], saveUnit: true },
+    charm: { sim: [0], effs: [{ op: 'moveUnit', t: T('enemy') }] },
+    defiantdance: { sim: [1], effs: [{ op: 'might', n: 2, t: T('any') }, { op: 'might', n: -2, t: T('any', null, { notIt: true }) }] },
+    engarde: { sim: [1], effs: [{ op: 'engarde', t: T('friendly') }] },
+    twilightshroud: { sim: [0], effs: [{ op: 'shroud', t: T('friendly') }] },
+    shurikenflip: { sim: [0], effs: [{ op: 'deal', n: 2, t: T('enemy', 'bf'), opt: true }, { op: 'moveUnit', t: T('friendly') }] },
+    maskofforesight: { sim: [0], aloneBonus: 1 },
+    backoff: { sim: [3], effs: null, extra: [{ op: 'drawIf', n: 1 }] },
+    baitedhook: { sim: [0], gearAct: { label: '1 energy + 1 Order power, exhaust: kill a friendly unit, then maybe play a unit from your top 5', energy: 1, power: 1, domain: 'Order',
+      effs: [{ op: 'kill', t: T('friendly'), selfOk: true }, { op: 'hook' }] } },
+    // Counters: offered as reactions when the opponent casts a spell.
+    defy: { sim: [1], counter: { maxEnergy: 4, maxPower: 1 } },
+    abandon: { sim: [1], counter: { toHand: true } },
+    notsofast: { sim: [1], counter: { targetsFriendly: true } }
+  };
+  function applyCardScript(c) {
+    var sc = CARD_SCRIPTS[norm(c.name)];
+    if (!sc || c.type === 'Legend') return;
+    (sc.sim || []).forEach(function (i) { if (c.P.lines[i]) c.P.lines[i].sim = true; });
+    if (sc.effs) c.P.spell = sc.effs;
+    if (sc.extra) c.P.spell = c.P.spell.concat(sc.extra);
+    if (sc.requires) c.P.requires = sc.requires;
+    if (sc.counter) c.P.counter = sc.counter;
+    if (sc.addPower) c.P.addPower = sc.addPower;
+    if (sc.saveUnit) c.P.saveUnit = true;
+    if (sc.aloneBonus) c.P.aloneBonus = sc.aloneBonus;
+    if (sc.gearAct) c.P.gearAct = sc.gearAct;
+  }
+
+  // Reaction window: may the opponent (pi) counter this spell or targeting? Returns true if countered.
+  async function reactTo(G, pi, ctx, pickedUnit) {
+    if (G.winner != null || ctx.reacted) return false;
+    var p = G.players[pi], spell = ctx.spell, caster = opp(pi);
+    var options = p.hand.filter(function (card) {
+      var k = card.c.P.counter;
+      if (!k) return false;
+      var cost = cardCost(card.c, false);
+      if (!canPay(p, cost.energy, cost.power, cost.domains)) return false;
+      if (pickedUnit) return !!k.targetsFriendly && pickedUnit.ctrl === pi;
+      if (!spell || k.targetsFriendly) return false;
+      if (k.maxEnergy != null && ((spell.c.energy || 0) > k.maxEnergy || (spell.c.power || 0) > k.maxPower)) return false;
+      return true;
+    });
+    for (var i = 0; i < options.length; i++) {
+      var card = options[i], what = spell ? spell.c.name : (ctx.srcName || 'that ability');
+      var aiWants = pickedUnit ? unitValue(pickedUnit) >= 4 : ((spell.c.energy || 0) + (spell.c.power || 0) >= 3);
+      var text = G.players[caster].name + (caster === 0 ? ' are' : ' is') + ' ' + (pickedUnit ? 'targeting your ' + pickedUnit.c.name + ' with ' + what : 'casting ' + what) + '. Counter it with ' + card.c.name + '?';
+      if (!(await confirm(G, pi, 'Reaction', text, aiWants))) continue;
+      var cost = cardCost(card.c, false);
+      pay(G, pi, cost.energy, cost.power, cost.domains);
+      p.hand.splice(p.hand.indexOf(card), 1); p.trash.push(card);
+      ctx.reacted = true;
+      log(G, p.name + ' counter' + (pi === 0 ? '' : 's') + ' ' + what + ' with ' + card.c.name + '.', pi);
+      if (card.c.P.counter.toHand && spell) { ctx.countered = 'hand'; log(G, spell.c.name + ' returns to its owner\'s hand.', pi); }
+      return true;
+    }
+    return false;
+  }
+  function canUseGear(G, pi, iid) {
+    var p = G.players[pi], g = p.gear.filter(function (x) { return x.iid === iid; })[0];
+    if (!g || !g.c.P.gearAct) return { ok: false, why: 'This gear has no activated ability.' };
+    var a = g.c.P.gearAct;
+    if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
+    if (g.ex) return { ok: false, why: 'It is exhausted.' };
+    if (!canPay(p, a.energy, a.power, [a.domain])) return { ok: false, why: 'Needs ' + a.energy + ' energy and ' + a.power + ' ' + a.domain + ' power.' };
+    if (a.effs.some(function (e) { return e.selfOk; }) && !unitsOf(G, pi).length) return { ok: false, why: 'You need a friendly unit to kill.' };
+    return { ok: true };
+  }
+  async function useGear(G, pi, iid) {
+    var chk = canUseGear(G, pi, iid);
+    if (!chk.ok) return chk;
+    var p = G.players[pi], g = p.gear.filter(function (x) { return x.iid === iid; })[0], a = g.c.P.gearAct;
+    pay(G, pi, a.energy, a.power, [a.domain]); g.ex = true;
+    log(G, p.name + ' activate' + (pi === 0 ? '' : 's') + ' ' + g.c.name + '.', pi);
+    await resolveEffects(G, pi, a.effs, { src: null, loc: null, srcName: g.c.name });
+    return { ok: true };
+  }
+
   /* ---------------- turn structure ---------------- */
   async function startTurn(G) {
     var pi = G.active, p = G.players[pi];
@@ -441,7 +740,7 @@ var RT = (function () {
     p.gear.forEach(function (g) { g.ex = false; });
     p.legend.exhausted = false; p.legend.used = {};
     var temps = unitsOf(G, pi).filter(function (u) { return kwOf(u).temporary; });
-    for (var t = 0; t < temps.length; t++) { log(G, temps[t].c.name + ' (Temporary) dies.', pi); await killUnit(G, temps[t]); }
+    for (var t = 0; t < temps.length; t++) { log(G, temps[t].c.name + ' (Temporary) dies.', pi); await killUnit(G, temps[t], 'temporary'); }
     await checkDeaths(G);
     for (var bi = 0; bi < G.bfs.length && G.winner == null; bi++) {
       if (G.bfs[bi].ctrl !== pi) continue;
@@ -467,7 +766,7 @@ var RT = (function () {
     if (G.winner != null) return;
     var pi = G.active;
     G.units.forEach(function (u) {
-      u.damage = 0; u.temp = 0; u.tempAssault = 0;
+      u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false;
       if (u.ctrl === pi && u.stun > 0) u.stun--;
     });
     G.active = opp(pi);
@@ -495,8 +794,17 @@ var RT = (function () {
     u.equips.forEach(function (g) { owner.trash.push(g); });
     u.equips = [];
   }
-  async function killUnit(G, u) {
+  async function killUnit(G, u, reason) {
     if (G.units.indexOf(u) < 0) return;
+    var owner = G.players[u.ctrl];
+    var zh = reason !== 'temporary' && !u.token && owner.gear.filter(function (g) { return g.c.P.saveUnit; })[0];
+    if (zh) {
+      owner.gear.splice(owner.gear.indexOf(zh), 1); owner.trash.push(zh);
+      u.loc = 'base'; u.ex = true; u.damage = 0;
+      log(G, zh.c.name + ' breaks instead: ' + u.c.name + ' is recalled to base.', u.ctrl);
+      updateControl(G);
+      return;
+    }
     var loc = u.loc;
     removeUnit(G, u);
     if (!u.token) G.players[u.owner].trash.push({ iid: u.iid, c: u.c });
@@ -561,6 +869,11 @@ var RT = (function () {
       if (t.where === 'bf' && u.loc === 'base') return false;
       if (t.where === 'here' && (ctx.loc == null || u.loc !== ctx.loc)) return false;
       if (t.maxMight != null && might(u) > t.maxMight) return false;
+      if (t.minMight != null && might(u) < t.minMight) return false;
+      if (t.where === 'itloc' && (!ctx.it || u.loc !== ctx.it.loc)) return false;
+      if (t.notIt && ctx.it && u === ctx.it) return false;
+      if (t.attacking && u.loc === 'base') return false;
+      if (u.ctrl !== pi && u.shrouded) return false;
       if (u.ctrl !== pi && kwOf(u).deflect && p.runes.length - (ctx.reserveRunes || 0) < 1) return false;
       return true;
     });
@@ -571,6 +884,7 @@ var RT = (function () {
     var enemies = cands.filter(function (u) { return u.ctrl !== pi; });
     var friends = cands.filter(function (u) { return u.ctrl === pi; });
     var best = function (arr, f) { return arr.slice().sort(function (a, b) { return f(b) - f(a); })[0] || null; };
+    if (e.selfOk) return friends.slice().sort(function (a, b) { return unitValue(a) - unitValue(b); })[0] || null;
     if (isHarmful(e)) {
       if (!enemies.length) return null;
       if (e.op === 'deal') {
@@ -625,8 +939,9 @@ var RT = (function () {
   async function resolveEffects(G, pi, effs, ctx) {
     ctx = ctx || {};
     var p = G.players[pi], it = null, queue = ctx.targets ? ctx.targets.slice() : null, src = ctx.srcName || 'Effect';
-    for (var i = 0; i < effs.length && G.winner == null; i++) {
+    for (var i = 0; i < effs.length && G.winner == null && !ctx.countered; i++) {
       var e = effs[i], tg = [];
+      ctx.it = it;
       var pre = needsChoice(e) && queue && queue.length;
       if (e.opt && !needsChoice(e) && !(await confirm(G, pi, src, describeEffect(e) + '?', e.op !== 'discard'))) { log(G, src + ': declined.', pi); continue; }
       if (e.t) {
@@ -652,12 +967,14 @@ var RT = (function () {
             tg = [pick];
             var sc = p.legend.c && p.legend.c.P.script;
             if (pick.ctrl === pi && sc && sc.onChoose) await sc.onChoose(G, pi, pick);
+            if (pick.ctrl !== pi && !ctx.noReact && await reactTo(G, opp(pi), ctx, pick)) { ctx.countered = true; break; }
           }
         }
         if (tg.length) it = tg[tg.length - 1];
         if (!tg.length) { log(G, src + ': ' + describeEffect(e) + ' — no target.', pi); continue; }
       }
       await applyEffect(G, pi, e, tg, ctx);
+      if (tg.length) it = tg[tg.length - 1];
       await checkDeaths(G);
     }
   }
@@ -666,7 +983,11 @@ var RT = (function () {
     switch (e.op) {
       case 'draw': log(G, src + ': draw ' + e.n + '.', pi); for (var i = 0; i < e.n; i++) drawOne(G, pi); break;
       case 'deal': tg.forEach(function (u) { u.damage += e.n; }); log(G, src + ' deals ' + e.n + ' to ' + names + '.', pi); break;
-      case 'kill': log(G, src + ' kills ' + names + '.', pi); for (var k0 = 0; k0 < tg.length; k0++) await killUnit(G, tg[k0]); break;
+      case 'kill':
+        log(G, src + ' kills ' + names + '.', pi);
+        ctx.killedMight = tg.length ? might(tg[0]) : 0; ctx.killedCtrl = tg.length ? tg[0].ctrl : null;
+        for (var k0 = 0; k0 < tg.length; k0++) await killUnit(G, tg[k0]);
+        break;
       case 'stun': tg.forEach(function (u) { u.stun = G.active === u.ctrl ? 2 : 1; }); log(G, src + ' stuns ' + names + '.', pi); break;
       case 'buff': tg.forEach(function (u) { if (!u.buff) u.buff = 1; }); log(G, src + ' buffs ' + names + '.', pi); break;
       case 'might': tg.forEach(function (u) { u.temp += e.n; }); log(G, src + ' gives ' + names + ' ' + (e.n > 0 ? '+' : '') + e.n + ' Might this turn.', pi); break;
@@ -690,6 +1011,7 @@ var RT = (function () {
         }
         break;
       case 'score': log(G, src + ': score ' + e.n + '.', pi); addPoints(G, pi, e.n); break;
+      default: if (OPS[e.op]) await OPS[e.op](G, pi, e, tg, ctx);
     }
   }
 
@@ -711,6 +1033,8 @@ var RT = (function () {
     var c = f.card.c;
     if (c.type === 'Battlefield' || c.type === 'Legend') return { ok: false, why: "This card can't be played." };
     if (accel && !(c.P.kw.accelerate && c.type === 'Unit')) return { ok: false, why: "This card doesn't have Accelerate." };
+    if (c.P.counter) return { ok: false, why: 'Counters are reactions: when the opponent casts a spell you can counter, you\'ll be asked whether to use this.' };
+    if (c.P.requires) { var rw = c.P.requires(G, pi); if (rw) return { ok: false, why: rw }; }
     var cost = cardCost(c, accel);
     var ready = p.runes.filter(function (r) { return !r.ex; }).length;
     if (ready < cost.energy) return { ok: false, why: 'Needs ' + cost.energy + ' energy; you have ' + ready + ' ready rune' + (ready === 1 ? '' : 's') + '.' };
@@ -753,14 +1077,20 @@ var RT = (function () {
     } else if (c.type === 'Spell') {
       log(G, p.name + ' cast' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
       if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, f.from);
-      await resolveEffects(G, pi, c.P.spell, { src: null, loc: null, targets: opts.targets, srcName: c.name });
-      p.trash.push(card);
-      await fireLegend(G, pi, 'playSpell', {});
+      var sctx = { src: null, loc: null, targets: opts.targets, srcName: c.name, spell: card, caster: pi };
+      if (await reactTo(G, opp(pi), sctx, null)) sctx.countered = true;
+      else await resolveEffects(G, pi, c.P.spell, sctx);
+      if (sctx.countered === 'hand') p.hand.push(card); else p.trash.push(card);
+      if (!sctx.countered) await fireLegend(G, pi, 'playSpell', {});
     } else if (c.type === 'Gear') {
       log(G, p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
       if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, f.from);
       if (c.P.equip) {
         var host = unitsOf(G, pi).sort(function (a, b) { return might(b) - might(a); })[0];
+        if (host) {
+          var hid = await ask(G, pi, { type: 'target', title: c.name, text: 'Attach to which unit? (+' + c.P.equipBonus + ' Might)', cands: unitsOf(G, pi).map(function (u) { return u.uid; }), optional: false, auto: host.uid });
+          host = unitsOf(G, pi).filter(function (u) { return u.uid === hid; })[0] || host;
+        }
         if (host) { host.equips.push(card); log(G, c.name + ' attaches to ' + host.c.name + ' (+' + c.P.equipBonus + ' Might).', pi); }
         else p.gear.push({ iid: card.iid, c: c, ex: false });
       } else p.gear.push({ iid: card.iid, c: c, ex: false });
@@ -835,6 +1165,13 @@ var RT = (function () {
     log(G, '⚔ Combat at ' + bfName(G, bi) + ': ' + attackers.map(function (u) { return u.c.name; }).join(', ') + ' vs ' + defenders.map(function (u) { return u.c.name; }).join(', ') + '.', pi);
     for (i = 0; i < attackers.length; i++) await fireUnit(G, attackers[i], 'attack');
     for (i = 0; i < defenders.length; i++) await fireUnit(G, defenders[i], 'defend');
+    [[attackers, pi], [defenders, opp(pi)]].forEach(function (side) {
+      var alone = side[0].filter(function (u) { return !u.dead; });
+      if (alone.length !== 1) return;
+      G.players[side[1]].gear.forEach(function (g) {
+        if (g.c.P.aloneBonus) { alone[0].temp += g.c.P.aloneBonus; log(G, g.c.name + ': ' + alone[0].c.name + ' fights alone, +' + g.c.P.aloneBonus + ' Might.', side[1]); }
+      });
+    });
     var att = unitsAt(G, bi, pi), def = unitsAt(G, bi, opp(pi));
     if (G.winner != null) return;
     if (att.length && def.length) {
@@ -883,7 +1220,9 @@ var RT = (function () {
         var cands = candidates(G, pi, e, ctx), u = autoChoose(G, pi, e, cands);
         if (!u) { targets.push(null); if (!e.opt && (isHarmful(e) || e.op === 'buff')) good = false; return; }
         targets.push(u.uid);
-        if (u.ctrl === pi && isHarmful(e)) { good = false; return; }
+        ctx.it = u;
+        if (u.ctrl === pi && isHarmful(e) && !e.selfOk) { good = false; return; }
+        if (e.op === 'kill' && u.ctrl === pi) { value -= unitValue(u); return; }
         if (e.op === 'kill') value += unitValue(u) + 1;
         else if (e.op === 'deal') value += (might(u) - u.damage <= e.n) ? unitValue(u) + 1 : 0;
         else if (e.op === 'stun') value += u.loc !== 'base' && might(u) >= 3 ? 2 : 0.5;
@@ -893,6 +1232,7 @@ var RT = (function () {
         else if (e.op === 'ready') value += u.ex ? 1 : 0;
         return;
       }
+      if (OPS_VALUE[e.op]) { value += OPS_VALUE[e.op](G, pi, e); return; }
       if (e.op === 'draw') value += 1.6 * e.n;
       else if (e.op === 'channel') value += 1.5 * e.n;
       else if (e.op === 'xp') value += 0.3 * e.n;
@@ -1034,7 +1374,7 @@ var RT = (function () {
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
-    legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
+    canUseGear: canUseGear, useGear: useGear, legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
     equipBonus: equipBonus, describeEffect: describeEffect, cardCost: cardCost, aiTurn: aiTurn, deckCoverage: deckCoverage, cardDomains: cardDomains
   };
 })();

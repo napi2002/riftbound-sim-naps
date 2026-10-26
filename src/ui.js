@@ -78,7 +78,7 @@
   function askHuman(req) {
     return new Promise(function (resolve) {
       S.prompt = { req: req, resolve: resolve };
-      if (req.type === 'confirm') promptSheet(req);
+      if (req.type !== 'target') promptSheet(req);
       render();
     });
   }
@@ -88,6 +88,12 @@
     P.resolve(v);
   }
   function promptSheet(req) {
+    if (req.type === 'choice') {
+      openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
+        req.options.map(function (o, i) { return '<button class="btn' + (i === req.auto ? ' primary' : '') + '" data-ans="opt' + i + '" style="flex-basis:100%">' + esc(o) + '</button>'; }).join('') +
+        (req.optional ? '<button class="btn" data-ans="skip" style="flex-basis:100%">Skip</button>' : ''));
+      return;
+    }
     openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
       '<button class="btn primary" data-ans="yes">Yes</button><button class="btn" data-ans="no">No</button>');
   }
@@ -139,7 +145,7 @@
       (flags.length ? '<span class="fl">' + flags.map(function (f) { return '<span>' + f + '</span>'; }).join('') + '</span>' : '') +
       '<span class="nm">' + esc(shortName(u.c.name)) + '</span></button>';
   }
-  function gearHtml(g) { return '<button class="gear" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
+  function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
   function runesHtml(p, label) {
     return '<span class="lbl">' + label + '</span>' + p.runes.map(function (r) { return '<i class="' + (r.ex ? 'ex' : '') + '" style="--rc:' + DC[r.d] + '" title="' + r.d + '"></i>'; }).join('') +
@@ -222,7 +228,7 @@
     $('sheet').classList.remove('hidden'); $('scrim').classList.remove('hidden');
   }
   function closeSheet() { S.sheet = null; $('sheet').classList.add('hidden'); $('scrim').classList.add('hidden'); }
-  $('scrim').onclick = function () { if (!(S.prompt && S.prompt.req.type === 'confirm')) closeSheet(); };
+  $('scrim').onclick = function () { if (!(S.prompt && S.prompt.req.type !== 'target')) closeSheet(); };
   function linesHtml(c) {
     if (!c.P.lines.length) return '<p style="color:var(--muted)">No rules text.</p>';
     return '<ul class="lines">' + c.P.lines.map(function (l) {
@@ -258,6 +264,9 @@
       spots.forEach(function (bi) { foot += '<button class="btn" data-play="' + card.iid + '" data-loc="' + bi + '">Ambush → ' + esc(shortName(G.bfs[bi].c.name)) + '</button>'; });
       var noSim = c.type === 'Spell' && !c.P.spell.length;
       if (noSim) foot += '<span class="why" style="color:var(--muted)">None of this spell is simulated: playing it only spends the card.</span>';
+      var first = RT.targetSlots(G, 0, c, {}).filter(function (sl) { return !sl.e.opt; })[0];
+      if (first && !first.cands.length) foot += '<span class="why" style="color:var(--muted)">No valid target right now (' + esc(RT.describeEffect(first.e)) + '), so that part will fizzle.</span>';
+      else if (c.type === 'Spell' && c.P.spell.length) foot += '<span class="why" style="color:var(--muted)">You\'ll pick targets after tapping Play.</span>';
     } else {
       foot += '<span class="why">' + esc(chk.why) + '</span>';
       if (c.P.kw.accelerate && c.type === 'Unit') foot += '<button class="btn" disabled>Play ready (Accelerate)</button>';
@@ -303,7 +312,13 @@
     var G = S.G, g = null;
     G.players.forEach(function (p) { p.gear.forEach(function (x) { if (x.iid === iid) g = x; }); });
     if (!g) return;
-    openSheet(cardHead(g.c) + linesHtml(g.c), '<button class="btn" data-act="close">Close</button>');
+    var foot = '';
+    if (g.c.P.gearAct && G.players[0].gear.indexOf(g) >= 0) {
+      var chk = RT.canUseGear(G, 0, iid); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
+      foot += '<button class="btn primary" data-gearact="' + iid + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(g.c.P.gearAct.label) + '</button>';
+      if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
+    }
+    openSheet(cardHead(g.c) + (g.ex ? '<p class="chip">Exhausted</p>' : '') + linesHtml(g.c), foot + '<button class="btn" data-act="close">Close</button>');
   }
   function logSheet() {
     var G = S.G;
@@ -327,8 +342,6 @@
     var card = p.hand.filter(function (x) { return x.iid === iid; })[0] || (p.champion && p.champion.iid === iid ? p.champion : null);
     if (!card) return;
     closeSheet();
-    var slots = RT.targetSlots(G, 0, card.c, { loc: loc });
-    if (slots.some(function (s) { return s.cands.length; })) { S.sel = []; S.targeting = { kind: 'play', iid: iid, accel: accel, loc: loc, slots: slots, picks: [], i: 0 }; advanceTargeting(); render(); return; }
     run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc }); });
   }
   function beginLegend(idx) {
@@ -355,7 +368,7 @@
     var G = S.G; if (!G) return;
     var t = ev.target;
     var an = t.closest('[data-ans]');
-    if (an) { var v = an.dataset.ans; answer(v === 'yes' ? true : v === 'no' ? false : null); return; }
+    if (an) { var v = an.dataset.ans; answer(v === 'yes' ? true : v === 'no' ? false : v.indexOf('opt') === 0 ? +v.slice(3) : null); return; }
     if (S.prompt && S.prompt.req.type === 'target') {
       var pu = t.closest('[data-uid]');
       if (pu && S.prompt.req.cands.indexOf(+pu.dataset.uid) >= 0) answer(+pu.dataset.uid);
@@ -378,6 +391,8 @@
       else if (a === 'menu') { S.G = null; closeSheet(); $('end').classList.add('hidden'); $('game').classList.add('hidden'); $('menu').classList.remove('hidden'); renderMenu(); }
       return;
     }
+    var ga = t.closest('[data-gearact]');
+    if (ga) { closeSheet(); var gid = +ga.dataset.gearact; run(function () { return RT.useGear(G, 0, gid); }); return; }
     var la = t.closest('[data-legact]');
     if (la) { beginLegend(+la.dataset.legact); return; }
     if (S.prompt) return;
