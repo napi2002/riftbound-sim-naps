@@ -194,11 +194,11 @@
       (flags.length ? '<span class="fl">' + flags.map(function (f) { return '<span>' + f + '</span>'; }).join('') + '</span>' : '') +
       '<span class="nm">' + esc(shortName(u.c.name)) + '</span></button>';
   }
-  function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + (S.G && S.G.players[0].gear.indexOf(g) >= 0 && g.c.P.gearAct && RT.canUseGear(S.G, 0, g.iid).ok ? ' can' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
+  function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + (S.G && S.G.players[0].gear.indexOf(g) >= 0 && g.c.P.gearActs && RT.canUseGear(S.G, 0, g.iid).ok ? ' can' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
   function runesHtml(p, label) {
     return '<span class="lbl">' + label + '</span>' + p.runes.map(function (r) { return '<i class="' + (r.ex ? 'ex' : '') + '" style="--rc:' + DC[r.d] + '" title="' + r.d + '"></i>'; }).join('') +
-      '<span class="lbl" style="margin-left:4px">' + p.runes.filter(function (r) { return !r.ex; }).length + ' ready</span>';
+      '<span class="lbl" style="margin-left:4px">' + p.runes.filter(function (r) { return !r.ex; }).length + ' ready' + (p.pool ? ' · +' + p.pool + ' energy added' : '') + '</span>';
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
@@ -348,6 +348,10 @@
         if (!ac.ok) foot += '<span class="why">Accelerate: ' + esc(ac.why) + '</span>';
       }
       spots.forEach(function (bi) { foot += '<button class="btn" data-play="' + card.iid + '" data-loc="' + bi + '">Ambush → ' + esc(shortName(G.bfs[bi].c.name)) + '</button>'; });
+      RT.roostSpots(G, 0, c).forEach(function (bi) {
+        var rk = RT.canPlay(G, 0, card.iid, false, { roost: bi });
+        foot += '<button class="btn" data-play="' + card.iid + '" data-roost="' + bi + '"' + (rk.ok ? '' : ' disabled') + '>Play to Dragon Roost (+2 power)</button>';
+      });
       var noSim = c.type === 'Spell' && !c.P.spell.length;
       if (noSim) foot += '<span class="why" style="color:var(--muted)">None of this spell is simulated: playing it only spends the card.</span>';
       var first = RT.targetSlots(G, 0, c, {}).filter(function (sl) { return !sl.e.opt; })[0];
@@ -420,11 +424,14 @@
     G.players.forEach(function (p) { p.gear.forEach(function (x) { if (x.iid === iid) g = x; }); });
     if (!g) return;
     var foot = '';
-    if (g.c.P.gearAct && G.players[0].gear.indexOf(g) >= 0) {
-      var chk = RT.canUseGear(G, 0, iid); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
-      foot += '<button class="btn primary" data-gearact="' + iid + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(g.c.P.gearAct.label) + '</button>';
-      if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
+    if (g.c.P.gearActs && G.players[0].gear.indexOf(g) >= 0) {
+      g.c.P.gearActs.forEach(function (a, ai) {
+        var chk = RT.canUseGear(G, 0, iid, ai); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
+        foot += '<button class="btn primary" data-gearact="' + iid + '" data-gidx="' + ai + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(a.label) + '</button>';
+        if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
+      });
     }
+    if (g.c.P.addEnergy) foot += '<span class="why" style="color:var(--muted)">Its energy is used automatically when you pay' + (g.empowered ? ' (empowered: 2 energy)' : '') + '.</span>';
     if (g.c.P.equip && G.players[0].gear.indexOf(g) >= 0) {
       var eq = RT.canEquip(G, 0, g); if (S.busy || S.prompt) eq = { ok: false, why: 'Wait for your turn.' };
       foot += '<button class="btn primary" data-equip="' + iid + '"' + (eq.ok ? '' : ' disabled') + '>Equip (' + esc(RT.equipCostText(g.c)) + ')</button>';
@@ -450,12 +457,12 @@
   }
 
   /* ---------- playing with targets ---------- */
-  function beginPlay(iid, accel, loc) {
+  function beginPlay(iid, accel, loc, roost) {
     var G = S.G, p = G.players[0];
     var card = findMine(p, iid);
     if (!card) return;
     closeSheet();
-    run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc }); });
+    run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc, roost: roost }); });
   }
   function beginLegend(idx) {
     var G = S.G;
@@ -517,12 +524,12 @@
     if (eqb) { closeSheet(); var eg = G.players[0].gear.filter(function (x) { return x.iid === +eqb.dataset.equip; })[0]; if (eg) run(function () { return RT.equipGear(G, 0, eg); }); return; }
     if (t.closest('[data-facedown]')) { openSheet('<h2>Face-down card</h2><p>The AI has hidden a card here. It can play it for 0 energy, even during your attack.</p>', '<button class="btn" data-act="close">Close</button>'); return; }
     var ga = t.closest('[data-gearact]');
-    if (ga) { closeSheet(); var gid = +ga.dataset.gearact; run(function () { return RT.useGear(G, 0, gid); }); return; }
+    if (ga) { closeSheet(); var gid = +ga.dataset.gearact, gix = +(ga.dataset.gidx || 0); run(function () { return RT.useGear(G, 0, gid, gix); }); return; }
     var la = t.closest('[data-legact]');
     if (la) { beginLegend(+la.dataset.legact); return; }
     if (S.prompt) return;
     var pl = t.closest('[data-play]');
-    if (pl) { beginPlay(+pl.dataset.play, !!pl.dataset.accel, pl.dataset.loc != null ? +pl.dataset.loc : undefined); return; }
+    if (pl) { beginPlay(+pl.dataset.play, !!pl.dataset.accel, pl.dataset.loc != null ? +pl.dataset.loc : undefined, pl.dataset.roost != null ? +pl.dataset.roost : undefined); return; }
     var mv = t.closest('[data-move]');
     if (mv) {
       var dest = mv.dataset.move === 'base' ? 'base' : +mv.dataset.move;

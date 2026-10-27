@@ -22,7 +22,7 @@ const RT = ctx.RT;
   const wins = {}, results = [];
   let crashes = 0, unfinished = 0;
   for (let g = 0; g < N; g++) {
-    const a = RT.DECKS[g % 5], b = RT.DECKS[Math.floor(g / 5 + g) % 5];
+    const n = RT.DECKS.length, a = RT.DECKS[g % n], b = RT.DECKS[(g * 3 + 1 + Math.floor(g / n)) % n];
     let G;
     try {
       G = await RT.newGame(a, b, { maxTurns: MAX, names: ["P1", "P2"] });
