@@ -223,21 +223,35 @@
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
       pips(p.points) + '<b class="score">' + p.points + '<small>/' + RT.WIN + '</small></b><button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
-      '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
+      xpHtml(G, p, pi) + '<span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
   }
   // Pop up a short notice for log lines starting with ✦ (something became empowered) so it's hard to miss.
   var seenLog = 0;
   function flashNew(G) {
     if (seenLog > G.log.length) seenLog = 0;
-    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★]/.test(l.t); });
+    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★⬆]/.test(l.t); });
     seenLog = G.log.length;
     if (!fresh.length) return;
     var el = $('toast');
     el.innerHTML = fresh.slice(-3).map(function (l) { return '<div>' + esc(l.t) + '</div>'; }).join('');
     var last = fresh[fresh.length - 1];
-    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : '') + 'p' + last.p;
+    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : /^⬆/.test(last.t) ? 'xp ' : '') + 'p' + last.p;
     clearTimeout(flashNew.t);
     flashNew.t = setTimeout(function () { el.className = ''; }, 2600);
+  }
+  // XP counter: shows progress toward the next Level threshold in this player's deck, if any.
+  function xpHtml(G, p, pi) {
+    var next = RT.levelCards(G, pi).filter(function (l) { return l.level > p.xp; })[0];
+    return '<button class="stat xpc' + (p.xp ? ' on' : '') + '" data-xp="' + pi + '" aria-label="XP">XP <b>' + p.xp + '</b>' + (next ? '<small>/' + next.level + '</small>' : '') + '</button>';
+  }
+  function xpSheet(pi) {
+    var G = S.G, p = G.players[pi], lv = RT.levelCards(G, pi);
+    var gains = G.log.filter(function (l) { return /^⬆/.test(l.t) && l.p === pi; }).slice(-6).reverse();
+    openSheet('<h2>XP: ' + p.xp + ' (' + (pi === 0 ? 'you' : 'AI') + ')</h2>' +
+      '<p style="font-size:14px;line-height:1.4">You gain XP from <b>Hunt</b> units when they conquer or hold, and from card effects (for example Scuttle Crab, Mister Root, Herald of Spring, Alpha Strike). Cards with <b>[Level N]</b> get extra abilities once you have N XP.</p>' +
+      (lv.length ? '<ul class="lines">' + lv.map(function (l) { return '<li class="' + (p.xp >= l.level ? '' : 'no') + '"><span class="tag">' + (p.xp >= l.level ? 'Active' : (l.level - p.xp) + ' XP to go') + '</span><br>' + esc(l.name) + ' — Level ' + l.level + ': ' + esc(l.kw.join(', ')) + '</li>'; }).join('') + '</ul>' : '<p style="color:var(--muted)">No Level cards in this deck.</p>') +
+      (gains.length ? '<h3 style="margin:10px 0 4px;font-size:15px">Recent XP</h3><div class="loglist">' + gains.map(function (l) { return '<div class="p' + pi + '">' + esc(l.t.replace(/^⬆ /, '')) + '</div>'; }).join('') + '</div>' : ''),
+      '<button class="btn" data-act="close">Close</button>');
   }
   function empSheet(pi) {
     var G = S.G, list = RT.empoweredList(G, pi), L = G.players[pi].legend.c;
@@ -606,6 +620,8 @@
     }
     var ge = t.closest('[data-gear]');
     if (ge) { gearSheet(+ge.dataset.gear); return; }
+    var xpb = t.closest('[data-xp]');
+    if (xpb) { xpSheet(+xpb.dataset.xp); return; }
     var em = t.closest('[data-emp]');
     if (em) { empSheet(+em.dataset.emp); return; }
     if (t.closest('[data-legend]')) { legendSheet(); return; }

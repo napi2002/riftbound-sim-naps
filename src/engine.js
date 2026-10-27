@@ -409,6 +409,20 @@ var RT = (function () {
 
   /* ---------------- scoring ---------------- */
   // Every point goes through here so the log (and the UI pop-up) can say who scored, why, and the new total.
+  // Every XP gain goes through here: it logs the new total and announces Level thresholds reached.
+  function levelCards(G, pi) {
+    var d = G.players[pi].deckDef, seen = {}, out = [];
+    (d ? d.cards.concat(d.championCard ? [d.championCard] : []) : []).forEach(function (c) { if (c.P.levelKw && !seen[c.name]) { seen[c.name] = 1; out.push({ name: c.name, level: c.P.levelKw.level, kw: Object.keys(c.P.levelKw.kw) }); } });
+    return out.sort(function (a, b) { return a.level - b.level; });
+  }
+  function gainXp(G, pi, n, src) {
+    var p = G.players[pi], before = p.xp;
+    p.xp += n;
+    log(G, '⬆ ' + p.name + ' +' + n + ' XP — ' + src + '  (total ' + p.xp + ' XP)', pi);
+    levelCards(G, pi).forEach(function (lc) {
+      if (before < lc.level && p.xp >= lc.level) log(G, '⬆ Level ' + lc.level + ' reached: ' + lc.name + ' now has ' + lc.kw.map(function (k) { return k[0].toUpperCase() + k.slice(1); }).join(' and ') + '.', pi);
+    });
+  }
   function addPoints(G, pi, n, why) {
     if (G.winner != null) return;
     var p = G.players[pi];
@@ -1369,7 +1383,7 @@ var RT = (function () {
         if (u.damage >= might(u)) { kills++; }
       }
       await checkDeaths(G);
-      if (kills) { G.players[pi].xp += kills; log(G, (ctx.srcName || 'Effect') + ': +' + kills + ' XP.', pi); }
+      if (kills) gainXp(G, pi, kills, ctx.srcName || 'Effect');
     },
     arise: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi];
@@ -1634,7 +1648,7 @@ var RT = (function () {
       var here = unitsAt(G, bi, pi);
       for (var i = 0; i < here.length; i++) {
         var u = here[i];
-        if (kwOf(u).hunt) { p.xp += kwOf(u).hunt; log(G, u.c.name + ' hunts: +' + kwOf(u).hunt + ' XP.', pi); }
+        if (kwOf(u).hunt) gainXp(G, pi, kwOf(u).hunt, u.c.name + ' (Hunt, hold)');
         await fireUnit(G, u, 'hold');
       }
       await fireLegend(G, pi, 'hold', { loc: bi });
@@ -1927,7 +1941,7 @@ var RT = (function () {
         tg.forEach(function (u) { removeUnit(G, u); if (!u.token) G.players[u.owner].hand.push({ iid: u.iid, c: u.c }); u.dead = true; });
         updateControl(G); log(G, src + ' returns ' + names + ' to hand.', pi); break;
       case 'channel': var got = channel(G, pi, e.n, true); log(G, src + ': channel ' + got + ' rune' + (got === 1 ? '' : 's') + ' exhausted.', pi); break;
-      case 'xp': p.xp += e.n; log(G, src + ': +' + e.n + ' XP.', pi); break;
+      case 'xp': gainXp(G, pi, e.n, src); break;
       case 'token':
         var loc = e.here && ctx.loc != null ? ctx.loc : 'base';
         for (var k = 0; k < e.count; k++) makeUnit(G, pi, tokenCard(e), UID++, loc, e.ready, true);
@@ -2242,7 +2256,7 @@ var RT = (function () {
     for (var i = 0; i < units.length; i++) {
       var u = units[i];
       if (u.dead || G.winner != null) continue;
-      if (kwOf(u).hunt) { p.xp += kwOf(u).hunt; log(G, u.c.name + ' hunts: +' + kwOf(u).hunt + ' XP.', pi); }
+      if (kwOf(u).hunt) gainXp(G, pi, kwOf(u).hunt, u.c.name + ' (Hunt, conquer)');
       await fireUnit(G, u, 'conquer');
     }
     await fireLegend(G, pi, 'conquer', { loc: bi });
@@ -2474,6 +2488,7 @@ var RT = (function () {
   }
 
   return {
+    levelCards: levelCards,
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,

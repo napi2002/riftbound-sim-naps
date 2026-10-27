@@ -246,6 +246,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 #end .tips { text-align: left; background: var(--panel2); border-radius: 10px; padding: 8px 12px; margin: 0 0 12px; font-size: 14px; line-height: 1.35; }
 #end .tips ul { margin: 4px 0 0; padding-left: 18px; }
 #end .tips li { margin: 3px 0; }
+.strip .xpc { border: 0; background: transparent; padding: 0 2px; color: var(--muted); font: inherit; white-space: nowrap; }
+.strip .xpc.on, .strip .xpc.on b { color: #c98a00; }
+.strip .xpc small { font-size: 11px; color: var(--muted); }
+#toast.xp { background: #c98a00; }
 
 </style>
 </head>
@@ -697,6 +701,20 @@ var RT = (function () {
 
   /* ---------------- scoring ---------------- */
   // Every point goes through here so the log (and the UI pop-up) can say who scored, why, and the new total.
+  // Every XP gain goes through here: it logs the new total and announces Level thresholds reached.
+  function levelCards(G, pi) {
+    var d = G.players[pi].deckDef, seen = {}, out = [];
+    (d ? d.cards.concat(d.championCard ? [d.championCard] : []) : []).forEach(function (c) { if (c.P.levelKw && !seen[c.name]) { seen[c.name] = 1; out.push({ name: c.name, level: c.P.levelKw.level, kw: Object.keys(c.P.levelKw.kw) }); } });
+    return out.sort(function (a, b) { return a.level - b.level; });
+  }
+  function gainXp(G, pi, n, src) {
+    var p = G.players[pi], before = p.xp;
+    p.xp += n;
+    log(G, '⬆ ' + p.name + ' +' + n + ' XP — ' + src + '  (total ' + p.xp + ' XP)', pi);
+    levelCards(G, pi).forEach(function (lc) {
+      if (before < lc.level && p.xp >= lc.level) log(G, '⬆ Level ' + lc.level + ' reached: ' + lc.name + ' now has ' + lc.kw.map(function (k) { return k[0].toUpperCase() + k.slice(1); }).join(' and ') + '.', pi);
+    });
+  }
   function addPoints(G, pi, n, why) {
     if (G.winner != null) return;
     var p = G.players[pi];
@@ -1657,7 +1675,7 @@ var RT = (function () {
         if (u.damage >= might(u)) { kills++; }
       }
       await checkDeaths(G);
-      if (kills) { G.players[pi].xp += kills; log(G, (ctx.srcName || 'Effect') + ': +' + kills + ' XP.', pi); }
+      if (kills) gainXp(G, pi, kills, ctx.srcName || 'Effect');
     },
     arise: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi];
@@ -1922,7 +1940,7 @@ var RT = (function () {
       var here = unitsAt(G, bi, pi);
       for (var i = 0; i < here.length; i++) {
         var u = here[i];
-        if (kwOf(u).hunt) { p.xp += kwOf(u).hunt; log(G, u.c.name + ' hunts: +' + kwOf(u).hunt + ' XP.', pi); }
+        if (kwOf(u).hunt) gainXp(G, pi, kwOf(u).hunt, u.c.name + ' (Hunt, hold)');
         await fireUnit(G, u, 'hold');
       }
       await fireLegend(G, pi, 'hold', { loc: bi });
@@ -2215,7 +2233,7 @@ var RT = (function () {
         tg.forEach(function (u) { removeUnit(G, u); if (!u.token) G.players[u.owner].hand.push({ iid: u.iid, c: u.c }); u.dead = true; });
         updateControl(G); log(G, src + ' returns ' + names + ' to hand.', pi); break;
       case 'channel': var got = channel(G, pi, e.n, true); log(G, src + ': channel ' + got + ' rune' + (got === 1 ? '' : 's') + ' exhausted.', pi); break;
-      case 'xp': p.xp += e.n; log(G, src + ': +' + e.n + ' XP.', pi); break;
+      case 'xp': gainXp(G, pi, e.n, src); break;
       case 'token':
         var loc = e.here && ctx.loc != null ? ctx.loc : 'base';
         for (var k = 0; k < e.count; k++) makeUnit(G, pi, tokenCard(e), UID++, loc, e.ready, true);
@@ -2530,7 +2548,7 @@ var RT = (function () {
     for (var i = 0; i < units.length; i++) {
       var u = units[i];
       if (u.dead || G.winner != null) continue;
-      if (kwOf(u).hunt) { p.xp += kwOf(u).hunt; log(G, u.c.name + ' hunts: +' + kwOf(u).hunt + ' XP.', pi); }
+      if (kwOf(u).hunt) gainXp(G, pi, kwOf(u).hunt, u.c.name + ' (Hunt, conquer)');
       await fireUnit(G, u, 'conquer');
     }
     await fireLegend(G, pi, 'conquer', { loc: bi });
@@ -2762,6 +2780,7 @@ var RT = (function () {
   }
 
   return {
+    levelCards: levelCards,
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
@@ -3005,21 +3024,35 @@ if (typeof module !== 'undefined') module.exports = RT;
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
       pips(p.points) + '<b class="score">' + p.points + '<small>/' + RT.WIN + '</small></b><button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
-      '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
+      xpHtml(G, p, pi) + '<span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
   }
   // Pop up a short notice for log lines starting with ✦ (something became empowered) so it's hard to miss.
   var seenLog = 0;
   function flashNew(G) {
     if (seenLog > G.log.length) seenLog = 0;
-    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★]/.test(l.t); });
+    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★⬆]/.test(l.t); });
     seenLog = G.log.length;
     if (!fresh.length) return;
     var el = $('toast');
     el.innerHTML = fresh.slice(-3).map(function (l) { return '<div>' + esc(l.t) + '</div>'; }).join('');
     var last = fresh[fresh.length - 1];
-    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : '') + 'p' + last.p;
+    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : /^⬆/.test(last.t) ? 'xp ' : '') + 'p' + last.p;
     clearTimeout(flashNew.t);
     flashNew.t = setTimeout(function () { el.className = ''; }, 2600);
+  }
+  // XP counter: shows progress toward the next Level threshold in this player's deck, if any.
+  function xpHtml(G, p, pi) {
+    var next = RT.levelCards(G, pi).filter(function (l) { return l.level > p.xp; })[0];
+    return '<button class="stat xpc' + (p.xp ? ' on' : '') + '" data-xp="' + pi + '" aria-label="XP">XP <b>' + p.xp + '</b>' + (next ? '<small>/' + next.level + '</small>' : '') + '</button>';
+  }
+  function xpSheet(pi) {
+    var G = S.G, p = G.players[pi], lv = RT.levelCards(G, pi);
+    var gains = G.log.filter(function (l) { return /^⬆/.test(l.t) && l.p === pi; }).slice(-6).reverse();
+    openSheet('<h2>XP: ' + p.xp + ' (' + (pi === 0 ? 'you' : 'AI') + ')</h2>' +
+      '<p style="font-size:14px;line-height:1.4">You gain XP from <b>Hunt</b> units when they conquer or hold, and from card effects (for example Scuttle Crab, Mister Root, Herald of Spring, Alpha Strike). Cards with <b>[Level N]</b> get extra abilities once you have N XP.</p>' +
+      (lv.length ? '<ul class="lines">' + lv.map(function (l) { return '<li class="' + (p.xp >= l.level ? '' : 'no') + '"><span class="tag">' + (p.xp >= l.level ? 'Active' : (l.level - p.xp) + ' XP to go') + '</span><br>' + esc(l.name) + ' — Level ' + l.level + ': ' + esc(l.kw.join(', ')) + '</li>'; }).join('') + '</ul>' : '<p style="color:var(--muted)">No Level cards in this deck.</p>') +
+      (gains.length ? '<h3 style="margin:10px 0 4px;font-size:15px">Recent XP</h3><div class="loglist">' + gains.map(function (l) { return '<div class="p' + pi + '">' + esc(l.t.replace(/^⬆ /, '')) + '</div>'; }).join('') + '</div>' : ''),
+      '<button class="btn" data-act="close">Close</button>');
   }
   function empSheet(pi) {
     var G = S.G, list = RT.empoweredList(G, pi), L = G.players[pi].legend.c;
@@ -3388,6 +3421,8 @@ if (typeof module !== 'undefined') module.exports = RT;
     }
     var ge = t.closest('[data-gear]');
     if (ge) { gearSheet(+ge.dataset.gear); return; }
+    var xpb = t.closest('[data-xp]');
+    if (xpb) { xpSheet(+xpb.dataset.xp); return; }
     var em = t.closest('[data-emp]');
     if (em) { empSheet(+em.dataset.emp); return; }
     if (t.closest('[data-legend]')) { legendSheet(); return; }
