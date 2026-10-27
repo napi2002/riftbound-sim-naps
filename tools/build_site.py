@@ -101,7 +101,7 @@ index = page('Rift Table — Riftbound simulator and AI', 'A mobile Riftbound ca
 </div><img class="phone" src="img/board.webp" alt="Rift Table game board on a phone"></section>
 
 <div class="stats">
-<div class="stat"><b>1,115</b><span>cards, effects parsed from their rules text</span></div>
+<div class="stat"><b>1,099</b><span>cards, every set, effects parsed from their rules text</span></div>
 <div class="stat"><b>15</b><span>tournament decks with researched pro game plans</span></div>
 <div class="stat"><b>{REAL_MATCHES:,}</b><span>real tournament matches to validate against</span></div>
 <div class="stat"><b>~1,450/s</b><span>simulated games on 4 cores, seeded and reproducible</span></div>
@@ -119,6 +119,7 @@ index = page('Rift Table — Riftbound simulator and AI', 'A mobile Riftbound ca
 <div class="cards">
 <div class="card"><h3>Full rules</h3><p>Showdowns, Hidden, Ambush, Equip, Deploy, Legion, Level, Empower, burn-out and the final-point rule, checked against the October 2026 Core Rules with regression tests.</p></div>
 <div class="card"><h3>An AI with a plan</h3><p>Each deck's AI follows a researched pro plan: mulligan, card priorities, attack style, which reactions to hold for your turn and when a trick actually flips a fight.</p></div>
+<div class="card"><h3>Build or import decks</h3><p>Use the 15 suggested tournament decks or build your own from the full card pool, with a live Core Rules legality check, or paste a text decklist to import it.</p></div>
 <div class="card"><h3>Learn as you play</h3><p>Combat reports, a clear points tracker, keyword badges, the matchup note for your opponent and a short review of the moments that decided the game.</p></div>
 </div>
 

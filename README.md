@@ -7,7 +7,7 @@
 [**▶ Play in your browser**](https://napi2002.github.io/riftbound-sim-naps/play.html) · [**📊 Research report**](https://napi2002.github.io/riftbound-sim-naps/report.html) · [**🌐 Project site**](https://napi2002.github.io/riftbound-sim-naps/)
 
 ![JavaScript](https://img.shields.io/badge/engine-JavaScript-ef7d00)
-![Cards](https://img.shields.io/badge/cards-1%2C115-0a3a52)
+![Cards](https://img.shields.io/badge/cards-1%2C099-0a3a52)
 ![Decks](https://img.shields.io/badge/tournament%20decks-15-0a3a52)
 ![Simulation](https://img.shields.io/badge/simulation-~1%2C450%20games%2Fs-c8aa6e)
 ![Dependencies](https://img.shields.io/badge/runtime%20deps-none-2f8f4e)
@@ -41,13 +41,47 @@ Rift Table is two things built on one rules engine:
 | | |
 |---|---|
 | **Full rules** | Showdowns, Hidden, Ambush, Accelerate, Equip, Deploy, Legion, Level, Empower, Deathknell, burn-out and the final-point rule. Audited against the official Core Rules (October 2026), with regression tests. |
-| **Every card resolves automatically** | 1,115 cards: rules text is parsed into effects, and complex cards and legends have hand-written scripts. Optional effects ask before resolving. |
-| **15 tournament decks** | Lists from real events (LA Regional, Singapore RQ, Sacramento Showdown and others). Each shows its real tournament win rate. |
+| **Every card in the game** | All 1,099 cards (every set through Radiance) are built in. Rules text is parsed into effects, and complex cards and legends have hand-written scripts. Optional effects ask before resolving. |
+| **15 suggested tournament decks** | Lists from real events (LA Regional, Singapore RQ, Sacramento Showdown and others). Each shows its real tournament win rate. |
+| **Build or import your own** | A deck builder for any legend: pick a champion, search and filter the full card pool, set runes and battlefields, and get a live Core Rules legality check. You can also paste a text decklist to import it, or copy yours out. Decks are saved in your browser. |
 | **An AI with a plan** | Each deck follows a researched pro game plan: mulligan, card priorities, attack style and which reactions to hold. It only plays a trick when it flips the fight. |
 | **Built for phones** | Drag units onto battlefields, card choices show the actual cards, and there's a combat report, points tracker, keyword badges, light and dark themes, and a Riftbound-inspired look. |
 | **Learn as you play** | Per-deck decision trees ("how pros play"), the matchup note for your opponent, and a post-game review built from what actually happened. |
 
-**Decks:** Kennen · LeBlanc · Rengar · Irelia · Akali · Jayce · Master Yi · Azir · Vex · Rek'Sai · Riven · Evelynn · Mordekaiser · Orianna · Seraphine
+**Suggested decks:** Kennen · LeBlanc · Rengar · Irelia · Akali · Jayce · Master Yi · Azir · Vex · Rek'Sai · Riven · Evelynn · Mordekaiser · Orianna · Seraphine
+
+### Building and importing decks
+
+Tap **+ Build a deck** or **Import text** on the menu. The builder checks the deck against Core Rules 103 as you go:
+- **Legend:** decides your domains; every card must fit them.
+- **Chosen Champion:** must share the legend's champion tag.
+- **Main deck:** at least 40 cards with the champion included, at most 3 copies of a card, and at most 3 Signature cards of your champion.
+- **Runes:** exactly 12, in your domains.
+- **Battlefields:** 3, all with different names.
+
+Cards banned in tournament play are flagged but still allowed against the AI.
+
+The parser fully simulates all 15 suggested decks. In other cards some abilities aren't simulated yet; the builder marks those cards with ⚠ and shows how many your deck contains.
+
+Import accepts the common decklist format. Headers are optional, and lines can be `3 Card Name`, `3x Card Name` or `Card Name x3`:
+
+```text
+Legend:
+1 Irelia - Blade Dancer
+Champion:
+1 Irelia, Fervent
+Main Deck:
+3 Stellacorn Herder
+3 Defy
+...
+Battlefields:
+1 Abandoned Hall
+1 Sunken Temple
+1 Targon's Peak
+Runes:
+6 Calm Rune
+6 Chaos Rune
+```
 
 ## 📊 The research
 
@@ -125,7 +159,7 @@ python3 quant/tidy.py                            # snapshots -> tidy CSVs
 │   ├── ui.js                # mobile UI: board, drag and drop, prompts, guides, reviews
 │   ├── style.css            # Riftbound-inspired theme (light and dark)
 │   ├── template.html        # page shell and in-game rules summary
-│   ├── cards.json           # 1,115 cards (Riftcodex + riftbound.gg, incl. Radiance)
+│   ├── cards.json           # all 1,099 cards (Riftcodex + riftbound.gg, incl. Radiance; banned flags)
 │   ├── guides.json          # researched pro game plans and decision trees for 15 decks
 │   └── img/                 # card art for the built-in decks (WebP)
 ├── quant/
