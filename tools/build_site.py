@@ -135,86 +135,11 @@ python3 quant/snapshot.py                            # archive today's meta snap
 ''')
 
 # ---------- report ----------
-rows_versions = ''.join(f'<tr><td><code>{c}</code></td><td>{esc(l)}</td><td>{r["spearman"]["all"]["rho"]:.2f} (p = {r["spearman"]["all"]["perm_p"]:.3f})</td><td>{r["spearman"]["n>1000"]["rho"]:.2f} (p = {r["spearman"]["n>1000"]["perm_p"]:.3f})</td><td>{r["first_player_wr"] * 100:.1f}%</td></tr>' for c, l, r in runs)
-deck_cards = ''.join(f'<div class="deck{" hold" if d["reserve"] >= 2 else ""}"><b>{esc(d["name"])}</b><div class="meta">{esc(d["arch"])} · attacks: {esc(d["attack"])} · keeps {d["reserve"]} energy · research confidence: {esc(d["conf"] or "n/a")}</div><p>{esc(d["summary"])}</p></div>' for d in decks)
-by_id = {d['id']: d for d in latest['per_deck']}
-report = page('Pricing a card-game metagame with Monte Carlo simulation', 'Research report: validating a Riftbound game simulator against 45,836 tournament matches.', f'''
-<section style="padding-top:36px">
-<h1 style="font-size:clamp(26px,4.5vw,40px)">Pricing a card-game metagame with Monte Carlo simulation</h1>
-<p class="lead" style="color:var(--muted);font-size:19px">Can a game engine with an AI player rank competitive decks the way real tournaments do, and can it forecast where the metagame moves next?</p>
-<div class="note"><b>Status:</b> engine, AI, data pipeline and harness are built; results below are <b>in-sample</b> (the AI was tuned while measuring). The pre-registered confirmatory tests run on tournament data collected after the engine is frozen.</div>
-</section>
-
-<h2>1. Summary</h2>
-<p>Rift Table simulates full games of Riftbound with a heuristic AI that follows researched pro game plans for 15 tournament decks. Playing every pair of decks 2,000 times (1,000 seed pairs with seats swapped) gives each deck a win rate against the field with a 95% interval of about ±0.6 points. Against {REAL_MATCHES:,} real matches from riftbound.gg, the simulator's deck ranking has Spearman ρ = {lt["all"]["rho"]:.2f} (p = {lt["all"]["perm_p"]:.3f}) across all decks.</p>
-<p>The main finding so far is a <b>piloting gap</b>: simulated win rates spread from {min(d["wr"] for d in latest["per_deck"]) * 100:.0f}% to {max(d["wr"] for d in latest["per_deck"]) * 100:.0f}%, real ones only from {min(d["real_wr"] for d in latest["per_deck"]) * 100:.0f}% to {max(d["real_wr"] for d in latest["per_deck"]) * 100:.0f}%. Part of each simulated win rate measures how well the AI can pilot a deck, not only how strong the deck is: simple proactive plans are overrated, decks that depend on combat timing or slow engines are underrated.</p>
-
-<h2>2. System</h2>
-<div class="tablewrap"><table><tr><th>Component</th><th>What it is</th></tr>
-<tr><td>Rules engine</td><td>Riftbound rules in JavaScript; 1,115 cards whose rules text is parsed into effect operations, with hand-written scripts for complex cards and legends. Audited against the official Core Rules (2026-10-09); <code>test/rules.js</code> covers the fixes.</td></tr>
-<tr><td>AI policy</td><td>Heuristic player: card values, attack planning by Might, showdown tricks only when they flip a fight, reactions held for the opponent's turn, and a per-deck plan (priorities, mulligan, attack style, reserve energy) from researched guides.</td></tr>
-<tr><td>Harness</td><td><code>quant/harness.js</code>: seeded mulberry32 RNG, mirrored seats, parallel workers; byte-identical results for the same seed; ~1,450 games/s on 4 cores.</td></tr>
-<tr><td>Real data</td><td><code>quant/snapshot.py</code> archives the riftbound.gg meta snapshot (30-day window, {REAL_MATCHES:,} matches) unchanged with a SHA-256 manifest; <code>quant/tidy.py</code> builds deck, matchup and card tables.</td></tr>
-</table></div>
-
-<h2>3. Results so far (in-sample)</h2>
-<div class="chart">{dumbbell(latest["per_deck"])}<div class="cap">Engine {latest["commit"]}, {latest["games"]:,} games; first player wins {latest["first_player_wr"] * 100:.1f}%. Real win rates: riftbound.gg snapshot {latest.get("real_date", "2026-10-27")}.</div></div>
-<div class="chart">{progress(runs)}<div class="cap">Each point is a 210,000-game run. Fixing one deck often moves others: the Irelia/Akali change improved those two decks but lowered the established-deck correlation, which is why tuning has to stop before the holdout opens.</div></div>
-<div class="tablewrap"><table><tr><th>Engine</th><th>Change</th><th>ρ all 15</th><th>ρ established</th><th>First player</th></tr>{rows_versions}</table></div>
-
-<h2>4. How each deck plays</h2>
-<p>Each deck's plan was researched from tournament reports, deck techs and guides and stored as a per-turn decision tree (shown in the game's Guide). The AI uses the plan's card priorities, mulligan, reactions to hold and attack style. Highlighted decks keep 2 energy open for reactions on the opponent's turn.</p>
-<div class="decks">{deck_cards}</div>
-
-<h2>5. Hypotheses</h2>
-<p>Family-wise error is held at 5% with a Holm correction across the five primary tests. Thresholds are fixed in <code>quant/PREREGISTRATION.md</code> before the holdout opens.</p>
-<div class="tablewrap"><table><tr><th>ID</th><th>Hypothesis</th><th>Test</th><th>Pass criterion</th></tr>
-<tr><td>H1</td><td>A frozen simulator ranks deck strength like real win rates on unseen data</td><td>Spearman ρ, permutation p, bootstrap 95% CI</td><td>ρ ≥ 0.5 on established decks, CI lower bound &gt; 0</td></tr>
-<tr><td>H2</td><td>Simulated matchups predict real head-to-head results better than one strength per deck</td><td>Match-weighted log-loss and Brier vs Bradley–Terry; paired bootstrap</td><td>Log-loss improvement with 95% CI above 0</td></tr>
-<tr><td>H3</td><td>Decks that beat the current field gain play share next week (replicator dynamics)</td><td>Panel regression with deck fixed effects; walk-forward vs random walk</td><td>β &gt; 0 (p &lt; 0.05) and lower out-of-sample MAE</td></tr>
-<tr><td>H4</td><td>The metagame is exploitable, and less so as a set ages</td><td>Nash equilibrium by linear programming; Mann–Kendall trend</td><td>Negative slope, p &lt; 0.05</td></tr>
-<tr><td>H5</td><td>Card value from simulator ablation agrees with what pros play</td><td>Swap each card for a vanilla card; ≥ 2,000 games; correlate with inclusion</td><td>ρ &gt; 0, CI lower bound &gt; 0</td></tr></table></div>
-<p>Field fitness for H3 and exploitability for H4:</p>
-<p class="formula">f<sub>i</sub>(t) = Σ<sub>j</sub> s<sub>j</sub>(t) M<sub>ij</sub> &nbsp;&nbsp; Δs<sub>i</sub>(t+1) = α<sub>i</sub> + β (f<sub>i</sub>(t) − f̄(t)) + ε<sub>i,t</sub></p>
-<p class="formula">expl(s) = max<sub>i</sub> (M s)<sub>i</sub> − sᵀ M s</p>
-
-<h2>6. Data and leakage controls</h2>
-<ul>
-<li><b>Time-based holdout:</b> only matches with a window start after the engine-freeze tag are scored.</li>
-<li><b>Point-in-time features:</b> each weekly feature uses only snapshots fetched on or before that week; raw responses are never overwritten.</li>
-<li><b>Overlapping windows:</b> snapshots cover rolling 30-day windows, so tests use non-overlapping snapshots or block bootstrap.</li>
-<li><b>Survivorship:</b> decks that leave the snapshot stay in the panel with share 0.</li>
-<li><b>Reproducibility:</b> every simulated game is stored with the engine commit and its seed.</li>
-</ul>
-
-<h2>7. Method</h2>
-<ul>
-<li><b>Sample size from power:</b> ±3 points per pairing at 95% needs ~1,100 games; the harness plays 2,000 per pairing in about 2.5 minutes.</li>
-<li><b>Variance reduction:</b> mirrored seed pairs (antithetic samples) cancel the first-player edge; common random numbers across engine versions.</li>
-<li><b>Baselines:</b> coin flip, Bradley–Terry, the simulator, and a hierarchical blend that pools real head-to-head data toward the simulator.</li>
-<li><b>Robustness:</b> H1 re-run with three AI strengths to measure how much the ranking depends on play quality.</li>
-</ul>
-
-<h2>8. Roadmap</h2>
-<ul class="tl">
-<li><b>0 · Freeze and pre-register</b> <small>— week 1</small><br>Tag the engine; start weekly snapshots.</li>
-<li class="gate"><b>Gate: holdout opens</b><br><small>Only matches after the freeze date are scored.</small></li>
-<li><b>1–2 · Data pipeline and simulator validation (H1, H2)</b> <small>— weeks 1–6</small></li>
-<li><b>3 · Meta dynamics and card attribution (H3–H5)</b> <small>— weeks 6–12</small></li>
-<li><b>4 · Write-up and release</b> <small>— weeks 12–14</small></li>
-</ul>
-
-<h2>9. Risks and limitations</h2>
-<div class="tablewrap"><table><tr><th>Risk</th><th>Mitigation</th></tr>
-<tr><td>AI skill differs by deck (the piloting gap)</td><td>Report per archetype, run three AI strengths, treat the gap as measured model error.</td></tr>
-<tr><td>Overfitting the engine to real data</td><td>Frozen commit before the holdout; thresholds written first; tuning history in git.</td></tr>
-<tr><td>Only 15 decks</td><td>Bootstrap CIs; lean on H2, which scores thousands of matches.</td></tr>
-<tr><td>Thin matchup data in the free snapshot (~2 per deck)</td><td>H2/H4 reported as insufficient data if fewer than 20 holdout cells have ≥ 30 games.</td></tr>
-<tr><td>Real win rates mix deck strength and pilot skill</td><td>Separate all-events and top-cut data; control for event type.</td></tr>
-<tr><td>Unofficial data source</td><td>Raw responses archived with hashes; analysis runs from the archive.</td></tr>
-</table></div>
-<p>This project does not claim to predict single games or causal effects; H3 is a predictive association.</p>
-''')
+import sys; sys.path.insert(0, str(root / 'tools'))
+from thesis import body as thesis_body
+BENCH = {'random': '99%', 'rush': '77%', 'self': '50%'}   # node test/bench.js (150 games each)
+report = page('Pricing a card-game metagame with Monte Carlo simulation', 'Research report: validating a Riftbound game simulator against 45,836 tournament matches.',
+              thesis_body(decks, runs, latest, dumbbell(latest['per_deck']), progress(runs), BENCH, REAL_MATCHES))
 
 docs.mkdir(exist_ok=True)
 (docs / 'index.html').write_text(index)

@@ -72,3 +72,35 @@ footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 13px
   .gallery { grid-template-columns: repeat(2, 1fr); }
   .cards, .decks { grid-template-columns: 1fr; }
 }
+
+/* ---------- thesis report ---------- */
+.thesis { max-width: 820px; margin: 0 auto; }
+.thesis p, .thesis li { text-align: justify; hyphens: auto; }
+.titlepage { padding: 40px 0 8px; border-bottom: 1px solid var(--gold); margin-bottom: 16px; }
+.titlepage h1 { font-size: clamp(26px, 4.6vw, 40px); }
+.titlepage .kicker { text-transform: uppercase; letter-spacing: .1em; color: var(--gold); font-size: 13px; margin: 0 0 8px; }
+.titlepage .subtitle { font-size: 19px; color: var(--muted); margin: 0 0 10px; }
+.titlepage .author { font-size: 15px; margin: 0 0 14px; }
+.toc { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 12px 18px; margin: 18px 0; }
+.toc ul { margin: 6px 0 0; padding-left: 0; list-style: none; columns: 2; }
+.toc li { margin: 2px 0; }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.thesis h2 { font-size: 22px; scroll-margin-top: 12px; }
+.thesis h3 { font-size: 15.5px; color: var(--gold); }
+.abstract { font-size: 16.5px; }
+.keywords { font-size: 14.5px; color: var(--muted); }
+.cite { white-space: nowrap; font-size: .92em; }
+.cite a { color: var(--accent); text-decoration: none; }
+caption { caption-side: top; text-align: left; font-weight: 700; padding: 0 0 6px; font-size: 14.5px; color: var(--ink); }
+.refs { font-size: 14.5px; padding-left: 26px; }
+.refs li { margin: 5px 0; text-align: left; }
+.refs li:target { background: var(--panel2); }
+@media (max-width: 820px) { .toc ul { columns: 1; } .thesis p, .thesis li { text-align: left; } }
+@media print {
+  :root { --bg: #fff; --panel: #fff; --panel2: #f3f3f3; --ink: #111; --muted: #444; --line: #ccc; --gold: #8a6d3b; --accent: #b35c00; }
+  .top, footer, .btns { display: none; }
+  body { font-size: 11pt; }
+  h2 { page-break-after: avoid; }
+  .chart, table { page-break-inside: avoid; }
+}
