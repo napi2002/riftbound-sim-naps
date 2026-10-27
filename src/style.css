@@ -338,3 +338,5 @@ body { background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--
 .pick:active { transform: scale(.97); }
 .u img, .card img, .pick img { -webkit-user-drag: none; user-select: none; }
 .u { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.pick.off { opacity: .55; filter: grayscale(.7); }
+.pick .pt.no { background: var(--panel); color: var(--ink); border: 1px solid var(--line); }

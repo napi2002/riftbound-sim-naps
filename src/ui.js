@@ -223,8 +223,9 @@
       openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:15px;line-height:1.35">' + esc(req.text) + '</p><div class="picks">' +
         req.options.map(function (o, i) {
           var n = req.cards[i], url = n ? IMG[RT.norm(n)] : null;
-          return '<button class="pick' + (i === req.auto ? ' sug' : '') + '" data-ans="opt' + i + '">' + (url ? '<img src="' + url + '" alt="' + esc(n) + '">' : '<span class="noimg">' + esc(n || o) + '</span>') +
-            '<span class="pl">' + esc(o) + '</span>' + (i === req.auto ? '<span class="pt">Suggested</span>' : '') + '</button>';
+          var off = req.disabled && req.disabled[i];
+          return '<button class="pick' + (i === req.auto ? ' sug' : '') + (off ? ' off' : '') + '"' + (off ? ' disabled' : ' data-ans="opt' + i + '"') + '>' + (url ? '<img src="' + url + '" alt="' + esc(n) + '">' : '<span class="noimg">' + esc(n || o) + '</span>') +
+            '<span class="pl">' + esc(o) + '</span>' + (i === req.auto ? '<span class="pt">Suggested</span>' : '') + (off ? '<span class="pt no">' + esc(off) + '</span>' : '') + '</button>';
         }).join('') + '</div>',
         req.optional ? '<button class="btn" data-ans="skip" style="flex-basis:100%">' + esc(req.skipLabel || 'Skip') + '</button>' : '');
       return;

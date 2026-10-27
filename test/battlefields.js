@@ -9,6 +9,8 @@ async function setup(bfName) {
   const G = await RT.newGame(RT.DECKS[0], RT.DECKS[1], { human: 0, ask: yes });
   G.bfs[0] = { c: card(bfName), ctrl: null };
   G.active = 0; G.log.length = 0;
+  // The AI holds no cards, so it can't answer the showdown that moving onto an empty battlefield opens.
+  G.players[1].hand = []; G.players[1].hidden = [];
   for (const p of G.players) { p.runes = []; for (let i = 0; i < 8; i++) p.runes.push({ d: i % 2 ? 'Chaos' : 'Order', ex: false }); }
   return G;
 }

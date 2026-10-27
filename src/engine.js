@@ -699,10 +699,10 @@ var RT = (function () {
     r.kwx = { temporary: true }; r.reflection = true;
     return r;
   }
-  async function playFree(G, pi, card, loc, title) {
+  async function playFree(G, pi, card, loc, title, paid) {
     var c = card.c, p = G.players[pi];
     var u = makeUnit(G, pi, c, card.iid, loc, !!c.P.kw.entersready, false);
-    log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + ' for free.', pi);
+    log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + (paid ? '' : ' for free') + '.', pi);
 
     G.playedThisTurn++; G.playedBy[pi]++;
     var lsc = p.legend.c && p.legend.c.P.script;
@@ -1416,7 +1416,7 @@ var RT = (function () {
     G.playedThisTurn++; G.playedBy[pi]++;
     var lsc = p.legend.c && p.legend.c.P.script;
     if (lsc && lsc.onPlayCard) lsc.onPlayCard(G, pi, 'elsewhere');
-    if (c.type === 'Unit') { G.playedThisTurn--; G.playedBy[pi]--; await playFree(G, pi, card, 'base', title); return true; }
+    if (c.type === 'Unit') { G.playedThisTurn--; G.playedBy[pi]--; await playFree(G, pi, card, 'base', title, energyCost > 0 || (payPower && c.power > 0)); return true; }
     log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
     if (c.type === 'Spell') {
       var sctx = { src: null, loc: null, srcName: c.name, spell: card, caster: pi };
@@ -1440,9 +1440,17 @@ var RT = (function () {
       var c = x.c; if (c.type === 'Battlefield' || c.type === 'Legend' || c.P.counter) return false;
       return canPay(p, Math.max(0, (c.energy || 0) - reduce), c.power || 0, cardDomains(c));
     });
-    var v = playable.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0) + (x.c.type === 'Spell' ? evalEffects(G, pi, x.c.P.spell, { src: null, loc: null }).value : 0); });
-    G.cardsHint = playable; var k = playable.length ? await choose(G, pi, title, 'Play one of them' + (reduce ? ' for ' + reduce + ' energy less' : '') + '?', playable.map(function (x) { return x.c.name + ' (' + Math.max(0, (x.c.energy || 0) - reduce) + ' energy)'; }), true, v.indexOf(Math.max.apply(null, v))) : null;
-    var chosen = k != null ? playable[k] : null;
+    // Show every revealed card; ones you can't pay for are greyed out with the reason.
+    var v = top.map(function (x) { return playable.indexOf(x) < 0 ? -1 : (x.c.energy || 0) + (x.c.might || 0) + (x.c.type === 'Spell' ? evalEffects(G, pi, x.c.P.spell, { src: null, loc: null }).value : 0); });
+    var best = playable.length ? v.indexOf(Math.max.apply(null, v)) : null, rec = rest === 'draw' ? 'draw' : 'recycle';
+    var k = await ask(G, pi, { type: 'choice', title: title, optional: true, auto: best,
+      text: (playable.length ? 'Play one of them' + (reduce ? ' for ' + reduce + ' energy less' : '') + ' (you pay its cost)? The rest are ' + (rec === 'draw' ? 'drawn' : 'recycled to the bottom of your deck') + '.'
+        : "You can't pay for either card right now (" + energyAvail(p) + ' energy ready), so they are ' + (rec === 'draw' ? 'drawn' : 'recycled to the bottom of your deck') + '.'),
+      options: top.map(function (x) { var e = Math.max(0, (x.c.energy || 0) - reduce); return x.c.name + ' (' + e + ' energy' + (x.c.power ? ' + ' + x.c.power + ' power' : '') + ')'; }),
+      cards: top.map(function (x) { return x.c.name; }),
+      disabled: top.map(function (x) { return playable.indexOf(x) < 0 ? (x.c.type === 'Battlefield' || x.c.type === 'Legend' || x.c.P.counter ? "Can't be played this way" : "Can't afford") : null; }),
+      skipLabel: playable.length ? (rec === 'draw' ? 'Play nothing, draw them' : 'Play nothing') : (rec === 'draw' ? 'Draw them' : 'Recycle both') });
+    var chosen = k != null && playable.indexOf(top[k]) >= 0 ? top[k] : null;
     top.forEach(function (x) { if (x === chosen) return; if (rest === 'draw') p.hand.push(x); else p.deck.push(x); });
     if (rest === 'draw' && top.length > (chosen ? 1 : 0)) log(G, title + ': ' + p.name + ' draw' + (pi === 0 ? '' : 's') + ' the rest.', pi);
     if (chosen) await castFrom(G, pi, chosen, Math.max(0, (chosen.c.energy || 0) - reduce), true, title);
@@ -2867,7 +2875,7 @@ var RT = (function () {
       plan: 'A proactive deck that plays on its own turn: flood the board with tokens (Noxian Emissary, Forge of the Future), remove blockers cheaply (Cull the Weak, Imperial Decree), and conquer — Rek\'Sai\'s legend plays cards off the top of your deck every time you conquer. Strong when the opponent can\'t remove the tokens; predictable otherwise.',
       keys: ['Noxian Emissary', 'Forge of the Future', 'Void Rush', 'Cleave', 'Blood Rush', 'Rek\'Sai - Breacher'],
       tips: ['Conquer every turn you can — the legend refunds you in cards.', 'Assault spells (Cleave, Blood Rush) turn small tokens into attackers.', 'Cull the Weak is great when you have tokens and they don\'t.'],
-      ai: { key: { 'Noxian Emissary': 1.5, 'Forge of the Future': 1.5, 'Void Rush': 2, 'Rek\'Sai - Breacher': 1.5 }, attack: 'aggro', reserve: 0 } },
+      ai: { key: { 'Noxian Emissary': 1.5, 'Forge of the Future': 1.5, 'Void Rush': 2, 'Rek\'Sai - Breacher': 1.5 }, attack: 'aggro', reserve: 0, conquerReserve: 3 } },
     riven: { style: 'Hold / exhaust synergy', source: 'riftbound.gg/riven-the-exile-guide',
       plan: 'Units you play to battlefields you control enter ready, and Riven\'s cards reward exhausting your own units (Riven, Broken Blade buffs, stuns or readies itself; Reckless Innovator makes Gold or draws). Settle on one battlefield, stun attackers, and use Blade of the Exile (Ganking) or Charm to threaten the other.',
       keys: ['Riven - Broken Blade', 'Blade of the Exile', 'Reckless Innovator', 'Astral Heron', 'Stellacorn Herder', 'Blitzcrank - Impassive'],
@@ -2995,6 +3003,9 @@ var RT = (function () {
         p.hand.some(function (x) { return x !== card && (x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction)); }) &&
         energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.reserve) return null;
     var hid = p.hidden.filter(function (h) { return h.card === card; })[0];
+    // Rek'Sai: keep energy before attacking to pay for what the legend reveals on a conquer.
+    if (A.conquerReserve && G.aiPreAttack && !p.legend.exhausted && G.units.some(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex; }) &&
+        energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.conquerReserve && bonus < 2.5) return null;
     var ctx = { src: null, loc: hid ? hid.loc : c.type === 'Unit' ? 'base' : null, fromHidden: !!hid, reserveRunes: c.power || 0 };
     if (c.type === 'Unit') {
       var ev = evalEffects(G, pi, playEffects(c), ctx);
@@ -3178,7 +3189,9 @@ var RT = (function () {
   async function aiTurn(G, pi, wait) {
     wait = wait || function () { return Promise.resolve(); };
     if (G.winner != null) return;
+    G.aiPreAttack = true;
     await aiPlayLoop(G, pi, wait);
+    G.aiPreAttack = false;
     if (G.winner == null) await aiLegend(G, pi, wait);
     if (G.winner == null) await aiLoneDefenders(G, pi, wait);
     if (G.winner == null) await aiAttack(G, pi, wait);
