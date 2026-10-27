@@ -9,3 +9,7 @@
 - `node test/bench.js` measures the AI against a random player, a rush player and itself.
 - `node test/battlefields.js` sets up each battlefield used by the decks and checks that its effect happens.
 - `node test/sim.js 60` plays 60 headless AI-vs-AI games using the built file and prints a coverage report for each deck.
+
+## Quant research (`quant/`)
+
+`quant/` tests whether the simulator predicts the real meta. `quant/snapshot.py` saves weekly dotgg meta snapshots (a GitHub workflow runs it every Monday), `quant/tidy.py` turns them into CSVs, and `quant/harness.js` runs a seeded, mirrored round robin of the engine's decks. The hypotheses and holdout rule are in `quant/PREREGISTRATION.md`; see `quant/README.md`.

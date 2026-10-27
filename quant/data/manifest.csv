@@ -1,0 +1,2 @@
+fetched_at,file,sha256,snapshot_id,generated_at,sample_from,sample_to,matches,decks,events,window,set_code,bytes
+2026-10-27T09:06:57+00:00,raw/20261027T090657Z_metasnapshot.json,a3141e6c184101a45f94bf970f426a36a6e346781200617f341e8bf2b13d2523,2720,1793078952,1790294400,1793078952,45836,20618,752,30d,RAD,214549
