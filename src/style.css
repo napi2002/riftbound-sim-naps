@@ -340,3 +340,59 @@ body { background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--
 .u { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .pick.off { opacity: .55; filter: grayscale(.7); }
 .pick .pt.no { background: var(--panel); color: var(--ink); border: 1px solid var(--line); }
+/* ---------- my decks + deck builder ---------- */
+.decktools { display: flex; gap: 8px; margin: 0 0 8px; }
+.deckgroup { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--gold); margin: 10px 0 2px; }
+.deckrow { display: flex; gap: 6px; align-items: stretch; }
+.deckrow .deck { flex: 1; min-width: 0; }
+#builder { max-width: 560px; margin: 0 auto; padding: 0 12px 40px; }
+.bhead { display: flex; gap: 8px; align-items: center; position: sticky; top: 0; z-index: 5; background: var(--head); margin: 0 -12px; padding: 10px 12px; border-bottom: 2px solid var(--gold); }
+.bhead input { flex: 1; min-width: 0; font: inherit; font-family: 'Cinzel', serif; font-weight: 700; font-size: 16px; background: transparent; color: var(--head-ink); border: 1px solid rgba(255,255,255,.25); border-radius: 3px; padding: 6px 8px; }
+.bhead .btn:not(.primary) { background: transparent; color: var(--head-ink); border-color: rgba(255,255,255,.3); }
+.bstat { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; font-size: 13px; font-weight: 600; }
+.bstat span { padding: 2px 8px; border-radius: 3px; background: var(--panel2); }
+.bstat .ok { color: var(--good); } .bstat .bad { color: var(--bad); } .bstat .warn { color: var(--accent); }
+.bnote { background: var(--panel); border-left: 3px solid var(--accent); padding: 6px 10px; font-size: 13.5px; margin: 6px 0; border-radius: 3px; }
+.bissues { font-size: 13.5px; color: var(--bad); margin: 4px 0 8px; padding-left: 18px; }
+.btabs { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--line); margin: 6px 0 10px; }
+.btab { border: 0; background: none; padding: 8px 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: 12.5px; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+.btab.on { color: var(--ink); border-bottom-color: var(--accent); }
+.bsearch { width: 100%; font: inherit; padding: 9px 10px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); color: var(--ink); margin-bottom: 8px; }
+.bfilters { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; align-items: center; }
+.bfilters .sep { width: 8px; }
+.chip.bfil { border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.chip.bfil.on { background: var(--accent); color: var(--cta-ink); border-color: var(--accent); }
+.bhint { font-size: 13px; color: var(--muted); margin: 4px 0 8px; }
+.bgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.bgrid.land { grid-template-columns: repeat(2, 1fr); }
+.btile { position: relative; display: flex; flex-direction: column; padding: 0; border: 2px solid var(--line); border-radius: 6px; background: var(--panel2); overflow: hidden; text-align: center; color: var(--ink); }
+.btile.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.btile:disabled { opacity: .45; }
+.btile img, .btile .noimg { width: 100%; aspect-ratio: 744 / 1039; object-fit: cover; display: block; }
+.btile img.land, .bgrid.land .noimg { aspect-ratio: 1039 / 744; }
+.btile .noimg { display: flex; align-items: center; justify-content: center; padding: 6px; font-size: 12px; font-weight: 700; }
+.btile .bimg { padding: 0; border: 0; background: none; position: relative; display: block; }
+.btile .bn { font-size: 11.5px; line-height: 1.15; padding: 4px 3px 2px; font-weight: 600; }
+.btile .bd { display: flex; gap: 3px; justify-content: center; padding-bottom: 4px; }
+.btile .bd i, .brune i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.btile .bw { position: absolute; top: 4px; right: 4px; background: var(--panel); color: var(--accent); border-radius: 3px; padding: 0 4px; font-size: 12px; font-weight: 800; }
+.btile .bcount { position: absolute; left: 4px; top: 4px; background: var(--accent); color: var(--cta-ink); font-weight: 800; font-size: 14px; min-width: 22px; height: 22px; border-radius: 11px; line-height: 22px; }
+.bpm { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 2px 4px 6px; }
+.bpm button { width: 34px; height: 30px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); color: var(--ink); font-size: 18px; font-weight: 700; line-height: 1; }
+.bpm button:disabled { opacity: .35; }
+.bn2 { min-width: 20px; text-align: center; font-weight: 800; }
+.bchosen { display: flex; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px; margin-bottom: 8px; }
+.bchosen .bthumb { width: 70px; flex: none; }
+.bchosen .bthumb img { width: 100%; border-radius: 4px; display: block; }
+.bruners { display: grid; gap: 8px; }
+.brune { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; }
+.brune b { flex: 1; } .brune .bpm { padding: 0; }
+.blist { display: grid; gap: 4px; }
+.brow { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; }
+.brow .bc { width: 24px; height: 24px; border-radius: 12px; background: var(--panel2); text-align: center; line-height: 24px; font-weight: 800; font-size: 13px; flex: none; }
+.brow .bname { flex: 1; min-width: 0; text-align: left; border: 0; background: none; color: var(--ink); font: inherit; font-weight: 600; padding: 4px 0; }
+.brow .bpm { padding: 0; } .bw2 { color: var(--accent); }
+#builder textarea { width: 100%; font: 13px/1.4 ui-monospace, Menlo, monospace; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 8px; margin: 4px 0 8px; }
+#builder h3 { font-family: 'Cinzel', serif; font-size: 15px; margin: 14px 0 6px; }
+#sheet textarea { font: 13px/1.4 ui-monospace, Menlo, monospace; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 8px; }
+.btile .bban { position: absolute; left: 4px; bottom: 6px; background: var(--bad); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 1px 5px; border-radius: 3px; }

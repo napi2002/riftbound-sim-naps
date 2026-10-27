@@ -18,7 +18,7 @@
       IMG[k] = URL.createObjectURL(new Blob([bytes], { type: 'image/webp' }));
     });
   } catch (e) { IMG = {}; }
-  function imgOf(c) { return c && c.supertype !== 'Token' ? IMG[RT.norm(c.name)] || null : null; }
+  function imgOf(c) { return c && c.supertype !== 'Token' ? IMG[RT.norm(c.name)] || c.img || null : null; }
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var store = {
@@ -69,12 +69,32 @@
       : '<button class="u theirs hid back" data-facedown="1" aria-label="AI face-down card"><span class="nm">Face-down</span></button>';
   }
   function shortName(n) { return n.split(/ - |, /)[0]; }
-  function deckById(id) { return RT.DECKS.filter(function (d) { return d.id === id; })[0] || RT.DECKS[0]; }
+  // The player's own decks (saved in this browser) next to the 15 suggested tournament decks.
+  var CUSTOM = [];
+  function loadCustom() {
+    var specs = []; try { specs = JSON.parse(store.get('decks') || '[]'); } catch (e) { specs = []; }
+    CUSTOM = specs.map(function (sp) { var d = RT.makeDeck(sp); d.check = RT.validateDeck(sp); return d; });
+  }
+  function saveCustom() { store.set('decks', JSON.stringify(CUSTOM.map(RT.specOf))); }
+  loadCustom();
+  function deckById(id) { return CUSTOM.filter(function (d) { return d.id === id; })[0] || RT.DECKS.filter(function (d) { return d.id === id; })[0] || RT.DECKS[0]; }
 
   /* ---------- menu ---------- */
   function renderMenu() {
+    if (!deckById(S.mine) || deckById(S.mine).id !== S.mine) S.mine = RT.DECKS[0].id;
     ['mine', 'ai'].forEach(function (side) {
-      $('decks-' + side).innerHTML = RT.DECKS.map(function (d) {
+      var mine = CUSTOM.map(function (d) {
+        var cov = d.check.unsimulated.length, ok = d.check.ok;
+        return '<div class="deckrow"><button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
+          '<span class="thumb">' + (d.legendCard ? art(d.legendCard, 40, 40) : '') + '</span>' +
+          '<span class="info"><span class="nm">' + esc(d.name) + '<span class="dots">' + Object.keys(d.runes).filter(function (x) { return d.runes[x]; }).map(function (x) { return '<i style="background:' + DC[x] + '"></i>'; }).join('') + '</span></span>' +
+          '<span class="lb">My deck · ' + d.check.total + ' cards' + (d.legendCard ? ' · ' + esc(d.legendCard.name) : '') + '</span>' +
+          '<span class="real">' + (ok ? (cov ? '⚠ ' + cov + ' card' + (cov > 1 ? 's' : '') + ' not fully simulated' : '✓ Legal · fully simulated') : '✗ Incomplete: ' + esc(d.check.errors[0])) + '</span></span>' +
+          '<span class="ct' + (ok ? ' ok' : '') + '">' + (ok ? 'Legal' : 'Edit') + '</span></button>' +
+          (side === 'mine' ? '<button class="btn small" data-bld="edit" data-id="' + d.id + '">Edit</button>' : '') + '</div>';
+      }).join('');
+      var tools = side === 'mine' ? '<div class="decktools"><button class="btn small primary" data-bld="new">+ Build a deck</button><button class="btn small" data-bld="import">Import text</button></div>' : '';
+      $('decks-' + side).innerHTML = tools + (mine ? '<div class="deckgroup">My decks</div>' + mine : '') + '<div class="deckgroup">Suggested tournament decks</div>' + RT.DECKS.map(function (d) {
         var doms = Object.keys(d.runes);
         return '<button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
           '<span class="thumb">' + art(d.legendCard || { name: d.name, domain: doms, type: 'Legend' }, 40, 40) + '</span>' +
@@ -159,6 +179,8 @@
     return '<span class="real">Tournaments: <b>' + Math.round(r.wr * 100) + '%</b> win rate · ' + r.n.toLocaleString() + ' matches' + (r.tier ? ' · tier ' + r.tier : ' · new, small sample') + '</span>';
   }
   function matchupLine() {
+    var cu = [deckById(S.mine), deckById(S.ai)].filter(function (d) { return d.custom; });
+    if (cu.length) return cu.map(function (d) { return '<b>' + esc(d.name) + '</b>: ' + (d.check.ok ? 'legal deck' + (d.check.unsimulated.length ? ', but ' + d.check.unsimulated.length + ' card' + (d.check.unsimulated.length > 1 ? 's have' : ' has') + ' effects the simulator only partly handles.' : ', every card fully simulated.') : 'not legal yet. ' + esc(d.check.errors[0])); }).join('<br>');
     var a = RT.real(S.mine), b = RT.real(S.ai), da = RT.DECKS.filter(function (d) { return d.id === S.mine; })[0], db = RT.DECKS.filter(function (d) { return d.id === S.ai; })[0];
     if (!a || !b || !da || !db) return '';
     var direct = a.mu[S.ai] ? a.mu[S.ai][0] : b.mu[S.mine] ? 1 - b.mu[S.mine][0] : null, n = a.mu[S.ai] ? a.mu[S.ai][1] : b.mu[S.mine] ? b.mu[S.mine][1] : 0;
@@ -170,7 +192,11 @@
     var b = ev.target.closest('.deck');
     if (b) { S[b.dataset.side] = b.dataset.deck; store.set(b.dataset.side, b.dataset.deck); renderMenu(); }
   });
-  $('start').onclick = function () { startGame(); };
+  $('start').onclick = function () {
+    var bad = [deckById(S.mine), deckById(S.ai)].filter(function (d) { return d.custom && !d.check.ok; })[0];
+    if (bad) { $('matchup').innerHTML = '<b>' + esc(bad.name) + '</b> isn\'t a legal deck yet: ' + esc(bad.check.errors[0]) + ' Tap Edit to finish it.'; return; }
+    startGame();
+  };
   var themes = ['auto', 'light', 'dark'];
   function applyTheme(t) { if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); $('theme').textContent = 'Theme: ' + t; }
   applyTheme(store.get('theme') || 'auto');
@@ -807,5 +833,172 @@
     if (t.closest('[data-base]') && S.sel.length && destOptions().indexOf('base') >= 0) { var ib = S.sel.slice(); run(function () { return RT.moveUnits(G, 0, ib, 'base'); }); }
   });
 
+
+  /* ---------- deck builder ---------- */
+  var B = null;
+  var TYPES = ['Unit', 'Spell', 'Gear'];
+  function newSpec() { return { id: 'c' + Date.now().toString(36), name: 'New deck', legend: null, champion: null, runes: {}, bfs: [], list: [] }; }
+  function openBuilder(spec, note) {
+    B = { spec: spec, tab: spec.legend ? 'cards' : 'legend', q: '', type: 'all', cost: 'all', more: 0, note: note || '' };
+    closeSheet(); $('menu').classList.add('hidden'); $('builder').classList.remove('hidden'); window.scrollTo(0, 0);
+    renderBuilder();
+  }
+  function closeBuilder() { B = null; $('builder').classList.add('hidden'); $('menu').classList.remove('hidden'); renderMenu(); }
+  function countOf(name) { var e = B.spec.list.filter(function (x) { return x[1] === name; })[0]; return e ? e[0] : 0; }
+  function addCard(name, d) {
+    var L = B.spec.list, e = L.filter(function (x) { return x[1] === name; })[0];
+    if (!e && d > 0) { L.push([d, name]); return; }
+    if (!e) return;
+    e[0] = Math.max(0, Math.min(3, e[0] + d));
+    if (!e[0]) L.splice(L.indexOf(e), 1);
+  }
+  function setLegend(name) {
+    var sp = B.spec, leg = RT.findCard(name);
+    sp.legend = leg.name; sp.champion = null;
+    sp.list = sp.list.filter(function (e) { var c = RT.findCard(e[1]); return c && RT.legalFor(c, leg) && (c.supertype !== 'Signature' || (c.tags || []).some(function (t) { return (leg.tags || []).indexOf(t) >= 0; })); });
+    sp.bfs = sp.bfs.filter(function (b) { return RT.legalFor(RT.findCard(b), leg); });
+    var doms = RT.cardDomains(leg).filter(function (d) { return RT.DOMAIN_LIST.indexOf(d) >= 0; });
+    sp.runes = {}; doms.forEach(function (d, i) { sp.runes[d] = doms.length === 2 ? 6 : Math.floor(12 / doms.length) + (i < 12 % doms.length ? 1 : 0); });
+    if (sp.name === 'New deck' || / \(imported\)$/.test(sp.name)) sp.name = leg.name.split(/ - |, /)[0] + ' deck';
+  }
+  function tileImg(c, land) { var u = imgOf(c); return u ? '<img loading="lazy" src="' + u + '" alt="' + esc(c.name) + '"' + (land ? ' class="land"' : '') + '>' : '<span class="noimg">' + esc(c.name) + '</span>'; }
+  function costOf(c) { return (c.energy || 0); }
+  function renderBuilder() {
+    if (!B) return;
+    var sp = B.spec, leg = sp.legend && RT.findCard(sp.legend), v = RT.validateDeck(sp);
+    var tab = function (k, label) { return '<button class="btab' + (B.tab === k ? ' on' : '') + '" data-bld="tab" data-tab="' + k + '">' + label + '</button>'; };
+    var nb = sp.bfs.length, sim = v.unsimulated.length;
+    var h = '<div class="bhead"><button class="btn small" data-bld="back">‹ Decks</button><input id="bname" value="' + esc(sp.name) + '" aria-label="Deck name"><button class="btn small primary" data-bld="save">Save</button></div>' +
+      '<div class="bstat"><span class="' + (v.total >= 40 ? 'ok' : '') + '">' + v.total + '/40 cards</span><span class="' + (v.runes === 12 ? 'ok' : '') + '">' + v.runes + '/12 runes</span><span class="' + (nb === 3 ? 'ok' : '') + '">' + nb + '/3 battlefields</span>' +
+      '<span class="' + (v.ok ? 'ok' : 'bad') + '">' + (v.ok ? '✓ Legal' : '✗ ' + v.errors.length + ' issue' + (v.errors.length > 1 ? 's' : '')) + '</span>' + (sim ? '<span class="warn">⚠ ' + sim + ' partly simulated</span>' : '') + (v.banned.length ? '<span class="bad">⛔ ' + v.banned.length + ' banned in tournaments</span>' : '') + '</div>' +
+      (B.note ? '<div class="bnote">' + B.note + '</div>' : '') +
+      (!v.ok && (B.tab === 'list' || B.tab === 'text') ? '<ul class="bissues">' + v.errors.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>' : '') +
+      '<div class="btabs">' + tab('legend', 'Legend') + tab('cards', 'Cards') + tab('runes', 'Runes & fields') + tab('list', 'Deck list') + tab('text', 'Text') + '</div><div class="bbody">';
+    if (B.tab === 'legend') {
+      if (leg) {
+        var champs = RT.championsFor(leg);
+        h += '<div class="bchosen"><span class="bthumb">' + tileImg(leg) + '</span><div><b>' + esc(leg.name) + '</b><br><small>' + esc(RT.cardDomains(leg).join(' / ')) + (RT.cardSimulated(leg) ? '' : ' · ⚠ legend ability partly simulated') + '</small><br><button class="btn small" data-bld="relegend">Change legend</button></div></div>' +
+          '<h3>Chosen Champion</h3><p class="bhint">Must share the legend\'s champion tag (' + esc((leg.tags || []).join(', ')) + '). One copy starts in your champion zone.</p><div class="bgrid">' +
+          champs.map(function (c) { return '<button class="btile' + (sp.champion === c.name ? ' on' : '') + '" data-bld="champ" data-name="' + esc(c.name) + '">' + tileImg(c) + '<span class="bn">' + esc(c.name) + '</span>' + (RT.cardSimulated(c) ? '' : '<span class="bw">⚠</span>') + '</button>'; }).join('') + '</div>';
+      }
+      if (!leg || B.relegend) {
+        var q = B.q.toLowerCase(), legs = RT.cards().filter(function (c) { return c.type === 'Legend' && !/ - Starter$/.test(c.name) && (!q || c.name.toLowerCase().indexOf(q) >= 0 || (c.domain || []).join(' ').toLowerCase().indexOf(q) >= 0); });
+        h += '<input class="bsearch" id="bq" placeholder="Search legends or domains" value="' + esc(B.q) + '"><div class="bgrid">' +
+          legs.map(function (c) { return '<button class="btile" data-bld="legend" data-name="' + esc(c.name) + '">' + tileImg(c) + '<span class="bn">' + esc(c.name) + '</span><span class="bd">' + RT.cardDomains(c).map(function (d) { return '<i style="background:' + DC[d] + '"></i>'; }).join('') + '</span>' + (RT.cardSimulated(c) ? '' : '<span class="bw">⚠</span>') + '</button>'; }).join('') + '</div>';
+      }
+    } else if (B.tab === 'cards') {
+      if (!leg) h += '<p class="bhint">Choose a legend first: it decides which cards you can use.</p>';
+      else {
+        var q2 = B.q.toLowerCase(), pool = RT.deckPool(leg).filter(function (c) {
+          if (B.type !== 'all' && c.type !== B.type) return false;
+          var e = costOf(c);
+          if (B.cost === '0-2' && e > 2) return false; if (B.cost === '3-4' && (e < 3 || e > 4)) return false; if (B.cost === '5+' && e < 5) return false;
+          if (B.cost === 'in' && !countOf(c.name)) return false;
+          return !q2 || c.name.toLowerCase().indexOf(q2) >= 0 || String(c.plain || '').toLowerCase().indexOf(q2) >= 0 || (c.tags || []).join(' ').toLowerCase().indexOf(q2) >= 0;
+        }).sort(function (a, b) { return costOf(a) - costOf(b) || a.name.localeCompare(b.name); });
+        var chip = function (k, val, label) { return '<button class="chip bfil' + (B[k] === val ? ' on' : '') + '" data-bld="filter" data-k="' + k + '" data-v="' + val + '">' + label + '</button>'; };
+        var shown = pool.slice(0, 60 + B.more);
+        h += '<input class="bsearch" id="bq" placeholder="Search name, text or tag" value="' + esc(B.q) + '">' +
+          '<div class="bfilters">' + chip('type', 'all', 'All') + TYPES.map(function (t) { return chip('type', t, t + 's'); }).join('') + '<span class="sep"></span>' +
+          chip('cost', 'all', 'Any cost') + chip('cost', '0-2', '0–2') + chip('cost', '3-4', '3–4') + chip('cost', '5+', '5+') + chip('cost', 'in', 'In deck') + '</div>' +
+          '<p class="bhint">' + pool.length + ' legal cards for ' + esc(leg.name.split(/ - |, /)[0]) + '. Tap a card to read it; ⚠ marks text the simulator only partly handles.</p><div class="bgrid">' +
+          shown.map(function (c) {
+            var n = countOf(c.name);
+            return '<div class="btile bcard' + (n ? ' on' : '') + '"><button class="bimg" data-bld="peek" data-name="' + esc(c.name) + '">' + tileImg(c) + (n ? '<span class="bcount">' + n + '</span>' : '') + (RT.cardSimulated(c) ? '' : '<span class="bw">⚠</span>') + (c.banned ? '<span class="bban">Banned</span>' : '') + '</button>' +
+              '<span class="bn">' + esc(c.name) + '</span><span class="bpm"><button data-bld="dec" data-name="' + esc(c.name) + '"' + (n ? '' : ' disabled') + '>−</button><button data-bld="inc" data-name="' + esc(c.name) + '"' + (n >= 3 ? ' disabled' : '') + '>+</button></span></div>';
+          }).join('') + '</div>' + (pool.length > shown.length ? '<button class="btn" data-bld="more" style="width:100%;margin-top:10px">Show more (' + (pool.length - shown.length) + ' left)</button>' : '');
+      }
+    } else if (B.tab === 'runes') {
+      if (!leg) h += '<p class="bhint">Choose a legend first.</p>';
+      else {
+        var doms2 = RT.cardDomains(leg).filter(function (d) { return RT.DOMAIN_LIST.indexOf(d) >= 0; });
+        h += '<h3>Rune deck (12)</h3><div class="bruners">' + doms2.map(function (d) {
+          var n2 = sp.runes[d] || 0;
+          return '<div class="brune"><i style="background:' + DC[d] + '"></i><b>' + d + '</b><span class="bpm"><button data-bld="rune" data-d="' + d + '" data-v="-1"' + (n2 ? '' : ' disabled') + '>−</button><span class="bn2">' + n2 + '</span><button data-bld="rune" data-d="' + d + '" data-v="1"' + (v.runes >= 12 ? ' disabled' : '') + '>+</button></span></div>';
+        }).join('') + '</div>' +
+          '<h3>Battlefields (3)</h3><p class="bhint">One of your three is picked at random each game.</p><div class="bgrid land">' +
+          RT.battlefieldPool(leg).map(function (c) { var on = sp.bfs.indexOf(c.name) >= 0; return '<button class="btile' + (on ? ' on' : '') + '" data-bld="bf" data-name="' + esc(c.name) + '"' + (!on && nb >= 3 ? ' disabled' : '') + '>' + tileImg(c, true) + '<span class="bn">' + esc(c.name) + '</span>' + (RT.cardSimulated(c) ? '' : '<span class="bw">⚠</span>') + '</button>'; }).join('') + '</div>';
+      }
+    } else if (B.tab === 'list') {
+      h += !sp.list.length ? '<p class="bhint">No cards yet. Add them in the Cards tab.</p>' : TYPES.map(function (t) {
+        var rows = sp.list.map(function (e) { return [e, RT.findCard(e[1])]; }).filter(function (x) { return x[1] && x[1].type === t; }).sort(function (a, b) { return costOf(a[1]) - costOf(b[1]) || a[1].name.localeCompare(b[1].name); });
+        if (!rows.length) return '';
+        return '<h3>' + t + 's (' + rows.reduce(function (a, x) { return a + x[0][0]; }, 0) + ')</h3><div class="blist">' + rows.map(function (x) {
+          var c = x[1];
+          return '<div class="brow"><span class="bc">' + costOf(c) + '</span><button class="bname" data-bld="peek" data-name="' + esc(c.name) + '">' + (sp.champion === c.name ? '★ ' : '') + esc(c.name) + (RT.cardSimulated(c) ? '' : ' <span class="bw2">⚠</span>') + '</button>' +
+            '<span class="bpm"><button data-bld="dec" data-name="' + esc(c.name) + '">−</button><span class="bn2">' + x[0][0] + '</span><button data-bld="inc" data-name="' + esc(c.name) + '"' + (x[0][0] >= 3 ? ' disabled' : '') + '>+</button></span></div>';
+        }).join('') + '</div>';
+      }).join('');
+      h += v.warnings.map(function (w) { return '<p class="bhint">' + esc(w) + '</p>'; }).join('');
+    } else if (B.tab === 'text') {
+      h += '<h3>Export</h3><textarea id="bexport" readonly rows="10">' + esc(RT.deckToText(sp)) + '</textarea><button class="btn" data-bld="copy">Copy deck text</button>' +
+        '<h3>Import</h3><p class="bhint">Paste a decklist: one card per line ("3 Card Name"), with optional Legend / Champion / Main Deck / Battlefields / Runes headers. This replaces the deck above.</p>' +
+        '<textarea id="bimport" rows="8" placeholder="Legend:\n1 Irelia - Blade Dancer\nChampion:\n1 Irelia, Fervent\nMain Deck:\n3 Stellacorn Herder\n..."></textarea><button class="btn" data-bld="replace">Replace from text</button>' +
+        (CUSTOM.some(function (d) { return d.id === sp.id; }) ? '<h3>Delete</h3><button class="btn danger" data-bld="delete">Delete this deck</button>' : '');
+    }
+    h += '</div>';
+    $('builder').innerHTML = h;
+    var q = $('bq'); if (q) q.oninput = function () { B.q = q.value; B.more = 0; var pos = q.selectionStart; renderBuilder(); var q2 = $('bq'); q2.focus(); q2.setSelectionRange(pos, pos); };
+    var nm = $('bname'); nm.oninput = function () { B.spec.name = nm.value; };
+  }
+  function peekCard(name) {
+    var c = RT.findCard(name), n = countOf(name), inDeck = B.spec.legend && RT.deckPool(RT.findCard(B.spec.legend)).indexOf(c) >= 0;
+    openSheet(cardHead(c) + (RT.cardSimulated(c) ? '' : '<p class="why" style="color:var(--accent)">⚠ Some of this card\'s text is only partly simulated; those parts may not happen in games.</p>') + linesHtml(c),
+      inDeck ? '<button class="btn" data-bld="dec" data-name="' + esc(name) + '"' + (n ? '' : ' disabled') + '>− Remove</button><button class="btn primary" data-bld="inc" data-name="' + esc(name) + '"' + (n >= 3 ? ' disabled' : '') + '>+ Add (' + n + '/3)</button><button class="btn" data-bld="closepeek">Close</button>'
+        : '<button class="btn" data-bld="closepeek">Close</button>');
+  }
+  function importSheet() {
+    openSheet('<h2>Import a deck</h2><p>Paste a decklist. One card per line ("3 Card Name", "3x Card Name" or "Card Name x3"). Headers like <i>Legend:</i>, <i>Champion:</i>, <i>Main Deck:</i>, <i>Battlefields:</i> and <i>Runes:</i> are optional; runes can be "6 Fury Rune" or "6 Fury".</p>' +
+      '<textarea id="mimport" rows="12" style="width:100%" placeholder="Legend:\n1 Jinx - Loose Cannon\nChampion:\n1 Jinx, Rebel\nMain Deck:\n3 ...\nBattlefields:\n1 ...\nRunes:\n6 Fury Rune\n6 Chaos Rune"></textarea>',
+      '<button class="btn primary" data-bld="doimport">Import</button><button class="btn" data-bld="closepeek">Cancel</button>');
+  }
+  function importText(text, into) {
+    var r = RT.parseDeckText(text), sp = r.spec;
+    if (into) { sp.id = into.id; if (!sp.name) sp.name = into.name; } else sp.id = 'c' + Date.now().toString(36);
+    if (!sp.name) sp.name = 'Imported deck';
+    var note = r.unknown.length ? '⚠ ' + r.unknown.length + ' line' + (r.unknown.length > 1 ? 's' : '') + ' not recognised: ' + esc(r.unknown.slice(0, 6).join(' · ')) + (r.unknown.length > 6 ? ' …' : '') : '✓ Every line recognised.';
+    return { spec: sp, note: note };
+  }
+  document.addEventListener('click', function (ev) {
+    var t = ev.target.closest('[data-bld]');
+    if (!t || (S.G && !$('game').classList.contains('hidden'))) return;
+    var a = t.dataset.bld, nm = t.dataset.name;
+    if (a === 'new') return openBuilder(newSpec());
+    if (a === 'import') return importSheet();
+    if (a === 'edit') { var d0 = CUSTOM.filter(function (d) { return d.id === t.dataset.id; })[0]; if (d0) openBuilder(RT.specOf(d0)); return; }
+    if (a === 'doimport') { var r0 = importText($('mimport').value); return openBuilder(r0.spec, r0.note); }
+    if (a === 'closepeek') { closeSheet(); return; }
+    if (!B) return;
+    var sp = B.spec;
+    if (a === 'back') return closeBuilder();
+    if (a === 'save') {
+      sp.name = ($('bname').value || '').trim() || 'My deck';
+      var d1 = RT.makeDeck(sp); d1.check = RT.validateDeck(sp);
+      var i = CUSTOM.map(function (d) { return d.id; }).indexOf(sp.id);
+      if (i >= 0) CUSTOM[i] = d1; else CUSTOM.push(d1);
+      saveCustom(); S.mine = d1.id; store.set('mine', d1.id);
+      return closeBuilder();
+    }
+    if (a === 'tab') { B.tab = t.dataset.tab; B.q = ''; B.more = 0; B.relegend = false; }
+    else if (a === 'legend') { setLegend(nm); B.relegend = false; B.q = ''; }
+    else if (a === 'relegend') { B.relegend = true; }
+    else if (a === 'champ') { sp.champion = nm; if (!countOf(nm)) addCard(nm, 1); }
+    else if (a === 'inc') { addCard(nm, 1); if (S.sheet) peekCard(nm); }
+    else if (a === 'dec') { addCard(nm, -1); if (sp.champion === nm && !countOf(nm)) sp.champion = null; if (S.sheet) peekCard(nm); }
+    else if (a === 'peek') return peekCard(nm);
+    else if (a === 'filter') { B[t.dataset.k] = t.dataset.v; B.more = 0; }
+    else if (a === 'more') { B.more += 60; }
+    else if (a === 'rune') { sp.runes[t.dataset.d] = Math.max(0, (sp.runes[t.dataset.d] || 0) + (+t.dataset.v)); }
+    else if (a === 'bf') { var k = sp.bfs.indexOf(nm); if (k >= 0) sp.bfs.splice(k, 1); else if (sp.bfs.length < 3) sp.bfs.push(nm); }
+    else if (a === 'copy') { var ta = $('bexport'); ta.select(); try { navigator.clipboard.writeText(ta.value); } catch (e) { document.execCommand('copy'); } B.note = '✓ Deck text copied.'; }
+    else if (a === 'replace') { var r1 = importText($('bimport').value, sp); B.spec = r1.spec; B.note = r1.note; B.tab = 'list'; }
+    else if (a === 'delete') {
+      if (!confirm('Delete ' + sp.name + '?')) return;
+      CUSTOM = CUSTOM.filter(function (d) { return d.id !== sp.id; }); saveCustom();
+      if (S.mine === sp.id) S.mine = RT.DECKS[0].id; if (S.ai === sp.id) S.ai = RT.DECKS[1].id;
+      return closeBuilder();
+    }
+    renderBuilder();
+  });
   renderMenu();
 })();

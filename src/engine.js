@@ -103,6 +103,119 @@ var RT = (function () {
     });
   }
 
+  /* ---------------- custom decks: rules check, build, text import/export (Core Rules 103) ---------------- */
+  var DOMAIN_LIST = ['Fury', 'Calm', 'Mind', 'Body', 'Chaos', 'Order'];
+  function cardDomList(c) { return (c.domain || []).filter(function (d) { return DOMAIN_LIST.indexOf(d) >= 0; }); }
+  // 103.2.b: a card is legal if all of its domains are in the legend's identity (no domain = any deck).
+  function legalFor(c, legend) { var id = cardDomList(legend); return cardDomList(c).every(function (d) { return id.indexOf(d) >= 0; }); }
+  function sharesTag(c, legend) { return (c.tags || []).some(function (t) { return (legend.tags || []).indexOf(t) >= 0; }); }
+  // 103.3.a.2: champion units with a champion tag matching the legend
+  function championsFor(legend) { return CARDS.filter(function (c) { return c.type === 'Unit' && c.supertype === 'Champion' && sharesTag(c, legend); }); }
+  function deckPool(legend) {
+    return CARDS.filter(function (c) {
+      if (c.type === 'Legend' || c.type === 'Battlefield' || !legalFor(c, legend)) return false;
+      return c.supertype !== 'Signature' || sharesTag(c, legend);
+    });
+  }
+  function battlefieldPool(legend) { return CARDS.filter(function (c) { return c.type === 'Battlefield' && (!legend || legalFor(c, legend)); }); }
+  function cardSimulated(c) { return c.P.lines.every(function (l) { return l.sim; }); }
+  // Check a deck spec { legend, champion, runes: {Domain: n}, bfs: [names], list: [[n, name]] } against Core Rules 103.
+  function validateDeck(spec) {
+    var errors = [], warns = [], leg = spec.legend && findCard(spec.legend).c, total = 0, sig = 0, unsim = [], banned = [];
+    if (!leg || leg.type !== 'Legend') errors.push('Choose a Champion Legend.');
+    var champ = spec.champion && findCard(spec.champion).c;
+    if (leg && (!champ || champ.type !== 'Unit' || champ.supertype !== 'Champion' || !sharesTag(champ, leg))) errors.push('Choose a Chosen Champion whose champion tag matches ' + (leg ? leg.name : 'the legend') + '.');
+    var seen = {};
+    (spec.list || []).forEach(function (e) {
+      var c = findCard(e[1]).c;
+      if (!c) { errors.push('Unknown card: ' + e[1] + '.'); return; }
+      total += e[0]; seen[c.name] = (seen[c.name] || 0) + e[0];
+      if (c.type === 'Legend' || c.type === 'Battlefield') errors.push(c.name + " can't be in the main deck.");
+      if (leg && !legalFor(c, leg)) errors.push(c.name + ' (' + cardDomList(c).join('/') + ") is outside " + leg.name + "'s domains.");
+      if (c.supertype === 'Signature') { sig += e[0]; if (leg && !sharesTag(c, leg)) errors.push(c.name + ' is a Signature card of another champion.'); }
+      if (!cardSimulated(c) && unsim.indexOf(c.name) < 0) unsim.push(c.name);
+      if (c.banned && banned.indexOf(c.name) < 0) banned.push(c.name);
+    });
+    Object.keys(seen).forEach(function (n) { if (seen[n] > 3) errors.push('At most 3 copies of ' + n + ' (you have ' + seen[n] + ').'); });
+    if (champ && !seen[champ.name]) errors.push('The main deck must include your Chosen Champion, ' + champ.name + '.');
+    if (total < 40) errors.push('The main deck needs at least 40 cards, champion included (' + total + ' now).');
+    if (sig > 3) errors.push('At most 3 Signature cards (' + sig + ' now).');
+    var runes = 0, idt = leg ? cardDomList(leg) : [];
+    Object.keys(spec.runes || {}).forEach(function (d) { runes += spec.runes[d]; if (leg && spec.runes[d] && idt.indexOf(d) < 0) errors.push(d + ' runes are outside the legend\'s domains.'); });
+    if (runes !== 12) errors.push('The rune deck needs exactly 12 runes (' + runes + ' now).');
+    var bfs = (spec.bfs || []).map(function (n) { return findCard(n).c; });
+    if (bfs.length !== 3 || bfs.some(function (b) { return !b || b.type !== 'Battlefield'; })) errors.push('Choose 3 battlefields.');
+    if (bfs.filter(Boolean).some(function (b, i, a) { return a.indexOf(b) !== i; })) errors.push('Battlefields must have different names.');
+    if (leg && !cardSimulated(leg) && unsim.indexOf(leg.name) < 0) unsim.unshift(leg.name);
+    bfs.forEach(function (b) { if (b && !cardSimulated(b) && unsim.indexOf(b.name) < 0) unsim.push(b.name); });
+    bfs.forEach(function (b) { if (b && b.banned && banned.indexOf(b.name) < 0) banned.push(b.name); });
+    if (leg && leg.banned) banned.unshift(leg.name);
+    // 103.3.e: banned cards are illegal in tournaments; allowed here for casual games, with a warning.
+    if (banned.length) warns.push('Banned in tournament play: ' + banned.join(', ') + '.');
+    if (unsim.length) warns.push(unsim.length + " card" + (unsim.length > 1 ? 's have' : ' has') + " text the simulator doesn't fully handle yet: " + unsim.join(', ') + '.');
+    return { ok: !errors.length, errors: errors, warnings: warns, total: total, runes: runes, signature: sig, unsimulated: unsim, banned: banned };
+  }
+  function makeDeck(spec) {
+    var d = { id: spec.id, name: spec.name || 'Custom deck', label: spec.label || 'Your deck', legend: spec.legend, champion: spec.champion,
+      runes: Object.assign({}, spec.runes), bfs: (spec.bfs || []).slice(), list: (spec.list || []).map(function (e) { return [e[0], e[1]]; }), custom: true };
+    resolveDeck(d);
+    return d;
+  }
+  // Text decklists: section headers (Legend, Champion, Main Deck, Battlefields, Runes, Sideboard) are optional;
+  // lines are "3 Card Name", "3x Card Name" or "Card Name x3"; rune lines are "6 Fury Rune" or "6 Fury".
+  function parseDeckText(text) {
+    var spec = { name: '', legend: null, champion: null, runes: {}, bfs: [], list: [] }, unknown = [], section = null, mainSeen = {};
+    String(text || '').split(/\r?\n/).forEach(function (raw) {
+      var line = raw.replace(/\s+/g, ' ').trim();
+      if (!line || /^(#|\/\/)/.test(line)) return;
+      var hm = line.match(/^(legend|champion legend|chosen champion|champion|main ?deck|main|deck|battlefields?|runes?|rune deck|side ?board|sideboard|name|deck name)\s*:?\s*(.*)$/i);
+      if (hm && (/:\s*/.test(line) || !hm[2])) {
+        var h = hm[1].toLowerCase();
+        section = /side/.test(h) ? 'side' : /rune/.test(h) ? 'runes' : /battle/.test(h) ? 'bfs' : /chosen|^champion$/.test(h) ? 'champion' : /legend/.test(h) ? 'legend' : /name/.test(h) ? 'name' : 'main';
+        if (section === 'name') { spec.name = hm[2]; section = null; return; }
+        if (!hm[2]) return;
+        line = hm[2];
+      }
+      if (section === 'side') return;
+      var m = line.match(/^(\d+)\s*x?\s+(.+)$/i) || line.match(/^(.+?)\s+x\s*(\d+)$/i), n = 1, name = line;
+      if (m) { if (/^\d+$/.test(m[1])) { n = +m[1]; name = m[2]; } else { name = m[1]; n = +m[2]; } }
+      name = name.replace(/\s*\([A-Z0-9]{2,5}\)\s*[\w-]*$/, '').replace(/\s+[A-Z]{2,4}-\d{3}[a-z*]?$/, '').trim();
+      var rd = name.match(/^(fury|calm|mind|body|chaos|order)( rune)?s?$/i);
+      if (rd || section === 'runes') {
+        var dom = rd ? rd[1][0].toUpperCase() + rd[1].slice(1).toLowerCase() : null;
+        if (dom) spec.runes[dom] = (spec.runes[dom] || 0) + n; else unknown.push(line);
+        return;
+      }
+      var c = findCard(name).c;
+      if (!c) { unknown.push(line); return; }
+      if (c.type === 'Legend') { spec.legend = c.name; return; }
+      if (c.type === 'Battlefield') { for (var i = 0; i < n; i++) if (spec.bfs.indexOf(c.name) < 0) spec.bfs.push(c.name); return; }
+      if (section === 'champion') { spec.champion = c.name; if (mainSeen.__champ !== c.name) { mainSeen.__champ = c.name; addMain(c.name, n); } return; }
+      addMain(c.name, n);
+    });
+    function addMain(name, n) { var e = spec.list.filter(function (x) { return x[1] === name; })[0]; if (e) e[0] += n; else spec.list.push([n, name]); }
+    // No champion section: pick the first champion unit in the list that matches the legend.
+    var leg = spec.legend && findCard(spec.legend).c;
+    if (!spec.champion && leg) { var ce = spec.list.filter(function (e) { var c = findCard(e[1]).c; return c && c.supertype === 'Champion' && sharesTag(c, leg); })[0]; if (ce) spec.champion = ce[1]; }
+    if (!spec.name && leg) spec.name = leg.name.split(/ - |, /)[0] + ' (imported)';
+    return { spec: spec, unknown: unknown };
+  }
+  function deckToText(spec) {
+    var champ = spec.champion, rest = (spec.list || []).map(function (e) { return [e[1] === champ ? e[0] - 1 : e[0], e[1]]; }).filter(function (e) { return e[0] > 0; });
+    var byType = function (t) { return rest.filter(function (e) { var c = findCard(e[1]).c; return c && c.type === t; }); };
+    var out = ['Legend:', '1 ' + (spec.legend || ''), '', 'Champion:', '1 ' + (champ || ''), '', 'Main Deck:'];
+    ['Unit', 'Spell', 'Gear'].forEach(function (t) { byType(t).forEach(function (e) { out.push(e[0] + ' ' + e[1]); }); });
+    out.push('', 'Battlefields:'); (spec.bfs || []).forEach(function (b) { out.push('1 ' + b); });
+    out.push('', 'Runes:'); Object.keys(spec.runes || {}).forEach(function (d) { if (spec.runes[d]) out.push(spec.runes[d] + ' ' + d + ' Rune'); });
+    return out.join('\n');
+  }
+  // Canonical spec (official card names) for a built-in or custom deck.
+  function specOf(d) {
+    var cn = function (n) { var c = findCard(n).c; return c ? c.name : n; }, list = [];
+    d.list.forEach(function (e) { var n = cn(e[1]), x = list.filter(function (y) { return y[1] === n; })[0]; if (x) x[0] += e[0]; else list.push([e[0], n]); });
+    return { id: d.id, name: d.name, legend: cn(d.legend), champion: cn(d.champion), runes: Object.assign({}, d.runes), bfs: d.bfs.map(cn), list: list };
+  }
+
   var KNOWN_KW = ['Assault', 'Shield', 'Tank', 'Ganking', 'Accelerate', 'Deflect', 'Backline', 'Hunt', 'Temporary', 'Ambush', 'Hidden', 'Reaction', 'Action', 'Equip', 'Disarm', 'Quick-Draw', 'Deploy'];
   var SKIP = /\b(if|unless|for each|instead|choose one|counter|copy|banish|reveal|look at|while|can't|costs?|recycle|from your trash|predict|spend)\b/i;
 
@@ -3345,6 +3458,9 @@ var RT = (function () {
 
   return {
     plan: function (id) { return PLANS[id] || null; }, loadGuides: loadGuides,
+    validateDeck: validateDeck, makeDeck: makeDeck, parseDeckText: parseDeckText, deckToText: deckToText, specOf: specOf,
+    championsFor: championsFor, deckPool: deckPool, battlefieldPool: battlefieldPool, legalFor: legalFor, cardSimulated: cardSimulated,
+    findCard: function (n) { return findCard(n).c; }, DOMAIN_LIST: DOMAIN_LIST,
     real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,

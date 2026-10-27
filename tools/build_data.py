@@ -20,9 +20,11 @@ for i in raw:
 dotgg = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else []
 norm = lambda n: re.sub(r'[^a-z0-9]', '', n.lower())
 have = {norm(n) for n in by}
-bonus = {}
+bonus, banned = {}, set()
 for d in dotgg:
     name = re.sub(r'\s*\([^)]*\)\s*$', '', d['name']).strip()
+    if str(d.get('banned')) == '1':
+        banned.add(norm(name))
     if d.get('mightBonus') not in (None, ''):
         bonus.setdefault(norm(name), int(d['mightBonus']))
     t = (d.get('type') or [None])[0]
@@ -40,7 +42,14 @@ for d in dotgg:
 for _, r in by.values():
     if r['type'] == 'Gear' and norm(r['name']) in bonus:
         r['mightBonus'] = bonus[norm(r['name'])]
-cards=[r for _,r in by.values()]
+    if norm(r['name']) in banned:
+        r['banned'] = True   # banned in tournament play (riftbound.gg)
+# Reprints under a re-punctuated name ("Irelia - Fervent" / "Irelia, Fervent") are the same card: keep the printing with the fuller text.
+keep = {}
+for _, r in by.values():
+    k = norm(r['name'])
+    if k not in keep or len(r['rich'] or '') > len(keep[k]['rich'] or ''): keep[k] = r
+cards=list(keep.values())
 cards.sort(key=lambda r:r['name'])
 json.dump(cards,open(sys.argv[2],'w'),separators=(',',':'),ensure_ascii=False)
 print(len(cards))
