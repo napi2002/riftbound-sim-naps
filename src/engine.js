@@ -542,10 +542,10 @@ var RT = (function () {
       req: function (G, pi, L) { return L.empowered ? 'Already empowered.' : null; },
       effs: [], pay: function (G, pi, L) { L.empowered = true; log(G, '✦ ' + L.c.name + ' is empowered.', pi); }
     }, {
-      label: 'Exhaust: move a friendly unit at a battlefield to base (and ready it if I\'m empowered)', energy: 0, exhaust: true, timing: 'action',
-      req: function (G) { return null; },
+      label: 'Exhaust: on your turn, move a friendly unit in this showdown to base (and ready it if I\'m empowered)', energy: 0, exhaust: true, timing: 'action',
+      req: function (G, pi) { return G.active !== pi ? 'Only on your turn.' : G.showdownAt == null ? 'Only during a showdown.' : null; },
       getEffs: function (G, pi, L) {
-        var e = [{ op: 'tobase', t: { sel: 'friendly', where: 'bf' } }];
+        var e = [{ op: 'tobase', t: { sel: 'friendly', where: 'here' } }];
         if (L.empowered) e.push({ op: 'ready', t: { sel: 'it' } });
         return e;
       }
@@ -556,7 +556,8 @@ var RT = (function () {
     onChoose: async function (G, pi, u) {
       var p = G.players[pi], L = p.legend;
       if (L.exhausted || !anyPowerAvail(p) || u.dead || u.ctrl !== pi) return;
-      if (!(await confirm(G, pi, L.c.name, 'Exhaust Irelia and recycle 1 rune to ready ' + u.c.name + '?', u.ex))) return;
+      // AI: only worth it on your own turn outside combat, when the readied unit can still move.
+      if (!(await confirm(G, pi, L.c.name, 'Exhaust Irelia and recycle 1 rune to ready ' + u.c.name + '?', u.ex && G.active === pi && G.showdownAt == null))) return;
       L.exhausted = true; payAnyPower(G, pi, 1, L.c.name); u.ex = false;
       log(G, L.c.name + ': recycled a rune to ready ' + u.c.name + '.', pi);
     },
@@ -1073,7 +1074,8 @@ var RT = (function () {
     });
     for (var i = 0; i < options.length; i++) {
       var card = options[i], what = spell ? spell.c.name : (ctx.srcName || 'that ability');
-      var aiWants = pickedUnit ? unitValue(pickedUnit) >= 4 : ((spell.c.energy || 0) + (spell.c.power || 0) >= 3);
+      var aiWants = pickedUnit ? unitValue(pickedUnit) >= 4 : ((spell.c.energy || 0) + (spell.c.power || 0) >= 3 ||
+        ((spell.c.energy || 0) + (spell.c.power || 0) >= 2 && (spell.c.P.spell || []).some(function (e) { return isHarmful(e) && e.t && e.t.sel !== 'friendly'; })));
       var text = G.players[caster].name + (caster === 0 ? ' are' : ' is') + ' ' + (pickedUnit ? 'targeting your ' + pickedUnit.c.name + ' with ' + what : 'casting ' + what) + '. Counter it with ' + card.c.name + '?';
       if (!(await confirm(G, pi, 'Reaction', text, aiWants))) continue;
       var cost = cardCost(card.c, false);
@@ -1238,12 +1240,24 @@ var RT = (function () {
       else {
         var ev = evalEffects(G, pi, c.type === 'Spell' ? c.P.spell : playEffects(c), { src: null, loc: bi });
         v = ev.good ? ev.value : 0;
-        if (!winning && c.P.spell.some(function (e) { return e.op === 'might' && e.n > 0 || e.op === 'stun'; })) v += 2;
-        if (winning && c.P.spell.every(function (e) { return e.op === 'might'; })) v = 0;
+        var tn = trickN(c);
+        if (winning && c.P.spell.some(function (e) { return (e.op === 'tohand' || e.op === 'tobase') && e.t && e.t.sel === 'friendly'; })) v = 0;
+        if (tn > 0) v = !winning && trickFlips(G, pi, bi, trickBonus(G, pi)) ? Math.max(v, 1.5) + tn : 0;
+        else if (!winning && c.P.spell.some(function (e) { return e.op === 'stun'; })) v += 2;
       }
       if (v >= 1.5 && (!best || v > best.v)) best = { v: v, i: i };
     });
     return best ? best.i : null;
+  }
+  // Would adding n Might to our strongest unit here win the fight (attacker) or hold it (defender)?
+  function trickFlips(G, pi, bi, n) {
+    var mine = unitsAt(G, bi, pi);
+    if (!mine.length || n <= 0) return false;
+    var host = mine.slice().sort(function (a, b) { return might(b) - might(a); })[0], atk = G.active === pi;
+    host.temp += n;
+    var out = fightOutcome(G, G.active, bi);
+    host.temp -= n;
+    return atk ? out.attackerWins : !out.attackerWins;
   }
   function fightOutcome(G, pi, bi) {
     var att = unitsAt(G, bi, pi), def = unitsAt(G, bi, opp(pi));
@@ -2220,6 +2234,11 @@ var RT = (function () {
     var best = function (arr, f) { return arr.slice().sort(function (a, b) { return f(b) - f(a); })[0] || null; };
     if (e.selfOk) return friends.slice().sort(function (a, b) { return unitValue(a) - unitValue(b); })[0] || null;
     if (e.op === 'pull') return enemies.slice().sort(function (a, b) { return might(a) - might(b); })[0] || null;
+    // Friendly-only bounce (Akali's legend, Flash): save the most valuable unit in the current showdown, else anywhere.
+    if (isHarmful(e) && e.t && e.t.sel === 'friendly') {
+      var inSd = friends.filter(function (u) { return G.showdownAt != null && u.loc === G.showdownAt; });
+      return best(inSd.length ? inSd : friends, unitValue);
+    }
     if (isHarmful(e)) {
       if (!enemies.length) return null;
       if (e.op === 'deal') {
@@ -2834,12 +2853,22 @@ var RT = (function () {
         if (!u) { targets.push(null); if (!e.opt && (isHarmful(e) || e.op === 'buff')) good = false; return; }
         targets.push(u.uid);
         ctx.it = u;
-        if (u.ctrl === pi && isHarmful(e) && !e.selfOk) { good = false; return; }
+        if (u.ctrl === pi && isHarmful(e) && !e.selfOk) {
+          if ((e.op === 'tohand' || e.op === 'tobase') && G.showdownAt != null && u.loc === G.showdownAt) { value += 0.5 * unitValue(u); return; }
+          good = false; return;
+        }
+        if (e.op === 'moveUnit') {
+          if (u.ctrl === pi) {
+            var open = G.bfs.some(function (b, i) { return i !== u.loc && b.ctrl !== pi && !unitsAt(G, i, opp(pi)).length; });
+            value += (open ? 3 : 0) + (e.ready && u.ex ? 1 : 0) + (moveDraws(u) ? 1.6 : 0);
+          }
+          return;
+        }
         if (e.op === 'kill' && u.ctrl === pi) { value -= unitValue(u); return; }
         if (e.op === 'kill') value += unitValue(u) + 1;
         else if (e.op === 'deal') value += (might(u) - u.damage <= e.n) ? unitValue(u) + 1 : 0;
         else if (e.op === 'stun') value += u.loc !== 'base' && might(u) >= 3 ? 2 : 0.5;
-        else if (e.op === 'tohand' || e.op === 'tobase') value += (u.loc !== 'base' && G.bfs[u.loc].ctrl === u.ctrl) ? unitValue(u) : 0;
+        else if (e.op === 'tohand' || e.op === 'tobase') value += (u.loc !== 'base' && (G.bfs[u.loc].ctrl === u.ctrl || u.loc === G.showdownAt)) ? unitValue(u) : 0;
         else if (e.op === 'buff') value += u.buff ? 0 : 1.5;
         else if (e.op === 'might') value += e.n < 0 ? 0.3 : 0.2;
         else if (e.op === 'ready') value += u.ex ? 1 : 0;
@@ -2857,6 +2886,27 @@ var RT = (function () {
       }
     });
     return { value: value, good: good, targets: targets };
+  }
+  // Combat tricks: Reaction/Action spells that only pump or protect a unit (Discipline, En Garde, Defiant Dance...).
+  // The AI keeps these for showdowns, where they can flip a fight, instead of casting them in the main phase.
+  function trickN(c) {
+    if (c.type !== 'Spell' || !(c.P.kw.reaction || c.P.kw.action) || !c.P.spell.length) return 0;
+    var n = 0, ok = c.P.spell.every(function (e) {
+      if (e.op === 'might') { if (e.n > 0 && (e.t.sel === 'friendly' || e.t.sel === 'any')) n += e.n; return true; }
+      if (e.op === 'engarde') { n += 2; return true; }
+      if (e.op === 'shroud') { n += 1; return true; }
+      return e.op === 'draw';
+    });
+    return ok ? n : 0;
+  }
+  function trickBonus(G, pi, energy) {
+    var p = G.players[pi], left = energy == null ? energyAvail(p) : energy, tot = 0;
+    p.hand.map(function (x) { return x; }).filter(function (x) { return trickN(x.c) > 0; })
+      .sort(function (a, b) { return trickN(b.c) - trickN(a.c); }).forEach(function (x) {
+        var cost = cardCost(x.c, false, G, pi, 'hand').energy;
+        if (cost <= left && canPlay(G, pi, x.iid, false, { reaction: true }).ok) { left -= cost; tot += trickN(x.c); }
+      });
+    return tot;
   }
   function aiCardChoice(G, pi, card) {
     var c = card.c, A = aiOf(G, pi), p = G.players[pi], bonus = keyBonus(A, c.name), sera = false;
@@ -2877,6 +2927,7 @@ var RT = (function () {
       return { value: v, opts: { accel: accel, targets: ev.targets } };
     }
     if (c.type === 'Spell') {
+      if (G.showdownAt == null && trickN(c) > 0) return null;
       var es = evalEffects(G, pi, c.P.spell, ctx);
       if (!es.good || es.value + bonus < 1.5) return null;
       return { value: es.value + 0.5 + bonus, opts: { targets: es.targets, seraphine: sera } };
@@ -2954,14 +3005,28 @@ var RT = (function () {
     });
     return best && best.units;
   }
+  // Charm-style spells ("move an enemy unit"): pull one defender home if the attack then wins.
+  function aiCharm(G, pi, bi, avail, margin) {
+    var p = G.players[pi], defs = unitsAt(G, bi, opp(pi));
+    var cards = p.hand.filter(function (x) { return x.c.type === 'Spell' && x.c.P.spell.length === 1 && x.c.P.spell[0].op === 'moveUnit' && x.c.P.spell[0].t.sel === 'enemy' && canPlay(G, pi, x.iid, false).ok; });
+    if (!cards.length) return null;
+    var cands = candidates(G, pi, cards[0].c.P.spell[0], {}).filter(function (u) { return u.loc === bi && !u.noMove; });
+    for (var i = 0; i < cands.length; i++) {
+      var d = cands[i]; d.loc = 'base';
+      var S = defs.length > 1 ? planAttack(G, pi, bi, avail, 0, margin) : avail.length;
+      d.loc = bi;
+      if (S) return { card: cards[0], target: d.uid };
+    }
+    return null;
+  }
   // Ways the AI can add attacking Might before moving: "+N Might this turn" spells, or an "Assault N" legend ability.
   function aiPumps(G, pi) {
     var p = G.players[pi], out = [];
     p.hand.forEach(function (card) {
       var c = card.c;
       if (c.type !== 'Spell' || !c.P.spell.length) return;
-      var e = c.P.spell.filter(function (x) { return x.op === 'might' && x.n > 0 && (x.t.sel === 'any' || x.t.sel === 'friendly') && !x.t.where; })[0];
-      if (e && canPlay(G, pi, card.iid, false).ok) out.push({ n: e.n, card: card });
+      var e = c.P.spell.filter(function (x) { return (x.op === 'might' && x.n > 0 || x.op === 'shroud') && (x.t.sel === 'any' || x.t.sel === 'friendly') && !x.t.where; })[0];
+      if (e && canPlay(G, pi, card.iid, false).ok) out.push({ n: e.op === 'shroud' ? 1 : e.n, card: card });
     });
     legendActs(G, pi).forEach(function (a, idx) {
       var e = actEffects(G, pi, a).filter(function (x) { return x.op === 'assault'; })[0];
@@ -2991,13 +3056,25 @@ var RT = (function () {
         if (allD >= needAll && killV >= lostV * 0.8) S = avail;
       }
       if (!S) {
-        var pump = aiPumps(G, pi)[0];
+        var ch = aiCharm(G, pi, bi, avail, margin);
+        if (ch) {
+          await playCard(G, pi, ch.card.iid, { targets: [ch.target] }); await wait();
+          avail = avail.filter(function (u) { return !u.dead && u.loc === 'base' && !u.ex; });
+          if (G.winner != null || !avail.length) continue;
+          S = unitsAt(G, bi, opp(pi)).length ? planAttack(G, pi, bi, avail, 0, margin) : [avail.slice().sort(function (a, b) { return unitValue(a) - unitValue(b); })[0]];
+        }
+      }
+      // Attack into a fight we lose on paper when tricks in hand (kept for the showdown) cover the gap.
+      var tb = S ? 0 : trickBonus(G, pi);
+      if (!S && tb > 0) S = planAttack(G, pi, bi, avail, tb, margin);
+      if (!S) {
+        var pump = aiPumps(G, pi).filter(function (q) { return !q.card || !trickN(q.card.c); })[0];
         if (pump) {
           S = planAttack(G, pi, bi, avail, pump.n);
           if (S) {
             var host = S.slice().sort(function (a, b) { return might(b) - might(a); })[0];
             if (pump.card) {
-              var tq = pump.card.c.P.spell.filter(needsChoice).map(function (e) { return e.op === 'might' && e.n > 0 ? host.uid : null; });
+              var tq = pump.card.c.P.spell.filter(needsChoice).map(function (e) { return e.op === 'might' && e.n > 0 || e.op === 'shroud' ? host.uid : null; });
               await playCard(G, pi, pump.card.iid, { targets: tq });
             } else await useLegend(G, pi, pump.act, [host.uid]);
             await wait();
@@ -3008,14 +3085,16 @@ var RT = (function () {
       if (S) { await moveUnits(G, pi, S.filter(function (u) { return !u.dead; }).map(function (u) { return u.uid; }), bi); await wait(); }
     }
   }
-  async function aiLegend(G, pi, wait) {
+  async function aiLegend(G, pi, wait, late) {
     var acts = legendActs(G, pi);
     for (var i = 0; i < acts.length && G.winner == null; i++) {
       if (!canUseLegend(G, pi, i).ok) continue;
       var effs = actEffects(G, pi, acts[i]);
       if (effs.some(function (e) { return e.op === 'assault' || e.op === 'tobase'; })) continue; // used during attacks only
       var ev = evalEffects(G, pi, effs, { src: null, loc: null });
-      if (!effs.length || (ev.good && ev.value >= 1.5)) { await useLegend(G, pi, i, ev.targets); await wait(); }
+      var A = aiOf(G, pi), keep = A.reserve && G.players[pi].hand.some(function (x) { return x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction); }) ? A.reserve : 0;
+      if (!effs.length && energyAvail(G.players[pi]) - (acts[i].energy || 0) < keep) continue;
+      if ((!effs.length && late) || (effs.length && ev.good && ev.value >= 1.5)) { await useLegend(G, pi, i, ev.targets); await wait(); }
     }
   }
   async function aiTurn(G, pi, wait) {
@@ -3026,7 +3105,7 @@ var RT = (function () {
     if (G.winner == null) await aiLoneDefenders(G, pi, wait);
     if (G.winner == null) await aiAttack(G, pi, wait);
     if (G.winner == null) await aiPlayLoop(G, pi, wait);
-    if (G.winner == null) await aiLegend(G, pi, wait);
+    if (G.winner == null) await aiLegend(G, pi, wait, true);
     if (G.winner == null) await aiPosition(G, pi, wait);
     if (G.winner == null) await aiHide(G, pi, wait);
   }
