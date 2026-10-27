@@ -428,6 +428,7 @@ var RT = (function () {
     var p = G.players[pi];
     p.points = Math.min(WIN, p.points + n);
     log(G, '★ ' + p.name + ' +' + n + ' point' + (n > 1 ? 's' : '') + (why ? ' — ' + why : '') + '  (' + p.points + '/' + WIN + ')', pi);
+    event(G, { t: 'pts', pi: pi, n: n, why: why || '' });
     if (G.stats) { var st = G.stats[pi]; if (/^conquered/.test(why || '')) st.conquerPts += n; else if (/^held/.test(why || '')) st.holdPts += n; else st.otherPts += n; }
     if (p.points >= WIN) { G.winner = pi; log(G, p.name + (pi === 0 ? ' win' : ' wins') + '!', pi); }
   }
@@ -1181,6 +1182,7 @@ var RT = (function () {
         passes = 0;
         var o = opts[pick];
         log(G, G.players[side].name + ' respond' + (side === 0 ? '' : 's') + ' in the showdown at ' + bfName(G, bi) + '.', side);
+        if (G.combatReport) G.combatReport.played[side].push(o.card.c.name);
         await playCard(G, side, o.card.iid, { reaction: true, showdown: bi, loc: o.kind === 'ambush' ? bi : undefined });
       }
       side = opp(side);
@@ -1671,6 +1673,11 @@ var RT = (function () {
       if (energyAvail(pl) >= 2 && pl.hand.some(function (x) { return canPlay(G, pi, x.iid, false).ok; })) st.unspent++;
       if (G.units.some(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex && !u.stun; })) st.idle++;
       if (G.bfs.some(function (b, i) { return b.ctrl !== pi && !unitsAt(G, i, pi).length; }) && !G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base'; })) st.emptyBfTurns++;
+      event(G, { t: 'end', pi: pi, unused: energyAvail(pl),
+        playable: pl.hand.filter(function (x) { return canPlay(G, pi, x.iid, false).ok; }).sort(function (a, b) { return (b.c.energy || 0) - (a.c.energy || 0); }).map(function (x) { return x.c.name; }),
+        idle: G.units.filter(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex && !u.stun; }).map(function (u) { return u.c.name + ' (' + might(u) + ')'; }),
+        oppHolds: G.bfs.map(function (b, i) { return b.ctrl === opp(pi) ? bfName(G, i) : null; }).filter(Boolean),
+        oppDefenders: G.bfs.map(function (b, i) { return unitsAt(G, i, opp(pi)).reduce(function (s2, u) { return s2 + might(u, 'def'); }, 0); }) });
     }
     G.units.forEach(function (u) {
       u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false; u.noMove = false;
@@ -1731,6 +1738,7 @@ var RT = (function () {
     if (!u.token) G.players[u.owner].trash.push({ iid: u.iid, c: u.c });
     u.dead = true;
     if (G.stats) G.stats[u.ctrl].unitsLost++;
+    if (!u.token) event(G, { t: 'died', pi: u.ctrl, name: u.c.name, cost: (u.c.energy || 0) + (u.c.power || 0), inCombat: !!G.combatReport });
     updateControl(G);
     var aloneDeath = loc === 'base' ? !unitsAt(G, 'base', u.ctrl).length : !unitsAt(G, loc, u.ctrl).length;
     // Karthus: your Deathknell effects trigger an additional time.
@@ -1914,7 +1922,7 @@ var RT = (function () {
           }
         }
         if (tg.length) it = tg[tg.length - 1];
-        if (!tg.length) { log(G, src + ': ' + describeEffect(e) + ' — no target.', pi); continue; }
+        if (!tg.length) { log(G, src + ': ' + describeEffect(e) + ' — no target.', pi); event(G, { t: 'fizzle', pi: pi, src: src, what: describeEffect(e), spell: !!ctx.spell }); continue; }
       }
       await applyEffect(G, pi, e, tg, ctx);
       if (tg.length) it = tg[tg.length - 1];
@@ -2174,20 +2182,35 @@ var RT = (function () {
   }
   async function combat(G, pi, bi, attackers, defenders) {
     var A = G.players[pi], D = G.players[opp(pi)], i;
-    var rep0 = { bf: bfName(G, bi), attacker: pi, ptsBefore: [G.players[0].points, G.players[1].points] };
+    var rep0 = { bf: bfName(G, bi), attacker: pi, ptsBefore: [G.players[0].points, G.players[1].points], played: [[], []],
+      couldPlay: [0, 1].map(function (q) { return showdownOptions(G, q, bi).filter(function (o) { return combatRelevant(o.card.c); }).map(function (o) { return o.card.c.name; }); }) };
+    // Might snapshot at the start, used if the fight ends before damage (e.g. all defenders removed in the showdown).
+    rep0.pre = [[attackers, pi, 'att'], [defenders, opp(pi), 'def']].map(function (sd) {
+      var us = sd[0].map(function (u) { return { u: u, name: u.c.name, might: u.stun ? 0 : might(u, sd[2]), stunned: !!u.stun, taken: 0 }; });
+      return { pi: sd[1], role: sd[2], total: us.reduce(function (s2, x) { return s2 + x.might; }, 0), units: us };
+    });
     try { await combatInner(G, pi, bi, attackers, defenders, rep0); }
     finally {
-      if (rep0.result && G.ask && G.human >= 0) {
-        if (!rep0.sides) rep0.sides = [[attackers, pi, 'att'], [defenders, opp(pi), 'def']].map(function (sd) {
-          return { pi: sd[1], role: sd[2], total: 0, units: sd[0].map(function (u) { return { u: u, name: u.c.name, might: 0, taken: 0 }; }) };
-        });
+      G.combatReport = null;
+      if (rep0.result) {
+        if (!rep0.sides) rep0.sides = rep0.pre;
         rep0.ptsAfter = [G.players[0].points, G.players[1].points];
-        rep0.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.died = !!x.u.dead; delete x.u; }); });
-        await ask(G, G.human, { type: 'combat', report: rep0, auto: true });
+        rep0.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.died = !!x.u.dead; x.cost = (x.u.c.energy || 0) + (x.u.c.power || 0); delete x.u; }); });
+        event(G, Object.assign({ t: 'combat' }, rep0));
+        if (G.ask && G.human >= 0) await ask(G, G.human, { type: 'combat', report: rep0, auto: true });
       }
     }
   }
+  // Cards worth mentioning as a missed showdown play: units (Ambush/hidden) or spells that change a fight.
+  var FIGHT_OPS = { might: 1, assault: 1, stun: 1, deal: 1, kill: 1, tobase: 1, tohand: 1, dread: 1, swapIt: 1, fight: 1, engarde: 1, shroud: 1, buff: 1, multiDeal: 1, dealAllBf: 1 };
+  function combatRelevant(c) {
+    if (c.type === 'Unit') return true;
+    return (c.P.spell || []).some(function (e) { return FIGHT_OPS[e.op] && !(e.op === 'might' && e.n < 0 && e.t && e.t.sel === 'friendly'); });
+  }
+  // Structured record of key moments, used for the post-game review.
+  function event(G, e) { if (!G.events) G.events = []; e.turn = G.turnNo; e.active = G.active; G.events.push(e); }
   async function combatInner(G, pi, bi, attackers, defenders, report) {
+    G.combatReport = report;
     var A = G.players[pi], D = G.players[opp(pi)], i;
     log(G, '⚔ Combat at ' + bfName(G, bi) + ': ' + attackers.map(function (u) { return u.c.name; }).join(', ') + ' vs ' + defenders.map(function (u) { return u.c.name; }).join(', ') + '.', pi);
     var bn = norm(G.bfs[bi].c.name);
@@ -2238,6 +2261,7 @@ var RT = (function () {
     for (i = 0; i < winners.length; i++) await fireUnit(G, winners[i], 'winCombat');
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
     if (G.stats) { var cs = G.stats[pi]; cs.attacks++; if (att.length && !def.length) cs.attacksWon++; else if (att.length) cs.attacksBounced++; else cs.attacksLost++; }
+    G.combatReport = null;
     if (att.length && !def.length) { report.result = A.name + (pi === 0 ? ' win' : ' wins') + ' and conquer' + (pi === 0 ? '' : 's') + ' ' + bfName(G, bi) + '.'; report.winner = pi; await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
     else if (att.length && def.length) {
       att.forEach(function (u) { u.loc = 'base'; });
@@ -2461,6 +2485,68 @@ var RT = (function () {
     return { sim: sim, total: total };
   }
 
+  // Post-game review built from what actually happened (G.events): the few moments that mattered most, with turn numbers.
+  function reviewGame(G, pi) {
+    var ev = G.events || [], out = [], o = opp(pi), you = function (q) { return q === pi ? 'You' : 'The AI'; };
+    var names = function (arr) { return arr.slice(0, 2).join(' and ') + (arr.length > 2 ? ' +' + (arr.length - 2) : ''); };
+    ev.forEach(function (e) {
+      if (e.t === 'combat') {
+        var mine = e.sides.filter(function (sd) { return sd.pi === pi; })[0], theirs = e.sides.filter(function (sd) { return sd.pi === o; })[0];
+        if (!mine || !theirs) return;
+        var lost = mine.units.filter(function (x) { return x.died; }), killed = theirs.units.filter(function (x) { return x.died; });
+        var lostCost = lost.reduce(function (s2, x) { return s2 + x.cost; }, 0), killCost = killed.reduce(function (s2, x) { return s2 + x.cost; }, 0);
+        var skipped = (e.couldPlay[pi] || []).filter(function (n) { return (e.played[pi] || []).indexOf(n) < 0; });
+        if (e.attacker === pi && e.winner !== pi) {
+          var need = Math.max(0, theirs.units.reduce(function (s2, x) { return s2 + Math.max(1, x.might); }, 0) - mine.total);
+          var lostAll = lost.length && lost.length === mine.units.length, killedAll = killed.length && killed.length === theirs.units.length;
+          if (killedAll && lostAll && lostCost <= killCost) return; // an even or good trade isn't a mistake
+          var txt = 'You attacked ' + e.bf + ' with ' + mine.total + ' Might into ' + theirs.total + ': ' +
+            (killedAll && lostAll ? 'everything died, and you lost more than they did (' + names(lost.map(function (x) { return x.name; })) + ').' :
+             lostAll ? 'you lost ' + names(lost.map(function (x) { return x.name; })) + '.' : 'both sides survived, so your units went back to base.') + ' ';
+          var aiPlayed = e.played[o] || [];
+          txt += aiPlayed.length ? 'The AI answered with ' + aiPlayed[0] + ' in the showdown — keep a trick or spare Might for that.'
+            : skipped.length ? 'You could have played ' + skipped[0] + ' in the showdown.'
+            : need ? 'You needed about ' + need + ' more Might to clear them.'
+            : 'Their units had more total health than your damage once Tank/Shield applied — bring another unit.';
+          out.push({ turn: e.turn, kind: 'bad', score: 3 + lostCost - killCost / 2, text: txt });
+        } else if (e.attacker === o && e.winner === o) {
+          var t2 = 'The AI took ' + e.bf + ' (' + theirs.total + ' vs your ' + mine.total + ' Might)' + (lost.length ? ', killing ' + names(lost.map(function (x) { return x.name; })) : '') + '. ';
+          t2 += skipped.length ? skipped[0] + ' was playable in the showdown — use reactions when defending.' : 'Leave a stronger defender there, or retake it on your turn.';
+          out.push({ turn: e.turn, kind: 'bad', score: 2 + lostCost + (e.ptsAfter[o] - e.ptsBefore[o]) * 2, text: t2 });
+        } else if (e.attacker === pi && e.winner === pi) {
+          out.push({ turn: e.turn, kind: 'good', score: 2 + killCost + (e.ptsAfter[pi] - e.ptsBefore[pi]) * 2, text: 'Good attack: you took ' + e.bf + ' with ' + mine.total + ' Might vs ' + theirs.total + (killed.length ? ', killing ' + names(killed.map(function (x) { return x.name; })) : '') + '.' });
+        } else if (e.attacker === o && e.winner === pi && killed.length) {
+          out.push({ turn: e.turn, kind: 'good', score: 2 + killCost, text: 'Good defence at ' + e.bf + ': ' + mine.total + ' vs ' + theirs.total + ', killing ' + names(killed.map(function (x) { return x.name; })) + '.' });
+        }
+      } else if (e.t === 'end' && e.pi === pi) {
+        if (e.unused >= 3 && e.playable.length) out.push({ turn: e.turn, kind: 'bad', cat: 'unused', score: e.unused, text: 'You ended the turn with ' + e.unused + ' energy unused while ' + e.playable[0] + ' was playable.' });
+        if (e.idle.length && e.oppHolds.length) out.push({ turn: e.turn, kind: 'bad', cat: 'idle', score: 3, text: names(e.idle) + ' stayed in base while the AI held ' + e.oppHolds.join(' and ') + ' — it scored again next turn.' });
+      } else if (e.t === 'fizzle' && e.pi === pi && e.spell) {
+        out.push({ turn: e.turn, kind: 'bad', score: 2, text: e.src + ' fizzled (' + e.what.toLowerCase() + ' had no target). Check targets before casting.' });
+      }
+    });
+    // the AI's biggest scoring turn
+    var byTurn = {};
+    ev.forEach(function (e) { if (e.t === 'pts' && e.pi === o) { (byTurn[e.turn] = byTurn[e.turn] || []).push(e); } });
+    Object.keys(byTurn).forEach(function (t) {
+      var list = byTurn[t], n = list.reduce(function (s2, e) { return s2 + e.n; }, 0);
+      if (n >= 2) out.push({ turn: +t, kind: 'bad', score: 2 + n, text: 'The AI scored ' + n + ' that turn (' + list.map(function (e) { return e.why; }).join(', ') + ').' });
+    });
+    var bad = out.filter(function (x) { return x.kind === 'bad'; }).sort(function (a, b) { return b.score - a.score; });
+    var good = out.filter(function (x) { return x.kind === 'good'; }).sort(function (a, b) { return b.score - a.score; });
+    var seenTurn = {}, seenCat = {}, picks = [];
+    bad.forEach(function (x) {
+      if (picks.length >= 3 || seenTurn[x.turn + x.text.slice(0, 12)] || (x.cat && seenCat[x.cat])) return;
+      seenTurn[x.turn + x.text.slice(0, 12)] = 1; if (x.cat) seenCat[x.cat] = 1; picks.push(x);
+    });
+    if (good[0]) picks.push(good[0]);
+    picks.sort(function (a, b) { return a.turn - b.turn; });
+    var last = ev.filter(function (e) { return e.t === 'pts'; }).slice(-1)[0];
+    var ending = G.winner === pi ? 'You won' : G.winner === o ? 'The AI won' : 'Draw';
+    if (last && G.winner != null && G.winner >= 0) ending += ' on turn ' + last.turn + ' (' + (last.why || 'points') + ').';
+    return { moments: picks, ending: ending };
+  }
+
   // Two or three short, specific tips for the human player after a game.
   function gameTips(G, pi) {
     var st = G.stats && G.stats[pi], o = G.stats && G.stats[opp(pi)], tips = [];
@@ -2488,6 +2574,7 @@ var RT = (function () {
   }
 
   return {
+    reviewGame: reviewGame,
     levelCards: levelCards,
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,

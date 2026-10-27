@@ -239,3 +239,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .strip .xpc.on, .strip .xpc.on b { color: #c98a00; }
 .strip .xpc small { font-size: 11px; color: var(--muted); }
 #toast.xp { background: #c98a00; }
+#end .box { max-height: 92dvh; overflow-y: auto; }
+#end .moments { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
+#end .moments li { display: grid; grid-template-columns: auto auto 1fr; gap: 6px; align-items: start; font-size: 13.5px; line-height: 1.3; }
+#end .moments .tn { font-weight: 800; font-size: 11px; background: var(--line); border-radius: 5px; padding: 1px 5px; margin-top: 1px; }
+#end .moments .ic { font-weight: 800; }
+#end .moments li.bad .ic { color: var(--bad); } #end .moments li.good .ic { color: var(--good); } #end .moments li.tip .ic { color: var(--accent); }

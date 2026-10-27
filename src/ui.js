@@ -508,9 +508,13 @@
   }
   function showEnd() {
     var G = S.G, won = G.winner === 0;
-    var tips = RT.gameTips(G, 0);
-    $('end').innerHTML = '<div class="box"><h2>' + (G.winner === -1 ? 'Draw' : won ? 'Victory' : 'Defeat') + '</h2><p>' + G.players[0].points + ' – ' + G.players[1].points + ' after ' + G.turnNo + ' turns</p>' +
-      (tips.length ? '<div class="tips"><b>How to improve</b><ul>' + tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>' : '') +
+    var rv = RT.reviewGame(G, 0), tips = RT.gameTips(G, 0);
+    // Key moments come from this game's events; add one general/legend tip if there's room.
+    var extra = tips.filter(function (t) { return !/attacks failed|ended with|sat idle|stayed in base/.test(t); }).slice(-1);
+    $('end').innerHTML = '<div class="box"><h2>' + (G.winner === -1 ? 'Draw' : won ? 'Victory' : 'Defeat') + '</h2><p>' + G.players[0].points + ' – ' + G.players[1].points + ' after ' + G.turnNo + ' turns · ' + esc(rv.ending) + '</p>' +
+      (rv.moments.length || extra.length ? '<div class="tips"><b>Key moments</b><ul class="moments">' + rv.moments.map(function (m) {
+        return '<li class="' + m.kind + '" data-act="log"><span class="tn">T' + m.turn + '</span><span class="ic">' + (m.kind === 'good' ? '✓' : '✗') + '</span><span>' + esc(m.text) + '</span></li>';
+      }).join('') + extra.map(function (t) { return '<li class="tip"><span class="tn">Tip</span><span class="ic">→</span><span>' + esc(t) + '</span></li>'; }).join('') + '</ul></div>' : '') +
       '<button class="btn primary" data-act="again">Play again</button><button class="btn" data-act="menu">Back to menu</button><button class="btn" data-act="log">View log</button></div>';
     $('end').classList.remove('hidden');
   }
