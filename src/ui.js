@@ -180,20 +180,40 @@
     var cls = 'u ' + (u.ctrl === 0 ? 'mine' : 'theirs') + (u.ex ? ' ex' : '') + (S.sel.indexOf(u.uid) >= 0 ? ' sel' : '');
     if (S.targeting && S.targeting.slots[S.targeting.i].cands.some(function (x) { return x.uid === u.uid; })) cls += ' target';
     if (S.prompt && S.prompt.req.type === 'target' && S.prompt.req.cands.indexOf(u.uid) >= 0) cls += ' target';
-    var flags = [];
-    if (u.stun) flags.push('⚡');
-    if (u.buff) flags.push('★');
-    if (u.equips.length) flags.push('⚔');
-    if (k.tank) flags.push('T');
-    if (u.empowered) { flags.push('✦'); cls += ' emp'; }
+    var flags = unitBadges(u, k);
+    if (u.empowered) cls += ' emp';
     if (u.ctrl === 0 && u.c.P.unitAct && G.active === 0 && RT.canUseUnit(G, 0, u.uid).ok) cls += ' can';
     return '<button class="' + cls + '" data-uid="' + u.uid + '" aria-label="' + esc(u.c.name) + '">' +
       '<span class="art">' + art(u.c, 50, 58) + '</span>' +
       '<span class="mt' + (m > base ? ' up' : m < base ? ' down' : '') + '">' + m + '</span>' +
       (u.damage ? '<span class="dm">-' + u.damage + '</span>' : '') +
-      (flags.length ? '<span class="fl">' + flags.map(function (f) { return '<span>' + f + '</span>'; }).join('') + '</span>' : '') +
+      (flags.length ? '<span class="fl">' + flags.slice(0, 3).map(function (f) { return '<span class="kb ' + f[1] + '">' + f[0] + '</span>'; }).join('') + (flags.length > 3 ? '<span class="kb more">+' + (flags.length - 3) + '</span>' : '') + '</span>' : '') +
       '<span class="nm">' + esc(shortName(u.c.name)) + '</span></button>';
   }
+  // Short labelled badges for a unit's keywords and temporary effects, most important first.
+  function unitBadges(u, k) {
+    var b = [], asl = (k.assault || 0) + (u.tempAssault || 0), sh = (k.shield || 0) + (u.combatShield || 0);
+    if (u.stun) b.push(['STUN', 'stun']);
+    if (k.tank) b.push(['TANK', 'tank']);
+    if (asl) b.push(['ASLT+' + asl, 'asl']);
+    if (sh) b.push(['SHLD+' + sh, 'sh']);
+    if (u.temp > 0) b.push(['+' + u.temp + ' TURN', 'up']);
+    if (u.temp < 0) b.push([u.temp + ' TURN', 'down']);
+    if (u.buff) b.push(['BUFF+1', 'buff']);
+    if (u.equips.length) b.push(['GEAR+' + RT.equipBonus(u), 'gear']);
+    if (k.backline) b.push(['BACK', 'back']);
+    if (k.deflect) b.push(['DFLCT', 'dfl']);
+    if (k.ganking) b.push(['GANK', 'gank']);
+    if (u.empowered) b.push(['✦EMP', 'emp']);
+    if (k.temporary) b.push(['TEMP', 'down']);
+    return b;
+  }
+  var KW_HELP = {
+    assault: 'Assault: +N Might while attacking.', shield: 'Shield: +N Might while defending.', tank: 'Tank: takes combat damage first.',
+    backline: 'Backline: takes combat damage last.', deflect: 'Deflect: enemies must pay 1 extra rune to target it.', ganking: 'Ganking: can move battlefield → battlefield.',
+    hunt: 'Hunt: gain XP when it conquers or holds.', temporary: 'Temporary: dies at the start of its controller\'s turn.', accelerate: 'Accelerate: pay 1 energy + 1 power to enter ready.',
+    ambush: 'Ambush: can be played to a battlefield where you have units, even during a showdown.', hidden: 'Hidden: can be hidden face down and played later for 0 energy.'
+  };
   function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + (S.G && S.G.players[0].gear.indexOf(g) >= 0 && g.c.P.gearActs && RT.canUseGear(S.G, 0, g.iid).ok ? ' can' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
   function runesHtml(p, label) {
@@ -275,6 +295,17 @@
     var units = G.units.filter(function (u) { return S.sel.indexOf(u.uid) >= 0; });
     return ['base', 0, 1].filter(function (d) { return units.length && units.every(function (u) { return RT.canMove(G, u, d); }); });
   }
+  // "⚔ 5 vs 🛡 4" on a Move button when the destination has enemy units.
+  function fightPreview(G, x) {
+    if (x === 'base') return '';
+    var foes = RT.unitsAt(G, x, 1);
+    if (!foes.length) return G.bfs[x].ctrl === 0 ? '' : ' (conquer +1)';
+    var mine = G.units.filter(function (u) { return S.sel.indexOf(u.uid) >= 0; });
+    var a = mine.reduce(function (s2, u) { return s2 + (u.stun ? 0 : RT.might(u, 'att')); }, 0);
+    var dsum = foes.reduce(function (s2, u) { return s2 + (u.stun ? 0 : RT.might(u, 'def')); }, 0);
+    var hid = G.players[1].hidden.some(function (h) { return h.loc === x; }) ? ' ?' : '';
+    return ' <span class="fp ' + (a > dsum ? 'good' : a === dsum ? 'even' : 'bad') + '">⚔' + a + ' vs 🛡' + dsum + hid + '</span>';
+  }
   function renderActions() {
     var G = S.G, h = '';
     if (G.winner != null) h = '<span class="msg">Game over</span><button class="btn" data-act="log">Log</button><button class="btn primary" data-act="menu">Menu</button>';
@@ -290,7 +321,7 @@
       h = '<span class="msg">' + (G.active === 0 ? 'Resolving…' : 'AI is playing…') + '</span><button class="btn" data-act="log">Log</button>';
     } else if (S.sel.length) {
       var d = destOptions();
-      h = '<div class="scroll">' + (d.length ? d.map(function (x) { return '<button class="btn me" data-move="' + x + '">Move → ' + esc(x === 'base' ? 'Base' : shortName(G.bfs[x].c.name)) + '</button>'; }).join('') : '<span class="msg">No common destination</span>') + '</div>' +
+      h = '<div class="scroll">' + (d.length ? d.map(function (x) { return '<button class="btn me" data-move="' + x + '">Move → ' + esc(x === 'base' ? 'Base' : shortName(G.bfs[x].c.name)) + fightPreview(G, x) + '</button>'; }).join('') : '<span class="msg">No common destination</span>') + '</div>' +
         (S.sel.length === 1 && RT.canUseUnit(G, 0, S.sel[0]).ok ? '<button class="btn small primary" data-unitact="' + S.sel[0] + '">Ability</button>' : '') +
         (S.sel.length === 1 ? '<button class="btn small" data-act="info">Info</button>' : '') + '<button class="btn small" data-act="clear">✕</button>';
     } else {
@@ -374,7 +405,7 @@
       '<span>Status</span><span>' + [u.ex ? 'Exhausted' : 'Ready', u.stun ? 'Stunned' : '', u.token ? 'Token' : ''].filter(Boolean).join(' · ') + '</span>' +
       '<span>Location</span><span>' + (u.loc === 'base' ? 'Base' : esc(G.bfs[u.loc].c.name)) + '</span>' +
       (u.equips.length ? '<span>Gear</span><span>' + u.equips.map(function (g) { return esc(g.c.name) + ' (+' + g.c.P.equipBonus + ')'; }).join(', ') + '</span>' : '') +
-      '</div>' + linesHtml(c);
+      '</div>' + kwHelpHtml(u, k) + linesHtml(c);
     var foot = '';
     if (c.P.unitAct && u.ctrl === 0) {
       var chk = RT.canUseUnit(G, 0, u.uid); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
@@ -383,6 +414,18 @@
     }
     if (u.ctrl === 0 && !u.ex && G.active === 0 && !S.busy && !S.prompt && G.winner == null) foot += '<button class="btn me" data-selectu="' + u.uid + '">Select to move</button>';
     openSheet(body, foot + '<button class="btn" data-act="close">Close</button>');
+  }
+  function kwHelpHtml(u, k) {
+    var items = unitBadges(u, k).map(function (b) {
+      var key = { asl: 'assault', sh: 'shield', tank: 'tank', back: 'backline', dfl: 'deflect', gank: 'ganking' }[b[1]];
+      var txt = key ? KW_HELP[key].replace('N', b[0].split('+')[1] || '') :
+        b[1] === 'stun' ? 'Stunned: deals no combat damage until its controller\'s turn ends.' :
+        b[1] === 'buff' ? 'Buffed: +1 Might permanently.' : b[1] === 'gear' ? 'Equipment: +' + RT.equipBonus(u) + ' Might.' :
+        b[1] === 'emp' ? 'Empowered.' : /TURN/.test(b[0]) ? (u.temp > 0 ? '+' : '') + u.temp + ' Might until end of turn.' : b[0] === 'TEMP' ? KW_HELP.temporary : '';
+      return '<div class="kh"><span class="kb ' + b[1] + '">' + b[0] + '</span> ' + esc(txt) + '</div>';
+    });
+    ['hunt', 'accelerate', 'ambush', 'hidden'].forEach(function (key) { if (k[key]) items.push('<div class="kh"><span class="kb">' + key.toUpperCase() + '</span> ' + esc(KW_HELP[key].replace('N', k[key])) + '</div>'); });
+    return items.length ? '<div class="khs">' + items.join('') + '</div>' : '';
   }
   function trashSheet() {
     var G = S.G, p = G.players[0];
@@ -451,7 +494,9 @@
   }
   function showEnd() {
     var G = S.G, won = G.winner === 0;
+    var tips = RT.gameTips(G, 0);
     $('end').innerHTML = '<div class="box"><h2>' + (G.winner === -1 ? 'Draw' : won ? 'Victory' : 'Defeat') + '</h2><p>' + G.players[0].points + ' – ' + G.players[1].points + ' after ' + G.turnNo + ' turns</p>' +
+      (tips.length ? '<div class="tips"><b>How to improve</b><ul>' + tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>' : '') +
       '<button class="btn primary" data-act="again">Play again</button><button class="btn" data-act="menu">Back to menu</button><button class="btn" data-act="log">View log</button></div>';
     $('end').classList.remove('hidden');
   }

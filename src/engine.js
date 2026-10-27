@@ -322,6 +322,8 @@ var RT = (function () {
     G.active = G.first;
     log(G, (G.first === 0 ? G.players[0].name + ' go' : G.players[1].name + ' goes') + ' first. Battlefields: ' + bfName(G, 0) + ' and ' + bfName(G, 1) + '.');
     G.human = opts.human != null ? opts.human : -1;
+    // Per-player stats used for the post-game tips.
+    G.stats = [0, 1].map(function () { return { unspent: 0, idle: 0, attacks: 0, attacksWon: 0, attacksBounced: 0, attacksLost: 0, conquerPts: 0, holdPts: 0, otherPts: 0, unitsLost: 0, played: 0, turns: 0, emptyBfTurns: 0, cardsLeft: 0 }; });
     G.ask = opts.ask || null;
     await startTurn(G);
     return G;
@@ -412,6 +414,7 @@ var RT = (function () {
     var p = G.players[pi];
     p.points = Math.min(WIN, p.points + n);
     log(G, '★ ' + p.name + ' +' + n + ' point' + (n > 1 ? 's' : '') + (why ? ' — ' + why : '') + '  (' + p.points + '/' + WIN + ')', pi);
+    if (G.stats) { var st = G.stats[pi]; if (/^conquered/.test(why || '')) st.conquerPts += n; else if (/^held/.test(why || '')) st.holdPts += n; else st.otherPts += n; }
     if (p.points >= WIN) { G.winner = pi; log(G, p.name + (pi === 0 ? ' win' : ' wins') + '!', pi); }
   }
   function scoreBf(G, pi, bi, how) {
@@ -1648,6 +1651,13 @@ var RT = (function () {
   async function endTurn(G) {
     if (G.winner != null) return;
     var pi = G.active;
+    if (G.stats) {
+      var st = G.stats[pi], pl = G.players[pi];
+      st.turns++;
+      if (energyAvail(pl) >= 2 && pl.hand.some(function (x) { return canPlay(G, pi, x.iid, false).ok; })) st.unspent++;
+      if (G.units.some(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex && !u.stun; })) st.idle++;
+      if (G.bfs.some(function (b, i) { return b.ctrl !== pi && !unitsAt(G, i, pi).length; }) && !G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base'; })) st.emptyBfTurns++;
+    }
     G.units.forEach(function (u) {
       u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false; u.noMove = false;
       if (u.tempEmpowered) { u.empowered = false; u.tempEmpowered = false; }
@@ -1706,6 +1716,7 @@ var RT = (function () {
     removeUnit(G, u);
     if (!u.token) G.players[u.owner].trash.push({ iid: u.iid, c: u.c });
     u.dead = true;
+    if (G.stats) G.stats[u.ctrl].unitsLost++;
     updateControl(G);
     var aloneDeath = loc === 'base' ? !unitsAt(G, 'base', u.ctrl).length : !unitsAt(G, loc, u.ctrl).length;
     // Karthus: your Deathknell effects trigger an additional time.
@@ -2026,6 +2037,7 @@ var RT = (function () {
     else if (f.from === 'hidden') { p.hidden.splice(p.hidden.indexOf(f.h), 1); log(G, p.name + ' reveal' + (pi === 0 ? '' : 's') + ' a hidden card at ' + bfName(G, f.loc) + ': ' + c.name + '.', pi); }
     else p.champion = null;
     G.playedThisTurn++;
+    if (G.stats) G.stats[pi].played++;
     if (G.playedThisTurn === 1 && G.active === pi && G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base' && u.c.P.heronDiscount; })) {
       p.discountNext = { turn: G.turnNo, energy: 2, power: 2 };
       log(G, 'Astral Heron: your next card this turn costs 2 energy and 2 power less.', pi);
@@ -2211,6 +2223,7 @@ var RT = (function () {
     var winners = att.length && !def.length ? att : !att.length && def.length ? def : [];
     for (i = 0; i < winners.length; i++) await fireUnit(G, winners[i], 'winCombat');
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
+    if (G.stats) { var cs = G.stats[pi]; cs.attacks++; if (att.length && !def.length) cs.attacksWon++; else if (att.length) cs.attacksBounced++; else cs.attacksLost++; }
     if (att.length && !def.length) { report.result = A.name + (pi === 0 ? ' win' : ' wins') + ' and conquer' + (pi === 0 ? '' : 's') + ' ' + bfName(G, bi) + '.'; report.winner = pi; await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
     else if (att.length && def.length) {
       att.forEach(function (u) { u.loc = 'base'; });
@@ -2434,7 +2447,34 @@ var RT = (function () {
     return { sim: sim, total: total };
   }
 
+  // Two or three short, specific tips for the human player after a game.
+  function gameTips(G, pi) {
+    var st = G.stats && G.stats[pi], o = G.stats && G.stats[opp(pi)], tips = [];
+    if (!st) return tips;
+    var L = G.players[pi].legend.c ? G.players[pi].legend.c.name : '';
+    if (st.attacksLost + st.attacksBounced >= 2) tips.push('Check the fight preview on Move buttons (⚔ your Might vs 🛡 theirs) — ' + (st.attacksLost + st.attacksBounced) + ' of your ' + st.attacks + ' attacks failed.');
+    if (st.unspent >= 2) tips.push('Spend your energy: ' + st.unspent + ' turns ended with 2+ runes ready and a playable card in hand.');
+    if (st.idle >= 3) tips.push('Move ready units out of base — they sat idle on ' + st.idle + ' turns. Units on battlefields score every turn.');
+    if (o && o.holdPts >= 3) tips.push('The AI scored ' + o.holdPts + ' points just by holding. Contest its battlefields sooner, even with a weak unit, to stop the hold points.');
+    if (st.holdPts === 0 && st.conquerPts > 0) tips.push("You conquered but never held: keep a defender on battlefields you take so they score again at your next turn.");
+    if (st.emptyBfTurns >= 3) tips.push('You had no units on battlefields for ' + st.emptyBfTurns + ' turns. Early cheap units that go out and score win races.');
+    if (st.unitsLost >= 8 && st.attacks <= 3) tips.push('You lost ' + st.unitsLost + ' units mostly on defence — trade on your terms by attacking first.');
+    var legendTip = /Tempest/.test(L) ? 'Kennen: play cards from your champion zone, face down or the trash to empower the legend, then use it for Assault 2.'
+      : /LeBlanc/.test(L) ? 'LeBlanc: conquer or hold with a strong unit there so the Reflection copies something big.'
+      : /Rengar/.test(L) ? 'Rengar: play a unit before you attack — the legend gives +1 Might to an attacker.'
+      : /Irelia/.test(L) ? 'Irelia: target your own exhausted units with spells to ready them through the legend.'
+      : /Akali/.test(L) ? 'Akali: empower the legend early so its recall also readies the unit.'
+      : /Jayce/.test(L) ? 'Jayce: Platewyrm Egg + the legend readying gear gives you extra energy every turn.'
+      : /Master Yi/.test(L) ? 'Master Yi: defend with a single unit — it gets +2 Might when defending alone.'
+      : /Azir/.test(L) ? 'Azir: play an Equipment first, then use the legend for Sand Soldiers that can grab it with Weaponmaster.'
+      : /Vex/.test(L) ? 'Vex: holding battlefields draws you a card each time — keep units on them.'
+      : /Rek/.test(L) ? "Rek'Sai: conquer to trigger the legend and play cards off the top of your deck for free tempo." : '';
+    if (tips.length < 3 && legendTip) tips.push(legendTip);
+    return tips.slice(0, 3);
+  }
+
   return {
+    gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
