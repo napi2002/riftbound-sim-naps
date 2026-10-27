@@ -39,7 +39,7 @@ function worker() {
 async function main() {
   const args = process.argv.slice(2), arg = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
   const W = +arg('--workers', String(os.cpus().length)), R = +arg('--rounds', '20'), M = +arg('--moves', '40');
-  const N1 = +arg('--screen', '4'), N2 = +arg('--confirm', '24'), N3 = +arg('--final', '100'), maxTurns = 200;
+  const P = +arg('--patience', '3'), FROM = arg('--from', null), N1 = +arg('--screen', '4'), N2 = +arg('--confirm', '24'), N3 = +arg('--final', '100'), maxTurns = 200;
   const RT = loadRT(), rng = mulberry32(+arg('--seed', '7'));
   const ids = arg('--decks') ? arg('--decks').split(',') : RT.DECKS.map(d => d.id);
 
@@ -115,8 +115,9 @@ async function main() {
     const pool = RT.deckPool(leg).filter(c => RT.cardSimulated(c) && !c.banned);
     const bfPool = RT.battlefieldPool(leg).filter(c => RT.cardSimulated(c) && !c.banned);
     const doms = leg.domain.filter(x => RT.DOMAIN_LIST.includes(x));
-    let cur = s0, log = [], stale = 0;
-    for (let r = 0; r < R && stale < 3; r++) {
+    const prev = FROM && JSON.parse(fs.readFileSync(FROM, 'utf8')).results.find(x => x.id === id);
+    let cur = prev ? prev.best : s0, log = prev ? prev.log.slice() : [], stale = 0;
+    for (let r = 0; r < R && stale < P; r++) {
       const cand = moves(cur, pool, bfPool, doms);
       const sc = await score([cur, ...cand], N1, seedBase++);
       const top = cand.map((c, i) => ({ c, v: sc[i + 1].score - sc[0].score })).sort((a, b) => b.v - a.v).slice(0, 4).filter(x => x.v > 0);
@@ -141,7 +142,7 @@ async function main() {
     console.log(`${r.id.padEnd(12)} tournament ${(100 * r.start_score).toFixed(1)}  optimised ${(100 * r.best_score).toFixed(1)}  (gain ${(100 * (r.best_score - r.start_score)).toFixed(1)} ± ${(100 * r.gain_se).toFixed(1)})`);
   }
   let commit = 'unknown'; try { commit = cp.execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim(); } catch (e) { /* */ }
-  const out = path.join(__dirname, 'data/sim', `${commit}_optimise.json`);
+  const out = path.join(__dirname, 'data/sim', `${commit}_optimise${FROM ? '_deep' : ''}.json`);
   fs.writeFileSync(out, JSON.stringify({ commit, snapshot_id: last, weights: wt, params: { R, M, N1, N2, N3 }, games, seconds: (Date.now() - t0) / 1000, results }, null, 1) + '\n');
   console.log(`done: ${games} games in ${((Date.now() - t0) / 1000).toFixed(0)}s -> ${path.relative(ROOT, out)}`);
   ws.forEach(w => w.kill());
