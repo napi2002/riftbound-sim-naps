@@ -14,11 +14,11 @@ console.log(JSON.stringify(RT.DECKS.map(d=>{const p=RT.plan(d.id),g=p.guide||{};
   return {id:d.id,name:d.name,arch:g.archetype||p.style,attack:p.ai.attack,reserve:p.ai.reserve||0,conf:(g.confidence||'').split(/[ :;,-]/)[0],summary:g.summary||p.plan,sources:(g.sources||[]).length};})));
 """], cwd=root))
 VERSIONS = [  # engine versions measured with quant/harness.js (1,000 mirrored seed pairs per matchup = 210,000 games)
-    ('2f8d68f', 'Deck plans from guides'),
-    ('a1e991a', 'Irelia/Akali combat tricks'),
-    ('b7384de', 'Pro decision trees'),
-    ('b6d37d1', 'Core Rules audit fixes'),
-    ('a9e5d0a', "Rek'Sai reserve energy"),
+    ('386b181', 'Deck plans from guides'),
+    ('f3d4c98', 'Irelia/Akali combat tricks'),
+    ('1bf87b3', 'Pro decision trees'),
+    ('0c7933c', 'Core Rules audit fixes'),
+    ('8c7f23f', "Rek'Sai reserve energy"),
 ]
 runs = [(c, label, json.loads((sim / f'{c}_1000_summary.json').read_text())) for c, label in VERSIONS]
 latest = runs[-1][2]

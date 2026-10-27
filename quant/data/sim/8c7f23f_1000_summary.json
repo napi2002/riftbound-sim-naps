@@ -1,5 +1,5 @@
 {
- "commit": "a9e5d0a",
+ "commit": "8c7f23f",
  "N": 1000,
  "decks": [
   "kennen",
@@ -235,6 +235,5 @@
    "rho": 0.5662208585049305,
    "perm_p": 0.09329533523323834
   }
- },
- "note": "run on the working tree that was committed as a9e5d0a"
+ }
 }
