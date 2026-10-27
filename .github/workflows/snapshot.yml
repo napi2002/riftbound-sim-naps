@@ -1,0 +1,36 @@
+# Weekly fetch of the dotgg Riftbound meta snapshot into quant/data/raw (+ manifest line).
+# Note: GitHub runs `schedule` triggers only on the repository's DEFAULT branch, so the weekly run
+# starts once this file is on the default branch. `workflow_dispatch` can run it on any branch.
+name: meta-snapshot
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: meta-snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch snapshot
+        run: python3 quant/snapshot.py
+      - name: Commit new files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add quant/data/raw quant/data/manifest.csv
+          if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
+          git commit -m "quant: weekly meta snapshot $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

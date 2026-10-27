@@ -1,2 +1,4 @@
 node_modules/
 __pycache__/
+quant/data/sim/*.csv
+quant/data/tidy/
