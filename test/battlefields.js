@@ -4,7 +4,7 @@ const RT = require('../src/engine.js');
 RT.loadCards(require('../src/cards.json'));
 const card = n => { const c = RT.cards().find(x => x.name === n); if (!c) throw new Error('no card ' + n); return c; };
 let fails = 0, iid = 500000;
-const yes = async req => req.type === 'confirm' ? true : req.type === 'choice' ? (req.auto != null ? req.auto : 0) : (req.auto != null ? req.auto : req.cands[0]);
+const yes = async req => req.type === 'confirm' ? true : req.type === 'choice' ? (req.auto != null ? req.auto : req.optional ? null : 0) : (req.auto != null ? req.auto : req.cands[0]);
 async function setup(bfName) {
   const G = await RT.newGame(RT.DECKS[0], RT.DECKS[1], { human: 0, ask: yes });
   G.bfs[0] = { c: card(bfName), ctrl: null };

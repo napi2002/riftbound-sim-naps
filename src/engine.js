@@ -336,7 +336,7 @@ var RT = (function () {
   async function newGame(deckA, deckB, opts) {
     opts = opts || {};
     var rnd = opts.rnd || Math.random;
-    var G = { players: [], units: [], bfs: [], active: 0, playedThisTurn: 0, turnNo: 0, log: [], winner: null, rnd: rnd, onLog: opts.onLog || null, maxTurns: opts.maxTurns || 0 };
+    var G = { players: [], units: [], bfs: [], active: 0, playedThisTurn: 0, playedBy: [0, 0], turnNo: 0, log: [], winner: null, rnd: rnd, onLog: opts.onLog || null, maxTurns: opts.maxTurns || 0 };
     [deckA, deckB].forEach(function (d, pi) {
       var main = d.cards.slice();
       var ci = d.championCard ? main.indexOf(d.championCard) : -1;
@@ -355,8 +355,8 @@ var RT = (function () {
     G.human = opts.human != null ? opts.human : -1;
     G.ask = opts.ask || null;
     if (opts.onCreate) opts.onCreate(G);
-    for (var mp = 0; mp < 2; mp++) await mulligan(G, mp);
     G.first = Math.floor(rnd() * 2);
+    for (var mp = 0; mp < 2; mp++) await mulligan(G, (G.first + mp) % 2);
     G.active = G.first;
     log(G, (G.first === 0 ? G.players[0].name + ' go' : G.players[1].name + ' goes') + ' first. Battlefields: ' + bfName(G, 0) + ' and ' + bfName(G, 1) + '.');
     // Per-player stats used for the post-game tips.
@@ -379,7 +379,7 @@ var RT = (function () {
     if (!aside.length) return;
     aside.forEach(function (c) { p.hand.splice(p.hand.indexOf(c), 1); });
     for (var i = 0; i < aside.length; i++) drawOne(G, pi, true);
-    aside.forEach(function (c) { p.deck.push(c); });
+    shuffle(aside, G.rnd).forEach(function (c) { p.deck.push(c); });
     log(G, p.name + ' mulligan' + (pi === 0 ? '' : 's') + ' ' + aside.length + ' card' + (aside.length > 1 ? 's' : '') + (pi === 0 ? ' (' + aside.map(function (c) { return c.c.name; }).join(', ') + ')' : '') + '.', pi);
   }
   // AI mulligan: keep the cards the deck guide says pros keep; send back the guide's "toss" cards, then expensive cards.
@@ -400,11 +400,10 @@ var RT = (function () {
   function drawOne(G, pi, silent) {
     var p = G.players[pi];
     if (!p.deck.length) {
-      if (!p.trash.length) { return; }
       p.deck = shuffle(p.trash.splice(0), G.rnd);
       log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
       addPoints(G, opp(pi), 1, p.name + ' burned out');
-      if (G.winner != null) return;
+      if (G.winner != null || !p.deck.length) return;
     }
     p.hand.push(p.deck.shift());
     p.drawsTurn = (p.drawsTurn || 0) + 1;
@@ -476,7 +475,7 @@ var RT = (function () {
         G.bfs.some(function (b) { return b.ctrl === pi && norm(b.c.name) === 'ornnsforge'; })) e = Math.max(0, e - 1);
     var disc = G && G.players[pi].discountNext;
     if (disc && disc.turn === G.turnNo) { e = Math.max(0, e - disc.energy); pw = Math.max(0, pw - disc.power); }
-    if (from === 'hidden') e = 0;
+    if (from === 'hidden') { e = 0; pw = 0; }
     if (accel) { e += 1; pw += 1; }
     return { energy: e, power: pw, domains: cardDomains(c) };
   }
@@ -705,7 +704,7 @@ var RT = (function () {
     var u = makeUnit(G, pi, c, card.iid, loc, !!c.P.kw.entersready, false);
     log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + ' for free.', pi);
 
-    G.playedThisTurn++;
+    G.playedThisTurn++; G.playedBy[pi]++;
     var lsc = p.legend.c && p.legend.c.P.script;
     if (lsc && lsc.onPlayCard) lsc.onPlayCard(G, pi, 'elsewhere');
     await unitEntered(G, pi, u, 'elsewhere');
@@ -714,7 +713,7 @@ var RT = (function () {
     if (loc !== 'base' && !u.dead && G.winner == null) {
       var enemies = unitsAt(G, loc, opp(pi));
       if (enemies.length) await combat(G, pi, loc, [u], enemies);
-      else if (G.bfs[loc].ctrl !== pi) await conquer(G, pi, loc, [u]);
+      else if (G.bfs[loc].ctrl !== pi) await contest(G, pi, loc);
     }
     return u;
   }
@@ -836,7 +835,7 @@ var RT = (function () {
     dread: async function (G, pi, e, tg, ctx) {
       var u = tg[0];
       if (u.stun) { removeUnit(G, u); if (!u.token) G.players[u.owner].hand.push({ iid: u.iid, c: u.c }); u.dead = true; updateControl(G); log(G, u.c.name + ' was already stunned: returned to hand.', pi); }
-      else { u.stun = G.active === u.ctrl ? 2 : 1; log(G, (ctx.srcName || 'Effect') + ' stuns ' + u.c.name + '.', pi); }
+      else { u.stun = 1; log(G, (ctx.srcName || 'Effect') + ' stuns ' + u.c.name + '.', pi); }
     },
     moveUnit: async function (G, pi, e, tg, ctx) { await moveChosen(G, pi, tg[0], ctx.srcName); if (e.ready && !tg[0].dead) { tg[0].ex = false; log(G, tg[0].c.name + ' readies.', pi); } },
     killGear: async function (G, pi, e, tg, ctx) {
@@ -1023,7 +1022,7 @@ var RT = (function () {
     // ---- units ----
     kennenstormofshuriken: { sim: [0, 1], conquerFx: [{ op: 'grantFlow' }] },
     rhasathesunderer: { sim: [0], costMod: function (G, pi) { return -G.players[pi].trash.length; } },
-    noxushopeful: { sim: [0], costMod: function (G, pi) { return G.playedThisTurn > 0 ? -2 : 0; } },
+    noxushopeful: { sim: [0], costMod: function (G, pi) { return G.playedBy[pi] > 0 ? -2 : 0; } },
     fizztrickster: { sim: [0], play: [{ op: 'fizz' }] },
     tornadowarrior: { sim: [1], hiddenFx: [{ op: 'empowerTemp', t: T('friendly', 'here'), opt: true }] },
     baronnashor: { sim: [1, 2], untargetable: 'always', auraOthers: 2 },
@@ -1161,7 +1160,6 @@ var RT = (function () {
     var p = G.players[pi], done = 0;
     for (var i = 0; i < n && G.winner == null; i++) {
       if (!p.deck.length) {
-        if (!p.trash.length) break;
         p.deck = shuffle(p.trash.splice(0), G.rnd);
         log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
         addPoints(G, opp(pi), 1, p.name + ' burned out');
@@ -1249,7 +1247,12 @@ var RT = (function () {
     p.hand.forEach(function (card) {
       var c = card.c;
       if (c.P.counter) return;
-      if (c.type === 'Unit') { if (c.P.kw.ambush && canPlay(G, pi, card.iid, false, { reaction: true }).ok) out.push({ card: card, kind: 'ambush' }); return; }
+      // Ambush: only to a battlefield where you have units (Rengar's units also where enemies are) (rule 822)
+      if (c.type === 'Unit') {
+        var ambOk = unitsAt(G, bi, pi).length > 0 || (c.P.ambushAnywhere && unitsAt(G, bi, opp(pi)).length > 0);
+        if (c.P.kw.ambush && ambOk && bfNorm(G, bi) !== 'rockfallpath' && canPlay(G, pi, card.iid, false, { reaction: true }).ok) out.push({ card: card, kind: 'ambush' });
+        return;
+      }
       if ((c.P.kw.reaction || c.P.kw.action) && c.P.spell.length && canPlay(G, pi, card.iid, false, { reaction: true }).ok) out.push({ card: card, kind: 'spell' });
     });
     p.hidden.forEach(function (h) {
@@ -1276,7 +1279,7 @@ var RT = (function () {
         var ev = evalEffects(G, pi, c.type === 'Spell' ? c.P.spell : playEffects(c), { src: null, loc: bi });
         v = ev.good ? ev.value : 0;
         var tn = trickN(c);
-        if (winning && c.P.spell.some(function (e) { return (e.op === 'tohand' || e.op === 'tobase') && e.t && e.t.sel === 'friendly'; })) v = 0;
+        if (winning && c.P.spell.some(function (e) { return (e.op === 'tohand' || e.op === 'tobase' || e.op === 'kill') && e.t && e.t.sel !== 'enemy'; })) v = 0;
         if (tn > 0) v = !winning && trickFlips(G, pi, bi, trickBonus(G, pi)) ? Math.max(v, 1.5) + tn : 0;
         else if (!winning && c.P.spell.some(function (e) { return e.op === 'stun'; })) v += 2;
       }
@@ -1300,18 +1303,22 @@ var RT = (function () {
     var aT = att.reduce(function (s, u) { return s + Math.max(1, might(u, 'att')); }, 0), dT = def.reduce(function (s, u) { return s + Math.max(1, might(u, 'def')); }, 0);
     return { attackerWins: aD >= dT && dD < aT, defenderHolds: aD < dT };
   }
-  // Showdown before combat damage: the defender, then the attacker, may each play reactions, Action spells, Ambush units or hidden cards here.
-  async function showdown(G, attacker, bi) {
+  // Showdown: the player who contested the battlefield acts first, then players alternate until both pass in a row (rules 345-348).
+  // Each may play Reaction or Action spells, Ambush units, face-down cards or legend abilities here.
+  // nonCombat: units moved to (or played at) a battlefield with no enemy units; the opponent may still respond before it is conquered.
+  async function showdown(G, attacker, bi, nonCombat) {
     G.showdownAt = bi;
-    var passes = 0, side = opp(attacker);
-    for (var round = 0; round < 6 && passes < 2 && G.winner == null; round++) {
-      if (!unitsAt(G, bi, attacker).length || !unitsAt(G, bi, opp(attacker)).length) break;
+    var passes = 0, side = attacker;
+    for (var round = 0; round < 50 && passes < 2 && G.winner == null; round++) {
+      if (!unitsAt(G, bi, attacker).length || (!nonCombat && !unitsAt(G, bi, opp(attacker)).length)) break;
+      if (nonCombat && unitsAt(G, bi, opp(attacker)).length) break;
       var opts = showdownOptions(G, side, bi), pick = null;
       if (opts.length) {
-        var out = fightOutcome(G, attacker, bi), winning = side === attacker ? out.attackerWins : out.defenderHolds;
+        var out = nonCombat ? { attackerWins: true, defenderHolds: false } : fightOutcome(G, attacker, bi), winning = side === attacker ? out.attackerWins : out.defenderHolds;
         var labels = opts.map(function (o) { return o.kind === 'legend' ? 'Legend: ' + o.label : (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
         G.cardsHint = opts.map(function (o) { return o.card; });
-        pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, aiShowdownPick(G, side, bi, opts, winning));
+        pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), nonCombat ? (side === attacker ? 'You moved in here. Play something before you take it?' : 'The opponent moved onto ' + bfName(G, bi) + '. Respond before they take it?')
+          : (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, nonCombat && side === attacker ? null : aiShowdownPick(G, side, bi, opts, winning));
       }
       if (pick == null) passes++;
       else {
@@ -1328,7 +1335,7 @@ var RT = (function () {
   }
   // When a player plays their second card in a turn (Darius).
   async function secondCardTriggers(G, pi) {
-    if (G.playedThisTurn !== 2 || G.active !== pi) return;
+    if (G.playedBy[pi] !== 2 || G.active !== pi) return;
     var ds = unitsOf(G, pi).filter(function (u) { return u.c.P.onSecondCard; });
     for (var i = 0; i < ds.length; i++) { ds[i].temp += 2; ds[i].ex = false; log(G, ds[i].c.name + ': second card this turn, +2 Might and ready.', pi); }
   }
@@ -1343,7 +1350,7 @@ var RT = (function () {
     // Weaponmaster (Azir's Sand Soldiers): may equip one of your Equipment to it for 1 power less.
     if ((u.c.P.kw.weaponmaster || (u.c.name === 'Sand Soldier' && pp.legend.c && pp.legend.c.P.sandWeaponmaster)) && !u.dead) await weaponmaster(G, pi, u);
     G.units.filter(function (v) { return v.ctrl !== pi && v.loc !== 'base' && v.c.P.stunNewUnits; }).forEach(function (v) {
-      u.stun = G.active === u.ctrl ? 2 : 1; u.noMove = true;
+      u.stun = 1; u.noMove = true;
       log(G, v.c.name + ' stuns ' + u.c.name + '; it can\'t move this turn.', v.ctrl);
     });
     if (u.loc !== 'base' && bfNorm(G, u.loc) === 'starspring' && !u.token && !(G.starSpringUsed || {})[pi]) {
@@ -1406,10 +1413,10 @@ var RT = (function () {
     var p = G.players[pi], c = card.c;
     if (payPower && !canPay(p, energyCost, c.power || 0, cardDomains(c))) return false;
     pay(G, pi, energyCost, payPower ? (c.power || 0) : 0, cardDomains(c));
-    G.playedThisTurn++;
+    G.playedThisTurn++; G.playedBy[pi]++;
     var lsc = p.legend.c && p.legend.c.P.script;
     if (lsc && lsc.onPlayCard) lsc.onPlayCard(G, pi, 'elsewhere');
-    if (c.type === 'Unit') { G.playedThisTurn--; await playFree(G, pi, card, 'base', title); return true; }
+    if (c.type === 'Unit') { G.playedThisTurn--; G.playedBy[pi]--; await playFree(G, pi, card, 'base', title); return true; }
     log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
     if (c.type === 'Spell') {
       var sctx = { src: null, loc: null, srcName: c.name, spell: card, caster: pi };
@@ -1880,7 +1887,7 @@ var RT = (function () {
       if (k == null) return;
       opts[k].fn(); log(G, 'Veiled Temple: ' + opts[k].label + '.', pi);
     },
-    legionGate: async function (G, pi, e, tg, ctx) { if (G.playedThisTurn < 2) { ctx.stop = true; log(G, (ctx.srcName || 'Effect') + ': no Legion (you haven\'t played another card this turn).', pi); } },
+    legionGate: async function (G, pi, e, tg, ctx) { if (G.playedBy[pi] < 2) { ctx.stop = true; log(G, (ctx.srcName || 'Effect') + ': no Legion (you haven\'t played another card this turn).', pi); } },
     silence: async function (G, pi, e, tg, ctx) { G.silence = { pi: opp(pi), turn: G.turnNo }; log(G, (ctx.srcName || 'Effect') + ": the opponent can't play cards this turn.", pi); },
     rostrum: async function (G, pi, e, tg, ctx) { drawOne(G, pi); channel(G, pi, 1, true); log(G, (ctx.srcName || 'Effect') + ': draw 1 and channel 1 rune exhausted.', pi); }
   });
@@ -2017,7 +2024,7 @@ var RT = (function () {
     pay(G, pi, f.energy, 0, []);
     payAnyPower(G, pi, f.power, 'Flow');
     p.trash.splice(p.trash.indexOf(card), 1);
-    G.playedThisTurn++;
+    G.playedThisTurn++; G.playedBy[pi]++;
     log(G, p.name + ' cast' + (pi === 0 ? '' : 's') + ' ' + c.name + ' from the trash (Flow); it will be banished.', pi);
     var sc = p.legend.c && p.legend.c.P.script;
     if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, 'trash');
@@ -2033,7 +2040,7 @@ var RT = (function () {
     var pi = G.active, p = G.players[pi];
     p.turns++; G.turnNo++;
     G.players.forEach(function (pl) { pl.scored = {}; pl.drawsTurn = 0; });
-    G.playedThisTurn = 0;
+    G.playedThisTurn = 0; G.playedBy = [0, 0];
     log(G, '— Turn ' + G.turnNo + ': ' + p.name + ' —', pi);
     G.units.forEach(function (u) { if (u.ctrl === pi) u.ex = false; });
     p.runes.forEach(function (r) { r.ex = false; });
@@ -2095,15 +2102,14 @@ var RT = (function () {
         oppHolds: G.bfs.map(function (b, i) { return b.ctrl === opp(pi) ? bfName(G, i) : null; }).filter(Boolean),
         oppDefenders: G.bfs.map(function (b, i) { return unitsAt(G, i, opp(pi)).reduce(function (s2, u) { return s2 + might(u, 'def'); }, 0); }) });
     }
-    G.units.forEach(function (u) {
-      u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false; u.noMove = false;
-      if (u.tempEmpowered) { u.empowered = false; u.tempEmpowered = false; }
-      if (u.ctrl === pi && u.stun > 0) u.stun--;
-    });
     var ap = G.players[pi];
     var eot = ap.gear.filter(function (g) { return g.c.P.endOfTurn; });
     for (var gi = 0; gi < eot.length && G.winner == null; gi++) await resolveEffects(G, pi, eot[gi].c.P.endOfTurn, { src: null, loc: 'base', srcName: eot[gi].c.name });
     if (G.winner != null) return;
+    G.units.forEach(function (u) {
+      u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false; u.noMove = false; u.stun = 0;
+      if (u.tempEmpowered) { u.empowered = false; u.tempEmpowered = false; }
+    });
     G.players.forEach(function (pl) { pl.pool = 0; pl.poolPower = 0; pl.poolPowerUG = 0; pl.poolDom = {}; });
     G.units.forEach(function (u) { u.lethal = false; u.damage = 0; });
     if (ap.readyRunesEOT) {
@@ -2135,7 +2141,8 @@ var RT = (function () {
     var i = G.units.indexOf(u);
     if (i >= 0) G.units.splice(i, 1);
     var owner = G.players[u.owner];
-    u.equips.forEach(function (g) { owner.trash.push(g); });
+    u.equips.forEach(function (g) { g.loc = 'base'; owner.gear.push(g); });
+    if (u.equips.length && !G.quietRecall) log(G, u.equips.map(function (g) { return g.c.name; }).join(', ') + ' detach' + (u.equips.length > 1 ? '' : 'es') + ' and return' + (u.equips.length > 1 ? '' : 's') + ' to base.', u.owner);
     u.equips = [];
   }
   async function killUnit(G, u, reason) {
@@ -2249,6 +2256,7 @@ var RT = (function () {
       if (t.other && ctx.src && u === ctx.src) return false;
       if (t.other && ctx.excludeUid && u.uid === ctx.excludeUid) return false;
       if (t.where === 'bf' && u.loc === 'base') return false;
+      if (ctx.fromHidden && ctx.loc != null && u.loc !== ctx.loc) return false;
       if (t.where === 'inbase' && u.loc !== 'base') return false;
       if (t.where === 'here' && (ctx.loc == null || u.loc !== ctx.loc)) return false;
       if (t.maxMight != null && might(u) > t.maxMight) return false;
@@ -2382,7 +2390,7 @@ var RT = (function () {
         ctx.killedMight = tg.length ? might(tg[0]) : 0; ctx.killedCtrl = tg.length ? tg[0].ctrl : null;
         for (var k0 = 0; k0 < tg.length; k0++) await killUnit(G, tg[k0]);
         break;
-      case 'stun': tg.forEach(function (u) { u.stun = G.active === u.ctrl ? 2 : 1; }); log(G, src + ' stuns ' + names + '.', pi); break;
+      case 'stun': tg.forEach(function (u) { u.stun = 1; }); log(G, src + ' stuns ' + names + '.', pi); break;
       case 'buff': tg.forEach(function (u) { if (!u.buff) u.buff = 1; }); log(G, src + ' buffs ' + names + '.', pi); break;
       case 'might': tg.forEach(function (u) { u.temp += e.n; }); log(G, src + ' gives ' + names + ' ' + (e.n > 0 ? '+' : '') + e.n + ' Might this turn.', pi); break;
       case 'assault': tg.forEach(function (u) { u.tempAssault = (u.tempAssault || 0) + e.n; }); log(G, src + ' gives ' + names + ' Assault ' + e.n + ' this turn.', pi); break;
@@ -2526,9 +2534,9 @@ var RT = (function () {
       }
     }
     else p.champion = null;
-    G.playedThisTurn++;
+    G.playedThisTurn++; G.playedBy[pi]++;
     if (G.stats) G.stats[pi].played++;
-    if (G.playedThisTurn === 1 && G.active === pi && G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base' && u.c.P.heronDiscount; })) {
+    if (G.playedBy[pi] === 1 && G.active === pi && G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base' && u.c.P.heronDiscount; })) {
       p.discountNext = { turn: G.turnNo, energy: 2, power: 2 };
       log(G, 'Astral Heron: your next card this turn costs 2 energy and 2 power less.', pi);
     }
@@ -2558,7 +2566,7 @@ var RT = (function () {
     } else if (c.type === 'Spell') {
       log(G, p.name + ' cast' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
       if (sc && sc.onPlayCard) sc.onPlayCard(G, pi, f.from);
-      var sctx = { src: null, loc: hereLoc, targets: opts.targets, srcName: c.name, spell: card, caster: pi, fromHand: f.from === 'hand' };
+      var sctx = { src: null, loc: hereLoc, targets: opts.targets, srcName: c.name, spell: card, caster: pi, fromHand: f.from === 'hand', fromHidden: f.from === 'hidden' };
       if (await reactTo(G, opp(pi), sctx, null)) sctx.countered = true;
       else {
         await resolveEffects(G, pi, c.P.spell, sctx);
@@ -2658,9 +2666,18 @@ var RT = (function () {
       var here = movers.filter(function (u) { return !u.dead && u.loc === dest; });
       var enemies = unitsAt(G, dest, opp(pi));
       if (here.length && enemies.length) await combat(G, pi, dest, here, enemies);
-      else if (here.length && G.bfs[dest].ctrl !== pi) await conquer(G, pi, dest, here);
+      else if (here.length && G.bfs[dest].ctrl !== pi) await contest(G, pi, dest);
     }
     return { ok: true };
+  }
+  // Moving into a battlefield with no enemy units: a non-combat showdown, then the conquer if you still have units there
+  // (or combat, if the opponent brought units in with Ambush).
+  async function contest(G, pi, bi) {
+    await showdown(G, pi, bi, true);
+    if (G.winner != null) return;
+    var mine = unitsAt(G, bi, pi), foes = unitsAt(G, bi, opp(pi));
+    if (mine.length && foes.length) await combat(G, pi, bi, mine, foes);
+    else if (mine.length && G.bfs[bi].ctrl !== pi) await conquer(G, pi, bi, mine);
   }
   function assignDamage(total, units, role) {
     var rank = function (u) { var k = kwOf(u); return k.tank ? 0 : k.backline ? 2 : 1; };
@@ -2751,8 +2768,8 @@ var RT = (function () {
       report.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.taken = x.u.damage - x.before; }); });
       var dead = att.filter(function (u) { return u.damage > 0 && (u.damage >= might(u, 'att') || u.lethal || G.decreeTurn === G.turnNo); })
         .concat(def.filter(function (u) { return u.damage > 0 && (u.damage >= might(u, 'def') || u.lethal || G.decreeTurn === G.turnNo); }));
-      // survivors keep damage below their non-combat Might so Assault/Shield ending doesn't kill them afterwards
-      att.concat(def).forEach(function (u) { if (dead.indexOf(u) < 0) u.damage = Math.min(u.damage, Math.max(0, might(u) - 1)); });
+      // Combat cleanup heals every surviving unit (468.1.a.1)
+      att.concat(def).forEach(function (u) { if (dead.indexOf(u) < 0) { u.damage = 0; u.lethal = false; } });
       for (i = 0; i < dead.length; i++) { log(G, dead[i].c.name + ' dies.', dead[i].ctrl); await killUnit(G, dead[i]); }
       await checkDeaths(G);
     }
@@ -2977,7 +2994,8 @@ var RT = (function () {
     if (A.reserve && !sera && !c.P.kw.reaction && unitsOf(G, pi).length >= 2 && bonus < 2.5 &&
         p.hand.some(function (x) { return x !== card && (x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction)); }) &&
         energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.reserve) return null;
-    var ctx = { src: null, loc: c.type === 'Unit' ? 'base' : null, reserveRunes: c.power || 0 };
+    var hid = p.hidden.filter(function (h) { return h.card === card; })[0];
+    var ctx = { src: null, loc: hid ? hid.loc : c.type === 'Unit' ? 'base' : null, fromHidden: !!hid, reserveRunes: c.power || 0 };
     if (c.type === 'Unit') {
       var ev = evalEffects(G, pi, playEffects(c), ctx);
       var v = (c.energy || 0) + (c.might || 0) + (c.power || 0) * 0.5 + (ev.good ? Math.max(0, ev.value) : 0) + bonus;
@@ -3320,6 +3338,7 @@ var RT = (function () {
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
+    killUnitForTest: killUnit, drawForTest: drawOne,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
     empoweredList: function (G, pi) {
       var out = [], L = G.players[pi].legend;
