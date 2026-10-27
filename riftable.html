@@ -3918,6 +3918,12 @@ var RT = (function () {
     validateDeck: validateDeck, makeDeck: makeDeck, parseDeckText: parseDeckText, deckToText: deckToText, specOf: specOf,
     championsFor: championsFor, deckPool: deckPool, battlefieldPool: battlefieldPool, legalFor: legalFor, cardSimulated: cardSimulated,
     findCard: function (n) { return findCard(n).c; }, DOMAIN_LIST: DOMAIN_LIST,
+    // H5 ablation: the same card with its rules text removed (same cost, type, domains, Might, tags), no scripts.
+    blankCard: function (c) {
+      var b = Object.assign({}, c, { name: c.name + ' (blank)', rich: '', plain: '', mightBonus: c.mightBonus });
+      b.P = parseCard(b);
+      return b;
+    },
     real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,

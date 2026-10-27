@@ -25,12 +25,17 @@ jobs:
           python-version: '3.12'
       - name: Fetch snapshot
         run: python3 quant/snapshot.py
+      - name: Tidy and run the pre-registered analysis
+        run: |
+          python3 quant/tidy.py
+          python3 quant/analysis.py
+          python3 quant/analysis.py --exploratory
       - name: Commit new files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
-          git add quant/data/raw quant/data/manifest.csv
+          git add quant/data/raw quant/data/manifest.csv quant/results
           if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
-          git commit -m "quant: weekly meta snapshot $(date -u +%Y-%m-%d)"
+          git commit -m "quant: weekly meta snapshot and analysis $(date -u +%Y-%m-%d)"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

@@ -151,6 +151,14 @@ async function checkDeterminism(K, ids, base, maxTurns) {
     `${t.s.w}-${t.s.l}-${t.s.d}`.padEnd(15) + (t.real ? `${(100 * t.real.wr).toFixed(0)}%`.padStart(7) + String(t.real.n).padStart(9) : '   n/a'));
   const summary = { commit, N, decks: ids, games: rows.length, seconds: secs, draws, first_player_wr: firstWins / decided, first_player_ci: [fl, fh],
     real_date: R.REAL_DATE, per_deck: table.map(t => ({ id: t.id, wr: t.wr, ci: t.ci, w: t.s.w, l: t.s.l, d: t.s.d, real_wr: t.real && t.real.wr, real_n: t.real && t.real.n })), spearman: {} };
+  // 15x15 matchup matrix (seat-averaged): wins of the row deck against the column deck, and games played.
+  const mx = {}; ids.forEach(a => { mx[a] = {}; ids.forEach(b => { if (a !== b) mx[a][b] = { w: 0, n: 0 }; }); });
+  for (const r of rows) {
+    if (r.winner_deck === 'draw') continue;
+    const a = r.seat0, b = r.seat1; mx[a][b].n++; mx[b][a].n++;
+    if (r.winner_deck === a) mx[a][b].w++; else mx[b][a].w++;
+  }
+  summary.matrix = mx;
   for (const [label, minN] of [['all', 0], ['n>1000', 1000]]) {
     const sel = table.filter(t => t.real && t.real.n > minN);
     if (sel.length < 4) { console.log(`Spearman vs real (${label}): too few decks (${sel.length})`); continue; }
