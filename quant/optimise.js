@@ -125,7 +125,7 @@ async function main() {
       const cf = await score([cur, ...top.map(x => x.c)], N2, seedBase++);
       let best = null;
       top.forEach((x, i) => { const dlt = cf[i + 1].score - cf[0].score, se = pairedSE(cf[i + 1], cf[0]); if (dlt > 2 * se && (!best || dlt > best.dlt)) best = { c: x.c, dlt, se }; });
-      if (best) { cur = best.c; delete cur.desc; log.push(`${best.c.desc || ''} (+${(100 * best.dlt).toFixed(1)} ± ${(100 * best.se).toFixed(1)})`); stale = 0; console.log(`  ${id} r${r}: ${log[log.length - 1]}`); }
+      if (best) { const desc = best.c.desc; cur = best.c; delete cur.desc; log.push(`${desc || ''} (+${(100 * best.dlt).toFixed(1)} ± ${(100 * best.se).toFixed(1)})`); stale = 0; console.log(`  ${id} r${r}: ${log[log.length - 1]}`); }
       else stale++;
     }
     results.push({ id, start: s0, best: cur, log });

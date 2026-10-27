@@ -1,0 +1,1159 @@
+{
+ "commit": "496680e",
+ "snapshot_id": 2720,
+ "weights": {
+  "kennen": 0.12020033388981634,
+  "leblanc": 0.11686143572621033,
+  "rengar": 0.10350584307178629,
+  "irelia": 0.14524207011686138,
+  "akali": 0.08514190317195323,
+  "jayce": 0.10016694490818027,
+  "masteryi": 0.09515859766277127,
+  "azir": 0.0751252086811352,
+  "vex": 0.0734557595993322,
+  "reksai": 0.061769616026711174,
+  "riven": 0.011686143572621032,
+  "evelynn": 0.0033388981636060097,
+  "mordekaiser": 0.0033388981636060097,
+  "orianna": 0.0033388981636060097,
+  "seraphine": 0.0016694490818030048
+ },
+ "params": {
+  "R": 40,
+  "M": 80,
+  "N1": 4,
+  "N2": 32,
+  "N3": 250
+ },
+ "games": 1193040,
+ "seconds": 782.66,
+ "results": [
+  {
+   "id": "leblanc",
+   "start": {
+    "id": "leblanc",
+    "name": "LeBlanc",
+    "legend": "LeBlanc - Deceiver",
+    "champion": "LeBlanc - Fragmented",
+    "runes": {
+     "Mind": 4,
+     "Order": 8
+    },
+    "bfs": [
+     "Dusk Rose Lab",
+     "Star Spring",
+     "Windswept Hillock"
+    ],
+    "list": [
+     [
+      1,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      2,
+      "Watchful Sentry"
+     ],
+     [
+      3,
+      "Black Rose Dignitary"
+     ],
+     [
+      3,
+      "Karthus - Eternal"
+     ],
+     [
+      3,
+      "Glasc Mixologist"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      3,
+      "Ruined Rex"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Rift Herald"
+     ],
+     [
+      3,
+      "Baited Hook"
+     ],
+     [
+      3,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Deathgrip"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "Mirror Image"
+     ]
+    ]
+   },
+   "best": {
+    "id": "leblanc",
+    "name": "LeBlanc",
+    "legend": "LeBlanc - Deceiver",
+    "champion": "LeBlanc - Fragmented",
+    "runes": {
+     "Mind": 4,
+     "Order": 8
+    },
+    "bfs": [
+     "Dusk Rose Lab",
+     "Star Spring",
+     "Windswept Hillock"
+    ],
+    "list": [
+     [
+      1,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      2,
+      "Watchful Sentry"
+     ],
+     [
+      3,
+      "Black Rose Dignitary"
+     ],
+     [
+      3,
+      "Karthus - Eternal"
+     ],
+     [
+      3,
+      "Glasc Mixologist"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      3,
+      "Ruined Rex"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Rift Herald"
+     ],
+     [
+      3,
+      "Baited Hook"
+     ],
+     [
+      3,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Deathgrip"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ],
+     [
+      1,
+      "Mirror Image"
+     ],
+     [
+      1,
+      "Sandshifter"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    " (+2.0 ± 0.9)"
+   ],
+   "start_score": 0.751769616026781,
+   "best_score": 0.7617295492488205,
+   "gain_se": 0.003272857183349029,
+   "vs": {
+    "kennen": 0.754,
+    "leblanc": 0.512,
+    "rengar": 0.76,
+    "irelia": 0.828,
+    "akali": 0.944,
+    "jayce": 0.704,
+    "masteryi": 0.682,
+    "azir": 0.968,
+    "vex": 0.67,
+    "reksai": 0.906,
+    "riven": 0.774,
+    "evelynn": 0.662,
+    "mordekaiser": 0.812,
+    "orianna": 0.914,
+    "seraphine": 0.978
+   },
+   "text": "Legend:\n1 LeBlanc - Deceiver\n\nChampion:\n1 LeBlanc - Fragmented\n\nMain Deck:\n2 Honest Broker\n3 Soaring Scout\n2 Watchful Sentry\n3 Black Rose Dignitary\n3 Karthus - Eternal\n3 Glasc Mixologist\n3 Vi - Peacekeeper\n3 Ruined Rex\n1 Thousand-Tailed Watcher\n3 Harnessed Dragon\n3 Rift Herald\n1 Sandshifter\n3 Sacrifice\n1 Deathgrip\n1 Hidden Blade\n1 Mirror Image\n3 Baited Hook\n\nBattlefields:\n1 Dusk Rose Lab\n1 Star Spring\n1 Windswept Hillock\n\nRunes:\n4 Mind Rune\n8 Order Rune"
+  },
+  {
+   "id": "masteryi",
+   "start": {
+    "id": "masteryi",
+    "name": "Master Yi",
+    "legend": "Master Yi - Wuju Bladesman",
+    "champion": "Master Yi - Tempered",
+    "runes": {
+     "Calm": 5,
+     "Body": 7
+    },
+    "bfs": [
+     "Grove of the God-Willow",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Master Yi - Tempered"
+     ],
+     [
+      3,
+      "Charm"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "First Mate"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      3,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Ruin Runner"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Alpha Strike"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Sabotage"
+     ]
+    ]
+   },
+   "best": {
+    "id": "masteryi",
+    "name": "Master Yi",
+    "legend": "Master Yi - Wuju Bladesman",
+    "champion": "Master Yi - Tempered",
+    "runes": {
+     "Calm": 5,
+     "Body": 7
+    },
+    "bfs": [
+     "Grove of the God-Willow",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Master Yi - Tempered"
+     ],
+     [
+      3,
+      "Charm"
+     ],
+     [
+      2,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      2,
+      "First Mate"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      1,
+      "Punch First"
+     ],
+     [
+      3,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      1,
+      "Rampage"
+     ],
+     [
+      2,
+      "Ruin Runner"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Alpha Strike"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Sabotage"
+     ],
+     [
+      2,
+      "Nilah - Joyful Ascetic"
+     ],
+     [
+      1,
+      "Playful Phantom"
+     ],
+     [
+      1,
+      "Anivia - Primal"
+     ],
+     [
+      1,
+      "Crackshot Corsair"
+     ],
+     [
+      1,
+      "Back Off"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    " (+4.4 ± 2.1)",
+    " (+4.7 ± 2.1)",
+    " (+3.1 ± 1.5)",
+    " (+5.9 ± 2.2)",
+    " (+5.6 ± 2.0)",
+    " (+3.8 ± 1.3)",
+    " (+5.2 ± 2.0)"
+   ],
+   "start_score": 0.6246310517529644,
+   "best_score": 0.7184407345576537,
+   "gain_se": 0.008085302014588245,
+   "vs": {
+    "kennen": 0.69,
+    "leblanc": 0.464,
+    "rengar": 0.676,
+    "irelia": 0.828,
+    "akali": 0.946,
+    "jayce": 0.626,
+    "masteryi": 0.548,
+    "azir": 0.934,
+    "vex": 0.696,
+    "reksai": 0.906,
+    "riven": 0.754,
+    "evelynn": 0.66,
+    "mordekaiser": 0.8,
+    "orianna": 0.918,
+    "seraphine": 0.986
+   },
+   "text": "Legend:\n1 Master Yi - Wuju Bladesman\n\nChampion:\n1 Master Yi - Tempered\n\nMain Deck:\n2 First Mate\n3 Lonely Poro\n3 Pit Rookie\n3 Rengar - Trophy Hunter\n3 Scuttle Crab\n2 Ruin Runner\n2 Nilah - Joyful Ascetic\n1 Playful Phantom\n1 Anivia - Primal\n1 Crackshot Corsair\n3 Charm\n2 Defy\n3 Discipline\n1 Punch First\n2 En Garde\n1 Rampage\n1 Alpha Strike\n1 Onslaught\n1 Sabotage\n1 Back Off\n2 Zhonya's Hourglass\n\nBattlefields:\n1 Grove of the God-Willow\n1 Emperor's Dais\n1 Star Spring\n\nRunes:\n5 Calm Rune\n7 Body Rune"
+  },
+  {
+   "id": "evelynn",
+   "start": {
+    "id": "evelynn",
+    "name": "Evelynn",
+    "legend": "Evelynn - Agony's Embrace",
+    "champion": "Evelynn - Entrancing",
+    "runes": {
+     "Body": 4,
+     "Chaos": 8
+    },
+    "bfs": [
+     "Startipped Peak",
+     "Bandle Scouts' Academy",
+     "Rakelstake"
+    ],
+    "list": [
+     [
+      1,
+      "Evelynn - Entrancing"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Pyke - Returned"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Edge of Night"
+     ],
+     [
+      2,
+      "Ezreal, Prodigy"
+     ],
+     [
+      2,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Hold 'Em"
+     ],
+     [
+      2,
+      "K'Sante - Courageous"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Kharox"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Switcheroo"
+     ]
+    ]
+   },
+   "best": {
+    "id": "evelynn",
+    "name": "Evelynn",
+    "legend": "Evelynn - Agony's Embrace",
+    "champion": "Evelynn - Entrancing",
+    "runes": {
+     "Body": 4,
+     "Chaos": 8
+    },
+    "bfs": [
+     "Startipped Peak",
+     "Bandle Scouts' Academy",
+     "Rakelstake"
+    ],
+    "list": [
+     [
+      1,
+      "Evelynn - Entrancing"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Pyke - Returned"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Ezreal, Prodigy"
+     ],
+     [
+      2,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Hold 'Em"
+     ],
+     [
+      2,
+      "K'Sante - Courageous"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Kharox"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Switcheroo"
+     ],
+     [
+      1,
+      "Voracious Gromp"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Teemo - Scout"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    " (+5.9 ± 2.4)",
+    " (+6.8 ± 2.0)",
+    " (+6.8 ± 2.0)"
+   ],
+   "start_score": 0.5890784641068867,
+   "best_score": 0.6742504173623168,
+   "gain_se": 0.008024601142565292,
+   "vs": {
+    "kennen": 0.566,
+    "leblanc": 0.508,
+    "rengar": 0.606,
+    "irelia": 0.756,
+    "akali": 0.9,
+    "jayce": 0.686,
+    "masteryi": 0.518,
+    "azir": 0.926,
+    "vex": 0.596,
+    "reksai": 0.792,
+    "riven": 0.71,
+    "evelynn": 0.61,
+    "mordekaiser": 0.744,
+    "orianna": 0.884,
+    "seraphine": 0.99
+   },
+   "text": "Legend:\n1 Evelynn - Agony's Embrace\n\nChampion:\n1 Evelynn - Entrancing\n\nMain Deck:\n3 Gutter Guardian\n3 Kinkou Initiate\n3 Pyke - Returned\n3 Tail-Cloaked Matriarch\n3 Tornado Warrior\n2 Ezreal, Prodigy\n2 Fizz - Trickster\n2 K'Sante - Courageous\n2 Rengar - Trophy Hunter\n2 Vex - Apathetic\n1 Baron Nashor\n1 Kharox\n1 Voracious Gromp\n1 Teemo - Scout\n2 Hold 'Em\n2 Rampage\n1 Star-Crossed\n1 Onslaught\n1 Switcheroo\n1 Rebuke\n2 Boots of Swiftness\n\nBattlefields:\n1 Startipped Peak\n1 Bandle Scouts' Academy\n1 Rakelstake\n\nRunes:\n4 Body Rune\n8 Chaos Rune"
+  },
+  {
+   "id": "kennen",
+   "start": {
+    "id": "kennen",
+    "name": "Kennen",
+    "legend": "Heart of the Tempest",
+    "champion": "Kennen, Storm of Shuriken",
+    "runes": {
+     "Chaos": 9,
+     "Order": 3
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Minefield",
+     "Shadow Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      3,
+      "Lightning Rush"
+     ],
+     [
+      3,
+      "Rhasa the Sunderer"
+     ],
+     [
+      3,
+      "Seal of Discord"
+     ],
+     [
+      3,
+      "Shadow Order Disciple"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Traveling Merchant"
+     ],
+     [
+      2,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Last Rites"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Switcheroo"
+     ],
+     [
+      2,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Existential Dread"
+     ],
+     [
+      1,
+      "Ezreal, Prodigy"
+     ],
+     [
+      1,
+      "Flash"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Ride The Wind"
+     ],
+     [
+      1,
+      "Salvage"
+     ],
+     [
+      1,
+      "Shadows of the Past"
+     ],
+     [
+      1,
+      "The Harrowing"
+     ],
+     [
+      1,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Treasure Hunter"
+     ]
+    ]
+   },
+   "best": {
+    "id": "kennen",
+    "name": "Kennen",
+    "legend": "Heart of the Tempest",
+    "champion": "Kennen, Storm of Shuriken",
+    "runes": {
+     "Chaos": 9,
+     "Order": 3
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Minefield",
+     "Shadow Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      3,
+      "Lightning Rush"
+     ],
+     [
+      3,
+      "Rhasa the Sunderer"
+     ],
+     [
+      3,
+      "Seal of Discord"
+     ],
+     [
+      3,
+      "Shadow Order Disciple"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Traveling Merchant"
+     ],
+     [
+      1,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Last Rites"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Switcheroo"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Existential Dread"
+     ],
+     [
+      2,
+      "Ezreal, Prodigy"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Ride The Wind"
+     ],
+     [
+      1,
+      "Salvage"
+     ],
+     [
+      1,
+      "Shadows of the Past"
+     ],
+     [
+      1,
+      "The Harrowing"
+     ],
+     [
+      1,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Treasure Hunter"
+     ],
+     [
+      1,
+      "Gutter Guardian"
+     ],
+     [
+      1,
+      "Leona - Determined"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    " (+4.2 ± 2.0)",
+    " (+4.1 ± 2.1)",
+    " (+3.8 ± 1.7)",
+    " (+2.5 ± 1.2)"
+   ],
+   "start_score": 0.6112921535893582,
+   "best_score": 0.6755492487479596,
+   "gain_se": 0.007704384517213642,
+   "vs": {
+    "kennen": 0.6,
+    "leblanc": 0.366,
+    "rengar": 0.64,
+    "irelia": 0.798,
+    "akali": 0.94,
+    "jayce": 0.586,
+    "masteryi": 0.552,
+    "azir": 0.938,
+    "vex": 0.692,
+    "reksai": 0.788,
+    "riven": 0.684,
+    "evelynn": 0.664,
+    "mordekaiser": 0.704,
+    "orianna": 0.924,
+    "seraphine": 0.978
+   },
+   "text": "Legend:\n1 Heart of the Tempest\n\nChampion:\n1 Kennen, Storm of Shuriken\n\nMain Deck:\n3 Rhasa the Sunderer\n3 Shadow Order Disciple\n3 Tail-Cloaked Matriarch\n3 Traveling Merchant\n1 Fizz - Trickster\n3 Tornado Warrior\n2 Ezreal, Prodigy\n1 Tideturner\n1 Treasure Hunter\n1 Gutter Guardian\n1 Leona - Determined\n3 Lightning Rush\n1 Star-Crossed\n2 Switcheroo\n1 Existential Dread\n1 Gust\n1 Ride The Wind\n1 Salvage\n1 Shadows of the Past\n1 The Harrowing\n3 Seal of Discord\n2 Last Rites\n\nBattlefields:\n1 Zaun Warrens\n1 Minefield\n1 Shadow Temple\n\nRunes:\n9 Chaos Rune\n3 Order Rune"
+  },
+  {
+   "id": "riven",
+   "start": {
+    "id": "riven",
+    "name": "Riven",
+    "legend": "Riven - The Exile",
+    "champion": "Riven - Broken Blade",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Rakelstake",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Riven - Broken Blade"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Blade of the Exile"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Battle Preparations"
+     ],
+     [
+      2,
+      "Bedeviling Stranger"
+     ],
+     [
+      2,
+      "Blitzcrank - Impassive"
+     ],
+     [
+      2,
+      "Gust"
+     ],
+     [
+      2,
+      "Reckless Innovator"
+     ],
+     [
+      2,
+      "Switcheroo"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ]
+    ]
+   },
+   "best": {
+    "id": "riven",
+    "name": "Riven",
+    "legend": "Riven - The Exile",
+    "champion": "Riven - Broken Blade",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Rakelstake",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      2,
+      "Riven - Broken Blade"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Blade of the Exile"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      2,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Battle Preparations"
+     ],
+     [
+      2,
+      "Bedeviling Stranger"
+     ],
+     [
+      2,
+      "Blitzcrank - Impassive"
+     ],
+     [
+      2,
+      "Gust"
+     ],
+     [
+      3,
+      "Reckless Innovator"
+     ],
+     [
+      2,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Tasty Faefolk"
+     ],
+     [
+      1,
+      "Pyke - Returned"
+     ],
+     [
+      1,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    " (+4.3 ± 1.4)",
+    " (+7.7 ± 2.6)",
+    " (+4.2 ± 2.0)",
+    " (+3.8 ± 1.5)",
+    " (+4.5 ± 2.1)",
+    " (+3.6 ± 1.6)",
+    " (+4.3 ± 2.0)"
+   ],
+   "start_score": 0.5184273789649727,
+   "best_score": 0.6985175292154082,
+   "gain_se": 0.008188885607727308,
+   "vs": {
+    "kennen": 0.626,
+    "leblanc": 0.424,
+    "rengar": 0.632,
+    "irelia": 0.852,
+    "akali": 0.926,
+    "jayce": 0.6,
+    "masteryi": 0.598,
+    "azir": 0.916,
+    "vex": 0.706,
+    "reksai": 0.824,
+    "riven": 0.69,
+    "evelynn": 0.642,
+    "mordekaiser": 0.674,
+    "orianna": 0.924,
+    "seraphine": 0.958
+   },
+   "text": "Legend:\n1 Riven - The Exile\n\nChampion:\n1 Riven - Broken Blade\n\nMain Deck:\n1 Riven - Broken Blade\n3 Astral Heron\n2 Scuttle Crab\n3 Stellacorn Herder\n3 Tideturner\n2 Bedeviling Stranger\n2 Blitzcrank - Impassive\n3 Reckless Innovator\n1 Tasty Faefolk\n1 Pyke - Returned\n1 Tornado Warrior\n1 Trevor Snoozebottom\n3 Defy\n3 Discipline\n1 Battle Preparations\n2 Gust\n2 Rebuke\n3 Blade of the Exile\n2 Zhonya's Hourglass\n\nBattlefields:\n1 Rakelstake\n1 Emperor's Dais\n1 Star Spring\n\nRunes:\n5 Calm Rune\n7 Chaos Rune"
+  }
+ ]
+}
