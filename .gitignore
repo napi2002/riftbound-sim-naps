@@ -2,3 +2,4 @@ node_modules/
 __pycache__/
 quant/data/sim/*.csv
 quant/data/tidy/
+quant/data/sim/metagen_state.json
