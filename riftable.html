@@ -256,6 +256,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 #end .moments .tn { font-weight: 800; font-size: 11px; background: var(--line); border-radius: 5px; padding: 1px 5px; margin-top: 1px; }
 #end .moments .ic { font-weight: 800; }
 #end .moments li.bad .ic { color: var(--bad); } #end .moments li.good .ic { color: var(--good); } #end .moments li.tip .ic { color: var(--accent); }
+.deck .real { display: block; font-size: 12px; color: var(--muted); }
+.deck .real b { color: var(--ink); }
+#menu .matchup { font-size: 14px; line-height: 1.35; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 12px 0 0; }
 
 </style>
 </head>
@@ -267,6 +270,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   <div class="decks" id="decks-mine"></div>
   <h2>AI deck</h2>
   <div class="decks" id="decks-ai"></div>
+  <p class="matchup" id="matchup"></p>
   <button class="btn primary" id="start">Start game</button>
   <details class="rules" open>
     <summary>How to play</summary>
@@ -354,6 +358,11 @@ var RT = (function () {
       bfs: ["Void Gate", "Black Rose Sanctum", "Forgotten Monument"],
       list: L("1 Seraphine - Inspiring; 3 Bellows Breath; 3 Carrion Dredger; 3 Concert Poster; 3 Encore; 3 Imperial Decree; 3 Trifarian Captain; 3 Vanguard Captain; 2 Eclipse; 2 Faithful Manufactor; 2 Hidden Blade; 2 Mordekaiser - Dominating; 2 Raucous Anthem; 2 Seal of Unity; 2 Shadow's Call; 2 Stupefy; 2 Thousand-Tailed Watcher") }
   ];
+
+  // Real tournament results from riftbound.gg's meta snapshot (2026-10-27, 45836 matches over 30 days):
+  // win rate, sample size, tier, top-8 rate, and the head-to-head matchups the free data includes.
+  var REAL = {"kennen":{"wr":0.58,"n":6289,"tier":"S","top8":0.154,"mu":{"jayce":[0.82,441]}},"leblanc":{"wr":0.53,"n":6216,"tier":"A","top8":0.116,"mu":{"reksai":[0.67,263],"vex":[0.32,328]}},"rengar":{"wr":0.55,"n":5600,"tier":"S","top8":0.18,"mu":{"reksai":[0.64,232],"jayce":[0.38,340]}},"irelia":{"wr":0.56,"n":7224,"tier":"S","top8":0.163,"mu":{"reksai":[0.38,304]}},"akali":{"wr":0.48,"n":4108,"tier":"C","top8":0.098,"mu":{"reksai":[0.57,164],"jayce":[0.23,262]}},"jayce":{"wr":0.52,"n":4984,"tier":"B","top8":0.084,"mu":{"akali":[0.77,262],"kennen":[0.18,441]}},"masteryi":{"wr":0.53,"n":4571,"tier":"B","top8":0.138,"mu":{"jayce":[0.36,320]}},"azir":{"wr":0.51,"n":3831,"tier":"B","top8":0.129,"mu":{"jayce":[0.42,266]}},"vex":{"wr":0.53,"n":4011,"tier":"A","top8":0.17,"mu":{"kennen":[0.4,335]}},"reksai":{"wr":0.52,"n":3239,"tier":"C","top8":0.125,"mu":{"jayce":[0.71,215],"leblanc":[0.33,263]}},"riven":{"wr":0.62,"n":709,"tier":"S","top8":0.089,"mu":{"kennen":[0.45,102]}},"evelynn":{"wr":0.45,"n":219,"tier":null,"top8":0,"mu":{"seraphine":[0.6,10]}},"mordekaiser":{"wr":0.45,"n":185,"tier":null,"top8":0.062,"mu":{"akali":[0.64,11],"riven":[0.28,25]}},"orianna":{"wr":0.42,"n":170,"tier":null,"top8":0.031,"mu":{"evelynn":[0.42,12],"kennen":[0.11,10]}},"seraphine":{"wr":0.36,"n":143,"tier":null,"top8":0,"mu":{"evelynn":[0.4,10],"riven":[0.21,15]}}};
+  var REAL_DATE = '2026-10-27', REAL_MATCHES = 45836;
 
   /* ---------------- card data + parser ---------------- */
   var CARDS = [], BYNORM = {};
@@ -3312,6 +3321,7 @@ var RT = (function () {
   }
 
   return {
+    real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,
     gameTips: gameTips,
@@ -3411,11 +3421,26 @@ if (typeof module !== 'undefined') module.exports = RT;
         return '<button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
           '<span class="thumb">' + art(d.legendCard || { name: d.name, domain: doms, type: 'Legend' }, 40, 40) + '</span>' +
           '<span class="info"><span class="nm">' + esc(d.name) + '<span class="dots">' + doms.map(function (x) { return '<i style="background:' + DC[x] + '"></i>'; }).join('') + '</span></span>' +
-          '<span class="lb">' + esc(d.label) + '</span>' +
+          '<span class="lb">' + esc(d.label) + '</span>' + realLine(d) +
           (d.fixes.length && side === 'mine' ? '<span class="fixnote">' + d.fixes.length + ' card' + (d.fixes.length > 1 ? 's' : '') + ' substituted (not in Riftcodex)</span>' : '') + '</span>' +
           '<span class="ct' + (d.found === d.total ? ' ok' : '') + '">' + d.found + '/' + d.total + ' found</span></button>';
       }).join('');
     });
+    $('matchup').innerHTML = matchupLine();
+  }
+  // Real tournament stats (riftbound.gg snapshot) shown on each deck.
+  function realLine(d) {
+    var r = RT.real(d.id);
+    if (!r) return '';
+    return '<span class="real">Tournaments: <b>' + Math.round(r.wr * 100) + '%</b> win rate · ' + r.n.toLocaleString() + ' matches' + (r.tier ? ' · tier ' + r.tier : ' · new, small sample') + '</span>';
+  }
+  function matchupLine() {
+    var a = RT.real(S.mine), b = RT.real(S.ai), da = RT.DECKS.filter(function (d) { return d.id === S.mine; })[0], db = RT.DECKS.filter(function (d) { return d.id === S.ai; })[0];
+    if (!a || !b || !da || !db) return '';
+    var direct = a.mu[S.ai] ? a.mu[S.ai][0] : b.mu[S.mine] ? 1 - b.mu[S.mine][0] : null, n = a.mu[S.ai] ? a.mu[S.ai][1] : b.mu[S.mine] ? b.mu[S.mine][1] : 0;
+    var txt = direct != null ? 'In real tournaments <b>' + esc(da.name) + '</b> wins <b>' + Math.round(direct * 100) + '%</b> of games against ' + esc(db.name) + ' (' + n + ' matches).'
+      : 'Real overall win rates: ' + esc(da.name) + ' ' + Math.round(a.wr * 100) + '% vs ' + esc(db.name) + ' ' + Math.round(b.wr * 100) + '% (head-to-head not in the free data).';
+    return txt + ' <span style="color:var(--muted)">Data: riftbound.gg, ' + RT.REAL_MATCHES.toLocaleString() + ' tournament matches, ' + RT.REAL_DATE + '.</span>';
   }
   document.addEventListener('click', function (ev) {
     var b = ev.target.closest('.deck');

@@ -57,6 +57,11 @@ var RT = (function () {
       list: L("1 Seraphine - Inspiring; 3 Bellows Breath; 3 Carrion Dredger; 3 Concert Poster; 3 Encore; 3 Imperial Decree; 3 Trifarian Captain; 3 Vanguard Captain; 2 Eclipse; 2 Faithful Manufactor; 2 Hidden Blade; 2 Mordekaiser - Dominating; 2 Raucous Anthem; 2 Seal of Unity; 2 Shadow's Call; 2 Stupefy; 2 Thousand-Tailed Watcher") }
   ];
 
+  // Real tournament results from riftbound.gg's meta snapshot (2026-10-27, 45836 matches over 30 days):
+  // win rate, sample size, tier, top-8 rate, and the head-to-head matchups the free data includes.
+  var REAL = {"kennen":{"wr":0.58,"n":6289,"tier":"S","top8":0.154,"mu":{"jayce":[0.82,441]}},"leblanc":{"wr":0.53,"n":6216,"tier":"A","top8":0.116,"mu":{"reksai":[0.67,263],"vex":[0.32,328]}},"rengar":{"wr":0.55,"n":5600,"tier":"S","top8":0.18,"mu":{"reksai":[0.64,232],"jayce":[0.38,340]}},"irelia":{"wr":0.56,"n":7224,"tier":"S","top8":0.163,"mu":{"reksai":[0.38,304]}},"akali":{"wr":0.48,"n":4108,"tier":"C","top8":0.098,"mu":{"reksai":[0.57,164],"jayce":[0.23,262]}},"jayce":{"wr":0.52,"n":4984,"tier":"B","top8":0.084,"mu":{"akali":[0.77,262],"kennen":[0.18,441]}},"masteryi":{"wr":0.53,"n":4571,"tier":"B","top8":0.138,"mu":{"jayce":[0.36,320]}},"azir":{"wr":0.51,"n":3831,"tier":"B","top8":0.129,"mu":{"jayce":[0.42,266]}},"vex":{"wr":0.53,"n":4011,"tier":"A","top8":0.17,"mu":{"kennen":[0.4,335]}},"reksai":{"wr":0.52,"n":3239,"tier":"C","top8":0.125,"mu":{"jayce":[0.71,215],"leblanc":[0.33,263]}},"riven":{"wr":0.62,"n":709,"tier":"S","top8":0.089,"mu":{"kennen":[0.45,102]}},"evelynn":{"wr":0.45,"n":219,"tier":null,"top8":0,"mu":{"seraphine":[0.6,10]}},"mordekaiser":{"wr":0.45,"n":185,"tier":null,"top8":0.062,"mu":{"akali":[0.64,11],"riven":[0.28,25]}},"orianna":{"wr":0.42,"n":170,"tier":null,"top8":0.031,"mu":{"evelynn":[0.42,12],"kennen":[0.11,10]}},"seraphine":{"wr":0.36,"n":143,"tier":null,"top8":0,"mu":{"evelynn":[0.4,10],"riven":[0.21,15]}}};
+  var REAL_DATE = '2026-10-27', REAL_MATCHES = 45836;
+
   /* ---------------- card data + parser ---------------- */
   var CARDS = [], BYNORM = {};
   function loadCards(arr) {
@@ -3014,6 +3019,7 @@ var RT = (function () {
   }
 
   return {
+    real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,
     gameTips: gameTips,

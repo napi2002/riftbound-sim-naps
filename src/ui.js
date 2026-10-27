@@ -77,11 +77,26 @@
         return '<button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
           '<span class="thumb">' + art(d.legendCard || { name: d.name, domain: doms, type: 'Legend' }, 40, 40) + '</span>' +
           '<span class="info"><span class="nm">' + esc(d.name) + '<span class="dots">' + doms.map(function (x) { return '<i style="background:' + DC[x] + '"></i>'; }).join('') + '</span></span>' +
-          '<span class="lb">' + esc(d.label) + '</span>' +
+          '<span class="lb">' + esc(d.label) + '</span>' + realLine(d) +
           (d.fixes.length && side === 'mine' ? '<span class="fixnote">' + d.fixes.length + ' card' + (d.fixes.length > 1 ? 's' : '') + ' substituted (not in Riftcodex)</span>' : '') + '</span>' +
           '<span class="ct' + (d.found === d.total ? ' ok' : '') + '">' + d.found + '/' + d.total + ' found</span></button>';
       }).join('');
     });
+    $('matchup').innerHTML = matchupLine();
+  }
+  // Real tournament stats (riftbound.gg snapshot) shown on each deck.
+  function realLine(d) {
+    var r = RT.real(d.id);
+    if (!r) return '';
+    return '<span class="real">Tournaments: <b>' + Math.round(r.wr * 100) + '%</b> win rate · ' + r.n.toLocaleString() + ' matches' + (r.tier ? ' · tier ' + r.tier : ' · new, small sample') + '</span>';
+  }
+  function matchupLine() {
+    var a = RT.real(S.mine), b = RT.real(S.ai), da = RT.DECKS.filter(function (d) { return d.id === S.mine; })[0], db = RT.DECKS.filter(function (d) { return d.id === S.ai; })[0];
+    if (!a || !b || !da || !db) return '';
+    var direct = a.mu[S.ai] ? a.mu[S.ai][0] : b.mu[S.mine] ? 1 - b.mu[S.mine][0] : null, n = a.mu[S.ai] ? a.mu[S.ai][1] : b.mu[S.mine] ? b.mu[S.mine][1] : 0;
+    var txt = direct != null ? 'In real tournaments <b>' + esc(da.name) + '</b> wins <b>' + Math.round(direct * 100) + '%</b> of games against ' + esc(db.name) + ' (' + n + ' matches).'
+      : 'Real overall win rates: ' + esc(da.name) + ' ' + Math.round(a.wr * 100) + '% vs ' + esc(db.name) + ' ' + Math.round(b.wr * 100) + '% (head-to-head not in the free data).';
+    return txt + ' <span style="color:var(--muted)">Data: riftbound.gg, ' + RT.REAL_MATCHES.toLocaleString() + ' tournament matches, ' + RT.REAL_DATE + '.</span>';
   }
   document.addEventListener('click', function (ev) {
     var b = ev.target.closest('.deck');

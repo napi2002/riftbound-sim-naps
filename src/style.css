@@ -245,3 +245,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 #end .moments .tn { font-weight: 800; font-size: 11px; background: var(--line); border-radius: 5px; padding: 1px 5px; margin-top: 1px; }
 #end .moments .ic { font-weight: 800; }
 #end .moments li.bad .ic { color: var(--bad); } #end .moments li.good .ic { color: var(--good); } #end .moments li.tip .ic { color: var(--accent); }
+.deck .real { display: block; font-size: 12px; color: var(--muted); }
+.deck .real b { color: var(--ink); }
+#menu .matchup { font-size: 14px; line-height: 1.35; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 12px 0 0; }
