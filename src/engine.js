@@ -303,7 +303,7 @@ var RT = (function () {
       if (!p.trash.length) { return; }
       p.deck = shuffle(p.trash.splice(0), G.rnd);
       log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
-      addPoints(G, opp(pi), 1);
+      addPoints(G, opp(pi), 1, p.name + ' burned out');
       if (G.winner != null) return;
     }
     p.hand.push(p.deck.shift());
@@ -359,10 +359,12 @@ var RT = (function () {
   }
 
   /* ---------------- scoring ---------------- */
-  function addPoints(G, pi, n) {
+  // Every point goes through here so the log (and the UI pop-up) can say who scored, why, and the new total.
+  function addPoints(G, pi, n, why) {
     if (G.winner != null) return;
     var p = G.players[pi];
     p.points = Math.min(WIN, p.points + n);
+    log(G, '★ ' + p.name + ' +' + n + ' point' + (n > 1 ? 's' : '') + (why ? ' — ' + why : '') + '  (' + p.points + '/' + WIN + ')', pi);
     if (p.points >= WIN) { G.winner = pi; log(G, p.name + (pi === 0 ? ' win' : ' wins') + '!', pi); }
   }
   function scoreBf(G, pi, bi, how) {
@@ -371,10 +373,9 @@ var RT = (function () {
     p.scored[bi] = true;
     if (how === 'conquer' && p.points === WIN - 1) {
       var all = G.bfs.every(function (b, i) { return i === bi || p.scored[i]; });
-      if (!all) { log(G, p.name + ' can\'t take the final point by conquering yet: draw 1 instead.', pi); drawOne(G, pi); return; }
+      if (!all) { log(G, '★ ' + p.name + ' can\'t take the final point by conquering (the other battlefield isn\'t scored this turn): draw 1 instead.', pi); drawOne(G, pi); return; }
     }
-    log(G, p.name + ' score' + (pi === 0 ? '' : 's') + ' 1 for ' + (how === 'conquer' ? 'conquering ' : 'holding ') + bfName(G, bi) + '.', pi);
-    addPoints(G, pi, 1);
+    addPoints(G, pi, 1, (how === 'conquer' ? 'conquered ' : 'held ') + bfName(G, bi));
   }
 
   /* ---------------- decisions ---------------- */
@@ -952,7 +953,7 @@ var RT = (function () {
         if (!p.trash.length) break;
         p.deck = shuffle(p.trash.splice(0), G.rnd);
         log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
-        addPoints(G, opp(pi), 1);
+        addPoints(G, opp(pi), 1, p.name + ' burned out');
       }
       if (p.deck.length) { p.trash.push(p.deck.shift()); done++; }
     }
@@ -1490,7 +1491,7 @@ var RT = (function () {
           log(G, p.name + ' discard' + (pi === 0 ? '' : 's') + ' ' + worst.c.name + '.', pi);
         }
         break;
-      case 'score': log(G, src + ': score ' + e.n + '.', pi); addPoints(G, pi, e.n); break;
+      case 'score': addPoints(G, pi, e.n, src); break;
       default: if (OPS[e.op]) await OPS[e.op](G, pi, e, tg, ctx);
     }
   }
@@ -1659,6 +1660,21 @@ var RT = (function () {
   }
   async function combat(G, pi, bi, attackers, defenders) {
     var A = G.players[pi], D = G.players[opp(pi)], i;
+    var rep0 = { bf: bfName(G, bi), attacker: pi, ptsBefore: [G.players[0].points, G.players[1].points] };
+    try { await combatInner(G, pi, bi, attackers, defenders, rep0); }
+    finally {
+      if (rep0.result && G.ask && G.human >= 0) {
+        if (!rep0.sides) rep0.sides = [[attackers, pi, 'att'], [defenders, opp(pi), 'def']].map(function (sd) {
+          return { pi: sd[1], role: sd[2], total: 0, units: sd[0].map(function (u) { return { u: u, name: u.c.name, might: 0, taken: 0 }; }) };
+        });
+        rep0.ptsAfter = [G.players[0].points, G.players[1].points];
+        rep0.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.died = !!x.u.dead; delete x.u; }); });
+        await ask(G, G.human, { type: 'combat', report: rep0, auto: true });
+      }
+    }
+  }
+  async function combatInner(G, pi, bi, attackers, defenders, report) {
+    var A = G.players[pi], D = G.players[opp(pi)], i;
     log(G, '⚔ Combat at ' + bfName(G, bi) + ': ' + attackers.map(function (u) { return u.c.name; }).join(', ') + ' vs ' + defenders.map(function (u) { return u.c.name; }).join(', ') + '.', pi);
     for (i = 0; i < attackers.length; i++) await fireUnit(G, attackers[i], 'attack');
     for (i = 0; i < defenders.length; i++) await fireUnit(G, defenders[i], 'defend');
@@ -1677,7 +1693,11 @@ var RT = (function () {
       var aD = att.reduce(function (s, u) { return s + (u.stun ? 0 : might(u, 'att')); }, 0);
       var dD = def.reduce(function (s, u) { return s + (u.stun ? 0 : might(u, 'def')); }, 0);
       log(G, A.name + ' deal' + (pi === 0 ? '' : 's') + ' ' + aD + ', ' + D.name + ' deal' + (pi === 0 ? 's' : '') + ' ' + dD + '.', pi);
+      report.sides = [[att, pi, 'att', aD], [def, opp(pi), 'def', dD]].map(function (sd) {
+        return { pi: sd[1], role: sd[2], total: sd[3], units: sd[0].map(function (u) { return { u: u, name: u.c.name, might: u.stun ? 0 : might(u, sd[2]), stunned: !!u.stun, before: u.damage }; }) };
+      });
       assignDamage(aD, def, 'def'); assignDamage(dD, att, 'att');
+      report.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.taken = x.u.damage - x.before; }); });
       var dead = att.filter(function (u) { return u.damage > 0 && u.damage >= might(u, 'att'); })
         .concat(def.filter(function (u) { return u.damage > 0 && u.damage >= might(u, 'def'); }));
       // survivors keep damage below their non-combat Might so Assault/Shield ending doesn't kill them afterwards
@@ -1691,11 +1711,13 @@ var RT = (function () {
     var winners = att.length && !def.length ? att : !att.length && def.length ? def : [];
     for (i = 0; i < winners.length; i++) await fireUnit(G, winners[i], 'winCombat');
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
-    if (att.length && !def.length) { await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
+    if (att.length && !def.length) { report.result = A.name + (pi === 0 ? ' win' : ' wins') + ' and conquer' + (pi === 0 ? '' : 's') + ' ' + bfName(G, bi) + '.'; report.winner = pi; await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
     else if (att.length && def.length) {
       att.forEach(function (u) { u.loc = 'base'; });
+      report.result = 'Both sides survive: the attackers go back to base and ' + D.name + ' keep' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.'; report.winner = -1;
       log(G, 'Both sides survive: attackers return to base.', pi);
-    } else if (!att.length && def.length) { await fireLegend(G, opp(pi), 'winCombat', { loc: bi }); log(G, D.name + ' hold' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.', opp(pi)); }
+    } else if (!att.length && def.length) { report.result = D.name + ' defend' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + ': every attacker died.'; report.winner = opp(pi); await fireLegend(G, opp(pi), 'winCombat', { loc: bi }); log(G, D.name + ' hold' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.', opp(pi)); }
+    else { report.result = 'Everyone died. ' + bfName(G, bi) + ' is now open.'; report.winner = -1; }
     updateControl(G);
   }
   async function conquer(G, pi, bi, units) {

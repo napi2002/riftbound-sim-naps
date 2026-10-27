@@ -205,6 +205,32 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bf .bfx { font-size: 10.5px; line-height: 1.2; max-height: 2.4em; margin: 2px 2px 3px; color: var(--muted); padding: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 #toast { position: fixed; left: 50%; top: 10px; transform: translate(-50%, -80px); z-index: 40; max-width: 92vw; padding: 8px 14px; border-radius: 12px; background: var(--emp); color: #fff; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); transition: transform .25s; pointer-events: none; text-align: center; }
 #toast.show { transform: translate(-50%, 0); }
+/* scores */
+.strip .score { font-family: 'Marcellus', serif; font-size: 20px; color: var(--c); line-height: 1; }
+.strip .score small { font-size: 12px; color: var(--muted); }
+.bf .scored { display: flex; flex-wrap: wrap; gap: 3px; padding: 2px 0; min-height: 0; }
+.bf .sc { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 99px; color: #fff; }
+.bf .sc.p0 { background: var(--me); } .bf .sc.p1 { background: var(--ai); }
+.bf .sc.hint { background: transparent; color: var(--muted); font-weight: 600; padding: 0 2px; }
+#toast.pts.p0 { background: var(--me); } #toast.pts.p1 { background: var(--ai); }
+#toast div + div { margin-top: 3px; padding-top: 3px; border-top: 1px solid rgba(255,255,255,.35); }
+/* combat report */
+.cgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cside { background: var(--panel2); border-radius: 10px; padding: 6px 8px; border-top: 4px solid var(--c); }
+.cside.me { --c: var(--me); } .cside.ai { --c: var(--ai); }
+.cside .ch { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.crow { display: grid; grid-template-columns: 1fr auto auto; gap: 0 6px; font-size: 13px; padding: 3px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
+.crow .cn { grid-column: 1 / -1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crow .cm::before { content: 'Might '; color: var(--muted); font-size: 11px; }
+.crow .ct { color: var(--bad); font-weight: 700; }
+.crow .cd { color: var(--good); font-size: 12px; }
+.crow.died .cn { text-decoration: line-through; opacity: .7; }
+.crow.died .cd { color: var(--bad); font-weight: 700; }
+.ctot { font-size: 13px; margin-top: 4px; }
+.ctot b { font-size: 18px; color: var(--c); }
+.cres { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--panel2); font-weight: 700; font-size: 15px; text-align: center; }
+.cres.me { background: var(--me); color: #fff; } .cres.ai { background: var(--ai); color: #fff; }
+.cpts { text-align: center; margin-top: 8px; font-size: 15px; }
 
 </style>
 </head>
@@ -550,7 +576,7 @@ var RT = (function () {
       if (!p.trash.length) { return; }
       p.deck = shuffle(p.trash.splice(0), G.rnd);
       log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
-      addPoints(G, opp(pi), 1);
+      addPoints(G, opp(pi), 1, p.name + ' burned out');
       if (G.winner != null) return;
     }
     p.hand.push(p.deck.shift());
@@ -606,10 +632,12 @@ var RT = (function () {
   }
 
   /* ---------------- scoring ---------------- */
-  function addPoints(G, pi, n) {
+  // Every point goes through here so the log (and the UI pop-up) can say who scored, why, and the new total.
+  function addPoints(G, pi, n, why) {
     if (G.winner != null) return;
     var p = G.players[pi];
     p.points = Math.min(WIN, p.points + n);
+    log(G, '★ ' + p.name + ' +' + n + ' point' + (n > 1 ? 's' : '') + (why ? ' — ' + why : '') + '  (' + p.points + '/' + WIN + ')', pi);
     if (p.points >= WIN) { G.winner = pi; log(G, p.name + (pi === 0 ? ' win' : ' wins') + '!', pi); }
   }
   function scoreBf(G, pi, bi, how) {
@@ -618,10 +646,9 @@ var RT = (function () {
     p.scored[bi] = true;
     if (how === 'conquer' && p.points === WIN - 1) {
       var all = G.bfs.every(function (b, i) { return i === bi || p.scored[i]; });
-      if (!all) { log(G, p.name + ' can\'t take the final point by conquering yet: draw 1 instead.', pi); drawOne(G, pi); return; }
+      if (!all) { log(G, '★ ' + p.name + ' can\'t take the final point by conquering (the other battlefield isn\'t scored this turn): draw 1 instead.', pi); drawOne(G, pi); return; }
     }
-    log(G, p.name + ' score' + (pi === 0 ? '' : 's') + ' 1 for ' + (how === 'conquer' ? 'conquering ' : 'holding ') + bfName(G, bi) + '.', pi);
-    addPoints(G, pi, 1);
+    addPoints(G, pi, 1, (how === 'conquer' ? 'conquered ' : 'held ') + bfName(G, bi));
   }
 
   /* ---------------- decisions ---------------- */
@@ -1199,7 +1226,7 @@ var RT = (function () {
         if (!p.trash.length) break;
         p.deck = shuffle(p.trash.splice(0), G.rnd);
         log(G, p.name + ' burned out: trash shuffled into a new deck, ' + G.players[opp(pi)].name + ' scores 1.', pi);
-        addPoints(G, opp(pi), 1);
+        addPoints(G, opp(pi), 1, p.name + ' burned out');
       }
       if (p.deck.length) { p.trash.push(p.deck.shift()); done++; }
     }
@@ -1737,7 +1764,7 @@ var RT = (function () {
           log(G, p.name + ' discard' + (pi === 0 ? '' : 's') + ' ' + worst.c.name + '.', pi);
         }
         break;
-      case 'score': log(G, src + ': score ' + e.n + '.', pi); addPoints(G, pi, e.n); break;
+      case 'score': addPoints(G, pi, e.n, src); break;
       default: if (OPS[e.op]) await OPS[e.op](G, pi, e, tg, ctx);
     }
   }
@@ -1906,6 +1933,21 @@ var RT = (function () {
   }
   async function combat(G, pi, bi, attackers, defenders) {
     var A = G.players[pi], D = G.players[opp(pi)], i;
+    var rep0 = { bf: bfName(G, bi), attacker: pi, ptsBefore: [G.players[0].points, G.players[1].points] };
+    try { await combatInner(G, pi, bi, attackers, defenders, rep0); }
+    finally {
+      if (rep0.result && G.ask && G.human >= 0) {
+        if (!rep0.sides) rep0.sides = [[attackers, pi, 'att'], [defenders, opp(pi), 'def']].map(function (sd) {
+          return { pi: sd[1], role: sd[2], total: 0, units: sd[0].map(function (u) { return { u: u, name: u.c.name, might: 0, taken: 0 }; }) };
+        });
+        rep0.ptsAfter = [G.players[0].points, G.players[1].points];
+        rep0.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.died = !!x.u.dead; delete x.u; }); });
+        await ask(G, G.human, { type: 'combat', report: rep0, auto: true });
+      }
+    }
+  }
+  async function combatInner(G, pi, bi, attackers, defenders, report) {
+    var A = G.players[pi], D = G.players[opp(pi)], i;
     log(G, '⚔ Combat at ' + bfName(G, bi) + ': ' + attackers.map(function (u) { return u.c.name; }).join(', ') + ' vs ' + defenders.map(function (u) { return u.c.name; }).join(', ') + '.', pi);
     for (i = 0; i < attackers.length; i++) await fireUnit(G, attackers[i], 'attack');
     for (i = 0; i < defenders.length; i++) await fireUnit(G, defenders[i], 'defend');
@@ -1924,7 +1966,11 @@ var RT = (function () {
       var aD = att.reduce(function (s, u) { return s + (u.stun ? 0 : might(u, 'att')); }, 0);
       var dD = def.reduce(function (s, u) { return s + (u.stun ? 0 : might(u, 'def')); }, 0);
       log(G, A.name + ' deal' + (pi === 0 ? '' : 's') + ' ' + aD + ', ' + D.name + ' deal' + (pi === 0 ? 's' : '') + ' ' + dD + '.', pi);
+      report.sides = [[att, pi, 'att', aD], [def, opp(pi), 'def', dD]].map(function (sd) {
+        return { pi: sd[1], role: sd[2], total: sd[3], units: sd[0].map(function (u) { return { u: u, name: u.c.name, might: u.stun ? 0 : might(u, sd[2]), stunned: !!u.stun, before: u.damage }; }) };
+      });
       assignDamage(aD, def, 'def'); assignDamage(dD, att, 'att');
+      report.sides.forEach(function (sd) { sd.units.forEach(function (x) { x.taken = x.u.damage - x.before; }); });
       var dead = att.filter(function (u) { return u.damage > 0 && u.damage >= might(u, 'att'); })
         .concat(def.filter(function (u) { return u.damage > 0 && u.damage >= might(u, 'def'); }));
       // survivors keep damage below their non-combat Might so Assault/Shield ending doesn't kill them afterwards
@@ -1938,11 +1984,13 @@ var RT = (function () {
     var winners = att.length && !def.length ? att : !att.length && def.length ? def : [];
     for (i = 0; i < winners.length; i++) await fireUnit(G, winners[i], 'winCombat');
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
-    if (att.length && !def.length) { await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
+    if (att.length && !def.length) { report.result = A.name + (pi === 0 ? ' win' : ' wins') + ' and conquer' + (pi === 0 ? '' : 's') + ' ' + bfName(G, bi) + '.'; report.winner = pi; await fireLegend(G, pi, 'winCombat', { loc: bi }); await conquer(G, pi, bi, att); }
     else if (att.length && def.length) {
       att.forEach(function (u) { u.loc = 'base'; });
+      report.result = 'Both sides survive: the attackers go back to base and ' + D.name + ' keep' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.'; report.winner = -1;
       log(G, 'Both sides survive: attackers return to base.', pi);
-    } else if (!att.length && def.length) { await fireLegend(G, opp(pi), 'winCombat', { loc: bi }); log(G, D.name + ' hold' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.', opp(pi)); }
+    } else if (!att.length && def.length) { report.result = D.name + ' defend' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + ': every attacker died.'; report.winner = opp(pi); await fireLegend(G, opp(pi), 'winCombat', { loc: bi }); log(G, D.name + ' hold' + (pi === 0 ? 's' : '') + ' ' + bfName(G, bi) + '.', opp(pi)); }
+    else { report.result = 'Everyone died. ' + bfName(G, bi) + ' is now open.'; report.winner = -1; }
     updateControl(G);
   }
   async function conquer(G, pi, bi, units) {
@@ -2286,7 +2334,24 @@ if (typeof module !== 'undefined') module.exports = RT;
     S.prompt = null; closeSheet();
     P.resolve(v);
   }
+  function combatSheet(r) {
+    var who = function (pi) { return pi === 0 ? 'You' : 'AI'; };
+    var side = function (sd) {
+      return '<div class="cside ' + (sd.pi === 0 ? 'me' : 'ai') + '"><div class="ch">' + (sd.role === 'att' ? '⚔ Attacking' : '🛡 Defending') + ' · ' + who(sd.pi) + '</div>' +
+        sd.units.map(function (x) {
+          return '<div class="crow' + (x.died ? ' died' : '') + '"><span class="cn">' + esc(x.name) + '</span><span class="cm">' + (x.stunned ? '⚡0' : x.might) + '</span>' +
+            '<span class="ct">' + (x.taken ? '−' + x.taken : '') + '</span><span class="cd">' + (x.died ? '✝ died' : 'lives') + '</span></div>';
+        }).join('') + '<div class="ctot">Total Might <b>' + sd.total + '</b></div></div>';
+    };
+    var pts = r.ptsAfter[0] !== r.ptsBefore[0] || r.ptsAfter[1] !== r.ptsBefore[1]
+      ? '<div class="cpts">Points: You <b>' + r.ptsBefore[0] + (r.ptsAfter[0] !== r.ptsBefore[0] ? ' → ' + r.ptsAfter[0] : '') + '</b> · AI <b>' + r.ptsBefore[1] + (r.ptsAfter[1] !== r.ptsBefore[1] ? ' → ' + r.ptsAfter[1] : '') + '</b> (of ' + RT.WIN + ')</div>' : '';
+    openSheet('<h2>⚔ Combat at ' + esc(r.bf) + '</h2><p style="margin:0 0 8px;color:var(--muted)">' + who(r.attacker) + ' attacked. Each side deals its total Might; damage goes to Tank units first, Backline last, then the weakest.</p>' +
+      '<div class="cgrid">' + r.sides.map(side).join('') + '</div>' +
+      '<div class="cres ' + (r.winner === 0 ? 'me' : r.winner === 1 ? 'ai' : '') + '">' + esc(r.result) + '</div>' + pts,
+      '<button class="btn primary" data-ans="yes">Continue</button>');
+  }
   function promptSheet(req) {
+    if (req.type === 'combat') { combatSheet(req.report); return; }
     if (req.type === 'choice') {
       openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
         req.options.map(function (o, i) { return '<button class="btn' + (i === req.auto ? ' primary' : '') + '" data-ans="opt' + i + '" style="flex-basis:100%">' + esc(o) + '</button>'; }).join('') +
@@ -2354,19 +2419,20 @@ if (typeof module !== 'undefined') module.exports = RT;
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
-      pips(p.points) + '<button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
+      pips(p.points) + '<b class="score">' + p.points + '<small>/' + RT.WIN + '</small></b><button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
       '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
   }
   // Pop up a short notice for log lines starting with ✦ (something became empowered) so it's hard to miss.
   var seenLog = 0;
   function flashNew(G) {
     if (seenLog > G.log.length) seenLog = 0;
-    var fresh = G.log.slice(seenLog).filter(function (l) { return /^✦/.test(l.t); });
+    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★]/.test(l.t); });
     seenLog = G.log.length;
     if (!fresh.length) return;
     var el = $('toast');
-    el.textContent = fresh[fresh.length - 1].t;
-    el.className = 'show p' + fresh[fresh.length - 1].p;
+    el.innerHTML = fresh.slice(-3).map(function (l) { return '<div>' + esc(l.t) + '</div>'; }).join('');
+    var last = fresh[fresh.length - 1];
+    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : '') + 'p' + last.p;
     clearTimeout(flashNew.t);
     flashNew.t = setTimeout(function () { el.className = ''; }, 2600);
   }
@@ -2391,6 +2457,8 @@ if (typeof module !== 'undefined') module.exports = RT;
       var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
       return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
         '<span class="own">' + (b.ctrl === 0 ? 'You' : b.ctrl === 1 ? 'AI' : 'Open') + '</span></div>' +
+        '<div class="scored">' + [0, 1].filter(function (q) { return G.players[q].scored[i]; }).map(function (q) { return '<span class="sc p' + q + '">★ ' + (q === 0 ? 'You' : 'AI') + ' scored here</span>'; }).join('') +
+        (b.ctrl != null && !G.players[b.ctrl].scored[i] ? '<span class="sc hint">' + (b.ctrl === 0 ? 'You' : 'AI') + ' score +1 if still held next turn</span>' : '') + '</div>' +
         '<div class="bfx">' + esc(b.c.P.lines.map(function (l) { return l.text; }).join(' ')) + '</div>' +
         '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + '</div>' +
         '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + '</div></div>';

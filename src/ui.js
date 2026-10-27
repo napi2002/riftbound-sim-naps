@@ -117,7 +117,24 @@
     S.prompt = null; closeSheet();
     P.resolve(v);
   }
+  function combatSheet(r) {
+    var who = function (pi) { return pi === 0 ? 'You' : 'AI'; };
+    var side = function (sd) {
+      return '<div class="cside ' + (sd.pi === 0 ? 'me' : 'ai') + '"><div class="ch">' + (sd.role === 'att' ? '⚔ Attacking' : '🛡 Defending') + ' · ' + who(sd.pi) + '</div>' +
+        sd.units.map(function (x) {
+          return '<div class="crow' + (x.died ? ' died' : '') + '"><span class="cn">' + esc(x.name) + '</span><span class="cm">' + (x.stunned ? '⚡0' : x.might) + '</span>' +
+            '<span class="ct">' + (x.taken ? '−' + x.taken : '') + '</span><span class="cd">' + (x.died ? '✝ died' : 'lives') + '</span></div>';
+        }).join('') + '<div class="ctot">Total Might <b>' + sd.total + '</b></div></div>';
+    };
+    var pts = r.ptsAfter[0] !== r.ptsBefore[0] || r.ptsAfter[1] !== r.ptsBefore[1]
+      ? '<div class="cpts">Points: You <b>' + r.ptsBefore[0] + (r.ptsAfter[0] !== r.ptsBefore[0] ? ' → ' + r.ptsAfter[0] : '') + '</b> · AI <b>' + r.ptsBefore[1] + (r.ptsAfter[1] !== r.ptsBefore[1] ? ' → ' + r.ptsAfter[1] : '') + '</b> (of ' + RT.WIN + ')</div>' : '';
+    openSheet('<h2>⚔ Combat at ' + esc(r.bf) + '</h2><p style="margin:0 0 8px;color:var(--muted)">' + who(r.attacker) + ' attacked. Each side deals its total Might; damage goes to Tank units first, Backline last, then the weakest.</p>' +
+      '<div class="cgrid">' + r.sides.map(side).join('') + '</div>' +
+      '<div class="cres ' + (r.winner === 0 ? 'me' : r.winner === 1 ? 'ai' : '') + '">' + esc(r.result) + '</div>' + pts,
+      '<button class="btn primary" data-ans="yes">Continue</button>');
+  }
   function promptSheet(req) {
+    if (req.type === 'combat') { combatSheet(req.report); return; }
     if (req.type === 'choice') {
       openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
         req.options.map(function (o, i) { return '<button class="btn' + (i === req.auto ? ' primary' : '') + '" data-ans="opt' + i + '" style="flex-basis:100%">' + esc(o) + '</button>'; }).join('') +
@@ -185,19 +202,20 @@
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
-      pips(p.points) + '<button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
+      pips(p.points) + '<b class="score">' + p.points + '<small>/' + RT.WIN + '</small></b><button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
       '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
   }
   // Pop up a short notice for log lines starting with ✦ (something became empowered) so it's hard to miss.
   var seenLog = 0;
   function flashNew(G) {
     if (seenLog > G.log.length) seenLog = 0;
-    var fresh = G.log.slice(seenLog).filter(function (l) { return /^✦/.test(l.t); });
+    var fresh = G.log.slice(seenLog).filter(function (l) { return /^[✦★]/.test(l.t); });
     seenLog = G.log.length;
     if (!fresh.length) return;
     var el = $('toast');
-    el.textContent = fresh[fresh.length - 1].t;
-    el.className = 'show p' + fresh[fresh.length - 1].p;
+    el.innerHTML = fresh.slice(-3).map(function (l) { return '<div>' + esc(l.t) + '</div>'; }).join('');
+    var last = fresh[fresh.length - 1];
+    el.className = 'show ' + (/^★/.test(last.t) ? 'pts ' : '') + 'p' + last.p;
     clearTimeout(flashNew.t);
     flashNew.t = setTimeout(function () { el.className = ''; }, 2600);
   }
@@ -222,6 +240,8 @@
       var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
       return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
         '<span class="own">' + (b.ctrl === 0 ? 'You' : b.ctrl === 1 ? 'AI' : 'Open') + '</span></div>' +
+        '<div class="scored">' + [0, 1].filter(function (q) { return G.players[q].scored[i]; }).map(function (q) { return '<span class="sc p' + q + '">★ ' + (q === 0 ? 'You' : 'AI') + ' scored here</span>'; }).join('') +
+        (b.ctrl != null && !G.players[b.ctrl].scored[i] ? '<span class="sc hint">' + (b.ctrl === 0 ? 'You' : 'AI') + ' score +1 if still held next turn</span>' : '') + '</div>' +
         '<div class="bfx">' + esc(b.c.P.lines.map(function (l) { return l.text; }).join(' ')) + '</div>' +
         '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + '</div>' +
         '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + '</div></div>';

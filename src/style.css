@@ -194,3 +194,29 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bf .bfx { font-size: 10.5px; line-height: 1.2; max-height: 2.4em; margin: 2px 2px 3px; color: var(--muted); padding: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 #toast { position: fixed; left: 50%; top: 10px; transform: translate(-50%, -80px); z-index: 40; max-width: 92vw; padding: 8px 14px; border-radius: 12px; background: var(--emp); color: #fff; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); transition: transform .25s; pointer-events: none; text-align: center; }
 #toast.show { transform: translate(-50%, 0); }
+/* scores */
+.strip .score { font-family: 'Marcellus', serif; font-size: 20px; color: var(--c); line-height: 1; }
+.strip .score small { font-size: 12px; color: var(--muted); }
+.bf .scored { display: flex; flex-wrap: wrap; gap: 3px; padding: 2px 0; min-height: 0; }
+.bf .sc { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 99px; color: #fff; }
+.bf .sc.p0 { background: var(--me); } .bf .sc.p1 { background: var(--ai); }
+.bf .sc.hint { background: transparent; color: var(--muted); font-weight: 600; padding: 0 2px; }
+#toast.pts.p0 { background: var(--me); } #toast.pts.p1 { background: var(--ai); }
+#toast div + div { margin-top: 3px; padding-top: 3px; border-top: 1px solid rgba(255,255,255,.35); }
+/* combat report */
+.cgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cside { background: var(--panel2); border-radius: 10px; padding: 6px 8px; border-top: 4px solid var(--c); }
+.cside.me { --c: var(--me); } .cside.ai { --c: var(--ai); }
+.cside .ch { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.crow { display: grid; grid-template-columns: 1fr auto auto; gap: 0 6px; font-size: 13px; padding: 3px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
+.crow .cn { grid-column: 1 / -1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crow .cm::before { content: 'Might '; color: var(--muted); font-size: 11px; }
+.crow .ct { color: var(--bad); font-weight: 700; }
+.crow .cd { color: var(--good); font-size: 12px; }
+.crow.died .cn { text-decoration: line-through; opacity: .7; }
+.crow.died .cd { color: var(--bad); font-weight: 700; }
+.ctot { font-size: 13px; margin-top: 4px; }
+.ctot b { font-size: 18px; color: var(--c); }
+.cres { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--panel2); font-weight: 700; font-size: 15px; text-align: center; }
+.cres.me { background: var(--me); color: #fff; } .cres.ai { background: var(--ai); color: #fff; }
+.cpts { text-align: center; margin-top: 8px; font-size: 15px; }
