@@ -13,7 +13,7 @@ The hypotheses, tests and holdout rule are fixed in [PREREGISTRATION.md](PREREGI
 ```sh
 python3 quant/snapshot.py                         # once a week (CI does this)
 python3 quant/tidy.py                             # rebuild tidy CSVs (gitignored)
-node quant/harness.js --pairs-per-matchup 1000    # ~5 min on 4 cores; CSV is gitignored
+node quant/harness.js --pairs-per-matchup 1000    # ~2.5 min on 4 cores; CSV is gitignored
 node quant/harness.js --check-determinism 20      # same seed twice -> identical game logs
 ```
 

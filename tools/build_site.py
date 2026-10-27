@@ -87,7 +87,7 @@ def page(title, desc, body):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}">{FONTS}<link rel="stylesheet" href="site.css"></head>
 <body><header class="top"><div class="in"><a class="brand" href="index.html"><span>R</span>ift Table</a>
-<nav><a href="play.html">Play</a><a href="report.html">Research report</a><a href="https://github.com/napi2002/sorrybot">Source</a></nav></div></header>
+<nav><a href="play.html">Play</a><a href="report.html">Research report</a><a href="https://github.com/napi2002/riftbound-sim">Source</a></nav></div></header>
 <main>{body}</main><footer>{esc(DISCLAIMER)}</footer></body></html>
 '''
 
