@@ -1,5 +1,4 @@
 node_modules/
 __pycache__/
-.claude/worktrees/
 quant/data/sim/*.csv
 quant/data/tidy/
