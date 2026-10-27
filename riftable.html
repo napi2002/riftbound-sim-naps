@@ -526,7 +526,7 @@ var RT = (function () {
       }
       if (type === 'Legend') {
         if ((m = rest.match(/^(?:(\d+) energy, )?exhaust: (.+)$/i)) && (effs = parseEffects(m[2]))) {
-          applyKw(); P.legendActs.push({ label: describeEffects(effs), energy: m[1] ? +m[1] : 0, effs: effs, exhaust: true }); line.sim = true; return;
+          applyKw(); P.legendActs.push({ label: describeEffects(effs), energy: m[1] ? +m[1] : 0, effs: effs, exhaust: true, timing: kws.some(function (k) { return k[0] === 'Reaction'; }) ? 'reaction' : kws.some(function (k) { return k[0] === 'Action'; }) ? 'action' : null }); line.sim = true; return;
         }
         if ((m = rest.match(/^when you (or an ally hold|conquer or hold|conquer|hold|play a unit|play a spell|win a combat), (.+)$/i))) {
           var body = m[2], once = false, mm = body.match(/^you may exhaust me to (.+)$/i);
@@ -691,7 +691,8 @@ var RT = (function () {
   function poolPowerFor(p) { return (p.poolPower || 0) + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0); }
   function canPay(p, energy, power, domains) {
     var ready = energyAvail(p);
-    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length + poolPowerFor(p);
+    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length + poolPowerFor(p) +
+      domains.reduce(function (s2, d) { return s2 + ((p.poolDom || {})[d] || 0); }, 0);
     return ready >= energy && match >= power;
   }
   function pay(G, pi, energy, power, domains) {
@@ -699,6 +700,7 @@ var RT = (function () {
     var isMatch = function (r) { return domains.indexOf(r.d) >= 0; };
     while (power > 0 && p.payingUnitOrGear && p.poolPowerUG > 0) { p.poolPowerUG--; power--; }
     while (power > 0 && p.poolPower > 0) { p.poolPower--; power--; }
+    domains.forEach(function (d) { while (power > 0 && p.poolDom && p.poolDom[d] > 0) { p.poolDom[d]--; power--; } });
     var seals = powerGear(p, domains);
     seals.sort(function (a, b) { return (a.c.P.addPower === 'any') - (b.c.P.addPower === 'any'); });
     while (power > 0 && seals.length) {
@@ -791,6 +793,27 @@ var RT = (function () {
   // Legends whose text the generic parser can't handle. Each one simulates its printed abilities.
   function anyRuneCount(p) { return p.runes.length; }
   function recycleAnyRune(p) { recycleRune(p, p.runes.slice().sort(function (a, b) { return b.ex - a.ex; })[0]); }
+  // Power of any domain ("rainbow"): added power first, then Seal/Gold gear, then recycle runes.
+  function anyPowerAvail(p) {
+    var dom = Object.keys(p.poolDom || {}).reduce(function (s2, k) { return s2 + p.poolDom[k]; }, 0);
+    return p.runes.length + (p.poolPower || 0) + dom + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + p.gear.filter(function (g) { return !g.ex && g.c.P.addPower; }).length;
+  }
+  function payAnyPower(G, pi, n, why) {
+    var p = G.players[pi];
+    for (var i = 0; i < n; i++) {
+      if (p.payingUnitOrGear && p.poolPowerUG > 0) { p.poolPowerUG--; continue; }
+      if (p.poolPower > 0) { p.poolPower--; continue; }
+      var dk = Object.keys(p.poolDom || {}).filter(function (k) { return p.poolDom[k] > 0; })[0];
+      if (dk) { p.poolDom[dk]--; continue; }
+      var g = p.gear.filter(function (x) { return !x.ex && x.c.P.addPower; }).sort(function (a, b) { return !!a.c.P.consumed - !!b.c.P.consumed; })[0];
+      if (g) {
+        if (g.c.P.consumed) { p.gear.splice(p.gear.indexOf(g), 1); log(G, 'A Gold token is spent for 1 power' + (why ? ' (' + why + ')' : '') + '.', pi); }
+        else { g.ex = true; log(G, g.c.name + ' adds ' + g.c.P.addPower + ' power' + (why ? ' (' + why + ')' : '') + '.', pi); }
+        continue;
+      }
+      if (p.runes.length) recycleAnyRune(p);
+    }
+  }
   var KENNEN = {
     // When you play a card from anywhere other than your hand (here: the champion zone), empower me.
     onPlayCard: function (G, pi, from) {
@@ -800,7 +823,7 @@ var RT = (function () {
       else log(G, L.c.name + ' is already empowered.', pi);
     },
     acts: [{
-      label: 'Disempower me, exhaust: give a unit [Assault 2] this turn', energy: 0, exhaust: true,
+      label: 'Disempower me, exhaust: give a unit [Assault 2] this turn', energy: 0, exhaust: true, timing: 'action',
       req: function (G, pi, L) { return L.empowered ? null : 'Kennen must be empowered first (play a card from your champion zone).'; },
       effs: [{ op: 'assault', n: 2, t: { sel: 'friendly', where: null } }],
       pay: function (G, pi, L) { L.empowered = false; }
@@ -812,7 +835,7 @@ var RT = (function () {
       req: function (G, pi, L) { return L.empowered ? 'Already empowered.' : null; },
       effs: [], pay: function (G, pi, L) { L.empowered = true; log(G, '✦ ' + L.c.name + ' is empowered.', pi); }
     }, {
-      label: 'Exhaust: move a friendly unit at a battlefield to base (and ready it if I\'m empowered)', energy: 0, exhaust: true,
+      label: 'Exhaust: move a friendly unit at a battlefield to base (and ready it if I\'m empowered)', energy: 0, exhaust: true, timing: 'action',
       req: function (G) { return null; },
       getEffs: function (G, pi, L) {
         var e = [{ op: 'tobase', t: { sel: 'friendly', where: 'bf' } }];
@@ -825,9 +848,9 @@ var RT = (function () {
     // When you choose a friendly unit, you may exhaust me and pay 1 power to ready it.
     onChoose: async function (G, pi, u) {
       var p = G.players[pi], L = p.legend;
-      if (L.exhausted || !anyRuneCount(p) || u.dead || u.ctrl !== pi) return;
+      if (L.exhausted || !anyPowerAvail(p) || u.dead || u.ctrl !== pi) return;
       if (!(await confirm(G, pi, L.c.name, 'Exhaust Irelia and recycle 1 rune to ready ' + u.c.name + '?', u.ex))) return;
-      L.exhausted = true; recycleAnyRune(p); u.ex = false;
+      L.exhausted = true; payAnyPower(G, pi, 1, L.c.name); u.ex = false;
       log(G, L.c.name + ': recycled a rune to ready ' + u.c.name + '.', pi);
     },
     // When you conquer, you may pay 1 energy to ready me.
@@ -1221,7 +1244,7 @@ var RT = (function () {
   // Hand-written effects for cards whose text the generic parser can't read. sim: indexes of rules lines now simulated.
   var CARD_SCRIPTS = {
     lightningrush: { sim: [0], effs: [{ op: 'lookDraw', n: 3 }] },
-    sealofdiscord: { sim: [0], addPower: 'Chaos' },
+    sealofdiscord: { sim: [0], addPower: 'Chaos', gearActs: [{ label: 'Exhaust: add 1 Chaos power now (it is also used automatically when you pay)', timing: 'reaction', run: function (G, pi) { var p = G.players[pi]; p.poolDom = p.poolDom || {}; p.poolDom.Chaos = (p.poolDom.Chaos || 0) + 1; log(G, 'Seal of Discord adds 1 Chaos power (until end of turn).', pi); } }] },
     starcrossed: { sim: [1], effs: [{ op: 'tohand', t: T('friendly') }, { op: 'tohand', t: T('enemy') }] },
     switcheroo: { sim: [2], effs: [{ op: 'mark', t: T('enemy', 'bf') }, { op: 'swapIt', t: T('friendly', 'itloc') }] },
     existentialdread: { sim: [2], effs: [{ op: 'dread', t: T('enemy', 'bf', { attacking: true }) }] },
@@ -1362,7 +1385,7 @@ var RT = (function () {
     if (!g || !g.c.P.gearActs) return { ok: false, why: 'This gear has no activated ability.' };
     if (idx == null) { for (var i = 0; i < g.c.P.gearActs.length; i++) if (canUseGear(G, pi, iid, i).ok) return { ok: true }; return { ok: false, why: 'No ability is usable right now.' }; }
     var a = g.c.P.gearActs[idx];
-    if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
+    if (G.winner != null || (G.active !== pi && a.timing !== 'reaction')) return { ok: false, why: "It's not your turn." };
     if (a.exhaust !== false && g.ex) return { ok: false, why: 'It is exhausted.' };
     if (a.req) { var w = a.req(G, pi, g); if (w) return { ok: false, why: w }; }
     if (!canPay(p, a.energy || 0, a.power || 0, a.domain ? [a.domain] : [])) return { ok: false, why: 'Needs ' + (a.energy || 0) + ' energy' + (a.power ? ' and ' + a.power + ' ' + a.domain + ' power' : '') + '.' };
@@ -1418,7 +1441,7 @@ var RT = (function () {
     if (energyAvail(p) < ec.energy) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + '.' };
     var needAny = ec.power.filter(function (d) { return d === 'any'; }).length, doms = ec.power.filter(function (d) { return d !== 'any'; });
     if (doms.length && !canPay(p, ec.energy, doms.length, doms)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + '.' };
-    if (needAny && p.runes.length + powerGear(p, ['any']).length < needAny + doms.length && !canEquipAlt(G, pi, g)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + (g.c.P.equipAltExhaust ? ' or another ready unit to exhaust' : '') + '.' };
+    if (needAny && anyPowerAvail(p) < needAny + doms.length && !canEquipAlt(G, pi, g)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + (g.c.P.equipAltExhaust ? ' or another ready unit to exhaust' : '') + '.' };
     if (p.trash.length < ec.recycleTrash) return { ok: false, why: 'Equip needs ' + ec.recycleTrash + ' cards in your trash.' };
     return { ok: true };
   }
@@ -1434,7 +1457,7 @@ var RT = (function () {
     var doms = ec.power.filter(function (d) { return d !== 'any'; });
     var useAlt = false;
     if (canEquipAlt(G, pi, g)) {
-      var anyOk = p.runes.length + powerGear(p, ['any']).length >= ec.power.length;
+      var anyOk = anyPowerAvail(p) >= ec.power.length;
       useAlt = !anyOk || (await confirm(G, pi, g.c.name, 'Exhaust a friendly unit instead of paying 1 power to equip?', false));
     }
     if (useAlt) {
@@ -1443,7 +1466,7 @@ var RT = (function () {
       await exhaustUnits(G, pi, [ex.filter(function (u) { return u.uid === eid; })[0] || ex[0]]);
     } else {
       pay(G, pi, ec.energy, doms.length, doms);
-      ec.power.filter(function (d) { return d === 'any'; }).forEach(function () { recycleAnyRune(p); });
+      payAnyPower(G, pi, ec.power.filter(function (d) { return d === 'any'; }).length, 'Equip');
     }
     for (var i = 0; i < ec.recycleTrash; i++) p.deck.push(p.trash.shift());
     p.gear.splice(p.gear.indexOf(g), 1);
@@ -1455,14 +1478,13 @@ var RT = (function () {
   function hideSpots(G, pi, iid) {
     var p = G.players[pi], card = p.hand.filter(function (x) { return x.iid === iid; })[0];
     if (!card || !card.c.P.kw.hidden || G.active !== pi || G.winner != null) return [];
-    if (!p.runes.length && !powerGear(p, ['any']).length) return [];
+    if (!anyPowerAvail(p)) return [];
     return G.bfs.map(function (b, i) { return i; }).filter(function (i) { return G.bfs[i].ctrl === pi && !p.hidden.some(function (h) { return h.loc === i; }); });
   }
   function hideCard(G, pi, iid, bi) {
     if (hideSpots(G, pi, iid).indexOf(bi) < 0) return { ok: false, why: "You can't hide that card there." };
     var p = G.players[pi], card = p.hand.filter(function (x) { return x.iid === iid; })[0];
-    var gold = powerGear(p, ['any'])[0];
-    if (gold && gold.c.P.consumed) p.gear.splice(p.gear.indexOf(gold), 1); else recycleAnyRune(p);
+    payAnyPower(G, pi, 1, 'Hide');
     p.hand.splice(p.hand.indexOf(card), 1);
     p.hidden.push({ card: card, loc: bi, turn: G.turnNo });
     if (bfNorm(G, bi) === 'bandlescoutsacademy') addGold(G, pi, 1, "Bandle Scouts' Academy");
@@ -1489,12 +1511,22 @@ var RT = (function () {
     p.hidden.forEach(function (h) {
       if (h.loc === bi && !h.card.c.P.counter && canPlay(G, pi, h.card.iid, false, { reaction: true }).ok) out.push({ card: h.card, kind: 'hidden' });
     });
+    legendActs(G, pi).forEach(function (a, idx) {
+      if (canUseLegend(G, pi, idx, { showdown: bi }).ok) out.push({ card: { c: p.legend.c }, kind: 'legend', idx: idx, label: a.label });
+    });
     return out;
   }
   function aiShowdownPick(G, pi, bi, opts, winning) {
     var best = null;
     opts.forEach(function (o, i) {
       var c = o.card.c, v = 0;
+      if (o.kind === 'legend') {
+        var la = legendActs(G, pi)[o.idx], le = actEffects(G, pi, la);
+        if (le.some(function (e) { return e.op === 'assault'; })) v = !winning && pi === G.active ? 3 : 0;
+        else if (le.some(function (e) { return e.op === 'tobase'; })) v = !winning ? 2.5 : 0;
+        if (v >= 1.5 && (!best || v > best.v)) best = { v: v, i: i };
+        return;
+      }
       if (o.kind === 'ambush' || (o.kind === 'hidden' && c.type === 'Unit')) v = winning ? 0 : (c.might || 0) + 1;
       else {
         var ev = evalEffects(G, pi, c.type === 'Spell' ? c.P.spell : playEffects(c), { src: null, loc: bi });
@@ -1521,7 +1553,7 @@ var RT = (function () {
       var opts = showdownOptions(G, side, bi), pick = null;
       if (opts.length) {
         var out = fightOutcome(G, attacker, bi), winning = side === attacker ? out.attackerWins : out.defenderHolds;
-        var labels = opts.map(function (o) { return (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
+        var labels = opts.map(function (o) { return o.kind === 'legend' ? 'Legend: ' + o.label : (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
         pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, aiShowdownPick(G, side, bi, opts, winning));
       }
       if (pick == null) passes++;
@@ -1529,8 +1561,9 @@ var RT = (function () {
         passes = 0;
         var o = opts[pick];
         log(G, G.players[side].name + ' respond' + (side === 0 ? '' : 's') + ' in the showdown at ' + bfName(G, bi) + '.', side);
-        if (G.combatReport) G.combatReport.played[side].push(o.card.c.name);
-        await playCard(G, side, o.card.iid, { reaction: true, showdown: bi, loc: o.kind === 'ambush' ? bi : undefined });
+        if (G.combatReport) G.combatReport.played[side].push(o.kind === 'legend' ? o.card.c.name + ' (legend)' : o.card.c.name);
+        if (o.kind === 'legend') await useLegend(G, side, o.idx, null, { showdown: bi });
+        else await playCard(G, side, o.card.iid, { reaction: true, showdown: bi, loc: o.kind === 'ambush' ? bi : undefined });
       }
       side = opp(side);
     }
@@ -1600,7 +1633,7 @@ var RT = (function () {
     var x = ok[k], ec2 = x.g.c.P.equipCost || { energy: 0, power: [] }, rest = ec2.power.slice(1);
     var d2 = rest.filter(function (d) { return d !== 'any'; });
     pay(G, pi, ec2.energy, d2.length, d2);
-    rest.filter(function (d) { return d === 'any'; }).forEach(function () { recycleAnyRune(p); });
+    payAnyPower(G, pi, rest.filter(function (d) { return d === 'any'; }).length, 'Weaponmaster');
     if (x.host) x.host.equips.splice(x.host.equips.indexOf(x.g), 1); else p.gear.splice(p.gear.indexOf(x.g), 1);
     u.equips.push(x.g);
     log(G, 'Weaponmaster: ' + x.g.c.name + ' is equipped to ' + u.c.name + '.', pi);
@@ -2116,7 +2149,7 @@ var RT = (function () {
   }
   var MORDEKAISER = {
     acts: [{
-      label: 'Banish a unit or gear from your trash, exhaust: add 1 power (any domain) for units or gear', energy: 0, exhaust: true,
+      label: 'Banish a unit or gear from your trash, exhaust: add 1 power (any domain) for units or gear', energy: 0, exhaust: true, timing: 'reaction',
       req: function (G, pi) { return G.players[pi].trash.some(function (x) { return x.c.type === 'Unit' || x.c.type === 'Gear'; }) ? null : 'You need a unit or gear in your trash.'; },
       effs: [], pay: function (G, pi) {
         var p = G.players[pi], t = p.trash.filter(function (x) { return x.c.type === 'Unit' || x.c.type === 'Gear'; }).sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
@@ -2156,7 +2189,7 @@ var RT = (function () {
     bilgewatertracker: { sim: [0], play: [{ op: 'pingUpTo', n: 1, count: 2 }] },
     blastcorpscadet: { sim: [0, 1], play: [{ op: 'payThenDeal', energy: 1, domain: 'Fury', n: 2 }] },
     longsword: { sim: [0] }, clotharmor: { sim: [0] },
-    sealofunity: { sim: [0], addPower: 'Order' },
+    sealofunity: { sim: [0], addPower: 'Order', gearActs: [{ label: 'Exhaust: add 1 Order power now (it is also used automatically when you pay)', timing: 'reaction', run: function (G, pi) { var p = G.players[pi]; p.poolDom = p.poolDom || {}; p.poolDom.Order = (p.poolDom.Order || 0) + 1; log(G, 'Seal of Unity adds 1 Order power (until end of turn).', pi); } }] },
     spectralmatron: { sim: [0], play: [{ op: 'reanimate', maxEnergy: 3, maxPower: 1, free: true, optional: true }] },
     xinzhaovigilant: { sim: [1], entersReadyIf: function (G, pi) { return unitsAt(G, 'base', pi).length >= 2; } },
     brynhirthundersong: { sim: [0], play: [{ op: 'silence' }] },
@@ -2213,7 +2246,7 @@ var RT = (function () {
     if (!card || !(card.c.P.flow || card.tempFlow)) return { ok: false, why: 'This card has no Flow.' };
     if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
     var f = card.tempFlow || card.c.P.flow;
-    if (energyAvail(p) < f.energy || p.runes.length < f.power + (f.energy ? 0 : 0)) return { ok: false, why: 'Flow costs ' + f.energy + ' energy' + (f.power ? ' + ' + f.power + ' power' : '') + '.' };
+    if (energyAvail(p) < f.energy || p.runes.length < f.power + (f.energy ? 0 : 0) && anyPowerAvail(p) < f.power) return { ok: false, why: 'Flow costs ' + f.energy + ' energy' + (f.power ? ' + ' + f.power + ' power' : '') + '.' };
     return { ok: true };
   }
   async function playFlow(G, pi, iid) {
@@ -2222,7 +2255,7 @@ var RT = (function () {
     var p = G.players[pi], card = p.trash.filter(function (x) { return x.iid === iid; })[0], c = card.c, f = card.tempFlow || c.P.flow;
     card.tempFlow = null;
     pay(G, pi, f.energy, 0, []);
-    for (var i = 0; i < f.power; i++) recycleAnyRune(p);
+    payAnyPower(G, pi, f.power, 'Flow');
     p.trash.splice(p.trash.indexOf(card), 1);
     G.playedThisTurn++;
     log(G, p.name + ' cast' + (pi === 0 ? '' : 's') + ' ' + c.name + ' from the trash (Flow); it will be banished.', pi);
@@ -2311,7 +2344,7 @@ var RT = (function () {
     var eot = ap.gear.filter(function (g) { return g.c.P.endOfTurn; });
     for (var gi = 0; gi < eot.length && G.winner == null; gi++) await resolveEffects(G, pi, eot[gi].c.P.endOfTurn, { src: null, loc: 'base', srcName: eot[gi].c.name });
     if (G.winner != null) return;
-    G.players.forEach(function (pl) { pl.pool = 0; pl.poolPower = 0; pl.poolPowerUG = 0; });
+    G.players.forEach(function (pl) { pl.pool = 0; pl.poolPower = 0; pl.poolPowerUG = 0; pl.poolDom = {}; });
     G.units.forEach(function (u) { u.lethal = false; u.damage = 0; });
     if (ap.readyRunesEOT) {
       var rr = ap.runes.filter(function (r) { return r.ex; }).slice(0, ap.readyRunesEOT);
@@ -2468,7 +2501,7 @@ var RT = (function () {
       if (u.ctrl !== pi && u.shrouded) return false;
       if (u.ctrl !== pi && u.c.P.untargetable === 'always') return false;
       if (u.ctrl !== pi && u.c.P.untargetable === 'outOfCombat' && G.showdownAt !== u.loc) return false;
-      if (u.ctrl !== pi && kwOf(u).deflect && p.runes.length - (ctx.reserveRunes || 0) < 1) return false;
+      if (u.ctrl !== pi && kwOf(u).deflect && anyPowerAvail(p) - (ctx.reserveRunes || 0) < 1) return false;
       return true;
     });
   }
@@ -2555,8 +2588,8 @@ var RT = (function () {
             pick = cands.filter(function (u) { return u.uid === uid && !u.dead; })[0] || null;
           }
           if (pick && pick.ctrl !== pi && kwOf(pick).deflect) {
-            if (!p.runes.length) pick = null;
-            else { recycleAnyRune(p); log(G, p.name + ' recycle' + (pi === 0 ? '' : 's') + ' a rune to target ' + pick.c.name + ' (Deflect).', pi); }
+            if (!anyPowerAvail(p)) pick = null;
+            else { payAnyPower(G, pi, 1, 'Deflect'); log(G, p.name + ' pay' + (pi === 0 ? '' : 's') + ' 1 power to target ' + pick.c.name + ' (Deflect).', pi); }
           }
           if (pick) {
             tg = [pick];
@@ -2652,7 +2685,7 @@ var RT = (function () {
     if (ready < cost.energy) return { ok: false, why: 'Needs ' + cost.energy + ' energy; you have ' + ready + ' ready rune' + (ready === 1 ? '' : 's') + '.' };
     if (!canPay(p, cost.energy, cost.power, cost.domains)) return { ok: false, why: 'Needs ' + cost.power + ' ' + cost.domains.join('/') + ' power.' };
     var xa = extraAnyPower(G, pi, c, opts);
-    if (xa && p.runes.length - cost.power < xa) return { ok: false, why: 'Needs ' + xa + ' more power of any domain' + (opts.roost != null ? ' for Dragon Roost' : ' (Mystic Vortex)') + '.' };
+    if (xa && anyPowerAvail(p) - cost.power < xa) return { ok: false, why: 'Needs ' + xa + ' more power of any domain' + (opts.roost != null ? ' for Dragon Roost' : ' (Mystic Vortex)') + '.' };
     return { ok: true };
   }
   // Extra "rainbow" power some plays need: Mystic Vortex reactions in a showdown there, or a Dragon played to Dragon Roost.
@@ -2715,7 +2748,7 @@ var RT = (function () {
     pay(G, pi, cost.energy, cost.power, cost.domains);
     p.payingUnitOrGear = false;
     var extraAny = extraAnyPower(G, pi, c, opts);
-    for (var xa = 0; xa < extraAny; xa++) recycleAnyRune(p);
+    payAnyPower(G, pi, extraAny, 'extra cost');
     if (p.discountNext && p.discountNext.turn === G.turnNo) { p.discountNext = null; log(G, 'Astral Heron discount used on ' + c.name + '.', pi); }
     if (f.from === 'hand') p.hand.splice(p.hand.indexOf(card), 1);
     else if (f.from === 'hidden') {
@@ -2804,34 +2837,39 @@ var RT = (function () {
     await checkDeaths(G);
     return { ok: true };
   }
-  function canUseLegend(G, pi, idx) {
+  // opts.showdown: during a showdown (either player's turn) only [Action]/[Reaction] abilities can be used.
+  function canUseLegend(G, pi, idx, opts) {
+    opts = opts || {};
     var p = G.players[pi], L = p.legend, acts = legendActs(G, pi);
-    if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
+    if (G.winner != null) return { ok: false, why: 'The game is over.' };
     if (idx == null) {
-      for (var i = 0; i < acts.length; i++) if (canUseLegend(G, pi, i).ok) return { ok: true };
+      for (var i = 0; i < acts.length; i++) if (canUseLegend(G, pi, i, opts).ok) return { ok: true };
       return { ok: false, why: acts.length ? 'No ability is usable right now.' : 'This legend has no activated ability.' };
     }
     var a = acts[idx];
     if (!a) return { ok: false, why: 'No such ability.' };
+    if ((G.active !== pi || opts.showdown != null) && !a.timing) return { ok: false, why: G.active !== pi ? "It's not your turn (this ability isn't an Action or Reaction)." : 'Only [Action] or [Reaction] abilities can be used in a showdown.' };
+    if (G.active !== pi && a.timing === 'action' && opts.showdown == null) return { ok: false, why: '[Action] abilities can be used on your turn or in a showdown.' };
     if (a.exhaust && L.exhausted) return { ok: false, why: 'Your legend is exhausted.' };
     if (L.used[idx]) return { ok: false, why: 'Already used this turn.' };
     if (a.req) { var why = a.req(G, pi, L); if (why) return { ok: false, why: why }; }
     var ready = energyAvail(p);
     if (ready < (a.energy || 0)) return { ok: false, why: 'Needs ' + a.energy + ' energy.' };
-    if (a.power && p.runes.length < a.power) return { ok: false, why: 'Needs ' + a.power + ' power.' };
+    if (a.power && anyPowerAvail(p) < a.power) return { ok: false, why: 'Needs ' + a.power + ' power.' };
     return { ok: true };
   }
-  async function useLegend(G, pi, idx, targets) {
-    var chk = canUseLegend(G, pi, idx);
+  async function useLegend(G, pi, idx, targets, opts) {
+    opts = opts || {};
+    var chk = canUseLegend(G, pi, idx, opts);
     if (!chk.ok) return chk;
     var p = G.players[pi], L = p.legend, a = legendActs(G, pi)[idx];
     var effs = actEffects(G, pi, a);
     pay(G, pi, a.energy || 0, 0, []);
-    for (var i = 0; i < (a.power || 0); i++) recycleAnyRune(p);
+    payAnyPower(G, pi, a.power || 0, L.c.name);
     if (a.exhaust) { L.exhausted = true; L.used[idx] = true; }
     log(G, p.name + ' use' + (pi === 0 ? '' : 's') + ' ' + L.c.name + ': ' + a.label + '.', pi);
     if (a.pay) a.pay(G, pi, L);
-    await resolveEffects(G, pi, effs, { src: null, loc: null, targets: targets, srcName: L.c.name });
+    await resolveEffects(G, pi, effs, { src: null, loc: opts.showdown != null ? opts.showdown : null, targets: targets, srcName: L.c.name, showdown: opts.showdown });
     return { ok: true };
   }
 
@@ -3766,7 +3804,8 @@ if (typeof module !== 'undefined') module.exports = RT;
     body = body.replace('</h2>', L.empowered ? ' <span class="chip empchip">✦ Empowered</span></h2>' : (/Empower|empower/.test(L.c.plain || '') ? ' <span class="chip">Not empowered</span></h2>' : '</h2>'));
     acts.forEach(function (a, i) {
       var chk = RT.canUseLegend(G, 0, i); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
-      foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(a.label) + '</button>';
+      foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + (a.timing ? '[' + a.timing[0].toUpperCase() + a.timing.slice(1) + '] ' : '') + esc(a.label) + '</button>';
+      if (a.timing) foot += '<span class="why" style="color:var(--muted)">' + (a.timing === 'action' ? 'Action: use it on your turn or pick it in a combat showdown.' : 'Reaction: usable any time, including in combat showdowns.') + '</span>';
       if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
     });
     if (!acts.length) foot = '<span class="why" style="color:var(--muted)">' + (L.c.P.lines.some(function (l) { return l.sim; }) ? 'Triggered abilities ask you to confirm when they happen.' : 'No simulated abilities.') + '</span>';

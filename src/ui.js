@@ -470,7 +470,8 @@
     body = body.replace('</h2>', L.empowered ? ' <span class="chip empchip">✦ Empowered</span></h2>' : (/Empower|empower/.test(L.c.plain || '') ? ' <span class="chip">Not empowered</span></h2>' : '</h2>'));
     acts.forEach(function (a, i) {
       var chk = RT.canUseLegend(G, 0, i); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
-      foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(a.label) + '</button>';
+      foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + (a.timing ? '[' + a.timing[0].toUpperCase() + a.timing.slice(1) + '] ' : '') + esc(a.label) + '</button>';
+      if (a.timing) foot += '<span class="why" style="color:var(--muted)">' + (a.timing === 'action' ? 'Action: use it on your turn or pick it in a combat showdown.' : 'Reaction: usable any time, including in combat showdowns.') + '</span>';
       if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
     });
     if (!acts.length) foot = '<span class="why" style="color:var(--muted)">' + (L.c.P.lines.some(function (l) { return l.sim; }) ? 'Triggered abilities ask you to confirm when they happen.' : 'No simulated abilities.') + '</span>';
