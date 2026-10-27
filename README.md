@@ -5,7 +5,7 @@
 - `tools/fetch_cards.py` downloads the Riftcodex pool and `tools/fetch_dotgg.py` downloads riftbound.gg's list (which has the Radiance set and real equipment Might bonuses). `tools/build_data.py raw.json src/cards.json dotgg.json` merges them into `src/cards.json`.
 - `tools/fetch_images.py` downloads the card images for the built-in decks, shrinks them and saves them as WebP files in `src/img/`, which the build embeds.
 - `src/engine.js` holds the rules-text parser, game rules, decks and AI. `src/ui.js` and `src/style.css` hold the mobile UI.
-- `python3 tools/build.py` assembles `riftable.html`.
+- `python3 tools/build.py` assembles `riftable.html`; `python3 tools/build_site.py` then builds the public site in `docs/` (landing page, research report, and the game as `play.html`) for GitHub Pages.
 - `node test/bench.js` measures the AI against a random player, a rush player and itself.
 - `node test/battlefields.js` sets up each battlefield used by the decks and checks that its effect happens.
 - `node test/rules.js` checks the rules fixed after the October 2026 Core Rules audit (stun duration, showdown order, Hidden costs, Equipment recall, Burn Out, Legion).
