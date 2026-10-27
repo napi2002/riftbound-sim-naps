@@ -38,7 +38,7 @@ async function worker() {
       while (G.winner == null) { await RT.aiTurn(G, G.active); await RT.endTurn(G); }
       out.push({ i: j.i, win: G.winner === j.seat ? 1 : 0, draw: G.winner !== 0 && G.winner !== 1 ? 1 : 0 });
     }
-    process.send(out); process.exit(0);
+    process.send(out, () => process.exit(0));   // exit only once the (large) message has been delivered
   });
 }
 

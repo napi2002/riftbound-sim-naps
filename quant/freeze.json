@@ -1,0 +1,10 @@
+{
+ "tag": "engine-freeze-v1",
+ "commit": "e4157fd",
+ "commit_full": "e4157fd0a5c5f0563cc85a3aed31a3fa7bcc73c6",
+ "freeze_ts": 1793102387,
+ "freeze_date": "2026-10-27T11:59:47Z",
+ "sim_summary": "data/sim/e4157fd_1000_summary.json",
+ "ablation": "data/sim/e4157fd_ablation_72.json",
+ "note": "Holdout = snapshots whose window starts at or after freeze_ts. See PREREGISTRATION.md."
+}

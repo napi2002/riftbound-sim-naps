@@ -1,16 +1,17 @@
 # Pre-registration: does the Riftbound simulator predict the real meta?
 
-Status: **draft, not yet frozen.** Written 2026-10-27, before any holdout data exists.
+Status: **frozen 2026-10-27 11:59:47 UTC.** Written 2026-10-27, before any holdout data exists.
 Once the engine is frozen, the fields below are filled in, this file is committed, and from then on it is
 changed only by appending dated amendments at the bottom (never by editing the sections above them).
 
 | Field | Value |
 |---|---|
-| Engine freeze tag | `engine-freeze-v1` (TBD: created after the pending AI fix) |
-| Freeze commit | TBD |
-| Freeze date (UTC) | TBD (`FREEZE_TS`, unix seconds) |
+| Engine freeze marker | branch `engine-freeze-v1` (the git proxy refused tag pushes; the commit hash below is the authoritative identifier) |
+| Freeze commit | `e4157fd0a5c5f0563cc85a3aed31a3fa7bcc73c6` (engine, AI, deck lists, `quant/harness.js`, `quant/ablation.js`, `quant/analysis.py`) |
+| Freeze date (UTC) | 2026-10-27T11:59:47Z (`FREEZE_TS` = 1793102387) |
 | Holdout start | first snapshot with `sample.from >= FREEZE_TS` |
-| Simulation budget | N = TBD seed pairs per matchup (mirrored, `quant/harness.js`), fixed before the first holdout snapshot is looked at |
+| Simulation budget | N = 1,000 seed pairs per matchup (210,000 games, `quant/harness.js`, seed base 20261027); H5 ablation 72 seed pairs per opponent (2,016 games per deck-card condition, `quant/ablation.js`) |
+| Machine-readable | `quant/freeze.json` (read by `quant/analysis.py`) |
 
 ## Data
 
@@ -86,6 +87,40 @@ that is not specified here. Exploratory results are labelled as such and are not
 All five primary results are reported whether they pass or not, with effect sizes, CIs, raw and
 Holm-adjusted p-values, the snapshot_ids and manifest sha256 used, and the engine commit.
 
+## Specification details fixed at the freeze
+
+Written at the freeze, before any holdout data existed; they make the tests above executable exactly as coded in
+`quant/analysis.py` at the freeze commit.
+
+- **Snapshots used.** H1 and H5 use the first holdout snapshot (window start >= `FREEZE_TS`). H2 and H4 use the
+  greedy subset of holdout snapshots whose 30-day windows do not overlap, so no match is counted twice. H3 uses
+  every weekly holdout snapshot.
+- **H1.** One-sided permutation p (20,000 permutations of the real win rates, fixed RNG); at least 5 established
+  decks are required.
+- **H2.** Bradley-Terry baseline: one strength per mapped deck, fitted by minorisation-maximisation on pre-freeze
+  real data, combining the listed matchup cells between mapped decks with each deck's overall record against a
+  virtual "field" opponent of fixed strength 1 (the free snapshot lists too few cells to fit BT on cells alone).
+  Simulator probabilities are (wins + 1) / (games + 2). The p-value is the share of 10,000 bootstrap improvements
+  that are <= 0.
+- **H3.** Shares are renormalised over mapped decks; field fitness excludes the deck itself; deck fixed effects by
+  within-deck demeaning; cluster-robust standard error by deck (CR1) with a t reference on G - 1 degrees of freedom.
+  At least 6 weekly snapshots are required. Walk-forward: start after 4 steps, refit each week, compare
+  next-week MAE with the random walk (no change), one-sided Diebold-Mariano-style z test on weekly loss differences;
+  it needs at least 7 steps.
+- **H4.** Real matchup cells are symmetrised as (M_ab + 1 - M_ba) / 2; missing cells are filled from the snapshot's
+  own BT fit and counted. Nash equilibrium by an exact simplex LP on M - 0.5. At least 4 non-overlapping
+  snapshots in one set are required.
+- **H5.** "Basic filler" = a blank copy of the card (same cost, type, domains and Might, no rules text;
+  `RT.blankCard`); delta-win is measured on the same seeds as the unmodified deck. Inclusion rate = the
+  `card_week.csv` weight for that archetype; at least 30 (deck, card) pairs are required. Cluster bootstrap over
+  decks (10,000).
+- **Holm.** m = 5: a hypothesis reported as "insufficient data" keeps its place in the family (treated as p = 1),
+  which can only make the correction more conservative.
+
 ## Amendments
 
-(none yet)
+1. **2026-10-27, before any holdout data.** `quant/ablation.js` at the freeze commit exited each worker process
+   before its result message was delivered, so the first ablation run failed with "worker exit 0". The fix
+   (`process.send(out, () => process.exit(0))`) changes only how results are passed back; games, seeds,
+   conditions and the measurement are unchanged, and `src/` (engine, AI, cards) is untouched. The baseline
+   ablation was run with the fixed script on the frozen engine and is labelled with the engine commit `e4157fd`.
