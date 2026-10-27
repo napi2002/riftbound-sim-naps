@@ -1,7 +1,9 @@
 // From-scratch meta prediction (exploratory; not part of the pre-registered tests).
 // Uses no tournament lists, no meta shares, no win rates and no researched deck guides. For every legend whose
 // ability the engine simulates:
-//   1. build a random legal deck (fully simulated, non-banned cards; a champion unit is required by the rules,
+//   1. build a random legal deck (the Chosen Champion must carry the legend's champion tag: the data gives one Kennen
+//      printing an extra 'Yordle' tag, which would otherwise allow any Yordle champion);
+//       (fully simulated, non-banned cards; a champion unit is required by the rules,
 //      so a legend whose champions are all unsimulated gets one anyway and is flagged);
 //   2. co-evolve: each legend in turn hill-climbs its deck (single-copy and playset swaps, champion, runes,
 //      battlefields) against the current decks of all legends, weighted 50/50 by the current Nash mix and uniform;
@@ -65,7 +67,7 @@ async function main() {
   const sim = c => RT.cardSimulated(c) && !c.banned;
   const L = LEGENDS.map(n => {
     const leg = RT.findCard(n), d = RT.DECKS.find(x => x.legendCard === leg);
-    const champs = RT.championsFor(leg).filter(c => !c.banned), simChamps = champs.filter(sim);
+    const ctag = (leg.tags || []).filter(t => t !== 'Yordle'), champs = RT.championsFor(leg).filter(c => !c.banned && (c.tags || []).some(t => ctag.includes(t))), simChamps = champs.filter(sim);
     return { id: d ? d.id : n.split(/ - |,/)[0].toLowerCase().replace(/[^a-z]/g, ''), leg, doms: leg.domain.filter(x => RT.DOMAIN_LIST.includes(x)),
       pool: RT.deckPool(leg).filter(c => sim(c) && c.supertype !== 'Champion'), champs: simChamps.length ? simChamps : champs, champSim: simChamps.length > 0,
       bfPool: RT.battlefieldPool(leg).filter(sim) };
