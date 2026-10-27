@@ -3,6 +3,8 @@
 (function () {
   var cardsEl = document.getElementById('rt-cards');
   RT.loadCards(JSON.parse(cardsEl.textContent));
+  var guidesEl = document.getElementById('rt-guides');
+  if (guidesEl) { try { RT.loadGuides(JSON.parse(guidesEl.textContent || '{}')); } catch (e) { /* guides are optional */ } }
   if (typeof globalThis !== 'undefined' && globalThis.RT_HEADLESS) return;
 
   var DC = RT.DOMAIN_COLORS;
@@ -87,10 +89,22 @@
   }
   // Researched game plan for a deck (shared with the AI, which follows the same plan).
   var STYLE_AI = { aggro: 'attacks aggressively and takes even trades', normal: 'attacks when it can conquer', safe: 'only attacks with a safety margin for your tricks' };
-  function guideHtml(id, who) {
+  // Decision tree from the researched guide: each question branches Yes / No until an action.
+  function treeHtml(n) {
+    if (n == null) return '';
+    if (typeof n === 'string') return '<div class="tl">' + esc(n) + '</div>';
+    return '<div class="tq"><div class="tqq">' + esc(n.q) + '</div>' +
+      '<div class="tb"><span class="tyes">Yes</span>' + treeHtml(n.yes) + '</div>' +
+      '<div class="tb"><span class="tno">No</span>' + treeHtml(n.no) + '</div></div>';
+  }
+  function chips(list) { return (list || []).map(function (k) { return '<span class="chip">' + esc(k) + '</span>'; }).join(' '); }
+  function sec(title, body, open) { return body ? '<details class="gsec"' + (open ? ' open' : '') + '><summary>' + title + '</summary>' + body + '</details>' : ''; }
+  function deckName(id) { var d = RT.DECKS.filter(function (x) { return x.id === id; })[0]; return d ? d.name : id; }
+  // who: 'You' / 'AI' label; vs: the opposing deck id (highlights that matchup); brief: AI's deck in a game (short version)
+  function guideHtml(id, who, vs, brief) {
     var pl = RT.plan(id), d = RT.DECKS.filter(function (x) { return x.id === id; })[0], r = RT.real(id);
     if (!pl || !d) return '';
-    var A = pl.ai, notes = [STYLE_AI[A.attack] || ''];
+    var g = pl.guide, A = pl.ai, notes = [STYLE_AI[A.attack] || ''];
     if (A.reserve) notes.push('keeps ' + A.reserve + ' energy open for reactions');
     if (A.holdLone) notes.push('defends each battlefield with a single unit');
     if (A.reinforce) notes.push('reinforces battlefields you could attack');
@@ -98,17 +112,45 @@
     if (A.hideEager) notes.push('hides cards often');
     if (A.equipAlways) notes.push('plays Equipment every turn');
     if (A.seraphine) notes.push('uses the Seraphine discount');
-    return '<div class="guide"><div class="gh"><b>' + esc(d.name) + '</b> <span class="chip">' + esc(pl.style) + '</span>' + (who ? ' <span class="chip">' + who + '</span>' : '') + '</div>' +
-      '<p>' + esc(pl.plan) + '</p>' +
-      '<div class="gk">Key cards: ' + pl.keys.map(function (k) { return '<span class="chip">' + esc(k) + '</span>'; }).join(' ') + '</div>' +
-      '<ul>' + pl.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
-      '<p class="gai">When the AI plays this deck it ' + esc(notes.filter(Boolean).join(', ')) + '.</p>' +
-      (r ? '<p class="gai">Tournaments: ' + Math.round(r.wr * 100) + '% win rate over ' + r.n.toLocaleString() + ' matches' + (r.tier ? ', tier ' + r.tier : '') + '.</p>' : '') +
-      '<p class="gsrc">Source: ' + esc(pl.source) + '</p></div>';
+    if (g && g.mulligan && g.mulligan.keep && g.mulligan.keep.length) notes.push('mulligans for ' + g.mulligan.keep.slice(0, 3).join(', '));
+    if (g && (g.holdFor || []).length) notes.push('holds ' + g.holdFor.slice(0, 3).join(', ') + ' for showdowns');
+    var head = '<div class="gh"><b>' + esc(d.name) + '</b> <span class="chip">' + esc((g && g.archetype) || pl.style) + '</span>' + (who ? ' <span class="chip">' + who + '</span>' : '') + '</div>';
+    var real = r ? '<p class="gai">Tournaments: ' + Math.round(r.wr * 100) + '% win rate over ' + r.n.toLocaleString() + ' matches' + (r.tier ? ', tier ' + r.tier : '') + '.</p>' : '';
+    if (!g) {
+      return '<div class="guide">' + head + '<p>' + esc(pl.plan) + '</p>' +
+        '<div class="gk">Key cards: ' + chips(pl.keys) + '</div>' +
+        '<ul>' + pl.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        '<p class="gai">When the AI plays this deck it ' + esc(notes.filter(Boolean).join(', ')) + '.</p>' + real +
+        '<p class="gsrc">Source: ' + esc(pl.source) + '</p></div>';
+    }
+    var mu = (g.matchups || []).filter(function (m) { return m.vs === vs; })[0];
+    var muHtml = mu ? '<div class="gmu"><b>Against ' + esc(deckName(vs)) + ':</b> ' + esc(mu.plan) + '</div>' : '';
+    if (brief) {
+      return '<div class="guide">' + head + '<p>' + esc(g.summary) + '</p>' + muHtml +
+        sec('Their key decisions', treeHtml(g.tree), false) +
+        sec('What they hold for your turn', (g.holdFor || []).length ? '<div class="gk">' + chips(g.holdFor) + '</div>' : '', false) + real + '</div>';
+    }
+    var mull = g.mulligan ? '<div class="gk">Keep: ' + chips(g.mulligan.keep) + '</div>' + ((g.mulligan.toss || []).length ? '<div class="gk">Send back: ' + chips(g.mulligan.toss) + '</div>' : '') + (g.mulligan.note ? '<p>' + esc(g.mulligan.note) + '</p>' : '') : '';
+    var phases = (g.phases || []).map(function (ph) {
+      return '<div class="gph"><b>' + esc(ph.name) + '</b> — ' + esc(ph.goal) + '<ol>' + (ph.steps || []).map(function (st) { return '<li>' + esc(st) + '</li>'; }).join('') + '</ol></div>';
+    }).join('');
+    var list = function (arr) { return (arr || []).length ? '<ul>' + arr.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : ''; };
+    var mus = (g.matchups || []).map(function (m) { return '<li' + (m.vs === vs ? ' class="cur"' : '') + '><b>' + esc(deckName(m.vs)) + ':</b> ' + esc(m.plan) + '</li>'; }).join('');
+    var src = (g.sources || []).map(function (x) { return esc(x.title) + (x.date ? ' (' + esc(x.date) + ')' : ''); }).join(' · ');
+    return '<div class="guide">' + head + '<p>' + esc(g.summary) + '</p>' + muHtml +
+      sec('Each turn: decision tree', treeHtml(g.tree), true) +
+      sec('Opening hand (mulligan)', mull) +
+      sec('Turn by turn', phases) +
+      sec('In combat', list(g.combat) + ((g.holdFor || []).length ? '<div class="gk">Hold for showdowns: ' + chips(g.holdFor) + '</div>' : '')) +
+      sec('Matchups', mus ? '<ul>' + mus + '</ul>' : '') +
+      sec('Common mistakes', list(g.mistakes)) +
+      sec('How the AI plays it', '<p class="gai">It ' + esc(notes.filter(Boolean).join(', ')) + '.</p>' + real) +
+      (src ? '<p class="gsrc">Sources: ' + src + (g.confidence ? ' · confidence: ' + esc(g.confidence) : '') + '</p>' : '') + '</div>';
   }
   function guideSheet() {
     var G = S.G;
-    openSheet('<h2>Game plans</h2>' + guideHtml(G.players[0].deckDef.id, 'You') + guideHtml(G.players[1].deckDef.id, 'AI'), '<button class="btn" data-act="close">Close</button>');
+    var me = G.players[0].deckDef.id, ai = G.players[1].deckDef.id;
+    openSheet('<h2>Game plans</h2>' + guideHtml(me, 'You', ai) + guideHtml(ai, 'AI', me, true), '<button class="btn" data-act="close">Close</button>');
   }
   // Real tournament stats (riftbound.gg snapshot) shown on each deck.
   function realLine(d) {
@@ -140,7 +182,7 @@
     S.sel = []; S.targeting = null; S.prompt = null; S.busy = true;
     $('menu').classList.add('hidden'); $('game').classList.remove('hidden');
     S.G = null;
-    var G = await RT.newGame(deckById(S.mine), deckById(S.ai), { human: 0, ask: askHuman });
+    var G = await RT.newGame(deckById(S.mine), deckById(S.ai), { human: 0, ask: askHuman, onCreate: function (g) { S.G = g; } });
     S.G = G; S.busy = false;
     render();
     if (G.active === 1) runAI();
@@ -176,10 +218,21 @@
   }
   function promptSheet(req) {
     if (req.type === 'combat') { combatSheet(req.report); return; }
+    if (req.type === 'choice' && req.cards && req.cards.some(function (n) { return n && IMG[RT.norm(n)]; })) {
+      // Choosing between cards: show the cards themselves, tap one to pick it.
+      openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:15px;line-height:1.35">' + esc(req.text) + '</p><div class="picks">' +
+        req.options.map(function (o, i) {
+          var n = req.cards[i], url = n ? IMG[RT.norm(n)] : null;
+          return '<button class="pick' + (i === req.auto ? ' sug' : '') + '" data-ans="opt' + i + '">' + (url ? '<img src="' + url + '" alt="' + esc(n) + '">' : '<span class="noimg">' + esc(n || o) + '</span>') +
+            '<span class="pl">' + esc(o) + '</span>' + (i === req.auto ? '<span class="pt">Suggested</span>' : '') + '</button>';
+        }).join('') + '</div>',
+        req.optional ? '<button class="btn" data-ans="skip" style="flex-basis:100%">' + esc(req.skipLabel || 'Skip') + '</button>' : '');
+      return;
+    }
     if (req.type === 'choice') {
       openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
         req.options.map(function (o, i) { return '<button class="btn' + (i === req.auto ? ' primary' : '') + '" data-ans="opt' + i + '" style="flex-basis:100%">' + esc(o) + '</button>'; }).join('') +
-        (req.optional ? '<button class="btn" data-ans="skip" style="flex-basis:100%">Skip</button>' : ''));
+        (req.optional ? '<button class="btn" data-ans="skip" style="flex-basis:100%">' + esc(req.skipLabel || 'Skip') + '</button>' : ''));
       return;
     }
     openSheet('<h2>' + esc(req.title) + '</h2><p style="font-size:16px;line-height:1.35">' + esc(req.text) + '</p>',
@@ -223,6 +276,9 @@
     if (S.prompt && S.prompt.req.type === 'target' && S.prompt.req.cands.indexOf(u.uid) >= 0) cls += ' target';
     var flags = unitBadges(u, k);
     if (u.empowered) cls += ' emp';
+    if (S.drag && S.drag.uids.indexOf(u.uid) >= 0) cls += ' lifting';
+    if (S.landed && S.landed.indexOf(u.uid) >= 0) cls += ' land';
+    if (movableUnit(G, u)) cls += ' drag';
     if (u.ctrl === 0 && u.c.P.unitAct && G.active === 0 && RT.canUseUnit(G, 0, u.uid).ok) cls += ' can';
     return '<button class="' + cls + '" data-uid="' + u.uid + '" aria-label="' + esc(u.c.name) + '">' +
       '<span class="art">' + art(u.c, 50, 58) + '</span>' +
@@ -591,8 +647,69 @@
   function toast(msg) { if (S.G && msg) S.G.log.push({ t: msg, p: -1, turn: S.G.turnNo }); }
 
   /* ---------- input ---------- */
+  function movableUnit(G, u) {
+    return u.ctrl === 0 && G.active === 0 && !S.busy && !S.prompt && !S.targeting && G.winner == null && !u.ex && ['base', 0, 1].some(function (d) { return RT.canMove(G, u, d); });
+  }
+  // Drag a unit: press, pull past a few pixels and it lifts off the board; drop it on a battlefield or your base.
+  var DG = null;
+  function dropTarget(x, y) {
+    var el = document.elementFromPoint(x, y);
+    if (!el) return null;
+    var bf = el.closest('[data-bf]'), base = el.closest('[data-base]');
+    var d = bf ? +bf.dataset.bf : base ? 'base' : null;
+    return d != null && destOptions().indexOf(d) >= 0 ? { d: d, el: bf || base } : null;
+  }
+  document.addEventListener('pointerdown', function (ev) {
+    var G = S.G; if (!G || ev.button > 0) return;
+    var ue = ev.target.closest('.u[data-uid]');
+    if (!ue) return;
+    var u = G.units.filter(function (x) { return x.uid === +ue.dataset.uid; })[0];
+    if (!u || !movableUnit(G, u)) return;
+    DG = { uid: u.uid, x0: ev.clientX, y0: ev.clientY, src: ue, on: false };
+  });
+  document.addEventListener('pointermove', function (ev) {
+    if (!DG) return;
+    if (!DG.on) {
+      if (Math.hypot(ev.clientX - DG.x0, ev.clientY - DG.y0) < 8) return;
+      var r = DG.src.getBoundingClientRect(), gh = DG.src.cloneNode(true);
+      gh.className += ' ghost'; gh.style.width = r.width + 'px'; gh.style.height = r.height + 'px';
+      DG.dx = DG.x0 - r.left; DG.dy = DG.y0 - r.top; DG.home = r; DG.ghost = gh; DG.on = true;
+      document.body.appendChild(gh);
+      var uids = S.sel.indexOf(DG.uid) >= 0 ? S.sel.slice() : [DG.uid];
+      S.sel = uids; S.drag = { uids: uids }; render();
+      if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) { /* ignore */ } }
+    }
+    ev.preventDefault();
+    DG.ghost.style.left = (ev.clientX - DG.dx) + 'px'; DG.ghost.style.top = (ev.clientY - DG.dy) + 'px';
+    var t = dropTarget(ev.clientX, ev.clientY);
+    if (DG.over && (!t || t.el !== DG.over)) DG.over.classList.remove('over');
+    if (t) { t.el.classList.add('over'); DG.over = t.el; } else DG.over = null;
+  }, { passive: false });
+  function endDrag(ev, cancel) {
+    if (!DG) return;
+    var D = DG; DG = null;
+    if (!D.on) return;
+    S.suppressClick = true; setTimeout(function () { S.suppressClick = false; }, 50);
+    if (D.over) D.over.classList.remove('over');
+    var t = cancel ? null : dropTarget(ev.clientX, ev.clientY), uids = S.drag.uids, G = S.G;
+    S.drag = null;
+    if (t) {
+      D.ghost.classList.add('drop');
+      setTimeout(function () { D.ghost.remove(); }, 160);
+      S.sel = []; S.landed = uids;
+      run(function () { return RT.moveUnits(G, 0, uids, t.d); }).then(function () { setTimeout(function () { S.landed = null; }, 450); });
+    } else {
+      D.ghost.classList.add('back');
+      D.ghost.style.left = D.home.left + 'px'; D.ghost.style.top = D.home.top + 'px';
+      setTimeout(function () { D.ghost.remove(); render(); }, 220);
+    }
+  }
+  document.addEventListener('pointerup', function (ev) { endDrag(ev, false); });
+  document.addEventListener('dragstart', function (ev) { if (ev.target.closest && ev.target.closest('.u, .card')) ev.preventDefault(); });
+  document.addEventListener('pointercancel', function (ev) { endDrag(ev, true); });
   document.addEventListener('click', function (ev) {
     var G = S.G; if (!G) return;
+    if (S.suppressClick) { S.suppressClick = false; ev.stopPropagation(); return; }
     var t = ev.target;
     var an = t.closest('[data-ans]');
     if (an) { var v = an.dataset.ans; answer(v === 'yes' ? true : v === 'no' ? false : v.indexOf('opt') === 0 ? +v.slice(3) : null); return; }

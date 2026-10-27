@@ -352,15 +352,48 @@ var RT = (function () {
     });
     G.bfs = [deckA, deckB].map(function (d) { return { c: d.bfCards[Math.floor(rnd() * d.bfCards.length)], ctrl: null }; });
     G.players.forEach(function (p) { for (var i = 0; i < 4; i++) drawOne(G, p.pi, true); });
+    G.human = opts.human != null ? opts.human : -1;
+    G.ask = opts.ask || null;
+    if (opts.onCreate) opts.onCreate(G);
+    for (var mp = 0; mp < 2; mp++) await mulligan(G, mp);
     G.first = Math.floor(rnd() * 2);
     G.active = G.first;
     log(G, (G.first === 0 ? G.players[0].name + ' go' : G.players[1].name + ' goes') + ' first. Battlefields: ' + bfName(G, 0) + ' and ' + bfName(G, 1) + '.');
-    G.human = opts.human != null ? opts.human : -1;
     // Per-player stats used for the post-game tips.
     G.stats = [0, 1].map(function () { return { unspent: 0, idle: 0, attacks: 0, attacksWon: 0, attacksBounced: 0, attacksLost: 0, conquerPts: 0, holdPts: 0, otherPts: 0, unitsLost: 0, played: 0, turns: 0, emptyBfTurns: 0, cardsLeft: 0 }; });
-    G.ask = opts.ask || null;
     await startTurn(G);
     return G;
+  }
+
+  // Mulligan: set aside up to 2 cards from the opening hand, draw that many, then put the set-aside cards on the bottom of the deck.
+  async function mulligan(G, pi) {
+    var p = G.players[pi], aside = [];
+    while (aside.length < 2) {
+      var hand = p.hand.filter(function (c) { return aside.indexOf(c) < 0; });
+      var k = await ask(G, pi, { type: 'choice', title: 'Mulligan', text: 'Pick a card to set aside and redraw (' + (2 - aside.length) + ' left). Set-aside cards go to the bottom of your deck.',
+        options: hand.map(function (c) { return c.c.name + (c.c.type === 'Unit' ? ' (' + (c.c.energy || 0) + ' energy, ' + (c.c.might || 0) + ' Might)' : ' (' + (c.c.energy || 0) + ' energy)'); }),
+        cards: hand.map(function (c) { return c.c.name; }), optional: true, skipLabel: aside.length ? 'Keep the rest' : 'Keep this hand', auto: aiMulliganPick(G, pi, hand) });
+      if (k == null || !hand[k]) break;
+      aside.push(hand[k]);
+    }
+    if (!aside.length) return;
+    aside.forEach(function (c) { p.hand.splice(p.hand.indexOf(c), 1); });
+    for (var i = 0; i < aside.length; i++) drawOne(G, pi, true);
+    aside.forEach(function (c) { p.deck.push(c); });
+    log(G, p.name + ' mulligan' + (pi === 0 ? '' : 's') + ' ' + aside.length + ' card' + (aside.length > 1 ? 's' : '') + (pi === 0 ? ' (' + aside.map(function (c) { return c.c.name; }).join(', ') + ')' : '') + '.', pi);
+  }
+  // AI mulligan: keep the cards the deck guide says pros keep; send back the guide's "toss" cards, then expensive cards.
+  function aiMulliganPick(G, pi, hand) {
+    var A = aiOf(G, pi), keep = A.mullN || {}, toss = A.tossN || {}, best = null, bv = 0;
+    hand.forEach(function (c, i) {
+      var nm = norm(c.c.name), e = c.c.energy || 0, v = 0;
+      if (keep[nm]) return;
+      if (toss[nm]) v = 3 + e * 0.1;
+      else if (e >= 5) v = 1 + e * 0.1;
+      else if (Object.keys(keep).length && e >= 4) v = 0.5 + e * 0.1;
+      if (v > bv) { bv = v; best = i; }
+    });
+    return best;
   }
 
   /* ---------------- resources ---------------- */
@@ -630,7 +663,9 @@ var RT = (function () {
   /* ---------------- scripted spells & gear ---------------- */
   async function choose(G, pi, title, text, options, optional, auto) {
     if (!options.length) return null;
-    var r = await ask(G, pi, { type: 'choice', title: title, text: text, options: options, optional: !!optional, auto: auto == null ? (optional ? null : 0) : auto });
+    var hint = G.cardsHint; G.cardsHint = null;
+    var cards = hint && hint.length === options.length ? hint.map(function (x) { return x && x.c ? x.c.name : null; }) : null;
+    var r = await ask(G, pi, { type: 'choice', title: title, text: text, options: options, cards: cards, optional: !!optional, auto: auto == null ? (optional ? null : 0) : auto });
     return r == null ? null : r;
   }
   function destinations(G, u) {
@@ -698,7 +733,7 @@ var RT = (function () {
       var k = null;
       if (units.length) {
         var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-        k = await choose(G, pi, ctx.srcName, 'Top ' + e.n + ': ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Reveal a unit and draw it?', units.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v)));
+        G.cardsHint = units; k = await choose(G, pi, ctx.srcName, 'Top ' + e.n + ': ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Reveal a unit and draw it?', units.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v)));
       }
       var got = k != null ? units[k] : null;
       if (got) { p.hand.push(got); log(G, (ctx.srcName || 'Effect') + ': ' + p.name + ' reveal' + (pi === 0 ? '' : 's') + ' and draw' + (pi === 0 ? '' : 's') + ' ' + got.c.name + '.', pi); }
@@ -708,7 +743,7 @@ var RT = (function () {
       var p = G.players[pi], units = p.hand.filter(function (x) { return x.c.type === 'Unit' && canPay(p, 0, x.c.power || 0, cardDomains(x.c)); });
       if (!units.length) return;
       var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-      var k = await choose(G, pi, ctx.srcName, 'Play a unit from your hand to your base, ignoring its Energy cost (you pay its power):', units.map(function (x) { return x.c.name; }), false, v.indexOf(Math.max.apply(null, v)));
+      G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, 'Play a unit from your hand to your base, ignoring its Energy cost (you pay its power):', units.map(function (x) { return x.c.name; }), false, v.indexOf(Math.max.apply(null, v)));
       if (k == null) return;
       var card = units[k];
       pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
@@ -725,7 +760,7 @@ var RT = (function () {
       var p = G.players[pi], spells = p.trash.filter(function (x) { return x.c.type === 'Spell'; });
       if (!spells.length) return;
       var v = spells.map(function (x) { return x.c.energy || 0; });
-      var k = await choose(G, pi, ctx.srcName, 'Give a spell in your trash Flow (cast it again this turn from the Trash for its cost):', spells.map(function (x) { return x.c.name + ' (' + (x.c.energy || 0) + ' energy)'; }), false, v.indexOf(Math.max.apply(null, v)));
+      G.cardsHint = spells; var k = await choose(G, pi, ctx.srcName, 'Give a spell in your trash Flow (cast it again this turn from the Trash for its cost):', spells.map(function (x) { return x.c.name + ' (' + (x.c.energy || 0) + ' energy)'; }), false, v.indexOf(Math.max.apply(null, v)));
       if (k == null) return;
       spells[k].tempFlow = { energy: spells[k].c.energy || 0, power: spells[k].c.power || 0 };
       log(G, (ctx.srcName || 'Effect') + ': ' + spells[k].c.name + ' gains Flow this turn.', pi);
@@ -748,7 +783,7 @@ var RT = (function () {
       var p = G.players[pi], spells = p.trash.filter(function (x) { return x.c.type === 'Spell' && (x.c.energy || 0) <= 3 && x.c.P.spell.length && !x.c.P.counter && canPay(p, 0, x.c.power || 0, cardDomains(x.c)); });
       if (!spells.length) return;
       var v = spells.map(function (x) { return evalEffects(G, pi, x.c.P.spell, { src: null, loc: null }).value; });
-      var k = await choose(G, pi, ctx.srcName, 'Play a spell (3 energy or less) from your trash for free (you pay its power)? It is recycled after.', spells.map(function (x) { return x.c.name; }), true, Math.max.apply(null, v) >= 1.5 ? v.indexOf(Math.max.apply(null, v)) : null);
+      G.cardsHint = spells; var k = await choose(G, pi, ctx.srcName, 'Play a spell (3 energy or less) from your trash for free (you pay its power)? It is recycled after.', spells.map(function (x) { return x.c.name; }), true, Math.max.apply(null, v) >= 1.5 ? v.indexOf(Math.max.apply(null, v)) : null);
       if (k == null) return;
       var card = spells[k];
       pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
@@ -810,7 +845,7 @@ var RT = (function () {
       G.units.forEach(function (u) { u.equips.forEach(function (g) { all.push({ g: g, pl: G.players[u.owner], host: u }); }); });
       if (!all.length) return;
       var auto = all.map(function (x) { return x.pl.pi !== pi; }).indexOf(true);
-      var k = await choose(G, pi, ctx.srcName, 'Kill a gear?', all.map(function (x) { return x.g.c.name + (x.pl.pi === pi ? ' (yours)' : ' (AI)') + (x.host ? ' on ' + x.host.c.name : ''); }), true, auto < 0 ? null : auto);
+      G.cardsHint = all.map(function (q) { return q.g; }); var k = await choose(G, pi, ctx.srcName, 'Kill a gear?', all.map(function (x) { return x.g.c.name + (x.pl.pi === pi ? ' (yours)' : ' (AI)') + (x.host ? ' on ' + x.host.c.name : ''); }), true, auto < 0 ? null : auto);
       if (k == null) return;
       var x = all[k];
       if (x.host) x.host.equips.splice(x.host.equips.indexOf(x.g), 1); else x.pl.gear.splice(x.pl.gear.indexOf(x.g), 1);
@@ -823,7 +858,7 @@ var RT = (function () {
         var units = p.trash.filter(function (x) { return x.c.type === 'Unit'; });
         if (!units.length) return;
         var best = units.map(function (x) { return x.c.energy || 0; }); var auto = best.indexOf(Math.max.apply(null, best));
-        var k = await choose(G, pi, ctx.srcName, 'Return a unit from your trash to your hand (' + (n + 1) + ' of ' + e.n + ')', units.map(function (x) { return x.c.name; }), true, auto);
+        G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, 'Return a unit from your trash to your hand (' + (n + 1) + ' of ' + e.n + ')', units.map(function (x) { return x.c.name; }), true, auto);
         if (k == null) return;
         p.trash.splice(p.trash.indexOf(units[k]), 1); p.hand.push(units[k]);
         log(G, (ctx.srcName || 'Effect') + ' returns ' + units[k].c.name + ' to hand.', pi);
@@ -838,7 +873,7 @@ var RT = (function () {
       });
       if (!units.length) { log(G, (ctx.srcName || 'Effect') + ': no unit in your trash you can pay for.', pi); return; }
       var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
-      var k = await choose(G, pi, ctx.srcName, e.free ? 'Play a unit from your trash to your base for free?' : 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), !!e.optional, auto);
+      G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, e.free ? 'Play a unit from your trash to your base for free?' : 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), !!e.optional, auto);
       if (k == null) return;
       var card = units[k];
       if (!e.free) pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
@@ -866,14 +901,14 @@ var RT = (function () {
       var non = o.hand.filter(function (x) { return x.c.type !== 'Unit'; });
       if (!non.length) return;
       var v = non.map(function (x) { return x.c.energy || 0; }); var auto = v.indexOf(Math.max.apply(null, v));
-      var k = await choose(G, pi, ctx.srcName, 'Recycle a non-unit card from their hand:', non.map(function (x) { return x.c.name; }), false, auto);
+      G.cardsHint = non; var k = await choose(G, pi, ctx.srcName, 'Recycle a non-unit card from their hand:', non.map(function (x) { return x.c.name; }), false, auto);
       if (k == null) return;
       o.hand.splice(o.hand.indexOf(non[k]), 1); o.deck.push(non[k]);
       log(G, (ctx.srcName || 'Effect') + ' recycles ' + non[k].c.name + ' from ' + o.name + "'s hand.", pi);
     },
     thrill: async function (G, pi, e, tg, ctx) {
       var u = tg[0];
-      var k = await choose(G, pi, ctx.srcName, 'Play ' + u.c.name + ' to which battlefield?', G.bfs.map(function (b) { return b.c.name; }), false,
+      G.cardsHint = G.bfs; var k = await choose(G, pi, ctx.srcName, 'Play ' + u.c.name + ' to which battlefield?', G.bfs.map(function (b) { return b.c.name; }), false,
         G.bfs.map(function (b, i) { return i; }).filter(function (i) { return G.bfs[i].ctrl !== pi; })[0] || 0);
       if (k == null) return;
       removeUnit(G, u); u.dead = true; updateControl(G);
@@ -909,7 +944,7 @@ var RT = (function () {
       var p = G.players[pi], top = p.deck.splice(0, e.n);
       if (!top.length) return;
       var v = top.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
-      var k = await choose(G, pi, ctx.srcName, 'Choose a card to draw; the rest go to your trash.', top.map(function (x) { return x.c.name + ' (' + x.c.type + ')'; }), true, auto);
+      G.cardsHint = top; var k = await choose(G, pi, ctx.srcName, 'Choose a card to draw; the rest go to your trash.', top.map(function (x) { return x.c.name + ' (' + x.c.type + ')'; }), true, auto);
       if (k != null) { p.hand.push(top[k]); top.splice(k, 1); }
       top.forEach(function (x) { p.trash.push(x); });
       log(G, (ctx.srcName || 'Effect') + ': ' + p.name + ' draw' + (pi === 0 ? '' : 's') + ' 1 and trash' + (pi === 0 ? '' : 'es') + ' ' + top.length + '.', pi);
@@ -920,7 +955,7 @@ var RT = (function () {
       var k = null;
       if (ok.length) {
         var v = ok.map(function (x) { return x.c.might || 0; });
-        k = await choose(G, pi, ctx.srcName, 'Top 5: ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Play a unit with Might ≤ ' + lim + ' for free?', ok.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), true, v.indexOf(Math.max.apply(null, v)));
+        G.cardsHint = ok; k = await choose(G, pi, ctx.srcName, 'Top 5: ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Play a unit with Might ≤ ' + lim + ' for free?', ok.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), true, v.indexOf(Math.max.apply(null, v)));
       }
       var chosen = k != null ? ok[k] : null;
       top.forEach(function (x) { if (x !== chosen) p.deck.push(x); });
@@ -1275,6 +1310,7 @@ var RT = (function () {
       if (opts.length) {
         var out = fightOutcome(G, attacker, bi), winning = side === attacker ? out.attackerWins : out.defenderHolds;
         var labels = opts.map(function (o) { return o.kind === 'legend' ? 'Legend: ' + o.label : (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
+        G.cardsHint = opts.map(function (o) { return o.card; });
         pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, aiShowdownPick(G, side, bi, opts, winning));
       }
       if (pick == null) passes++;
@@ -1349,7 +1385,7 @@ var RT = (function () {
       return energyAvail(p) >= ec.energy && canPay(p, ec.energy, doms.length, doms);
     });
     if (!ok.length) return;
-    var k = await choose(G, pi, 'Weaponmaster', 'Equip one of your Equipment to ' + u.c.name + ' for 1 power less?', ok.map(function (x) { return x.g.c.name + (x.host ? ' (from ' + x.host.c.name + ')' : ''); }), true, 0);
+    G.cardsHint = ok.map(function (q) { return q.g; }); var k = await choose(G, pi, 'Weaponmaster', 'Equip one of your Equipment to ' + u.c.name + ' for 1 power less?', ok.map(function (x) { return x.g.c.name + (x.host ? ' (from ' + x.host.c.name + ')' : ''); }), true, 0);
     if (k == null) return;
     var x = ok[k], ec2 = x.g.c.P.equipCost || { energy: 0, power: [] }, rest = ec2.power.slice(1);
     var d2 = rest.filter(function (d) { return d !== 'any'; });
@@ -1398,7 +1434,7 @@ var RT = (function () {
       return canPay(p, Math.max(0, (c.energy || 0) - reduce), c.power || 0, cardDomains(c));
     });
     var v = playable.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0) + (x.c.type === 'Spell' ? evalEffects(G, pi, x.c.P.spell, { src: null, loc: null }).value : 0); });
-    var k = playable.length ? await choose(G, pi, title, 'Play one of them' + (reduce ? ' for ' + reduce + ' energy less' : '') + '?', playable.map(function (x) { return x.c.name + ' (' + Math.max(0, (x.c.energy || 0) - reduce) + ' energy)'; }), true, v.indexOf(Math.max.apply(null, v))) : null;
+    G.cardsHint = playable; var k = playable.length ? await choose(G, pi, title, 'Play one of them' + (reduce ? ' for ' + reduce + ' energy less' : '') + '?', playable.map(function (x) { return x.c.name + ' (' + Math.max(0, (x.c.energy || 0) - reduce) + ' energy)'; }), true, v.indexOf(Math.max.apply(null, v))) : null;
     var chosen = k != null ? playable[k] : null;
     top.forEach(function (x) { if (x === chosen) return; if (rest === 'draw') p.hand.push(x); else p.deck.push(x); });
     if (rest === 'draw' && top.length > (chosen ? 1 : 0)) log(G, title + ': ' + p.name + ' draw' + (pi === 0 ? '' : 's') + ' the rest.', pi);
@@ -1423,7 +1459,7 @@ var RT = (function () {
       for (var i = 0; i < e.n; i++) {
         var ex = p.gear.filter(function (g) { return g.ex && !g.token; });
         if (!ex.length) return;
-        var k = await choose(G, pi, ctx.srcName, 'Ready a gear', ex.map(function (g) { return g.c.name; }), true, 0);
+        G.cardsHint = ex; var k = await choose(G, pi, ctx.srcName, 'Ready a gear', ex.map(function (g) { return g.c.name; }), true, 0);
         if (k == null) return;
         ex[k].ex = false; log(G, (ctx.srcName || 'Effect') + ' readies ' + ex[k].c.name + '.', pi);
       }
@@ -1508,7 +1544,7 @@ var RT = (function () {
       var p = G.players[pi], top = p.deck.splice(0, e.n);
       if (!top.length) return;
       var v = top.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-      var k = await choose(G, pi, ctx.srcName, 'Put one into your hand; the rest are recycled.', top.map(function (x) { return x.c.name + ' (' + x.c.type + ')'; }), false, v.indexOf(Math.max.apply(null, v)));
+      G.cardsHint = top; var k = await choose(G, pi, ctx.srcName, 'Put one into your hand; the rest are recycled.', top.map(function (x) { return x.c.name + ' (' + x.c.type + ')'; }), false, v.indexOf(Math.max.apply(null, v)));
       if (k == null) k = 0;
       p.hand.push(top[k]); top.splice(k, 1); top.forEach(function (x) { p.deck.push(x); });
       log(G, (ctx.srcName || 'Effect') + ': ' + p.name + ' take' + (pi === 0 ? '' : 's') + ' 1 and recycle' + (pi === 0 ? '' : 's') + ' ' + top.length + '.', pi);
@@ -1519,7 +1555,7 @@ var RT = (function () {
       if (!(await confirm(G, pi, ctx.srcName, 'Pay 1 energy extra to banish a card from a trash and give a unit [Assault 2] this turn?', true))) return;
       pay(G, pi, 1, 0, []);
       var all = []; G.players.forEach(function (pl) { pl.trash.forEach(function (x) { all.push({ pl: pl, x: x }); }); });
-      var k = await choose(G, pi, ctx.srcName, 'Banish a card from any trash', all.map(function (a) { return a.x.c.name + (a.pl.pi === pi ? ' (yours)' : ' (AI)'); }), false, Math.max(0, all.map(function (a) { return a.pl.pi !== pi; }).indexOf(true)));
+      G.cardsHint = all.map(function (q) { return q.x; }); var k = await choose(G, pi, ctx.srcName, 'Banish a card from any trash', all.map(function (a) { return a.x.c.name + (a.pl.pi === pi ? ' (yours)' : ' (AI)'); }), false, Math.max(0, all.map(function (a) { return a.pl.pi !== pi; }).indexOf(true)));
       var b = all[k || 0]; b.pl.trash.splice(b.pl.trash.indexOf(b.x), 1);
       log(G, ctx.srcName + ' banishes ' + b.x.c.name + '.', pi);
       await resolveEffects(G, pi, [{ op: 'assault', n: 2, t: { sel: 'friendly', where: null } }], { src: ctx.src, loc: ctx.loc, srcName: ctx.srcName });
@@ -1544,7 +1580,7 @@ var RT = (function () {
         var q = i === 0 ? opp(pi) : pi, pl = G.players[q], top = pl.deck.splice(0, 5);
         if (!top.length) continue;
         var v = top.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-        var k = await choose(G, q, ctx.srcName, 'Choose one of your top 5 to play for free (energy ignored); the rest are recycled.', top.map(function (x) { return x.c.name; }), false, v.indexOf(Math.max.apply(null, v)));
+        G.cardsHint = top; var k = await choose(G, q, ctx.srcName, 'Choose one of your top 5 to play for free (energy ignored); the rest are recycled.', top.map(function (x) { return x.c.name; }), false, v.indexOf(Math.max.apply(null, v)));
         var ch = top[k || 0]; top.forEach(function (x) { if (x !== ch) pl.deck.push(x); });
         picks.push([q, ch]);
       }
@@ -1578,7 +1614,7 @@ var RT = (function () {
         var all = []; G.players.forEach(function (pl) { pl.trash.forEach(function (x) { all.push({ pl: pl, x: x }); }); });
         if (!all.length) return;
         var auto = all.map(function (a) { return a.pl.pi !== pi; }).indexOf(true);
-        var k = await choose(G, pi, ctx.srcName, 'Recycle a card from a trash (' + (i + 1) + ' of up to 4)', all.map(function (a) { return a.x.c.name + (a.pl.pi === pi ? ' (yours)' : ' (AI)'); }), true, auto < 0 ? null : auto);
+        G.cardsHint = all.map(function (q) { return q.x; }); var k = await choose(G, pi, ctx.srcName, 'Recycle a card from a trash (' + (i + 1) + ' of up to 4)', all.map(function (a) { return a.x.c.name + (a.pl.pi === pi ? ' (yours)' : ' (AI)'); }), true, auto < 0 ? null : auto);
         if (k == null) return;
         var a = all[k]; a.pl.trash.splice(a.pl.trash.indexOf(a.x), 1); a.pl.deck.push(a.x);
         log(G, ctx.srcName + ' recycles ' + a.x.c.name + '.', pi);
@@ -1692,7 +1728,7 @@ var RT = (function () {
     var cands = p.gear.filter(function (g) { return !g.token && (g.c.energy || 0) > 0; });
     if (!cands.length || energyAvail(p) < 1) return;
     var v = cands.map(function (g) { return g.c.energy || 0; });
-    var k = await choose(G, pi, p.legend.c.name, 'Pay 1 energy to turn a friendly gear into a unit (Might = its Energy cost)?', cands.map(function (g) { return g.c.name + ' (' + (g.c.energy || 0) + ' Might)'; }), true, (old && Math.max.apply(null, v) <= old.mightOverride) ? null : v.indexOf(Math.max.apply(null, v)));
+    G.cardsHint = cands; var k = await choose(G, pi, p.legend.c.name, 'Pay 1 energy to turn a friendly gear into a unit (Might = its Energy cost)?', cands.map(function (g) { return g.c.name + ' (' + (g.c.energy || 0) + ' Might)'; }), true, (old && Math.max.apply(null, v) <= old.mightOverride) ? null : v.indexOf(Math.max.apply(null, v)));
     if (k == null) return;
     pay(G, pi, 1, 0, []);
     if (old) { removeUnit(G, old); old.dead = true; p.gear.push(old.animatedGear); old.animatedGear.loc = old.loc === 'base' || !old.animatedGear.c.P.kw.deploy ? (old.animatedGear.c.P.kw.deploy ? old.loc : 'base') : old.loc; log(G, old.c.name + ' turns back into gear.', pi); }
@@ -1760,7 +1796,7 @@ var RT = (function () {
       var p = G.players[pi], top = p.deck.splice(0, e.n);
       var ok = top.filter(function (x) { return e.types.indexOf(x.c.type) >= 0 && (x.c.energy || 0) <= e.maxE && (x.c.power || 0) <= e.maxP; });
       var v = ok.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-      var k = ok.length ? await choose(G, pi, ctx.srcName, 'Top ' + top.length + ': ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Reveal one and draw it?', ok.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v))) : null;
+      G.cardsHint = ok; var k = ok.length ? await choose(G, pi, ctx.srcName, 'Top ' + top.length + ': ' + top.map(function (x) { return x.c.name; }).join(', ') + '. Reveal one and draw it?', ok.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v))) : null;
       var got = k != null ? ok[k] : null;
       if (got) { p.hand.push(got); log(G, (ctx.srcName || 'Effect') + ': draw ' + got.c.name + '.', pi); }
       top.forEach(function (x) { if (x !== got) p.deck.push(x); });
@@ -1786,7 +1822,7 @@ var RT = (function () {
       var units = o.trash.filter(function (x) { return x.c.type === 'Unit'; });
       if (!units.length) return;
       var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
-      var k = await choose(G, pi, ctx.srcName, "Play a unit from the opponent's trash, ignoring its cost?", units.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v)));
+      G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, "Play a unit from the opponent's trash, ignoring its cost?", units.map(function (x) { return x.c.name; }), true, v.indexOf(Math.max.apply(null, v)));
       if (k == null) return;
       o.trash.splice(o.trash.indexOf(units[k]), 1);
       var u = await playFree(G, pi, units[k], 'base', ctx.srcName);
@@ -1811,7 +1847,7 @@ var RT = (function () {
     moveDeploy: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi], gs = p.gear.filter(function (g) { return g.c.P.kw.deploy; });
       if (!gs.length) { log(G, (ctx.srcName || 'Effect') + ': no Deploy gear to move.', pi); return; }
-      var k = await choose(G, pi, ctx.srcName, 'Move which Deploy gear?', gs.map(function (g) { return g.c.name + ' (at ' + locName(G, g.loc) + ')'; }), false, 0);
+      G.cardsHint = gs; var k = await choose(G, pi, ctx.srcName, 'Move which Deploy gear?', gs.map(function (g) { return g.c.name + ' (at ' + locName(G, g.loc) + ')'; }), false, 0);
       var g = gs[k || 0], ds = G.bfs.map(function (b, i) { return i; }).filter(function (i) { return i !== g.loc; });
       var d = await choose(G, pi, ctx.srcName, 'Move ' + g.c.name + ' to:', ds.map(function (i) { return bfName(G, i); }), false, 0);
       g.loc = ds[d || 0]; log(G, g.c.name + ' moves to ' + bfName(G, g.loc) + '.', pi);
@@ -2361,7 +2397,7 @@ var RT = (function () {
       case 'discard':
         for (var d = 0; d < e.n && p.hand.length; d++) {
           var worst = p.hand.slice().sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
-          var di = await choose(G, pi, src, 'Choose a card to discard', p.hand.map(function (x) { return x.c.name; }), false, p.hand.indexOf(worst));
+          G.cardsHint = p.hand; var di = await choose(G, pi, src, 'Choose a card to discard', p.hand.map(function (x) { return x.c.name; }), false, p.hand.indexOf(worst));
           if (di != null && p.hand[di]) worst = p.hand[di];
           p.hand.splice(p.hand.indexOf(worst), 1); p.trash.push(worst);
           log(G, p.name + ' discard' + (pi === 0 ? '' : 's') + ' ' + worst.c.name + '.', pi);
@@ -2841,6 +2877,21 @@ var RT = (function () {
     if (!A.keyN) { A.keyN = {}; Object.keys(A.key).forEach(function (k) { A.keyN[norm(k)] = A.key[k]; }); }
     return A.keyN[norm(name)] || 0;
   }
+  // Deck guides researched from pro play (src/guides.json): decision tree for the Guide screen + hints the AI follows.
+  function loadGuides(gs) {
+    Object.keys(gs || {}).forEach(function (id) {
+      var pl = PLANS[id], g = gs[id];
+      if (!pl || !g) return;
+      pl.guide = g;
+      var A = pl.ai, h = g.ai || {};
+      A.key = A.key || {};
+      Object.keys(h.priority || {}).forEach(function (k) { A.key[k] = Math.max(A.key[k] || 0, h.priority[k]); });
+      A.keyN = null;
+      A.holdN = {}; (h.holdForShowdown || g.holdFor || []).forEach(function (k) { A.holdN[norm(k)] = 1; });
+      A.mullN = {}; ((g.mulligan && g.mulligan.keep) || h.mulliganKeep || []).forEach(function (k) { A.mullN[norm(k)] = 1; });
+      A.tossN = {}; ((g.mulligan && g.mulligan.toss) || []).forEach(function (k) { A.tossN[norm(k)] = 1; });
+    });
+  }
   function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && PLANS[d.id]) || null; }
   function aiOf(G, pi) { var pl = planOf(G, pi); return (pl && pl.ai) || {}; }
 
@@ -2928,6 +2979,7 @@ var RT = (function () {
     }
     if (c.type === 'Spell') {
       if (G.showdownAt == null && trickN(c) > 0) return null;
+      if (G.showdownAt == null && A.holdN && A.holdN[norm(c.name)] && (c.P.kw.reaction || c.P.kw.action) && !c.P.counter) return null;
       var es = evalEffects(G, pi, c.P.spell, ctx);
       if (!es.good || es.value + bonus < 1.5) return null;
       return { value: es.value + 0.5 + bonus, opts: { targets: es.targets, seraphine: sera } };
@@ -3253,7 +3305,7 @@ var RT = (function () {
   }
 
   return {
-    plan: function (id) { return PLANS[id] || null; },
+    plan: function (id) { return PLANS[id] || null; }, loadGuides: loadGuides,
     real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,
@@ -3271,4 +3323,8 @@ var RT = (function () {
     equipBonus: equipBonus, describeEffect: describeEffect, cardCost: cardCost, aiTurn: aiTurn, deckCoverage: deckCoverage, cardDomains: cardDomains
   };
 })();
-if (typeof module !== 'undefined') module.exports = RT;
+if (typeof module !== 'undefined') {
+  module.exports = RT;
+  // Node (tests, harness): load the researched deck guides next to this file, if present.
+  try { RT.loadGuides(require('./guides.json')); } catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e; }
+}

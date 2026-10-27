@@ -4,10 +4,12 @@ root = pathlib.Path(__file__).resolve().parent.parent
 src = root / 'src'
 cards = json.loads((src / 'cards.json').read_text())
 data = json.dumps(cards, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+guides_path = src / 'guides.json'
+guides = json.dumps(json.loads(guides_path.read_text()) if guides_path.exists() else {}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 images = {f.stem: base64.b64encode(f.read_bytes()).decode() for f in sorted((src / 'img').glob('*.webp'))}
 html = (src / 'template.html').read_text()
 for key, val in (('/*STYLE*/', (src / 'style.css').read_text()), ('/*ENGINE*/', (src / 'engine.js').read_text()),
-                 ('/*UI*/', (src / 'ui.js').read_text()), ('/*CARDS*/', data),
+                 ('/*UI*/', (src / 'ui.js').read_text()), ('/*CARDS*/', data), ('/*GUIDES*/', guides),
                  ('/*IMAGES*/', json.dumps(images, separators=(',', ':')))):
     html = html.replace(key, val, 1)
 (root / 'riftable.html').write_text(html)
