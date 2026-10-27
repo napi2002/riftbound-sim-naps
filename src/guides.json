@@ -1,0 +1,3018 @@
+{
+ "akali": {
+  "id": "akali",
+  "summary": "Calm/Fury value midrange: keep the board even early with Shuriken Flip and cheap units, then land Akali, Silent, Stellacorn Herder or Irelia, Fervent when they're safe. The legend pulls a unit out of a showdown on your turn, so you win fights or leave after the opponent has spent cards.",
+  "archetype": "Midrange (value / showdown control)",
+  "mulligan": {
+   "keep": [
+    "Lonely Poro",
+    "Mournful Witness",
+    "Scuttle Crab",
+    "Inferna",
+    "Shuriken Flip",
+    "Defy",
+    "Discipline"
+   ],
+   "toss": [
+    "Irelia, Fervent",
+    "Pendulum Blade",
+    "Back Off",
+    "Twilight Shroud",
+    "Mask of Foresight"
+   ],
+   "note": "Keep two 2-cost units plus Shuriken Flip or a cheap counter; never fall behind on board early. Toss slow gear and 5-drops."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Don't fall behind on board; trade early units and keep the opponent from scoring fast.",
+    "steps": [
+     "Play Lonely Poro, Mournful Witness or Scuttle Crab one per battlefield (Mask/Poro reward lone units).",
+     "Use Shuriken Flip (main phase only) to kill a 2-Might unit and move your unit in to conquer.",
+     "Let Mournful Witness survive a combat so it empowers to 4 Might.",
+     "Hide Zhonya's Hourglass or Back Off at a battlefield you control when power is spare."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Land Akali, Silent / Stellacorn Herder in a safe spot and win showdowns on resources.",
+    "steps": [
+     "Play Akali, Silent or Herder with 1-2 energy left for Defy/Discipline, or wait a turn if behind on mana.",
+     "Move Akali, Silent to a battlefield: +2 Might, and she can't be targeted outside combat.",
+     "Move Herder to draw; if the fight turns bad, legend-retreat it to base on your turn.",
+     "Empower the legend (3 energy + 1 power) on a turn you have spare energy and both battlefields are covered.",
+     "Charm a defender away or Shuriken Flip it, then conquer the weakened battlefield."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Lock the board with protected threats and take the last points.",
+    "steps": [
+     "Play Irelia, Fervent behind Defy; legend readies give her +1 each time.",
+     "With empowered legend: attack, retreat + ready the unit, attack the other battlefield.",
+     "8th point by conquer needs both battlefields scored that turn; else hold one.",
+     "Keep a unit on the battlefield you need; don't retreat your last defender off it."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is the opponent ahead on board or about to conquer one of your battlefields?",
+   "yes": {
+    "q": "Is the key enemy unit 2 Might or less (3 at Void Gate) at a battlefield?",
+    "yes": "Shuriken Flip it and move your unit in to contest",
+    "no": {
+     "q": "Do you have a 2-cost unit and 2+ spare energy?",
+     "yes": "Play Poro/Witness to the threatened battlefield; hold Discipline",
+     "no": "Charm the attacker away or hold Back Off/Discipline for their attack"
+    }
+   },
+   "no": {
+    "q": "Is Akali, Silent, Herder or Irelia, Fervent on board?",
+    "yes": {
+     "q": "Can it conquer an empty or weakly held battlefield this turn?",
+     "yes": {
+      "q": "Is the legend empowered?",
+      "yes": "Attack; if they commit answers, retreat + ready it and hit the other one",
+      "no": "Attack with 1-2 energy up; retreat with legend if the fight turns bad"
+     },
+     "no": "Move Herder to draw; empower legend if 4 spare and keep Defy up"
+    },
+    "no": {
+     "q": "Can you play a key 4-5 cost unit and still keep 1 energy for Defy?",
+     "yes": "Play Akali, Silent or Stellacorn Herder; keep Defy open",
+     "no": "Develop a 2-cost unit and hold Discipline/Defy; delay the key unit"
+    }
+   }
+  },
+  "combat": [
+   "Legend retreat only works on your turn during a showdown; do it after the opponent spends tricks.",
+   "Empowered legend also readies the retreated unit: it can move again (Herder draws, Akali +2).",
+   "Akali, Silent can be targeted in combat: protect her there with Discipline or Defy.",
+   "Shuriken Flip, Charm and Twilight Shroud are main-phase only; cast them before moving in.",
+   "Twilight Shroud before moving Herder in makes it untargetable that turn.",
+   "Back Off stuns an attacker so it deals no damage; play it from hand to draw.",
+   "Mournful Witness only empowers when a combat it was in ends: let it fight, don't retreat it.",
+   "Mask of Foresight gives +1 to a lone attacker or defender: fight with one unit per battlefield.",
+   "Inferna Ambush into your own attack after they commit: 3 Might attacker."
+  ],
+  "holdFor": [
+   "Defy - counter removal aimed at Akali, Silent, Herder or Irelia, Fervent",
+   "Discipline - win a defence or a showdown and draw",
+   "Zhonya's Hourglass - hidden; saves the unit they kill",
+   "Back Off - hidden; stun their biggest attacker",
+   "Inferna - Ambush as a surprise attacker/defender body"
+  ],
+  "matchups": [
+   {
+    "vs": "leblanc",
+    "plan": "Unfavoured. Don't trade into Deathknell; keep Defy for Baited Hook lines and pressure early before Karthus."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Unfavoured. Score early with cheap units before big units land; save Defy for their key spell."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Slightly unfavoured (~46%). Pressure early and contest battlefields before Rhasa turns arrive."
+   },
+   {
+    "vs": "azir",
+    "plan": "Azir's lists do well into Akali. Kill Sand Soldiers with Shuriken Flip and counter Arise!."
+   },
+   {
+    "vs": "riven",
+    "plan": "Fury removal (Shuriken Flip) keeps Riven off a battlefield; protect your units from stuns."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Fast deck: trade early units, use Back Off on the Punch First target, retreat to dodge pumped fights."
+   }
+  ],
+  "mistakes": [
+   "Falling behind on board early; the value units then can't come down safely.",
+   "Expecting the legend to save a unit on the opponent's turn: it only works on your turn.",
+   "Retreating your last unit from a battlefield and giving up the point you need.",
+   "Playing Akali, Silent/Herder into open removal mana with nothing held up.",
+   "Empowering the legend while both battlefields are left undefended.",
+   "Leaving Herder at Void Gate where enemy spells deal 1 extra damage."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 2,
+   "priority": {
+    "Akali, Silent": 3,
+    "Stellacorn Herder": 3,
+    "Shuriken Flip": 2,
+    "Mournful Witness": 1,
+    "Irelia, Fervent": 2,
+    "Zhonya's Hourglass": 1,
+    "Lonely Poro": 1
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Discipline",
+    "Back Off",
+    "Inferna"
+   ],
+   "mulliganKeep": [
+    "Lonely Poro",
+    "Mournful Witness",
+    "Scuttle Crab",
+    "Shuriken Flip",
+    "Defy"
+   ],
+   "notes": [
+    "On own turn in a showdown that is lost or after enemy spent tricks: use legend to move the unit to base.",
+    "Once empowered, after retreat-and-ready, move the readied unit again (other battlefield or re-draw Herder).",
+    "Empower legend (3 energy + 1 power) on a turn with spare energy; never if both battlefields would be empty.",
+    "Cast Shuriken Flip in main phase before attacking; at Void Gate it deals 3.",
+    "Send one unit per battlefield when possible (Mask of Foresight, Lonely Poro).",
+    "Don't retreat Mournful Witness before combat; it empowers only after a combat ends.",
+    "Keep 1-2 energy open on opponent's turn once a key unit is on board.",
+    "List note: Singapore/LA pro lists add Kai'Sa, Astral Heron, Falling Star and Akali, Deadly Weapon."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Akali, Rogue Assassin Guide - Radiance Update (riftbound.gg)",
+    "url": "https://riftbound.gg/akali-rogue-assassin-guide/",
+    "date": "2026-10-22"
+   },
+   {
+    "title": "Akali legend guide (Hextech Analytics)",
+    "url": "https://hextechanalytics.com/legends/akali",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Vendetta Legends Guide - Decks & Synergies (riftbound.gg)",
+    "url": "https://riftbound.gg/vendetta-legends-guide/",
+    "date": "2026-07-24"
+   },
+   {
+    "title": "Best Vendetta Decks - Week 1 Meta Update (riftbound.gg)",
+    "url": "https://riftbound.gg/best-vendetta-decks-from-early-tournaments/",
+    "date": "2026-08-01"
+   },
+   {
+    "title": "Radiance Day 1 Best Decks & Meta Report (riftbound.gg)",
+    "url": "https://riftbound.gg/radiance-day-1-best-decks-meta-report/",
+    "date": "2026-10-22"
+   },
+   {
+    "title": "Meta Tier List - Vendetta heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Meta Tier List - Post Wuhan Regional Open (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-wuhan-regional-open/",
+    "date": "2026-09-03"
+   },
+   {
+    "title": "Riftbound Review: Akali's Kit (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-review-akalis-kit",
+    "date": "2026-07-19"
+   },
+   {
+    "title": "Riftbound Akali Champion Deck Guide (RiftboundGuide.com)",
+    "url": "https://riftboundguide.com/2026/07/21/riftbound-akali-champion-deck-guide/",
+    "date": "2026-09"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   }
+  ],
+  "confidence": "medium - plan and legend timing sourced; this list is lighter on Fury than pro lists, so some lines are inferred from card text."
+ },
+ "azir": {
+  "id": "azir",
+  "summary": "Play one cheap Equipment a turn, then pay 1 for the legend's Sand Soldier, which equips for free. Grind with hidden removal, then Arise! and Azir - Sovereign take two battlefields at once to win.",
+  "archetype": "Tempo / Tokens (equipment midrange)",
+  "mulligan": {
+   "keep": [
+    "Soul Sword",
+    "Doran's Shield",
+    "Eye of the Herald",
+    "Brutalizer",
+    "Discipline",
+    "Defy"
+   ],
+   "toss": [
+    "Arise!",
+    "B.F. Sword",
+    "Sacrifice",
+    "Guardian Angel",
+    "Desert's Call"
+   ],
+   "note": "Mulligan hard for a 1-cost Equipment: without one the legend makes nothing. Keep a cheap trick only next to it."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Make a Sand Soldier every turn and take the first battlefield.",
+    "steps": [
+     "Play exactly one 1-cost Equipment (Soul Sword, Doran's Shield, Eye of the Herald), then pay 1 for the legend's Soldier.",
+     "Let Weaponmaster equip the new Soldier for free; it enters exhausted at base and moves next turn.",
+     "Holding Ornn's Forge makes your first non-token gear each turn 1 cheaper, so a 1-cost gear is free.",
+     "Move ready Soldiers to an empty battlefield; Trifarian War Camp gives +1 Might to the wider side.",
+     "Once you hold a battlefield, hide Guards!, Hidden Blade or Back Off there for 1 power."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Go wide on both battlefields and win the trades with reactions.",
+    "steps": [
+     "Keep one Equipment plus legend per turn; upgrade to Brutalizer or B.F. Sword (Soldier with Sword = 5 Might).",
+     "Play Guards! from hidden when they attack, paying Order to ready the Soldier.",
+     "Kill their key attacker with Hidden Blade or stun it with Back Off; Defy their removal.",
+     "Sacrifice a 5+ Might Soldier that is about to die: draw 2 and ramp; its Equipment stays.",
+     "Conquer Hall of Legends to ready the legend and make a second Soldier that turn."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Take both battlefields in one turn for the final point.",
+    "steps": [
+     "The final point by conquest needs every battlefield scored that turn, so plan a double conquer.",
+     "Count Equipment on board, then cast Arise!: one Soldier each, two of them ready.",
+     "Conquer one battlefield with tokens, then play Azir - Sovereign with Accelerate and attack the other.",
+     "Sovereign's attack moves any of your tokens to him; keep Defy or Discipline for their answer.",
+     "If you can't double-conquer, hold both battlefields and score the last point at turn start."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you have 7 points and a way to take both battlefields this turn?",
+   "yes": "Conquer one with tokens; Accelerate Azir - Sovereign into the other",
+   "no": {
+    "q": "Do you control 3+ Equipment and have 6 energy for Arise!?",
+    "yes": {
+     "q": "Is an enemy-held or empty battlefield beatable by 2 ready Soldiers?",
+     "yes": "Cast Arise!, send the two ready Soldiers to conquer",
+     "no": "Play Equipment + legend Soldier; save Arise! for a bigger board"
+    },
+    "no": {
+     "q": "Do you have an Equipment and 1 extra energy for the legend?",
+     "yes": {
+      "q": "Does an enemy unit threaten a battlefield you hold?",
+      "yes": "Make the Soldier, then hide Guards!/Hidden Blade there; keep Defy up",
+      "no": "Play 1 Equipment, legend Soldier, equip; move ready units to open field"
+     },
+     "no": "Play Desert's Call or hide Guards!; hold Defy/Discipline for their turn"
+    }
+   }
+  },
+  "combat": [
+   "Defend with hidden Guards!: the new Soldier joins the fight and Weaponmaster can grab an Equipment.",
+   "Hidden Blade the biggest attacker at your battlefield; accept that its owner draws 2.",
+   "Back Off from hidden stuns an attacker for 0 energy; from hand it also draws 1.",
+   "Defy the removal spell that would break a big Soldier or Sovereign's attack.",
+   "Deathgrip a spare Soldier or Recruit to pump the unit that decides the fight, and draw 1.",
+   "Discipline is +2 and a card: best on the defender that otherwise loses by 1-2 Might."
+  ],
+  "holdFor": [
+   "Defy",
+   "Discipline",
+   "Deathgrip",
+   "Sacrifice",
+   "Guards!",
+   "Hidden Blade",
+   "Back Off"
+  ],
+  "matchups": [
+   {
+    "vs": "masteryi",
+    "plan": "Favourable. Go wide so their lone-defender +2 matters less; Charm or Hidden Blade the lone holder."
+   },
+   {
+    "vs": "akali",
+    "plan": "Favourable per tier list. Trade tokens for her units and keep hidden removal at your battlefield."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Difficult. Few units on her side, so Hidden Blade/Back Off her main threat and race on the other field."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Difficult. Score fast before his late game; don't overextend Equipment into board-wide answers."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Difficult. Pressure early with equipped Soldiers and keep Defy for her key spells."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Difficult. He out-sizes your Soldiers early; stack Brutalizer/B.F. Sword and stun his attacker."
+   }
+  ],
+  "mistakes": [
+   "Playing two Equipment in one turn: you run out of units, and the legend only makes one Soldier.",
+   "Playing an Equipment without 1 energy left for the legend.",
+   "Using Azir - Sovereign early instead of saving him for the double-conquer finish.",
+   "Holding Deathgrip for late game; it is best early to win small fights and draw.",
+   "Building one huge Soldier and leaving the other battlefield and next turn short on power.",
+   "Casting Arise! with few Equipment on board."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Soul Sword": 2,
+    "Doran's Shield": 2,
+    "Eye of the Herald": 2,
+    "Brutalizer": 1,
+    "Guards!": 2,
+    "Arise!": 3,
+    "Hidden Blade": 1,
+    "Back Off": 1,
+    "Azir - Sovereign": 0
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Discipline",
+    "Deathgrip",
+    "Sacrifice",
+    "Guards!",
+    "Hidden Blade",
+    "Back Off"
+   ],
+   "mulliganKeep": [
+    "Soul Sword",
+    "Doran's Shield",
+    "Eye of the Herald",
+    "Brutalizer"
+   ],
+   "notes": [
+    "Each turn: play exactly one Equipment, then always use the legend (1 energy) the same turn.",
+    "Never play a second Equipment in a turn unless the extra Might wins a fight now.",
+    "Prefer equipping Soldiers via Weaponmaster over paying equip costs on other units.",
+    "Hide Guards!/Hidden Blade/Back Off at a battlefield you control once you hold one.",
+    "Hold Azir - Sovereign until he can attack (Accelerate) the second battlefield on a scoring turn.",
+    "Arise! only with 3+ Equipment in play; it readies two Soldiers to conquer that turn.",
+    "Sacrifice only a Mighty (5+) unit that is about to die or has done its job.",
+    "In this game Eye of the Herald gives +0 Might; it is a 1-cost legend trigger only."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Azir, Emperor of the Sands Guide – Best Decks & Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/azir-emperor-of-the-sands-guide/",
+    "date": "2026-09-08"
+   },
+   {
+    "title": "Riftbound: Deck Tech - Token Azir (Cards Realm, Gabriel 'total' da Rosa)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-token-azir",
+    "date": "2026-01-25"
+   },
+   {
+    "title": "Riftbound Review: Azir with Vendetta (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-review-azir-with-vendetta",
+    "date": "2026-08-04"
+   },
+   {
+    "title": "Riftbound: Top 5 Hardest Decks to Pilot (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-top-5-hardest-decks-to-pilot",
+    "date": "2026-06-29"
+   },
+   {
+    "title": "Azir legend guide (HextechAnalytics)",
+    "url": "https://hextechanalytics.com/legends/azir",
+    "date": ""
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta Post-Ban Week 3 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-week-3/",
+    "date": "2026-10-03"
+   },
+   {
+    "title": "Los Angeles Regional Qualifier report (riftbound.gg)",
+    "url": "https://riftbound.gg/los-angeles-regional-qualifier/",
+    "date": "2026-09-28"
+   },
+   {
+    "title": "Azir, Emperor of the Sands deck stats & guide (Riftbound France)",
+    "url": "https://riftboundfrance.fr/en/legendes/azir-emperor-of-the-sands",
+    "date": "2026-10-17"
+   }
+  ],
+  "confidence": "high: two detailed deck techs, a full legend guide and recent tournament reports agree; the list here matches the LA top-4 core."
+ },
+ "evelynn": {
+  "id": "evelynn",
+  "summary": "Aggressive hidden-card deck: hide units and tricks at battlefields you hold, then flip them on your own turn to draw (legend) and swing fights. The opponent must either attack into unknown cards or let you hold for free.",
+  "archetype": "Aggro / Tempo (hidden cards)",
+  "mulligan": {
+   "keep": [
+    "Evelynn - Entrancing",
+    "Gutter Guardian",
+    "Pyke - Returned",
+    "Tornado Warrior",
+    "Kinkou Initiate",
+    "Ezreal - Prodigy"
+   ],
+   "toss": [
+    "Baron Nashor",
+    "Kharox",
+    "Onslaught",
+    "Rengar - Trophy Hunter",
+    "K'Sante - Courageous"
+   ],
+   "note": "Keep cheap Hidden units and 3-drops so you can conquer early and start hiding. Big units and pump spells go back (inferred from curve)."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Conquer a battlefield and start hiding cards there.",
+    "steps": [
+     "Take an empty battlefield early; Bandle Scouts' Academy is best: each hide there gives a Gold gear.",
+     "Hide Evelynn - Entrancing, Pyke - Returned or Tornado Warrior at the battlefield you hold.",
+     "Gutter Guardian: show off a Hidden card in hand for an extra rune.",
+     "Kinkou Initiate draws if your other units total 5+ Might; Ezreal digs (discard 1, draw 2)."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Flip hidden cards on your turn for card draw and surprise conquers.",
+    "steps": [
+     "Flip one hidden card each of your turns: legend draws 1 with no discard.",
+     "Flip Evelynn - Entrancing on your turn to drag an enemy unit to her battlefield, then fight it.",
+     "After a flip, Hold 'Em costs 1 (you played a unit to a battlefield): +3 Might to win the fight.",
+     "Rengar - Trophy Hunter can be played straight to a battlefield with enemy units.",
+     "Rampage (pay Body for +2) as removal; Fizz - Trickster recasts Rampage or Hold 'Em from trash."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Overload the last fight and keep scoring holds.",
+    "steps": [
+     "Tail-Cloaked Matriarch: empower to replay a 3-cost unit from trash (Pyke, Evelynn).",
+     "Flip Tornado Warrior next to Matriarch or Kharox to empower it for free that turn (inferred).",
+     "Onslaught (+6) or Baron Nashor (+2 to others) for the final conquer.",
+     "Keep a face-down card at each battlefield you hold so the opponent must guess."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you hold a battlefield with no hidden card on it?",
+   "yes": {
+    "q": "Do you have spare power (1 rune or Gold gear) to hide?",
+    "yes": "Hide Evelynn/Pyke/Tornado Warrior there (Academy gives Gold gear)",
+    "no": "Play Gutter Guardian/Kinkou to base or battlefield, hide next turn"
+   },
+   "no": {
+    "q": "Is there a hidden card you can flip this turn (not hidden this turn)?",
+    "yes": {
+     "q": "Would the flip let you win a conquer this turn?",
+     "yes": {
+      "q": "Is the enemy unit at another location?",
+      "yes": "Flip Evelynn - Entrancing to drag it in, then attack",
+      "no": "Flip unit/Edge of Night, add Hold 'Em, attack"
+     },
+     "no": "Flip on your turn anyway for the clean legend draw; keep 1 hidden"
+    },
+    "no": {
+     "q": "Is any battlefield empty or weakly held?",
+     "yes": "Conquer it; Rengar - Trophy Hunter can drop onto enemy units",
+     "no": "Develop Matriarch/K'Sante, keep Star-Crossed up"
+    }
+   }
+  },
+  "combat": [
+   "Legend draws once per turn on a face-down play; on their turn you must also discard, so prefer your turn.",
+   "Flip a hidden unit mid-showdown to add Might when they attack your battlefield.",
+   "Switcheroo (hidden) swaps Might of two units at one battlefield; best vs their single big unit.",
+   "Hold 'Em costs 1 after you play a unit/gear to a battlefield this turn, including a hidden flip.",
+   "Rampage = removal: friendly and enemy deal damage equal to Might to each other; pay Body for +2.",
+   "Star-Crossed bounces their best unit and saves yours from removal."
+  ],
+  "holdFor": [
+   "Switcheroo",
+   "Star-Crossed",
+   "Edge of Night",
+   "Pyke - Returned",
+   "Tornado Warrior"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Riven plays units ready on held battlefields; contest early, drag her Blade unit with Entrancing (inferred)."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Bounce undoes hidden setup less than played units; keep cards face down and flip on your turn (inferred)."
+   },
+   {
+    "vs": "azir",
+    "plan": "Riftbound.gg says Evelynn does well vs beefy units; use Switcheroo/Star-Crossed on big ones (Azir fit inferred)."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Spell removal is her weak spot (riftbound.gg); keep units hidden until the flip wins the fight (inferred)."
+   }
+  ],
+  "mistakes": [
+   "Flipping on the opponent's turn just for the draw: you also discard 1.",
+   "Hiding where you can't hold; hidden cards at a lost battlefield are wasted.",
+   "Running out of power to hide; use Bandle Scouts' Academy, Pyke and Gutter Guardian for runes.",
+   "Flipping Evelynn - Entrancing on their turn: the drag only works on your turn."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 1,
+   "priority": {
+    "Evelynn - Entrancing": 3,
+    "Pyke - Returned": 2,
+    "Tornado Warrior": 2,
+    "Gutter Guardian": 2,
+    "Hold 'Em": 2,
+    "Tail-Cloaked Matriarch": 1,
+    "Rampage": 1
+   },
+   "holdForShowdown": [
+    "Switcheroo",
+    "Star-Crossed"
+   ],
+   "mulliganKeep": [
+    "Evelynn - Entrancing",
+    "Gutter Guardian",
+    "Pyke - Returned",
+    "Tornado Warrior",
+    "Kinkou Initiate",
+    "Ezreal - Prodigy"
+   ],
+   "notes": [
+    "Each turn, keep at least one face-down card at every battlefield you hold if you can pay.",
+    "Flip the first hidden card on your own turn (draw without discard).",
+    "Hide on Bandle Scouts' Academy first when you control it (free Gold gear).",
+    "Cast Hold 'Em only after playing a unit or gear to a battlefield this turn (costs 1)."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Evelynn, Agony's Embrace Guide - Radiance Theorycraft (riftbound.gg)",
+    "url": "https://riftbound.gg/evelynn-agonys-embrace-guide/",
+    "date": "2026-10-14"
+   },
+   {
+    "title": "John Riftbound 21st place Evelynn list, Sacramento Showdown (riftwatch)",
+    "url": "https://riftwatch.gg/decks/sacramento-21/",
+    "date": "2026-10-25"
+   },
+   {
+    "title": "Radiance Showdown Decks: Evelynn vs Seraphine (TCG Spikes)",
+    "url": "https://tcgspikes.com/guides/riftbound/radiance-showdown-decks-guide",
+    "date": "2026-10-18"
+   },
+   {
+    "title": "Evelynn Radiance Legend: drawing off hidden cards (Riftbound Zone)",
+    "url": "https://riftbound.zone/en/evelynn-legend-radiance-hidden-cards/",
+    "date": "2026-09-30"
+   },
+   {
+    "title": "Evelynn theorycraft decks: Lure and Pounce, Masquerade (riftwatch)",
+    "url": "https://riftwatch.gg/decks/evelynn/",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "10 Most Buffed Legends with Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/10-most-buffed-legends-with-radiance/",
+    "date": "2026-10-20"
+   }
+  ],
+  "confidence": "low: list matches a 21st-place Sacramento deck; only theorycraft guides exist, so lines are mostly inferred."
+ },
+ "irelia": {
+  "id": "irelia",
+  "summary": "Calm/Chaos tempo-value: land Irelia, Fervent or Stellacorn Herder, then choose them with cheap tricks so the legend readies them for extra moves, draws and conquers. Cheap reactions and counters protect the one or two key units while you out-card the opponent.",
+  "archetype": "Tempo / Midrange (value)",
+  "mulligan": {
+   "keep": [
+    "Scuttle Crab",
+    "Tideturner",
+    "Stellacorn Herder",
+    "Discipline",
+    "Defy",
+    "Defiant Dance"
+   ],
+   "toss": [
+    "Boots of Swiftness",
+    "Zhonya's Hourglass",
+    "Star-Crossed",
+    "Guardian Angel",
+    "Abandon",
+    "Ride the Wind"
+   ],
+   "note": "Keep a cheap unit, both domains and one cheap trick or counter. Send back gear and 3-cost answers when you have no unit to use them on."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Contest the first battlefield cheaply and set up hidden cards without falling behind.",
+    "steps": [
+     "Turn 2: Scuttle Crab (draws) or Tideturner to a battlefield.",
+     "Hide Tideturner or Zhonya's Hourglass at a battlefield you control (1 power).",
+     "Turn 3-4: Stellacorn Herder or Akali, Silent; keep 1-2 energy up for Defy or Discipline.",
+     "Use Charm or Gust only to stop an early conquer, not just for tempo."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Land Irelia, Fervent and start the choose-and-ready loop that wins fights and draws cards.",
+    "steps": [
+     "Play Irelia, Fervent when you can still hold 1-2 energy for Defy/Discipline after.",
+     "Move Fervent or Herder in; Herder draws on every move.",
+     "In the showdown, choose your exhausted unit with Discipline/En Garde/Defiant Dance, pay 1 power: legend readies it.",
+     "After a conquer, pay 1 energy to ready the legend for a second ready this turn.",
+     "Move readied Herder/Fervent back to base at end of turn; leave a cheap unit to hold.",
+     "Equip Boots of Swiftness (Ganking) so a readied unit can jump to the other battlefield."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Hold one battlefield behind counters and take the last points safely.",
+    "steps": [
+     "Count points: 8th point by conquer needs both battlefields scored that turn, else hold it.",
+     "Keep Defy, Not So Fast or Abandon for the spell that would decide the final point.",
+     "Put Vex, Apathetic on the battlefield you hold so new enemy units get stunned.",
+     "Hidden Tideturner swaps Fervent in from base when they attack your held battlefield.",
+     "Save the last ready until the opponent has committed; count their move options first."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is Irelia, Fervent or Stellacorn Herder on board and ready?",
+   "yes": {
+    "q": "Can it conquer a battlefield this turn with +2 to +4 Might from a trick plus the legend ready?",
+    "yes": {
+     "q": "After paying for the attack, can you still keep 1-2 energy for Defy/Discipline?",
+     "yes": "Attack; trick + legend ready in showdown; pay 1 to ready legend on conquer",
+     "no": "Attack only if it scores now; else move Herder to draw and keep counters up"
+    },
+    "no": {
+     "q": "Is an enemy threat about to conquer or hold your battlefield?",
+     "yes": "Stay home; hold Defiant Dance/Discipline/Star-Crossed for their attack",
+     "no": "Move Herder base-battlefield-base to draw; hide Tideturner where you hold"
+    }
+   },
+   "no": {
+    "q": "Do you have 5+ energy and Irelia, Fervent available?",
+    "yes": {
+     "q": "Does the opponent hold up energy for removal (2+ runes untapped)?",
+     "yes": "Play Fervent with Defy/Not So Fast up, or delay a turn and develop Herder",
+     "no": "Play Irelia, Fervent at base; next turn start the ready loop"
+    },
+    "no": {
+     "q": "Is the opponent ahead on board or threatening a conquer?",
+     "yes": {
+      "q": "Is the threatening enemy unit 3 Might or less at a battlefield?",
+      "yes": "Gust it (hold for their attack) and play Scuttle Crab to contest",
+      "no": "Play Tideturner/Crab to contest; hold Defiant Dance or Star-Crossed"
+     },
+     "no": "Play Stellacorn Herder or Akali, Silent; keep Defy up"
+    }
+   }
+  },
+  "combat": [
+   "Every trick that chooses an exhausted friendly unit is also a ready: pay 1 power to the legend right then.",
+   "Fervent gains +1 when chosen and +1 when readied: Discipline + legend on her is +4 and a draw.",
+   "Defiant Dance is a 4-point swing (+2/-2); play it last, after the opponent has spent energy.",
+   "En Garde gives +2 if the unit is alone there; send one big unit, not a crowd.",
+   "Hidden Tideturner: when they attack your battlefield, play it for 0 to swap in Fervent from base.",
+   "Use Star-Crossed in response to removal: save your unit (or replay Scuttle Crab to draw) and bounce theirs.",
+   "Flash pulls up to 2 units out of a losing fight; moving Herder that way still draws.",
+   "Defy only for spells that remove a key unit or decide a point, not for cantrips.",
+   "Leave about 2 Might margin in fights that decide a battlefield; opponents expect your tricks too."
+  ],
+  "holdFor": [
+   "Defy - counter removal aimed at Irelia, Fervent or Stellacorn Herder",
+   "Not So Fast - counter a spell or ability that chooses your unit or gear",
+   "Discipline - win a defence and draw; ready an exhausted unit via legend",
+   "Defiant Dance - flip a combat on their attack",
+   "Star-Crossed - save your unit and bounce their attacker",
+   "Tideturner - hidden at your battlefield to swap in a big defender",
+   "Zhonya's Hourglass - hidden to save the unit they try to kill",
+   "Abandon - counter any big spell when Defy can't"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Slightly unfavoured (Kennen ~53-54%). Score early before his swing turn; keep Star-Crossed/Gust for Rhasa or Kennen."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Favoured: Chaos bounce (Gust, Star-Crossed) dodges her Deathknell value. Bounce Karthus or Deathknell units instead of killing them."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Fast Fury deck: keep cheap units and a reaction, deny early conquers; save Defy for Punch First/Rampage."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Unfavoured historically. Avoid feeding lone defenders; use Charm/Gust to pull the lone unit and take empty battlefields."
+   },
+   {
+    "vs": "azir",
+    "plan": "Favoured. Counter Arise! and key spells, win showdowns with tricks while keeping Herder drawing."
+   },
+   {
+    "vs": "vex",
+    "plan": "Favoured (Vex ~45% at best). Don't play units into Vex, Apathetic at a battlefield; Gust or Star-Crossed her first."
+   }
+  ],
+  "mistakes": [
+   "Spending the rainbow rune on a ready that scores or draws nothing.",
+   "Tapping out for Irelia, Fervent into open removal mana with no Defy up.",
+   "Leaving Herder/Fervent exposed at a battlefield on the opponent's turn instead of returning to base.",
+   "Moving your only unit off a battlefield and giving up the hold.",
+   "Using Defy on a cheap cantrip and losing Fervent to the real removal later.",
+   "Sunken Temple draw and legend reset both cost 1 energy; plan which one you need."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "Irelia, Fervent": 4,
+    "Stellacorn Herder": 3,
+    "Tideturner": 2,
+    "Discipline": 2,
+    "Defiant Dance": 1,
+    "Scuttle Crab": 1,
+    "Zhonya's Hourglass": 1,
+    "Boots of Swiftness": 1
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Not So Fast",
+    "Abandon",
+    "Discipline",
+    "Defiant Dance",
+    "En Garde",
+    "Star-Crossed",
+    "Flash",
+    "Gust"
+   ],
+   "mulliganKeep": [
+    "Scuttle Crab",
+    "Tideturner",
+    "Stellacorn Herder",
+    "Discipline",
+    "Defy"
+   ],
+   "notes": [
+    "In a showdown, target an EXHAUSTED friendly unit with tricks, then pay 1 power to ready it via the legend.",
+    "After conquering, pay 1 energy to ready the legend if another unit can still use a ready this turn.",
+    "End of own turn: move readied Herder/Fervent back to base; leave a cheap unit (Crab) to hold.",
+    "Move Stellacorn Herder every turn it is safe (draws on any move, incl. Ride the Wind, Flash, Tideturner).",
+    "Hide Tideturner/Zhonya's Hourglass at controlled battlefields when 1 power is spare.",
+    "Don't cast Defy/Not So Fast/Abandon on own turn proactively; keep 1-2 energy open after the board is set.",
+    "Play pump tricks after the opponent passes or spends energy, not first.",
+    "Never play a unit into a battlefield with enemy Vex, Apathetic.",
+    "List note: Wuhan-winning lists ran 3 Astral Heron; this LA list swaps it for Pyke, Akali, Vex.",
+    "Card note: Boots of Swiftness gives Ganking (Hextech); equip text missing in cards.json."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Irelia, Blade Dancer Guide - Best Decks & Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/irelia-blade-dancer-guide/",
+    "date": "2026-09-08"
+   },
+   {
+    "title": "Irelia legend guide (Hextech Analytics)",
+    "url": "https://hextechanalytics.com/legends/irelia",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Riftbound Irelia Deck Guide: Blade Dancer Vendetta Plan (Shonen TCG)",
+    "url": "https://www.shonentcg.com/blog/riftbound-irelia-deck-guide",
+    "date": "2026-10-06"
+   },
+   {
+    "title": "Irelia Counter: Vendetta Battlefield Tempo Matchup Guide (RiftStorm)",
+    "url": "https://riftstorm.gg/blog/irelia-counter-riftbound-battlefield-tempo",
+    "date": "2026-07-27"
+   },
+   {
+    "title": "Los Angeles Regional Qualifier Results (riftbound.gg)",
+    "url": "https://riftbound.gg/los-angeles-regional-qualifier/",
+    "date": "2026-09-28"
+   },
+   {
+    "title": "Riftbound RQ Los Angeles results (Mythras)",
+    "url": "https://gamertagmythras.com/blog/riftbound-tcg/riftbound-rq-los-angeles-results",
+    "date": "2026-09-30"
+   },
+   {
+    "title": "Meta Tier List - Vendetta heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Meta Tier List - Post Wuhan Regional Open (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-wuhan-regional-open/",
+    "date": "2026-09-03"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   }
+  ],
+  "confidence": "medium - Xeno's LA RQ 2nd list; legend/trick timing well sourced, matchups partly inferred from other articles."
+ },
+ "jayce": {
+  "id": "jayce",
+  "summary": "Ramp with Platewyrm Egg, Mobilize and Catalyst, then land Dazzling Aurora. Elder Dragon is the only unit in the deck, so Aurora drops one every turn and 1-damage spells wipe boards.",
+  "archetype": "Ramp / Combo (Aurora control)",
+  "mulligan": {
+   "keep": [
+    "Platewyrm Egg",
+    "Mobilize",
+    "Catalyst of Aeons",
+    "Dazzling Aurora",
+    "Promising Future",
+    "Dredge Up",
+    "Bellows Breath"
+   ],
+   "toss": [
+    "Elder Dragon",
+    "Clairvoyance",
+    "Rocket Barrage",
+    "Gutter Palace",
+    "Sprite Burst"
+   ],
+   "note": "Keep ramp (Egg, Mobilize, Catalyst) plus Aurora or Promising Future. Elder in hand is dead weight: it belongs in the deck."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Build energy toward a turn 3-4 Aurora while slowing early scorers.",
+    "steps": [
+     "Turn 1-2: Mobilize and Catalyst of Aeons channel exhausted runes for next turn.",
+     "Play Platewyrm Egg early: it enters exhausted, then empower it (1 energy) so it adds 2 energy.",
+     "Use the legend (1 energy, exhaust) to ready an empowered Egg for +1 net energy.",
+     "Promising Future: take Dazzling Aurora (2 power); it plays an Elder at end of your turn anyway.",
+     "Bellows Breath or Flurry of Blades only on cheap units that would score; Sabotage their gear removal."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Resolve Dazzling Aurora and let Elder Dragons lock the board.",
+    "steps": [
+     "Cast Dazzling Aurora as soon as the Egg and legend reach 9 energy; it plays an Elder each end step.",
+     "Elder's entry pings one enemy per location; with Elder out any damage you deal kills.",
+     "Next turn, Flurry of Blades kills every enemy at battlefields; Bellows Breath kills up to 3 (6 with Repeat).",
+     "Clairvoyance at the end of their turn: recycle any Elder you would draw so Aurora still finds it.",
+     "Play Jayce, Brilliant Inventor to ready an Egg or rune; empower the legend to ready 2 gear."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Walk Elder Dragons onto both battlefields and score.",
+    "steps": [
+     "Move ready Elders to both battlefields; 10 Might plus lethal damage wins any combat.",
+     "Sprite Burst gives two ready 3-Might bodies to grab an empty battlefield the same turn.",
+     "Final point by conquest needs both battlefields scored that turn; otherwise hold and score at turn start.",
+     "If Elders are gone, Gutter Palace Birds go to battlefields: 4 cards in hand + 4 units there wins.",
+     "Rocket Barrage kills a gear or deals 4 to a unit in base to clear the last blocker."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is Elder Dragon on your board?",
+   "yes": {
+    "q": "Are 2+ enemy units at battlefields?",
+    "yes": "Cast Flurry of Blades or Bellows Breath: every hit kills",
+    "no": "Move ready Elder to the weakest battlefield and conquer"
+   },
+   "no": {
+    "q": "Is Dazzling Aurora in play (Elder still in deck)?",
+    "yes": "Hold Flurry/Bellows for their units; Aurora plays Elder at end of turn",
+    "no": {
+     "q": "Can you reach 9 energy for Aurora, or cast Promising Future?",
+     "yes": "Cast Dazzling Aurora; else Promising Future and pick Aurora",
+     "no": {
+      "q": "Is an enemy unit about to score on a battlefield?",
+      "yes": "Bellows Breath/Flurry it, or Sprite Burst to contest",
+      "no": "Ramp: Mobilize, Catalyst, Platewyrm Egg; empower the Egg"
+     }
+    }
+   }
+  },
+  "combat": [
+   "With Elder Dragon out, 1 damage kills: Flurry of Blades (reaction) wipes enemies at battlefields.",
+   "Flurry also hits your own units at battlefields; Birds and Sprites there die too.",
+   "Pre-Elder, Bellows Breath (3 targets, Repeat for 3 more) clears 1-Might tokens and wounded units.",
+   "Keep Platewyrm Egg ready: its energy ability is a Reaction, so it pays for showdown spells.",
+   "Downstage Dramatics and Clairvoyance are Reactions: cast them at end of the opponent's turn."
+  ],
+  "holdFor": [
+   "Flurry of Blades",
+   "Clairvoyance",
+   "Downstage Dramatics",
+   "Platewyrm Egg"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Unfavourable: Kennen beats Jayce per tier list. Sabotage key spells and race Aurora down fast."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Favourable. His lone defender dies to any Elder ping; Sabotage Zhonya's or Defy before Aurora."
+   },
+   {
+    "vs": "akali",
+    "plan": "Favourable per tier list. Bellows Breath her small units, then Aurora lock."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Aurora is good vs fast decks if it lands early. Use Forgotten Monument and early pings."
+   },
+   {
+    "vs": "vex",
+    "plan": "Bounce (Star-Crossed, Rebuke) resets Elder; bait it out, keep Elders in deck for Aurora."
+   },
+   {
+    "vs": "azir",
+    "plan": "Order removal (Hidden Blade) kills Elder; keep Flurry for Sand Soldier swarms."
+   }
+  ],
+  "mistakes": [
+   "Drawing Elder Dragon: recycle it with Clairvoyance so Aurora can still play it for free.",
+   "Spending the early turns on setup while the opponent scores freely on both battlefields.",
+   "Readying an unempowered Egg with the legend: it costs as much as it gives.",
+   "Casting Flurry of Blades while your own Birds or Sprites hold a battlefield.",
+   "Casting Aurora into open gear removal when Sabotage could strip it first.",
+   "Recycling Jayce, Brilliant Inventor into the deck where Aurora could hit him instead of Elder."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 1,
+   "priority": {
+    "Dazzling Aurora": 4,
+    "Platewyrm Egg": 3,
+    "Promising Future": 3,
+    "Mobilize": 2,
+    "Catalyst of Aeons": 2,
+    "Flurry of Blades": 1,
+    "Sabotage": 1,
+    "Elder Dragon": 0
+   },
+   "holdForShowdown": [
+    "Flurry of Blades",
+    "Clairvoyance",
+    "Downstage Dramatics"
+   ],
+   "mulliganKeep": [
+    "Platewyrm Egg",
+    "Mobilize",
+    "Catalyst of Aeons",
+    "Dazzling Aurora",
+    "Promising Future"
+   ],
+   "notes": [
+    "Empower Platewyrm Egg the turn after it lands; use the legend to ready it only once empowered.",
+    "Promising Future: choose Dazzling Aurora (2 power) over Elder Dragon (4 power) when Elders remain in deck.",
+    "Never hard-cast Elder Dragon early; keep it in the deck for Aurora (Clairvoyance: recycle it).",
+    "With Elder on board, cast Flurry of Blades when 2+ enemy units are at battlefields and none of yours.",
+    "Don't attack with small tokens into defenders before Elder; contest only to stop scoring.",
+    "Gutter Palace win: start of turn with exactly 4 cards in hand and 4 units at battlefields."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Jayce, Defender of Tomorrow – Best Decks & Synergies (riftbound.gg)",
+    "url": "https://riftbound.gg/jayce-defender-of-tomorrow-guide/",
+    "date": "2026-09-14"
+   },
+   {
+    "title": "Jayce legend guide (HextechAnalytics; LA Rebound RQ winning list)",
+    "url": "https://hextechanalytics.com/legends/jayce",
+    "date": "2026-09-27"
+   },
+   {
+    "title": "Player post on Jayce/Aurora/Elder Dragon (@MomSkyRB on X)",
+    "url": "https://x.com/MomSkyRB/status/2099913933633302822",
+    "date": "2026-09-15"
+   },
+   {
+    "title": "Riftbound Review: Jayce's Kit (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-review-jayces-kit",
+    "date": "2026-07-24"
+   },
+   {
+    "title": "Deck Tech - Master Yi Wuju Bladesman (Aurora ramp, Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-master-yi-wuju-bladesman",
+    "date": "2025-12-16"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Post-Ban Week 3 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-week-3/",
+    "date": "2026-10-03"
+   },
+   {
+    "title": "Meta Tier List – Preparing for the Ekko and Stacked Deck ban (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-preparing-for-the-ekko-and-stacked-deck-ban/",
+    "date": "2026-09-17"
+   },
+   {
+    "title": "Jayce, Defender of Tomorrow deck stats & guide (Riftbound France)",
+    "url": "https://riftboundfrance.fr/en/legendes/jayce-defender-of-tomorrow",
+    "date": "2026-10-17"
+   }
+  ],
+  "confidence": "medium-high: engine and Aurora/Elder line are well sourced; mulligan and matchup notes are partly inferred from card text."
+ },
+ "kennen": {
+  "id": "kennen",
+  "summary": "Chaos/Order combo-value: slow the opponent's scoring early while filling the trash, then swing with cheap Rhasa the Sunderer and units replayed from the trash. Playing cards from outside your hand empowers the legend, which gives a unit Assault 2 to conquer.",
+  "archetype": "Combo / Off-tempo value",
+  "mulligan": {
+   "keep": [
+    "Shadow Order Disciple",
+    "Traveling Merchant",
+    "Lightning Rush",
+    "Seal of Discord",
+    "Kennen, Storm of Shuriken",
+    "Tornado Warrior"
+   ],
+   "toss": [
+    "Baron Nashor",
+    "The Harrowing",
+    "Rhasa the Sunderer",
+    "Shadows of the Past",
+    "Last Rites"
+   ],
+   "note": "Keep a 2-cost unit and a way to start filling the trash (Lightning Rush, Merchant, Disciple). Rhasa is only good later."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Respect the opponent's early game: contain their scoring while you fill the trash.",
+    "steps": [
+     "Seal of Discord turn 1 (0 energy) for extra Chaos power.",
+     "Play Shadow Order Disciple or Traveling Merchant; moving them burns/loots into the trash.",
+     "Lightning Rush: take the best of 3, the rest fills the trash.",
+     "Kennen, Storm of Shuriken burns 2 on play; contest a battlefield with his 4 Might.",
+     "Hide Tornado Warrior at your battlefield as a surprise 3-Might defender."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Set up the swing turn: cheap Rhasa plus replays from the trash.",
+    "steps": [
+     "Count the trash: Rhasa costs 1 less per card (still pays 1 Chaos power).",
+     "Tail-Cloaked Matriarch: empower her (2 + Chaos) to replay a 3-cost unit from the trash.",
+     "Reveal Tornado Warrior at Matriarch's battlefield to empower her for free.",
+     "Fizz - Trickster replays a spell of 3 or less from the trash (Star-Crossed, Lightning Rush).",
+     "Each card played from trash or face down empowers the legend: spend it for Assault 2 on an attacker.",
+     "Use Gust, Star-Crossed, Existential Dread to stop their conquers; prefer nobody scoring."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Drop multiple big threats at once and convert with Assault 2 and movement.",
+    "steps": [
+     "The Harrowing replays Rhasa or Baron Nashor from the trash (pay power only).",
+     "Ride The Wind moves and readies a threat to steal the second battlefield.",
+     "Kennen conquering gives a trash spell Flow this turn: recast Lightning Rush or Star-Crossed.",
+     "Watch deck size: Burn, Minefield and Shadow Temple can deck you in long games."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is the opponent threatening to score 2 points this turn cycle?",
+   "yes": {
+    "q": "Is the attacker 3 Might or less at a battlefield?",
+    "yes": "Hold Gust for their attack; develop a cheap unit",
+    "no": "Hold Existential Dread / Star-Crossed / Switcheroo for their attack"
+   },
+   "no": {
+    "q": "Is Rhasa the Sunderer castable this turn (trash big enough, Chaos power free)?",
+    "yes": {
+     "q": "Is the legend empowered?",
+     "yes": "Play Rhasa, give Assault 2 to your best attacker and conquer",
+     "no": "Play Rhasa, then a trash or hidden card to empower; attack next"
+    },
+    "no": {
+     "q": "Is Tail-Cloaked Matriarch on board and unempowered?",
+     "yes": "Empower her (or reveal Tornado Warrior there) to replay a unit from trash",
+     "no": {
+      "q": "Do you have a 2-cost looter (Merchant/Disciple) or Lightning Rush?",
+      "yes": "Play it / move it to fill the trash; keep 1-2 energy for Gust",
+      "no": "Play Kennen, Storm of Shuriken or Ezreal, Prodigy to dig"
+     }
+    }
+   }
+  },
+  "combat": [
+   "Kennen prefers neither player scoring: stop conquers before racing.",
+   "Revealing a hidden card counts as playing from outside hand: it empowers the legend.",
+   "Legend Assault 2 only helps attackers; spend it on the turn you conquer.",
+   "Switcheroo swaps Might of two units at one battlefield; hide it, reveal in the showdown.",
+   "Existential Dread stuns an attacker; pay Repeat to bounce it (1 cheaper with Ezreal, Prodigy).",
+   "Star-Crossed can reset your own Matriarch or Fizz for another trigger while bouncing theirs.",
+   "Flash two units home to dodge a lost fight or removal."
+  ],
+  "holdFor": [
+   "Gust - bounce a 3-Might-or-less attacker",
+   "Existential Dread - stun an attacker, Repeat to bounce it",
+   "Star-Crossed - bounce their best unit, reset your Matriarch/Fizz",
+   "Switcheroo - hidden; flip a fight at your battlefield",
+   "Tornado Warrior - hidden 3-Might defender that empowers the legend",
+   "Flash - pull units out of a lost fight"
+  ],
+  "matchups": [
+   {
+    "vs": "rengar",
+    "plan": "Worst matchup. Play only for containment early: cheap units, Gust/Dread every attack; race later."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Unfavoured smash-mouth matchup. Bounce the lone defender and deny early holds."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Favoured (~55%). Bounce effects skip her Deathknell value; target Karthus first."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Favoured. Win the resource war; bounce their big cheated-in units."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Slightly favoured (~53-54%). Make her waste readies; land multiple Rhasa at once."
+   },
+   {
+    "vs": "riven",
+    "plan": "Tough game 1: bouncing does little if Riven replays units. Stick a holder and answer her gear."
+   }
+  ],
+  "mistakes": [
+   "Racing fast decks instead of controlling the scoreboard early.",
+   "Filling the trash without a plan to use it (Rhasa, Matriarch, Harrowing).",
+   "Forgetting replays still cost power; power-tight turns stall the combo.",
+   "Last Rites equip and Fizz recycle cards out of the trash and raise Rhasa's cost.",
+   "Burning too much and decking out in long games."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Rhasa the Sunderer": 3,
+    "Tail-Cloaked Matriarch": 2,
+    "Lightning Rush": 2,
+    "Traveling Merchant": 1,
+    "Shadow Order Disciple": 1,
+    "Seal of Discord": 1,
+    "Tornado Warrior": 1
+   },
+   "holdForShowdown": [
+    "Gust",
+    "Existential Dread",
+    "Star-Crossed",
+    "Switcheroo",
+    "Flash"
+   ],
+   "mulliganKeep": [
+    "Shadow Order Disciple",
+    "Traveling Merchant",
+    "Lightning Rush",
+    "Seal of Discord"
+   ],
+   "notes": [
+    "Early game: block opponent's conquers before trying to conquer yourself.",
+    "Use the legend's Assault 2 only on a turn an attacker can conquer with it.",
+    "Hide Tornado Warrior and Switcheroo when power is spare; revealing empowers the legend.",
+    "Always burn with Shadow Order Disciple on move when it wins the fight or fills trash for Rhasa.",
+    "Prefer The Harrowing on Baron Nashor or Rhasa.",
+    "List note: Radiance lists add Trifarian Captain + Nocturne; this is the post-ban Vendetta build."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   },
+   {
+    "title": "Kennen, Heart of the Tempest Guide - Radiance Update (riftbound.gg)",
+    "url": "https://riftbound.gg/kennen-heart-of-the-tempest-guide/",
+    "date": "2026-10-23"
+   },
+   {
+    "title": "Kennen legend guide (Hextech Analytics)",
+    "url": "https://hextechanalytics.com/legends/kennen",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Meta Tier List - Vendetta heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Radiance Day 1 Best Decks & Meta Report (riftbound.gg)",
+    "url": "https://riftbound.gg/radiance-day-1-best-decks-meta-report/",
+    "date": "2026-10-22"
+   },
+   {
+    "title": "Meta Tier List - Post Wuhan Regional Open (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-wuhan-regional-open/",
+    "date": "2026-09-03"
+   }
+  ],
+  "confidence": "medium - strategic plan and matchups well sourced; card-level sequencing partly from Hextech and card text."
+ },
+ "leblanc": {
+  "id": "leblanc",
+  "summary": "Mind/Order Deathknell synergy: cheap Deathknell units and Reflections die for cards, runes and free units, doubled by Karthus, Eternal. Baited Hook turns small bodies into bigger ones and snowballs the board.",
+  "archetype": "Synergy midrange (tempo snowball)",
+  "mulligan": {
+   "keep": [
+    "Soaring Scout",
+    "Watchful Sentry",
+    "Honest Broker",
+    "Karthus, Eternal",
+    "Baited Hook",
+    "Black Rose Dignitary"
+   ],
+   "toss": [
+    "Harnessed Dragon",
+    "Rift Herald",
+    "Thousand-Tailed Watcher",
+    "Ruined Rex",
+    "Mirror Image"
+   ],
+   "note": "Keep a 2-cost Deathknell unit plus Karthus or Baited Hook. Send back 6-8 drops if there's no early unit."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Put cheap Deathknell bodies on battlefields and land Karthus, Eternal.",
+    "steps": [
+     "Turn 2: Soaring Scout, Watchful Sentry or Honest Broker to a battlefield.",
+     "Turn 3: Karthus, Eternal (doubles Deathknell) or Baited Hook, or LeBlanc, Fragmented.",
+     "Trade small units freely: their deaths ramp (Scout), draw (Sentry) or make Gold (Broker)."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Snowball with Baited Hook and legend Reflections.",
+    "steps": [
+     "Baited Hook (1 + Order): kill a unit, play a unit up to 1 more Might from top 5 for free.",
+     "Hook Glasc Mixologist or Vi (5) to hit Ruined Rex or Harnessed Dragon (6).",
+     "On conquer/hold: discard 1, exhaust legend for a Reflection copy of a Deathknell unit there.",
+     "Reflections die at your next Beginning Phase: with Karthus that's two Deathknells.",
+     "Keep a real (non-Temporary) unit on every battlefield you need to hold."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Use big Deathknell units as removal and close with Vi, Rex, Dragon and Herald.",
+    "steps": [
+     "Sacrifice or Deathgrip Ruined Rex in response to removal: 4 damage plus cards.",
+     "Harnessed Dragon kills their best defender before you attack.",
+     "Vi, Peacekeeper Ambush into a fight; her attack stuns a defender.",
+     "8th point by conquer needs both battlefields scored that turn; else hold one."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is Karthus, Eternal on board?",
+   "yes": {
+    "q": "Is Baited Hook on board and ready with 1 energy + Order power?",
+    "yes": {
+     "q": "Do you control a 5-6 Might unit (Vi, Mixologist, Rex)?",
+     "yes": "Hook it: hit Rex/Dragon/Herald and double its Deathknell",
+     "no": "Hook a Scout/Sentry for a free 2-3 Might unit and double Deathknell"
+    },
+    "no": {
+     "q": "Can you conquer or hold a battlefield this turn?",
+     "yes": "Attack; on conquer use legend to copy a Deathknell unit there",
+     "no": "Develop: Mixologist, Rex or Hook; keep Sacrifice up"
+    }
+   },
+   "no": {
+    "q": "Do you have 3+ energy and Karthus, Eternal in hand?",
+    "yes": "Play Karthus first, before your Deathknell units start dying",
+    "no": {
+     "q": "Is the opponent attacking your battlefield next turn with a big unit?",
+     "yes": "Hold Hidden Blade or Vi, Peacekeeper (Ambush) for their attack",
+     "no": "Play 2-cost Deathknell units to battlefields and trade early"
+    }
+   }
+  },
+  "combat": [
+   "Answer bounce/removal on a Mighty unit with Sacrifice in response: you still get its Deathknell.",
+   "Deathgrip a Deathknell unit to give its Might to another fighter, then draw.",
+   "Vi, Peacekeeper can Ambush into your battlefield as a reaction; on attack she stuns a defender.",
+   "Mirror Image can copy an enemy unit to fight the original.",
+   "Bounce and banish skip Deathknell; against Chaos decks cash in units before they're bounced.",
+   "Dusk Rose Lab: kill a unit there at your Beginning Phase to draw (Fragmented draws 2 more)."
+  ],
+  "holdFor": [
+   "Sacrifice - in response to removal/bounce on a 5+ Might unit",
+   "Deathgrip - win a fight and trigger a Deathknell",
+   "Hidden Blade - hidden; kill an attacker or defender",
+   "Vi, Peacekeeper - Ambush into a fight"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Unfavoured: Chaos bounce dodges Deathknell. Sacrifice units in response and race early."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Unfavoured. Bait counters with cheap plays, then land Hook/Karthus when she's tapped."
+   },
+   {
+    "vs": "vex",
+    "plan": "Unfavoured. Don't play units into Vex, Apathetic; kill her with Hidden Blade or Dragon first."
+   },
+   {
+    "vs": "akali",
+    "plan": "Favoured. Trade into her units; Deathknell value outlasts her protection."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Favoured. Kill the lone defender with Hidden Blade/Dragon and keep conquering."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Race matchup. Chump early with Deathknell units, then stabilise with Rex and Dragon."
+   }
+  ],
+  "mistakes": [
+   "Playing Deathknell units before Karthus when Karthus is in hand.",
+   "Relying on Reflections to hold: they die before scoring.",
+   "Turning every body into cards and leaving no unit to hold.",
+   "Killing your only unit at a battlefield you need (Dusk Rose Lab, Hook).",
+   "Expecting Deathknell from bounced or banished units."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 1,
+   "priority": {
+    "Karthus, Eternal": 3,
+    "Baited Hook": 3,
+    "Soaring Scout": 1,
+    "Glasc Mixologist": 1,
+    "Ruined Rex": 1,
+    "Vi, Peacekeeper": 1
+   },
+   "holdForShowdown": [
+    "Sacrifice",
+    "Deathgrip",
+    "Hidden Blade",
+    "Vi, Peacekeeper"
+   ],
+   "mulliganKeep": [
+    "Soaring Scout",
+    "Watchful Sentry",
+    "Honest Broker",
+    "Karthus, Eternal",
+    "Baited Hook"
+   ],
+   "notes": [
+    "Play Karthus before triggering Deathknells when possible.",
+    "Use Baited Hook every turn it has a target; prefer the biggest Mighty unit.",
+    "Use legend on conquer/hold to copy the best Deathknell unit there; discard the worst card.",
+    "Never count a Reflection as a holder.",
+    "If a Mighty unit is targeted by bounce/removal, respond with Sacrifice."
+   ]
+  },
+  "sources": [
+   {
+    "title": "LeBlanc, Deceiver Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/leblanc-deceiver-guide/",
+    "date": "2026-07-03"
+   },
+   {
+    "title": "LeBlanc legend guide (Hextech Analytics)",
+    "url": "https://hextechanalytics.com/legends/leblanc",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Meta Tier List - Vendetta heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Meta Tier List - Post-Ban heading to Los Angeles (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-heading-to-los-angeles/",
+    "date": "2026-09-24"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   }
+  ],
+  "confidence": "medium - core synergy and matchups sourced; Hook targets and sequencing are inferred from card text."
+ },
+ "masteryi": {
+  "id": "masteryi",
+  "summary": "Take a battlefield early and defend it with one unit: Yi's legend gives a lone defender +2 Might. Cheap reactions win showdowns; Rengar and Ruin Runner retake ground.",
+  "archetype": "Midrange (hold)",
+  "mulligan": {
+   "keep": [
+    "Lonely Poro",
+    "Scuttle Crab",
+    "Pit Rookie",
+    "First Mate",
+    "Discipline",
+    "En Garde",
+    "Defy"
+   ],
+   "toss": [
+    "Ruin Runner",
+    "Onslaught",
+    "Rampage",
+    "Alpha Strike",
+    "Zhonya's Hourglass"
+   ],
+   "note": "Keep a 2-cost unit for turn 1-2 (Poro or Crab) plus a cheap reaction. Six-drops and main-phase removal go back."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Put one unit on a battlefield and make it expensive to attack.",
+    "steps": [
+     "Play Lonely Poro or Scuttle Crab and move it alone to a battlefield; it defends at 4 (Crab at 2).",
+     "Keep the second unit at base; moving it in switches off the +2 lone-defender bonus.",
+     "Pit Rookie is better as your second unit: it buffs another friendly unit.",
+     "Turn 2: Master Yi - Tempered (no power cost); later turns keep 1 energy open for a reaction.",
+     "Pass with Discipline, En Garde or Defy up instead of tapping out."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Hold one field, then use the spare resources to take the other.",
+    "steps": [
+     "Tempered gains 2 XP per conquer or hold; at 6 XP he gets Deflect and Ganking.",
+     "After a conquer, First Mate readies Tempered; with Ganking he moves to the other battlefield.",
+     "Star Spring: if they attack your lone unit, Ambush Rengar there and send the small one to base.",
+     "Charm an enemy unit onto your lone defender's battlefield (it defends with +2) or off your target.",
+     "Ruin Runner can't be targeted: it holds a battlefield alone at 7 Might."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Keep scoring holds while the opponent runs out of answers.",
+    "steps": [
+     "Holding at the start of turn scores safely; conquering the 8th point needs both fields scored.",
+     "Punch First (+5, Action) breaks a defended battlefield or saves your defender in their showdown.",
+     "Onslaught + Rampage kill a big blocker on your turn; Onslaught can Flow from trash for 4.",
+     "Alpha Strike splits a unit's Might as damage across enemies at battlefields.",
+     "Sabotage their trick before the final attack; keep Defy for their removal."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you control a battlefield with exactly one friendly unit?",
+   "yes": {
+    "q": "Can a unit from base conquer the other battlefield safely?",
+    "yes": "Attack it from base; leave the lone defender at home",
+    "no": {
+     "q": "Do you have 2+ energy for a reaction?",
+     "yes": "Pass with Discipline/En Garde/Defy up; react after they commit",
+     "no": "Develop to base (Tempered, First Mate); don't stack your defender"
+    }
+   },
+   "no": {
+    "q": "Is a battlefield empty?",
+    "yes": "Move one 2-cost unit (Lonely Poro, Scuttle Crab) there alone",
+    "no": {
+     "q": "Can Rengar or Punch First win a fight at their battlefield?",
+     "yes": "Play Rengar, Trophy Hunter there (or Punch First) and conquer",
+     "no": "Charm a defender away, or develop and wait for Ruin Runner"
+    }
+   }
+  },
+  "combat": [
+   "Defend alone: the +2 is free, but disappears if another friendly unit joins that battlefield.",
+   "En Garde on a lone defender is +2 for 1 energy; Discipline is +2 and draws a card.",
+   "Punch First is an Action: use it in their showdown on your defender, or on your weakest attacker.",
+   "Rengar, Trophy Hunter Ambush: Reaction into a fight where you have a unit; at Star Spring send the other home.",
+   "Not So Fast counters the spell that targets your defender; Defy counters cheap tricks.",
+   "Zhonya's Hourglass (hidden) saves the next unit that would die; it can't be declined."
+  ],
+  "holdFor": [
+   "Discipline",
+   "En Garde",
+   "Defy",
+   "Not So Fast",
+   "Punch First",
+   "Rengar, Trophy Hunter",
+   "Zhonya's Hourglass"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Favourable: Yi is Kennen's worst matchup. Score fast and keep Defy for his key spell."
+   },
+   {
+    "vs": "vex",
+    "plan": "Favourable (Vex 45% at best). Out-hold her; Punch First your lowest-Might attacker vs stuns."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Difficult. Her Order removal kills lone defenders; Defy/Not So Fast and spread threats."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Difficult. Pressure before Aurora; Sabotage Aurora or Promising Future from his hand."
+   },
+   {
+    "vs": "azir",
+    "plan": "Unfavourable: Azir goes wide. Use Rampage/Alpha Strike on equipped Soldiers, hold with Ruin Runner."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Avoid lone defenders on Forbidding Waste (-2). Hold their fewer-unit side with reactions."
+   }
+  ],
+  "mistakes": [
+   "Moving a second unit onto your defended battlefield and losing the +2 bonus.",
+   "Tapping out on your turn instead of keeping 1-2 energy for En Garde, Discipline or Defy.",
+   "Forgetting Zhonya's Hourglass saves the next dying unit, even a Poro you wanted to trade.",
+   "Leaving Pit Rookie as your first unit with nothing to buff.",
+   "Spending reactions to protect every small body instead of the point that matters.",
+   "Using Rampage/Onslaught expecting the +2; the bonus only applies while defending."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Master Yi - Tempered": 2,
+    "Scuttle Crab": 2,
+    "Lonely Poro": 1,
+    "Ruin Runner": 2,
+    "Rengar, Trophy Hunter": 1,
+    "Pit Rookie": 0,
+    "Sabotage": 1
+   },
+   "holdForShowdown": [
+    "Discipline",
+    "En Garde",
+    "Defy",
+    "Not So Fast",
+    "Punch First",
+    "Rengar, Trophy Hunter"
+   ],
+   "mulliganKeep": [
+    "Lonely Poro",
+    "Scuttle Crab",
+    "Pit Rookie",
+    "First Mate"
+   ],
+   "notes": [
+    "Keep exactly one unit on each battlefield you hold; extra units wait in base.",
+    "Hold Rengar, Trophy Hunter for an Ambush when they attack your lone unit at Star Spring.",
+    "After Tempered reaches 6 XP, use First Mate after a conquer to ready him and gank the other field.",
+    "Charm: move an enemy onto your lone defender's battlefield, or a defender off your attack target.",
+    "Emperor's Dais conquer: pay 1 to return Scuttle Crab/First Mate/Pit Rookie and replay it later.",
+    "Hide Zhonya's Hourglass at a battlefield you hold when you have spare power."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Master Yi, Wuju Bladesman – Best Decks & Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/master-yi-wuju-bladesman-guide/",
+    "date": "2026-08-20"
+   },
+   {
+    "title": "Wuju Bladesman legend guide (HextechAnalytics)",
+    "url": "https://hextechanalytics.com/legends/master-yi",
+    "date": ""
+   },
+   {
+    "title": "Riftbound: Is Master Yi Really All That? (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-is-master-yi-really-all-that",
+    "date": "2026-06-25"
+   },
+   {
+    "title": "Riftbound: Deck Tech - XP Farm Master Yi (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-xp-farm-master-yi",
+    "date": "2026-04-16"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   },
+   {
+    "title": "Master Yi, Wuju Bladesman deck stats & guide (Riftbound France)",
+    "url": "https://riftboundfrance.fr/en/legendes/master-yi-wuju-bladesman",
+    "date": "2026-10-17"
+   }
+  ],
+  "confidence": "high: several guides describe this exact list and plan; HextechAnalytics featured list shares its core."
+ },
+ "mordekaiser": {
+  "id": "mordekaiser",
+  "summary": "Fury/Order midrange: trade cheap units that leave value when they die, fill the trash, and banish it with the legend for extra power. Big removal units (Vi, Kai'Sa, Mordekaiser - Dominating) then win the board by force.",
+  "archetype": "Midrange (sacrifice / value)",
+  "mulligan": {
+   "keep": [
+    "Carrion Dredger",
+    "Trifarian Captain",
+    "Honest Broker",
+    "Blast Corps Cadet",
+    "Bilgewater Tracker",
+    "Xin Zhao - Vigilant",
+    "Kai'Sa - Survivor"
+   ],
+   "toss": [
+    "Mordekaiser - Dominating",
+    "Ferrous Forerunner",
+    "Brynhir Thundersong",
+    "Darius - Trifarian"
+   ],
+   "note": "Keep 2-3 cheap units and a 4-drop; Trifarian Captain finds missing pieces. Expensive finishers go back (inferred from curve)."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Contest battlefields with units that leave value when they die.",
+    "steps": [
+     "Trifarian Captain: dig 4 cards for a 3-cost-or-less unit or gear.",
+     "Carrion Dredger and Honest Broker trade happily: they leave a Bird or a Gold gear.",
+     "Blast Corps Cadet (pay 1+Fury) or Bilgewater Tracker to kill small enemy units.",
+     "Conquer Zaun Warrens / Ruined Monastery / Minefield to loot, ramp or fill the trash."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Use bigger units and removal to take both battlefields.",
+    "steps": [
+     "Legend: banish a unit or gear from trash to add 1 power for units/gear only.",
+     "Kai'Sa - Survivor (Accelerate) to conquer and draw; Vi - Peacekeeper Ambush in as a reaction.",
+     "Realm of Death: -2 to their unit, +2 to yours, they fight; cheap removal.",
+     "Escaped Grayback: kill Dredger or Broker to empower (+2) and still get their death value.",
+     "Spectral Matron: replay a 3-cost unit from trash for free (keep one target unbanished)."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Land a finisher the opponent can't answer in time.",
+    "steps": [
+     "Mordekaiser - Dominating: on play and on attack, discard 1 to kill a unit or gear.",
+     "Brynhir Thundersong on the final attack turn: opponents can't play cards this turn.",
+     "Ferrous Forerunner: if it dies you still get two 3 Might Mechs.",
+     "Darius - Trifarian: play a cheap card first so he gets +2 and readies."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Can you conquer a battlefield this turn with units already on board?",
+   "yes": {
+    "q": "Is Brynhir Thundersong in hand and affordable?",
+    "yes": "Play Brynhir, then attack: they can't respond this turn",
+    "no": {
+     "q": "Do they have one blocker you can remove first?",
+     "yes": "Realm of Death/Falling Star it, then attack",
+     "no": "Attack; keep Hidden Blade or Vi Ambush ready"
+    }
+   },
+   "no": {
+    "q": "Can you pay for Mordekaiser - Dominating (use legend power)?",
+    "yes": "Play Mordekaiser, discard 1 to kill their best unit",
+    "no": {
+     "q": "Is there a unit in trash worth replaying with Spectral Matron?",
+     "yes": "Play Spectral Matron, replay the best 3-cost unit from trash",
+     "no": "Trifarian Captain / cheap units; banish trash to cast a 4-5 drop"
+    }
+   }
+  },
+  "combat": [
+   "Vi - Peacekeeper has Ambush: play her as a reaction to a battlefield where you have units.",
+   "Vi stuns an enemy unit when she attacks; stun their biggest so it deals no damage.",
+   "Long Sword is Quick-Draw: cast it mid-showdown to attach and swing a fight.",
+   "Hidden Blade kills a unit at a battlefield, but its controller draws 2; save it for key units.",
+   "Xin Zhao has Tank: he takes damage first, shielding Kai'Sa or Mordekaiser.",
+   "Legend power can't be spent on spells: plan spells with runes, units with trash power."
+  ],
+  "holdFor": [
+   "Vi - Peacekeeper",
+   "Long Sword",
+   "Hidden Blade",
+   "Realm of Death"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Riven wins through units at battlefields; kill them with Realm of Death, Cadet and Tracker before Blade lands (inferred)."
+   },
+   {
+    "vs": "seraphine",
+    "plan": "Bilgewater Tracker pings kill 1-Might tokens; keep finishers for after Imperial Decree turns (inferred)."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Trade early with Dredger/Broker, Xin Zhao Tank blocks; stabilize, then win with bigger units (inferred)."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Bounce is bad vs 9-drops; prefer cheaper threats and Brynhir turns (inferred)."
+   }
+  ],
+  "mistakes": [
+   "Banishing the only good Spectral Matron target from trash for legend power.",
+   "Trying to spend legend power on spells (it only pays for units or gear).",
+   "Rushing out Mordekaiser with no card left to discard for his kill.",
+   "Attacking into open mana without Brynhir when they hold reactions."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Trifarian Captain": 2,
+    "Carrion Dredger": 1,
+    "Kai'Sa - Survivor": 2,
+    "Vi - Peacekeeper": 2,
+    "Realm of Death": 2,
+    "Spectral Matron": 1,
+    "Mordekaiser - Dominating": 3,
+    "Brynhir Thundersong": 1
+   },
+   "holdForShowdown": [
+    "Vi - Peacekeeper",
+    "Long Sword",
+    "Hidden Blade"
+   ],
+   "mulliganKeep": [
+    "Carrion Dredger",
+    "Trifarian Captain",
+    "Honest Broker",
+    "Blast Corps Cadet",
+    "Bilgewater Tracker",
+    "Kai'Sa - Survivor"
+   ],
+   "notes": [
+    "Use the legend (banish trash unit/gear) only when it lets you play a unit or gear now.",
+    "Keep one 3-cost unit in trash for Spectral Matron.",
+    "Escaped Grayback: sacrifice a Carrion Dredger or Honest Broker, never a real threat.",
+    "Mordekaiser - Dominating: always discard to kill the biggest enemy unit or a key gear."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Mordekaiser, Iron Revenant Guide - Radiance Theorycraft (riftbound.gg)",
+    "url": "https://riftbound.gg/mordekaiser-iron-revenant-guide/",
+    "date": "2026-10-13"
+   },
+   {
+    "title": "Mordekaiser, Iron Revenant legend page and Fury/Order card stats (riftwatch)",
+    "url": "https://riftwatch.gg/legends/rad-143-167/"
+   },
+   {
+    "title": "Radiance Rules FAQ: Mordekaiser legend power rulings (riftbound.gg)",
+    "url": "https://riftbound.gg/radiance-rules-faq-and-clarifications/",
+    "date": "2026-10-26"
+   },
+   {
+    "title": "Radiance Legends reveal round-up (Gamertag Mythras)",
+    "url": "https://gamertagmythras.com/blog/riftbound-tcg/riftbound-radiance-legends",
+    "date": "2026-10-10"
+   }
+  ],
+  "confidence": "low: only a theorycraft guide and early lists (no top finishes found); plan inferred mostly from card text."
+ },
+ "orianna": {
+  "id": "orianna",
+  "summary": "Calm/Mind gear control: Orianna's legend turns one gear into a unit with Might equal to its cost, so The Ball becomes a 5 Might ganker that draws or deals 2 on each move. Calm reactions protect the key gear while it holds battlefields.",
+  "archetype": "Control / Midrange (gear)",
+  "mulligan": {
+   "keep": [
+    "Orianna - Exquisite",
+    "Frigid Jewel",
+    "Mask of Foresight",
+    "Plundering Poro",
+    "Patched Porobot",
+    "Defy",
+    "Stupefy"
+   ],
+   "toss": [
+    "Resplendent Rostrum",
+    "Thousand-Tailed Watcher",
+    "Twilight Shroud",
+    "Consult the Past"
+   ],
+   "note": "Keep cheap gear plus Orianna - Exquisite or a 2-drop, with Defy if possible. The 7-8 drops go back (inferred from curve)."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Put cheap gear and a sturdy defender on the board.",
+    "steps": [
+     "Plundering Poro or Patched Porobot early; Poro makes a Gold gear when it conquers.",
+     "Frigid Jewel or Mask of Foresight: cheap gear that buffs and gives the legend a target.",
+     "Orianna - Exquisite (4 Might, Shield) only deals damage with a friendly gear at her spot.",
+     "Hold Ornn's Forge if you can: your first gear each turn costs 1 less."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Turn The Ball into a unit and control both battlefields.",
+    "steps": [
+     "Deploy The Ball to a battlefield you hold: draw 1 or deal 2 to enemy units there.",
+     "Next main phase pay 1 with the legend: The Ball becomes a 5 Might unit with Ganking.",
+     "Move The Ball between battlefields; each move draws 1 or deals 2 to enemies there.",
+     "Hunting Blind: deploy to pull an enemy unit in; your units there get Shield 2.",
+     "Command: Attack moves a Deploy gear to a battlefield or digs a gear from the top 5."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Lock the board and finish with big gear-units.",
+    "steps": [
+     "Resplendent Rostrum: legend makes it an 8 Might unit; exhaust it to draw and ramp.",
+     "Thousand-Tailed Watcher: -3 Might to all enemy units for a decisive attack turn.",
+     "Veiled Temple: when you conquer there, ready a gear (inferred: reuse Rostrum).",
+     "Keep Defy and Zhonya's up for removal aimed at your gear-unit."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Start of main phase: is there a gear worth animating (The Ball, Rostrum, Hunting Blind)?",
+   "yes": {
+    "q": "Is it already at a battlefield, or can it attack where it is?",
+    "yes": "Pay 1, animate it; move The Ball to deal 2 or draw",
+    "no": "Animate it anyway to defend; hold Defy for removal"
+   },
+   "no": {
+    "q": "Do you have 5 energy and a battlefield you hold?",
+    "yes": "Deploy The Ball there (deal 2 if enemies, else draw)",
+    "no": {
+     "q": "Is an enemy unit threatening your held battlefield?",
+     "yes": {
+      "q": "Can you afford Hunting Blind (4E)?",
+      "yes": "Deploy Hunting Blind there: Shield 2 for your units",
+      "no": "Keep Stupefy/Defy up and defend with Orianna"
+     },
+     "no": "Play cheap gear (Jewel/Mask/Poro), keep 1-2 open"
+    }
+   }
+  },
+  "combat": [
+   "Defy counters spells up to 4 energy: keep it for gear removal or a key trick.",
+   "Stupefy (-1, draw) and a second draw trigger Frigid Jewel for +2 Might.",
+   "Cloth Armor is Quick-Draw: cast it mid-showdown to attach and to switch on Orianna's damage.",
+   "Zhonya's Hourglass (hidden) saves the next friendly unit that would die.",
+   "Consult the Past (hidden reaction) draws 2 at instant speed and also feeds Frigid Jewel.",
+   "Mask of Foresight: attack or defend with one unit for +1 Might."
+  ],
+  "holdFor": [
+   "Defy",
+   "Stupefy",
+   "Consult the Past",
+   "Cloth Armor",
+   "Zhonya's Hourglass",
+   "Twilight Shroud"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Riven's Gust and Rebuke bounce units; keep Defy for them and protect your animated gear (inferred)."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Expect gear removal in a gear mirror; spread value over cheap gear (inferred)."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Hold with Shield units, Hunting Blind and Mask; deploy The Ball to ping attackers (inferred)."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Gear stays when units bounce; lean on The Ball and Hunting Blind for value (inferred)."
+   }
+  ],
+  "mistakes": [
+   "Running Orianna - Exquisite with no gear at her location: she deals no combat damage.",
+   "Deploying The Ball where the opponent will hold next turn: Deploy gear dies there.",
+   "Re-picking with the legend for no reason: the old gear stops being a unit.",
+   "Animating an Equipment: it loses its Equip text (riftwatch ruling), e.g. Brutalizer."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "The Ball": 4,
+    "Orianna - Exquisite": 2,
+    "Hunting Blind": 2,
+    "Frigid Jewel": 1,
+    "Resplendent Rostrum": 2,
+    "Defy": 1,
+    "Command: Attack": 1
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Stupefy",
+    "Consult the Past",
+    "Cloth Armor"
+   ],
+   "mulliganKeep": [
+    "Orianna - Exquisite",
+    "Frigid Jewel",
+    "Mask of Foresight",
+    "Plundering Poro",
+    "Patched Porobot",
+    "Defy"
+   ],
+   "notes": [
+    "Legend: each main phase, pay 1 to animate the highest-cost non-Equipment gear (usually The Ball).",
+    "Only deploy The Ball or Hunting Blind to a battlefield you expect to hold.",
+    "Keep a friendly gear at Orianna - Exquisite's location or she deals no damage.",
+    "Rockfall Path: units can't be played there, but Deploy gear can (inferred)."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Orianna, Lady of Clockwork Guide - Radiance Theorycraft (riftbound.gg)",
+    "url": "https://riftbound.gg/orianna-lady-of-clockwork-guide/",
+    "date": "2026-10-12"
+   },
+   {
+    "title": "Orianna legend page, Equipment ruling, Calm/Mind stats (riftwatch)",
+    "url": "https://riftwatch.gg/legends/rad-145-167/"
+   },
+   {
+    "title": "Orianna theorycraft decks: Clockwork Forge, Gearlock (riftwatch)",
+    "url": "https://riftwatch.gg/decks/orianna/",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Riven legend page: Orianna/Equipment ruling (riftwatch)",
+    "url": "https://riftwatch.gg/legends/rad-149-167/"
+   }
+  ],
+  "confidence": "low: no pilot guide or tournament write-up; only theorycraft and list snippets (Nexus Night 12th with 3 Ball, 3 Jewel)."
+ },
+ "reksai": {
+  "id": "reksai",
+  "summary": "Flood the board with 2-cost units that leave tokens behind, conquer cheaply every turn and let the legend play cards off the top. Order removal clears blockers; it wins from ahead, not behind.",
+  "archetype": "Aggro / Tempo (off-tempo tokens)",
+  "mulligan": {
+   "keep": [
+    "Carrion Dredger",
+    "Honest Broker",
+    "Inferna",
+    "Legion Rearguard",
+    "Noxian Emissary",
+    "Faithful Manufactor",
+    "Noxus Hopeful"
+   ],
+   "toss": [
+    "Imperial Decree",
+    "Void Rush",
+    "Escaped Grayback",
+    "Salvage",
+    "Falling Star"
+   ],
+   "note": "Mulligan for two or more 2-cost units. Without an early conquer the legend does nothing, so expensive spells go back."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Take a battlefield on turn 2-3 and start triggering the legend.",
+    "steps": [
+     "Turn 1: a 2-cost unit (Carrion Dredger, Honest Broker, Legion Rearguard or Noxian Emissary).",
+     "Turn 2: move it to an empty battlefield to conquer; add another 2-drop or Faithful Manufactor.",
+     "Play a cheap card first so Noxus Hopeful costs 2: a 4-Might body for 2 energy.",
+     "On conquer, exhaust the legend, reveal 2 and play the best card; keep energy back to pay for it.",
+     "Rek'Sai - Breacher stays home early: cards from the legend or Void Rush gain Accelerate."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Conquer every turn while removing the one blocker in the way.",
+    "steps": [
+     "Clear a lone blocker with Falling Star (3 + 3) or attack with Cleave/Blood Rush on a small unit.",
+     "Cull the Weak when they have 1-2 units: you kill a Dredger or Broker and keep its Bird or Gold.",
+     "Feed Escaped Grayback a Dredger or Broker to empower it into a 5-Might body.",
+     "Empower Noxian Emissary (1 + Order) so its death leaves two Recruits.",
+     "Void Rush when no conquer is available: play a revealed card 2 cheaper and draw the other."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Finish before the opponent stabilises; you can't win from behind.",
+    "steps": [
+     "Final point by conquest needs both battlefields scored that turn: attack both or hold one.",
+     "Rek'Sai - Breacher attacks at 4 Might (Assault); Accelerate her for 1 + Fury to swing at once.",
+     "Ambush Inferna into your attack for +3 Might (1 base + Assault 2).",
+     "Imperial Decree in a showdown kills any big defender your small attackers damage.",
+     "Keep 1-2 cheap units in base so a sweeper doesn't end your pressure."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is a battlefield empty or held by units your attack can beat?",
+   "yes": {
+    "q": "After attacking, will you have 2+ energy for the legend's reveal?",
+    "yes": "Conquer with the fewest units; exhaust legend; play the best reveal",
+    "no": "Conquer anyway for the point; add Blood Rush/Cleave only if needed"
+   },
+   "no": {
+    "q": "Does the opponent have only 1-2 units while you have a spare body?",
+    "yes": "Cast Cull the Weak (kill Dredger/Broker/token), then attack",
+    "no": {
+     "q": "Is the key blocker 5+ Might?",
+     "yes": "Attack wide and cast Imperial Decree in the showdown",
+     "no": {
+      "q": "Can Falling Star kill the blocker(s)?",
+      "yes": "Falling Star the blockers, then attack",
+      "no": "Develop 2-drops and Noxus Hopeful; Void Rush for value"
+     }
+    }
+   }
+  },
+  "combat": [
+   "Assault tricks only work on attackers: Cleave (+3) and Blood Rush (+2, Repeat +2) win your attacks.",
+   "Put Cleave/Blood Rush on your smallest attacker so a stun or bounce on the big one doesn't waste it.",
+   "Inferna has Ambush: play it as a Reaction into a battlefield where you already have units.",
+   "Imperial Decree: every unit damaged this turn dies, yours too; count your losses first.",
+   "Save Salvage for Aurora, Zhonya's Hourglass or Equipment that decides a fight."
+  ],
+  "holdFor": [
+   "Inferna",
+   "Cleave",
+   "Blood Rush",
+   "Imperial Decree",
+   "Salvage"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Slightly favourable (Kennen 48% vs you). Pressure early before his late-game value turns."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Use Forbidding Waste: his lone defender gets -2 there, cancelling Yi's +2. Attack wide."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Race him before Aurora; Salvage kills Aurora or Platewyrm Egg; Cull/Decree answer Elder Dragon."
+   },
+   {
+    "vs": "vex",
+    "plan": "Vex - Apathetic stuns units you play; go wide early and pump small attackers with Cleave."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Combat decks can't defend both battlefields; conquer the one she leaves open every turn."
+   },
+   {
+    "vs": "azir",
+    "plan": "Cull the Weak is weak vs tokens; use Falling Star on equipped Soldiers and Salvage key gear."
+   }
+  ],
+  "mistakes": [
+   "Spending every rune to win the conquer, then being unable to pay for the legend's reveal.",
+   "Exhausting the legend when nothing in the top 2 is affordable (you can't see them first).",
+   "Moving Rek'Sai - Breacher into risky fights early instead of keeping her aura alive.",
+   "Casting Cull the Weak when the opponent has a spare token to give up.",
+   "Falling behind on points: the deck has few tools to play from behind.",
+   "Playing everything on your own turn and leaving no Inferna or trick for the showdown."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 0,
+   "priority": {
+    "Carrion Dredger": 1,
+    "Honest Broker": 1,
+    "Legion Rearguard": 1,
+    "Noxian Emissary": 1,
+    "Noxus Hopeful": 1,
+    "Cull the Weak": 2,
+    "Void Rush": 2,
+    "Imperial Decree": 2,
+    "Rek'Sai - Breacher": 1
+   },
+   "holdForShowdown": [
+    "Inferna",
+    "Cleave",
+    "Blood Rush",
+    "Imperial Decree"
+   ],
+   "mulliganKeep": [
+    "Carrion Dredger",
+    "Honest Broker",
+    "Inferna",
+    "Legion Rearguard",
+    "Noxian Emissary",
+    "Faithful Manufactor"
+   ],
+   "notes": [
+    "Conquer every turn you can; use the fewest units needed and keep 2+ energy for the legend's reveal.",
+    "Play a cheap card before Noxus Hopeful so Legion makes it cost 2.",
+    "Cull the Weak only when you have a spare token/Dredger/Broker and they have 1-2 units.",
+    "Imperial Decree: cast in a showdown where your attackers will damage a 5+ Might defender.",
+    "Empower Escaped Grayback by killing Carrion Dredger, Honest Broker or a token, never a real threat.",
+    "Pay Breacher's Accelerate on revealed units only when they can attack this turn.",
+    "Forbidding Waste: attack a lone defender there (-2 Might)."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Rek'Sai, Void Burrower Guide – Best Decks & Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/reksai-void-burrower-guide/",
+    "date": "2026-09-11"
+   },
+   {
+    "title": "Rek'Sai legend guide (HextechAnalytics)",
+    "url": "https://hextechanalytics.com/legends/reksai",
+    "date": ""
+   },
+   {
+    "title": "Riftbound: Deck Tech - Cheating Rek'Sai (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-cheating-reksai",
+    "date": "2026-02-23"
+   },
+   {
+    "title": "Rek'Sai Counter Riftbound: Fury Order Pressure Guide (RiftStorm)",
+    "url": "https://riftstorm.gg/blog/reksai-counter-riftbound-pressure",
+    "date": ""
+   },
+   {
+    "title": "Rek'Sai, Void Burrower deck stats & guide (Riftbound France)",
+    "url": "https://riftboundfrance.fr/en/legendes/reksai-void-burrower",
+    "date": "2026-10-17"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Post-Ban, heading to Los Angeles (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-heading-to-los-angeles/",
+    "date": "2026-09-24"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   },
+   {
+    "title": "Best Cards in Each Domain to Deal With Vex - Apathetic (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-best-cards-in-each-domain-to-deal-with-vex-apathetic",
+    "date": "2026-05-24"
+   }
+  ],
+  "confidence": "medium: strategy is well sourced, but pro lists run Undertitan/Daring Poro that this list lacks; Decree and Grayback use is inferred from card text."
+ },
+ "rengar": {
+  "id": "rengar",
+  "summary": "Body/Fury aggro: win the first showdowns with cheap units, keep scoring every turn and hide real Might with Ambush. Every unit played gives +1 Might via the legend; Kai'Sa, Kinkou Initiate and Nidalee keep the cards flowing.",
+  "archetype": "Aggro",
+  "mulligan": {
+   "keep": [
+    "Inferna",
+    "Irresistible Faefolk",
+    "Pit Rookie",
+    "Noxus Hopeful",
+    "Kinkou Initiate",
+    "Punch First"
+   ],
+   "toss": [
+    "Ferrous Forerunner",
+    "Rengar, Trophy Hunter",
+    "Rampage",
+    "Thrill of the Hunt",
+    "Darius, Trifarian"
+   ],
+   "note": "Keep 2-cost units and a cheap pump; you must win the early showdowns. Toss 5-6 drops."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Seize the lead: conquer early and win the first showdowns.",
+    "steps": [
+     "Turn 2: Inferna (3 Might attacking) or Irresistible Faefolk to a battlefield.",
+     "Faefolk moving to a battlefield drags an enemy unit there; back it with an Ambush unit.",
+     "Play a unit before attacking: the legend gives +1 Might.",
+     "Pit Rookie buffs another unit; Noxus Hopeful costs 2 after another card."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Grow threats every turn and draw with Kai'Sa, Kinkou Initiate and Nidalee.",
+    "steps": [
+     "Kinkou Initiate draws if your other units total 5+ Might; buff first.",
+     "Kai'Sa, Survivor draws on conquer; Accelerate her when she can conquer now.",
+     "Hold Grim Apothecary / Nidalee, Cat Form as Ambush for after they commit.",
+     "Sabotage before a key attack to strip their trick or removal.",
+     "Take the other battlefield before Seat of Power so its conquer draws."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Push the last points through with Punch First, Rengar and Thrill of the Hunt.",
+    "steps": [
+     "Rengar, Trophy Hunter can be played straight onto an enemy-held battlefield.",
+     "Punch First (+5) after they commit, or Rampage to clear a defender.",
+     "Thrill of the Hunt replays a unit to any battlefield: re-trigger First Mate or legend +1.",
+     "8th point by conquer needs both battlefields scored that turn; else hold one."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Can you conquer an empty or weakly held battlefield this turn?",
+   "yes": {
+    "q": "Does the opponent have untapped energy for a trick or removal?",
+    "yes": {
+     "q": "Do you have Sabotage?",
+     "yes": "Sabotage first, then play a unit (+1) and attack",
+     "no": "Attack; hold Punch First / an Ambush unit for after they respond"
+    },
+    "no": "Play units first (+1 each), then attack with everything that wins"
+   },
+   "no": {
+    "q": "Is the enemy defender within 5 Might of your attacker?",
+    "yes": {
+     "q": "Do you have Punch First and 2 Body power?",
+     "yes": "Attack; Punch First after they commit",
+     "no": "Rampage the defender or Faefolk-drag it, then attack"
+    },
+    "no": {
+     "q": "Are you behind on board?",
+     "yes": "Develop Kinkou/Kai'Sa; hold Grim Apothecary to save a unit",
+     "no": "Play Rengar, Trophy Hunter onto their battlefield and push"
+    }
+   }
+  },
+  "combat": [
+   "Inferna is 3 Might attacking but only 1 defending: use it on offence.",
+   "Ambush units (Inferna, Grim Apothecary, Nidalee, Cat Form) come in after the opponent commits.",
+   "Grim Apothecary as a reaction returns your targeted unit to hand before removal resolves.",
+   "Punch First is an Action: cast it in the showdown after their tricks, not before.",
+   "Thrill of the Hunt resets temporary buffs: replay first, then Punch First.",
+   "Spread legend +1s: once a fight is won, buff a defender holding the other point."
+  ],
+  "holdFor": [
+   "Grim Apothecary - Ambush; save a unit from removal",
+   "Nidalee, Cat Form - Ambush into a fight, draws on win",
+   "Inferna - Ambush as an extra attacker",
+   "Thrill of the Hunt - reaction: dodge removal and replay to any battlefield",
+   "Punch First - +5 after the opponent commits"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Favoured: Kennen's worst matchup. Score 2 per turn before Rhasa turns arrive."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Beat Irelia in the LA final. Sabotage her counters and push before Fervent sets up."
+   },
+   {
+    "vs": "azir",
+    "plan": "Favoured. Pressure early before Sand Soldiers go wide."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Race her slow early units; don't over-trade into Deathknell value."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Mirror-paced aggro. Faefolk drags his lone defender off; Punch First the fight."
+   }
+  ],
+  "mistakes": [
+   "Slowing down: Rengar has few comeback tools once behind.",
+   "Spending every legend +1 on one already-won fight.",
+   "Moving your only unit off a battlefield and losing its hold.",
+   "Playing Ambush units in main phase instead of after the opponent commits.",
+   "Expecting legend Might to last into the next turn."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 0,
+   "priority": {
+    "Inferna": 2,
+    "Irresistible Faefolk": 2,
+    "Pit Rookie": 1,
+    "Kai'Sa, Survivor": 1,
+    "Punch First": 1,
+    "Sabotage": 1
+   },
+   "holdForShowdown": [
+    "Punch First",
+    "Grim Apothecary",
+    "Nidalee, Cat Form",
+    "Thrill of the Hunt"
+   ],
+   "mulliganKeep": [
+    "Inferna",
+    "Irresistible Faefolk",
+    "Pit Rookie",
+    "Noxus Hopeful"
+   ],
+   "notes": [
+    "Play a unit before every attack to bank the legend +1.",
+    "Attack every turn early; trade aggressively.",
+    "Put the +1 on Kinkou Initiate's partners before its draw check.",
+    "Cast Sabotage before committing a big attack when the opponent has cards in hand."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Rengar - Pridestalker Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/rengar-pridestalker-guide/",
+    "date": "2026-08-30"
+   },
+   {
+    "title": "Rengar legend guide (Hextech Analytics)",
+    "url": "https://hextechanalytics.com/legends/rengar",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Los Angeles Regional Qualifier Results (riftbound.gg)",
+    "url": "https://riftbound.gg/los-angeles-regional-qualifier/",
+    "date": "2026-09-28"
+   },
+   {
+    "title": "Riftbound RQ Los Angeles results (Mythras)",
+    "url": "https://gamertagmythras.com/blog/riftbound-tcg/riftbound-rq-los-angeles-results",
+    "date": "2026-09-30"
+   },
+   {
+    "title": "Meta Tier List - Vendetta heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Playing & Building Kennen in the Post-Ban Metagame (riftbound.gg)",
+    "url": "https://riftbound.gg/playing-building-kennen-in-the-post-ban-metagame/",
+    "date": "2026-10-07"
+   },
+   {
+    "title": "Meta Tier List - Post-Ban Week 3 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-week-3/",
+    "date": "2026-10-03"
+   }
+  ],
+  "confidence": "high - this is Prismaticism's exact LA RQ-winning list; plan sourced, matchups partly inferred."
+ },
+ "riven": {
+  "id": "riven",
+  "summary": "Tempo-hold deck: take a battlefield early, then every unit you play there enters ready (legend). Ready units draw, stun, equip or pull enemies the same turn while Calm/Chaos reactions protect the board. Won Sacramento Showdown and Hartford $10K.",
+  "archetype": "Tempo / Midrange (hold-oriented)",
+  "mulligan": {
+   "keep": [
+    "Scuttle Crab",
+    "Tideturner",
+    "Bedeviling Stranger",
+    "Stellacorn Herder",
+    "Reckless Innovator",
+    "Zhonya's Hourglass",
+    "Defy",
+    "Riven - Broken Blade"
+   ],
+   "toss": [
+    "Astral Heron",
+    "Blitzcrank - Impassive",
+    "Star-Crossed",
+    "Rebuke"
+   ],
+   "note": "Keep 2-cost units and a 3-4 drop so you can control a battlefield by turn 2-3; the legend does nothing until you do. 7-drops go back."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Take and keep one battlefield so the legend turns on.",
+    "steps": [
+     "T1-2: Scuttle Crab (draw, 0 Might still conquers) or hide Tideturner / Bedeviling Stranger at a battlefield you hold.",
+     "Conquer an empty battlefield early; from then on play units straight to it so they enter ready.",
+     "Stellacorn Herder: play it to your battlefield ready, then move it to base to draw 1.",
+     "Reckless Innovator: play ready at your battlefield; exhaust it (move/equip cost) for a Gold gear or a draw.",
+     "Hide Zhonya's Hourglass once you have a unit worth saving."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Grow one unbeatable battlefield and pick off the other with Ganking.",
+    "steps": [
+     "Play Riven - Broken Blade to your battlefield ready; each exhaust gives buff, then stun or ready.",
+     "Equip Blade of the Exile by exhausting a friendly unit (Innovator triggers); +3 Might and Ganking.",
+     "Gank the Blade unit to the other battlefield the same turn to conquer.",
+     "Blitzcrank - Impassive to a battlefield: pull an enemy unit in to force a fight you win.",
+     "Land Astral Heron on a battlefield you hold; lead with a cheap card, then cast the discounted one."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Score the last points while keeping the shields up.",
+    "steps": [
+     "Hold your main battlefield each turn; keep Defy / Not So Fast up for their removal.",
+     "Use Ganking or Tideturner swaps to take the second battlefield for the final conquer.",
+     "Star-Crossed or Rebuke their best defender in the showdown to clear the last conquer.",
+     "Don't overextend into a sweeper; 2-3 good units plus open reactions is enough."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you control a battlefield (so units you play there enter ready)?",
+   "yes": {
+    "q": "Can a ready unit (or Blade gank) beat the defenders at the other battlefield?",
+    "yes": {
+     "q": "Do you have 2+ energy left for Defy/Discipline after attacking?",
+     "yes": "Attack with Blade unit / Riven; keep Defy or Discipline up",
+     "no": "Attack only if you win without tricks; else build and hold"
+    },
+    "no": {
+     "q": "Is Astral Heron in hand with 7+ energy and your battlefield safe?",
+     "yes": "Play Astral Heron to your battlefield, keep 1-2 open",
+     "no": "Play Herder/Innovator ready there, move Herder to base, hold up reactions"
+    }
+   },
+   "no": {
+    "q": "Is any battlefield empty or held by 2 Might or less?",
+    "yes": "Conquer it with Scuttle Crab / 2-drop; hide Tideturner there",
+    "no": {
+     "q": "Do you have Blitzcrank or Gust/Rebuke to break their hold?",
+     "yes": "Pull or bounce their defender, then contest the battlefield",
+     "no": "Develop in base, hide Zhonya's, pass with Defy up"
+    }
+   }
+  },
+  "combat": [
+   "Riven: each exhaust picks a new mode; buff on attack, spend it to stun a blocker or ready her.",
+   "Flip a hidden card first with Astral Heron out: the next card (Rebuke, Switcheroo) costs 2 and 2 runes less.",
+   "Defy counters a spell up to 4 energy; save it for removal on Blade/Riven, not small tricks.",
+   "Not So Fast answers a spell or ability that targets your unit or Blade of the Exile.",
+   "Battle Preparations: show off Blade or Zhonya's to also ready 2 runes for another reaction.",
+   "Switcheroo swaps Might of two units at one battlefield: use it on their biggest unit vs your smallest.",
+   "Gust only hits 3 Might or less; Star-Crossed bounces their unit and saves your damaged one."
+  ],
+  "holdFor": [
+   "Defy",
+   "Not So Fast",
+   "Discipline",
+   "Battle Preparations",
+   "Gust",
+   "Star-Crossed",
+   "Tideturner",
+   "Zhonya's Hourglass"
+  ],
+  "matchups": [
+   {
+    "vs": "kennen",
+    "plan": "Bounce hurts less: replay bounced units to your battlefield ready. Guard Blade with Defy/Not So Fast; kill Vex fast."
+   },
+   {
+    "vs": "akali",
+    "plan": "Akali's Fury removal can push you off battlefields. Keep Zhonya's hidden and hold Defy for her removal."
+   },
+   {
+    "vs": "vex",
+    "plan": "Vex - Apathetic stuns units played at her battlefield; play to your own battlefield and bounce Vex first (inferred)."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Fast deck: block early with cheap units and Discipline; use Switcheroo/Gust on his attackers (inferred)."
+   },
+   {
+    "vs": "riven",
+    "plan": "Mirror: whoever holds a battlefield first gets ready units. Contest early, save Defy for Blade or Riven tricks (inferred)."
+   }
+  ],
+  "mistakes": [
+   "Playing units to base when you control a battlefield: you lose the 'enter ready' value.",
+   "Playing Astral Heron where it can't survive; its discount only works while it stays on a battlefield.",
+   "Spending Defy on a minor trick and losing Blade of the Exile to gear removal.",
+   "Moving everything to attack and leaving your scoring battlefield empty.",
+   "Forgetting Herder must move to draw: play it to your battlefield ready, then walk it home."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 2,
+   "priority": {
+    "Blade of the Exile": 3,
+    "Stellacorn Herder": 2,
+    "Reckless Innovator": 2,
+    "Astral Heron": 2,
+    "Riven - Broken Blade": 3,
+    "Zhonya's Hourglass": 2,
+    "Tideturner": 1,
+    "Scuttle Crab": 1,
+    "Blitzcrank - Impassive": 1
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Not So Fast",
+    "Discipline",
+    "Battle Preparations",
+    "Gust",
+    "Star-Crossed",
+    "Switcheroo"
+   ],
+   "mulliganKeep": [
+    "Scuttle Crab",
+    "Tideturner",
+    "Bedeviling Stranger",
+    "Stellacorn Herder",
+    "Reckless Innovator",
+    "Zhonya's Hourglass"
+   ],
+   "notes": [
+    "If you control a battlefield, play units to that battlefield, not base (they enter ready).",
+    "Stellacorn Herder: play to controlled battlefield, then move it to base to draw 1.",
+    "Equip Blade of the Exile by exhausting a unit that already acted, or Reckless Innovator.",
+    "With Astral Heron at a battlefield, play the cheapest card first, then the expensive one.",
+    "Keep at least one unit on your scoring battlefield at end of turn.",
+    "Don't play Astral Heron to a battlefield you don't control."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Radiance Day 1 Best Decks & Meta Report (riftbound.gg)",
+    "url": "https://riftbound.gg/radiance-day-1-best-decks-meta-report/",
+    "date": "2026-10-22"
+   },
+   {
+    "title": "Riven, The Exile Guide - Radiance Theorycraft (riftbound.gg)",
+    "url": "https://riftbound.gg/riven-the-exile-guide/",
+    "date": "2026-10-12"
+   },
+   {
+    "title": "Best Decks for Every Legend for Early Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/best-decks-for-every-legend-for-early-radiance/",
+    "date": "2026-10-26"
+   },
+   {
+    "title": "Nam Dang 1st place Riven list, Sacramento Showdown (riftwatch)",
+    "url": "https://riftwatch.gg/decks/sacramento-1/",
+    "date": "2026-10-25"
+   },
+   {
+    "title": "What Riven decks play: 11 Sacramento lists (riftwatch)",
+    "url": "https://riftwatch.gg/decks/riven/",
+    "date": "2026-10-25"
+   },
+   {
+    "title": "Riven deck: Free Flight theorycraft (riftwatch)",
+    "url": "https://riftwatch.gg/decks/radiance/riven-free-flight/",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Radiance Rules FAQ and Clarifications (riftbound.gg)",
+    "url": "https://riftbound.gg/radiance-rules-faq-and-clarifications/",
+    "date": "2026-10-26"
+   },
+   {
+    "title": "Astral Heron: how to play it (RiftCompare)",
+    "url": "https://riftcompare.com/blog/astral-heron-riftbound-price-rising-how-to-play"
+   },
+   {
+    "title": "Top Decks and Winners from SCG CON Hartford (Star City Games)",
+    "url": "https://articles.starcitygames.com/news/top-decks-and-winners-from-scg-con-hartford-3/",
+    "date": "2026-10-26"
+   }
+  ],
+  "confidence": "medium: list = Sacramento winner and core is confirmed, but no pilot write-up; turn lines partly inferred."
+ },
+ "seraphine": {
+  "id": "seraphine",
+  "summary": "Mind/Order token control: flood the board with Recruits, then exhaust three units plus the legend to cut 2 energy off a spell. The core play is a cheap Imperial Decree followed by Bellows Breath to wipe a battlefield.",
+  "archetype": "Control (tokens)",
+  "mulligan": {
+   "keep": [
+    "Trifarian Captain",
+    "Carrion Dredger",
+    "Concert Poster",
+    "Vanguard Captain",
+    "Faithful Manufactor",
+    "Stupefy",
+    "Bellows Breath"
+   ],
+   "toss": [
+    "Mordekaiser - Dominating",
+    "Raucous Anthem",
+    "Thousand-Tailed Watcher",
+    "Imperial Decree"
+   ],
+   "note": "Keep unit and Recruit makers so three units are ready by turn 3; finishers and Decree come later (inferred)."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Build a wide board of cheap units and Recruits.",
+    "steps": [
+     "Trifarian Captain digs a 3-cost unit or gear; Carrion Dredger leaves a Bird when it dies.",
+     "Concert Poster to a battlefield: pay 1 for a Recruit now and on each conquer there.",
+     "Vanguard Captain after another card (Legion): two Recruits at once.",
+     "Seal of Unity adds Order power for Decree and Mordekaiser."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Use the legend discount to remove the opponent's board.",
+    "steps": [
+     "Legend: exhaust Seraphine + 3 ready units to make a spell cost 2 less.",
+     "Exhaust 3 units at once for the legend to also trigger Seraphine - Inspiring's draw.",
+     "Imperial Decree, then Bellows Breath (repeat for more): every damaged unit dies.",
+     "Void Gate: spells hitting units there deal +1 damage (Encore 3, Bellows 2).",
+     "Seraphine - Inspiring attacks with Disarm 2 to shrink a defender."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Turn the wide board into the last conquers.",
+    "steps": [
+     "Raucous Anthem: ready all units with +3 Might, even after exhausting them for the legend.",
+     "Mordekaiser - Dominating as a finisher: kill a unit or gear on play and on attack.",
+     "Thousand-Tailed Watcher: -3 to enemies for the final attack (Accelerate with Mind).",
+     "Forgotten Monument: nobody scores there before their third turn."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you have Seraphine + 3 ready units you don't need to move this turn?",
+   "yes": {
+    "q": "Does the enemy have 2+ units at one battlefield?",
+    "yes": {
+     "q": "Do you hold Imperial Decree and Bellows Breath?",
+     "yes": "Exhaust for discount: Decree, then Bellows Breath them all",
+     "no": "Discounted Encore (2 dmg) or Bellows on the weak ones"
+    },
+    "no": {
+     "q": "Is Raucous Anthem in hand and a conquer reachable?",
+     "yes": "Discount Raucous Anthem: ready all, +3 Might, attack",
+     "no": "Keep units ready; use discount on their turn for Eclipse"
+    }
+   },
+   "no": {
+    "q": "Is any battlefield empty or held by 1-2 Might?",
+    "yes": "Conquer with Recruits; deploy Concert Poster there",
+    "no": "Make units: Vanguard Captain after a cheap card, Manufactor, Poster"
+   }
+  },
+  "combat": [
+   "Eclipse (-4) and Stupefy (-1, draw) are reactions; Eclipse costs 1 with the legend discount.",
+   "Units used for the discount are exhausted and can't move; spend ones that stay home (inferred).",
+   "Hidden Blade kills a unit at a battlefield, but they draw 2; save it for a real threat.",
+   "Black Rose Sanctum: your first non-token death there each turn gives a Recruit.",
+   "Shadow's Call: make a unit Temporary (dies next turn) and draw 2; best on Carrion Dredger."
+  ],
+  "holdFor": [
+   "Eclipse",
+   "Stupefy",
+   "Hidden Blade",
+   "Bellows Breath"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Riven goes wide on one battlefield; Decree + Bellows there wipes it. (inferred)"
+   },
+   {
+    "vs": "evelynn",
+    "plan": "Hidden units appear mid-fight; keep Bellows/Eclipse for after flips (inferred)."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Chump with Recruits and Birds early, then Eclipse his big attacker (inferred)."
+   },
+   {
+    "vs": "mordekaiser",
+    "plan": "Their removal is one-for-one; out-number them with Recruits and Decree their board (inferred)."
+   }
+  ],
+  "mistakes": [
+   "Exhausting units you needed to move or attack this turn just for a discount.",
+   "Casting Imperial Decree with no damage follow-up in the same turn.",
+   "Leaving Concert Poster where the opponent will hold (it dies there).",
+   "Playing Vanguard Captain as your first card: Legion needs another card first."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "Concert Poster": 2,
+    "Vanguard Captain": 2,
+    "Imperial Decree": 3,
+    "Bellows Breath": 2,
+    "Encore": 1,
+    "Trifarian Captain": 1,
+    "Raucous Anthem": 1
+   },
+   "holdForShowdown": [
+    "Eclipse",
+    "Stupefy",
+    "Hidden Blade"
+   ],
+   "mulliganKeep": [
+    "Trifarian Captain",
+    "Carrion Dredger",
+    "Concert Poster",
+    "Vanguard Captain",
+    "Faithful Manufactor"
+   ],
+   "notes": [
+    "Cast Imperial Decree only when Bellows Breath or Encore damage can follow this turn.",
+    "Use the legend discount with units that will not move this turn.",
+    "Play a cheap card before Vanguard Captain so Legion makes two Recruits.",
+    "Keep Recruits in base as legend fuel rather than attacking into bigger units."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Seraphine, Starry-Eyed Songstress Guide - Radiance Theorycraft (riftbound.gg)",
+    "url": "https://riftbound.gg/seraphine-starry-eyed-songstress-guide/",
+    "date": "2026-10-13"
+   },
+   {
+    "title": "Seraphine deck: Stage Fright theorycraft (riftwatch)",
+    "url": "https://riftwatch.gg/decks/radiance/seraphine-stage-fright/",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Radiance Showdown Decks: Evelynn vs Seraphine (TCG Spikes)",
+    "url": "https://tcgspikes.com/guides/riftbound/radiance-showdown-decks-guide",
+    "date": "2026-10-18"
+   },
+   {
+    "title": "10 Most Buffed Legends with Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/10-most-buffed-legends-with-radiance/",
+    "date": "2026-10-20"
+   },
+   {
+    "title": "Radiance Legends reveal round-up (Gamertag Mythras)",
+    "url": "https://gamertagmythras.com/blog/riftbound-tcg/riftbound-radiance-legends",
+    "date": "2026-10-10"
+   }
+  ],
+  "confidence": "low: Decree+Bellows plan is from a near-identical theorycraft list; no top finishes or pilot notes found."
+ },
+ "vex": {
+  "id": "vex",
+  "summary": "Settle Vex - Apathetic on a battlefield and hold it: units the opponent plays are stunned, hidden cards ambush attackers, and each hold draws a card. Win by out-holding, not out-fighting.",
+  "archetype": "Control (hold)",
+  "mulligan": {
+   "keep": [
+    "Mutated Mouser",
+    "Scuttle Crab",
+    "Tideturner",
+    "Evelynn - Entrancing",
+    "Gust Monk",
+    "Switcheroo",
+    "Tornado Warrior",
+    "Steel Paws"
+   ],
+   "toss": [
+    "Astral Heron",
+    "Boots of Swiftness",
+    "Irelia - Fervent",
+    "Star-Crossed",
+    "Edge of Night"
+   ],
+   "note": "Mulligan for a 2-cost unit; if you have one, then look for a Hidden card. Seven-drops and Boots go back."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Plant a cheap holder on a battlefield, then Vex - Apathetic beside it.",
+    "steps": [
+     "Turn 1: a 2-cost unit (Mutated Mouser, Scuttle Crab, Tideturner); move it to an open battlefield turn 2.",
+     "Turn 2-3: play Vex - Apathetic to that battlefield; any unit they play is stunned and can't move that turn.",
+     "Hide a card there (Switcheroo, Back Off, Tornado Warrior) for 1 power to react next turn for 0 energy.",
+     "Going first, favour Fortified Position (defender gains Shield 2); Targon's Peak readies 2 runes on conquer.",
+     "Keep Defy or Discipline open on their turn once you have a holder worth protecting."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Hold, draw with the legend each turn, and deny their comeback.",
+    "steps": [
+     "Each hold: exhaust the legend to draw 1. Keep at least one unit there through their turn.",
+     "Steel Paws + hidden Tornado Warrior: reveal Warrior there to empower Paws to 7 Might for the fight.",
+     "Switcheroo swaps Might: give their big attacker your 0-Might Steel Paws' stats.",
+     "Bounce or stun big threats: Star-Crossed, Rebuke, Gust (3 Might or less), Back Off.",
+     "Hidden Evelynn on your turn pulls an enemy unit from elsewhere into your defended battlefield."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Take the second battlefield once they've spent their answers.",
+    "steps": [
+     "Astral Heron at a battlefield makes your second card each turn 2 energy + 2 power cheaper.",
+     "Ride The Wind moves and readies a unit to steal the other battlefield late in your turn.",
+     "Boots of Swiftness (+2) or Edge of Night (+2, from hidden) turn a holder into a winning attacker.",
+     "The 8th point by conquest needs both fields scored that turn; otherwise hold and score at turn start.",
+     "Zhonya's Hourglass hidden at your battlefield saves the unit that would die to their last push."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you control a battlefield with a unit on it?",
+   "yes": {
+    "q": "Is Vex - Apathetic at a battlefield?",
+    "yes": {
+     "q": "Is the other battlefield empty or weakly held?",
+     "yes": "Ride The Wind/Boots a unit there to take it; keep Defy up",
+     "no": "Hide Switcheroo/Back Off/Tornado Warrior; pass with energy up"
+    },
+    "no": "Play or move Vex - Apathetic to the battlefield you hold"
+   },
+   "no": {
+    "q": "Is a battlefield empty?",
+    "yes": "Move a 2-cost unit (Mutated Mouser, Scuttle Crab) there",
+    "no": {
+     "q": "Is the enemy holder 3 Might or less?",
+     "yes": "Gust or Rebuke it, then move a unit in",
+     "no": "Charm or Star-Crossed it away, then contest"
+    }
+   }
+  },
+  "combat": [
+   "Hidden cards cost 0 to play as reactions but only affect that battlefield; set them a turn early.",
+   "Switcheroo swaps Might of two units there: pair their biggest attacker with Steel Paws (0).",
+   "Tornado Warrior from hidden empowers Steel Paws (+7) until end of turn.",
+   "Back Off stuns the biggest attacker so it deals no damage; from hand it also draws.",
+   "Defy their pump or removal spell (4 energy or less); Discipline is +2 and a card.",
+   "Vex - Apathetic does nothing to units already on board; answer those with tricks."
+  ],
+  "holdFor": [
+   "Defy",
+   "Discipline",
+   "Gust",
+   "Star-Crossed",
+   "Switcheroo",
+   "Back Off",
+   "Tornado Warrior",
+   "Evelynn - Entrancing",
+   "Tideturner",
+   "Zhonya's Hourglass"
+  ],
+  "matchups": [
+   {
+    "vs": "leblanc",
+    "plan": "Favourable: bounce wrecks her synergy. Hide Evelynn and pull her key unit into your field."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Unfavourable (45% at best). He out-holds you; save Switcheroo/Back Off for Punch First turns."
+   },
+   {
+    "vs": "azir",
+    "plan": "Unfavourable. Too many Soldiers to stun; Gust/Rebuke the equipped one and hold one field."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Unfavourable. Keep Defy for his big spell and hold early before his value turns."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Unfavourable. Star-Crossed or Back Off her one big threat; don't trade units into her tricks."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Bounce Elder Dragon with Star-Crossed or Rebuke; pressure before Aurora lands."
+   }
+  ],
+  "mistakes": [
+   "Holding a hand full of answers with nothing on a battlefield to earn points.",
+   "Moving Vex - Apathetic off the battlefield; her stun only works while she is at one.",
+   "Assuming Apathetic stops units already on board.",
+   "Hiding cards at a battlefield you are about to lose: they go to the trash.",
+   "Empowering Steel Paws for 7 energy instead of using a hidden Tornado Warrior.",
+   "Spending Gust/Rebuke on small units instead of the attacker that breaks your hold."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "Vex - Apathetic": 3,
+    "Mutated Mouser": 1,
+    "Scuttle Crab": 1,
+    "Tornado Warrior": 1,
+    "Astral Heron": 2,
+    "Steel Paws": 1
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Discipline",
+    "Gust",
+    "Star-Crossed",
+    "Switcheroo",
+    "Back Off"
+   ],
+   "mulliganKeep": [
+    "Mutated Mouser",
+    "Scuttle Crab",
+    "Tideturner",
+    "Evelynn - Entrancing",
+    "Switcheroo",
+    "Tornado Warrior"
+   ],
+   "notes": [
+    "Get Vex - Apathetic to a battlefield you hold early and keep her there.",
+    "On each hold, exhaust the legend to draw.",
+    "Hide Switcheroo, Back Off or Tornado Warrior at your held battlefield whenever you have a spare power.",
+    "Tornado Warrior from hidden: empower Steel Paws if it is at that battlefield.",
+    "Only attack the second battlefield when it is empty or clearly weaker; never leave the held field empty.",
+    "Stacked Deck was banned in tournament play (Sept 2026); in-game it is just card selection."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Vex – Gloomist Guide – Best Decks & Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/vex-gloomist-guide/",
+    "date": "2026-09-14"
+   },
+   {
+    "title": "Vex legend guide (HextechAnalytics)",
+    "url": "https://hextechanalytics.com/legends/vex",
+    "date": ""
+   },
+   {
+    "title": "Riftbound: Deck Tech - Vex (Skirmish Champion) (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-vex-skirmish-champion",
+    "date": "2026-06-09"
+   },
+   {
+    "title": "Best Cards in Each Domain to Deal With Vex - Apathetic (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-best-cards-in-each-domain-to-deal-with-vex-apathetic",
+    "date": "2026-05-24"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
+    "date": "2026-10-09"
+   },
+   {
+    "title": "Riftbound Meta Tier List – Post-Ban Week 3 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-week-3/",
+    "date": "2026-10-03"
+   },
+   {
+    "title": "Vex, Gloomist deck stats & guide (Riftbound France)",
+    "url": "https://riftboundfrance.fr/en/legendes/vex-gloomist",
+    "date": "2026-10-17"
+   }
+  ],
+  "confidence": "medium: hold plan and matchups are well sourced, but guides use other lists; Steel Paws/Tornado combos are from card text."
+ }
+}

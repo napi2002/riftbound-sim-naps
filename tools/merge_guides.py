@@ -10,7 +10,7 @@ for f in sorted(folder.glob('*.json')):
     if f.stem not in decks: continue
     g = json.loads(f.read_text())
     names = {norm(n) for n in decks[f.stem]}
-    named = list(g.get('holdFor', [])) + list(g.get('mulligan', {}).get('keep', [])) + list(g.get('mulligan', {}).get('toss', []))
+    named = [h.split(' - ')[0] for h in g.get('holdFor', [])] + list(g.get('mulligan', {}).get('keep', [])) + list(g.get('mulligan', {}).get('toss', []))
     ai = g.get('ai', {})
     named += list(ai.get('priority', {}).keys()) + list(ai.get('holdForShowdown', [])) + list(ai.get('mulliganKeep', []))
     for n in named:

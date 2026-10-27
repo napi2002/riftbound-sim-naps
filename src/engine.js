@@ -1579,7 +1579,10 @@ var RT = (function () {
       for (var i = 0; i < 2; i++) {
         var q = i === 0 ? opp(pi) : pi, pl = G.players[q], top = pl.deck.splice(0, 5);
         if (!top.length) continue;
-        var v = top.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); });
+        var v = top.map(function (x) {
+          var pc = cardCost(x.c, false, G, q, 'deck'), afford = !pc.power || anyPowerAvail(pl) >= pc.power;
+          return (x.c.energy || 0) + (x.c.might || 0) + 2 * keyBonus(aiOf(G, q), x.c.name) - (afford ? 0 : 20) - (x.c.type === 'Battlefield' || x.c.type === 'Legend' || x.c.P.counter ? 50 : 0);
+        });
         G.cardsHint = top; var k = await choose(G, q, ctx.srcName, 'Choose one of your top 5 to play for free (energy ignored); the rest are recycled.', top.map(function (x) { return x.c.name; }), false, v.indexOf(Math.max.apply(null, v)));
         var ch = top[k || 0]; top.forEach(function (x) { if (x !== ch) pl.deck.push(x); });
         picks.push([q, ch]);
@@ -2438,6 +2441,8 @@ var RT = (function () {
     if (G.silence && G.silence.pi === pi && G.silence.turn === G.turnNo) return { ok: false, why: "Brynhir Thundersong: you can't play cards this turn." };
     var tloc = opts.loc != null ? opts.loc : opts.roost != null ? opts.roost : f.from === 'hidden' ? f.loc : opts.showdown;
     if (c.type === 'Unit' && tloc != null && tloc !== 'base' && bfNorm(G, tloc) === 'rockfallpath') return { ok: false, why: "Units can't be played to Rockfall Path." };
+    if (c.type === 'Unit' && opts.loc != null && opts.loc !== 'base' && !opts.reaction && opts.roost == null && f.from !== 'hidden' && G.bfs[opts.loc].ctrl !== pi)
+      return { ok: false, why: 'Units are played to your base or to a battlefield you control.' };
     if (c.P.kw.deploy && !deploySpots(G, pi).length) return { ok: false, why: 'Deploy: play this only to a battlefield (you need one to play it to).' };
     if (opts.seraphine && !seraphineReady(G, pi)) return { ok: false, why: 'Seraphine needs to be ready and you need three ready friendly units.' };
     p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear';
@@ -2890,6 +2895,8 @@ var RT = (function () {
       A.holdN = {}; (h.holdForShowdown || g.holdFor || []).forEach(function (k) { A.holdN[norm(k)] = 1; });
       A.mullN = {}; ((g.mulligan && g.mulligan.keep) || h.mulliganKeep || []).forEach(function (k) { A.mullN[norm(k)] = 1; });
       A.tossN = {}; ((g.mulligan && g.mulligan.toss) || []).forEach(function (k) { A.tossN[norm(k)] = 1; });
+      if (h.attack) A.attack = h.attack;
+      if (h.reserveEnergy != null) A.reserve = h.reserveEnergy;
     });
   }
   function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && PLANS[d.id]) || null; }
@@ -2979,7 +2986,8 @@ var RT = (function () {
     }
     if (c.type === 'Spell') {
       if (G.showdownAt == null && trickN(c) > 0) return null;
-      if (G.showdownAt == null && A.holdN && A.holdN[norm(c.name)] && (c.P.kw.reaction || c.P.kw.action) && !c.P.counter) return null;
+      // Reactions the guide says pros keep for the opponent's turn (holding Action-only cards measured worse: the AI rarely finds the showdown for them).
+      if (G.showdownAt == null && A.holdN && A.holdN[norm(c.name)] && c.P.kw.reaction && !c.P.counter) return null;
       var es = evalEffects(G, pi, c.P.spell, ctx);
       if (!es.good || es.value + bonus < 1.5) return null;
       return { value: es.value + 0.5 + bonus, opts: { targets: es.targets, seraphine: sera } };
@@ -3326,5 +3334,5 @@ var RT = (function () {
 if (typeof module !== 'undefined') {
   module.exports = RT;
   // Node (tests, harness): load the researched deck guides next to this file, if present.
-  try { RT.loadGuides(require('./guides.json')); } catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e; }
+  try { if (!process.env.RT_NO_GUIDES) RT.loadGuides(require('./guides.json')); } catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e; }
 }

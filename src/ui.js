@@ -113,7 +113,7 @@
     if (A.equipAlways) notes.push('plays Equipment every turn');
     if (A.seraphine) notes.push('uses the Seraphine discount');
     if (g && g.mulligan && g.mulligan.keep && g.mulligan.keep.length) notes.push('mulligans for ' + g.mulligan.keep.slice(0, 3).join(', '));
-    if (g && (g.holdFor || []).length) notes.push('holds ' + g.holdFor.slice(0, 3).join(', ') + ' for showdowns');
+    if (g && g.ai && (g.ai.holdForShowdown || []).length) notes.push('holds ' + g.ai.holdForShowdown.slice(0, 3).join(', ') + ' for showdowns');
     var head = '<div class="gh"><b>' + esc(d.name) + '</b> <span class="chip">' + esc((g && g.archetype) || pl.style) + '</span>' + (who ? ' <span class="chip">' + who + '</span>' : '') + '</div>';
     var real = r ? '<p class="gai">Tournaments: ' + Math.round(r.wr * 100) + '% win rate over ' + r.n.toLocaleString() + ' matches' + (r.tier ? ', tier ' + r.tier : '') + '.</p>' : '';
     if (!g) {
@@ -128,7 +128,7 @@
     if (brief) {
       return '<div class="guide">' + head + '<p>' + esc(g.summary) + '</p>' + muHtml +
         sec('Their key decisions', treeHtml(g.tree), false) +
-        sec('What they hold for your turn', (g.holdFor || []).length ? '<div class="gk">' + chips(g.holdFor) + '</div>' : '', false) + real + '</div>';
+        sec('What they hold for your turn', (g.holdFor || []).length ? '<ul>' + g.holdFor.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '', false) + real + '</div>';
     }
     var mull = g.mulligan ? '<div class="gk">Keep: ' + chips(g.mulligan.keep) + '</div>' + ((g.mulligan.toss || []).length ? '<div class="gk">Send back: ' + chips(g.mulligan.toss) + '</div>' : '') + (g.mulligan.note ? '<p>' + esc(g.mulligan.note) + '</p>' : '') : '';
     var phases = (g.phases || []).map(function (ph) {
@@ -141,7 +141,7 @@
       sec('Each turn: decision tree', treeHtml(g.tree), true) +
       sec('Opening hand (mulligan)', mull) +
       sec('Turn by turn', phases) +
-      sec('In combat', list(g.combat) + ((g.holdFor || []).length ? '<div class="gk">Hold for showdowns: ' + chips(g.holdFor) + '</div>' : '')) +
+      sec('In combat', list(g.combat) + ((g.holdFor || []).length ? '<p><b>Hold for the opponent\'s turn or showdowns:</b></p>' + list(g.holdFor) : '')) +
       sec('Matchups', mus ? '<ul>' + mus + '</ul>' : '') +
       sec('Common mistakes', list(g.mistakes)) +
       sec('How the AI plays it', '<p class="gai">It ' + esc(notes.filter(Boolean).join(', ')) + '.</p>' + real) +
@@ -483,7 +483,11 @@
     }
     if (chk.ok) {
       var spots = RT.ambushSpots(G, 0, c);
-      foot += '<button class="btn primary" data-play="' + card.iid + '">Play</button>';
+      foot += '<button class="btn primary" data-play="' + card.iid + '">' + (c.type === 'Unit' ? 'Play to base' : 'Play') + '</button>';
+      // Units may also be played straight to a battlefield you control.
+      if (c.type === 'Unit') G.bfs.forEach(function (b, bi) {
+        if (b.ctrl === 0 && spots.indexOf(bi) < 0 && RT.canPlay(G, 0, card.iid, false, { loc: bi }).ok) foot += '<button class="btn" data-play="' + card.iid + '" data-loc="' + bi + '">Play → ' + esc(shortName(b.c.name)) + '</button>';
+      });
       if (c.P.kw.accelerate && c.type === 'Unit') {
         var ac = RT.canPlay(G, 0, card.iid, true);
         foot += '<button class="btn me" data-play="' + card.iid + '" data-accel="1"' + (ac.ok ? '' : ' disabled') + '>Play ready (Accelerate)</button>';
