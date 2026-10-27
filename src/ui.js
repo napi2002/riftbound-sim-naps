@@ -6,6 +6,17 @@
   if (typeof globalThis !== 'undefined' && globalThis.RT_HEADLESS) return;
 
   var DC = RT.DOMAIN_COLORS;
+  // Embedded card images (base64 WebP keyed by normalised card name), turned into local blob: URLs once.
+  var IMG = {};
+  try {
+    var raw = JSON.parse(document.getElementById('rt-img').textContent || '{}');
+    Object.keys(raw).forEach(function (k) {
+      var bin = atob(raw[k]), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      IMG[k] = URL.createObjectURL(new Blob([bytes], { type: 'image/webp' }));
+    });
+  } catch (e) { IMG = {}; }
+  function imgOf(c) { return c && c.supertype !== 'Token' ? IMG[RT.norm(c.name)] || null : null; }
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var store = {
@@ -20,6 +31,16 @@
   function art(c, w, h) {
     var key = c.name + '|' + w + 'x' + h;
     if (artCache[key]) return artCache[key];
+    var url = imgOf(c);
+    if (url) {
+      // Zoom into the illustration box of the card face so small views show art, not the card frame.
+      // Box as fractions of card width: [left, top, width, height]. Portrait cards are 744x1039, battlefields 1039x744.
+      var land = c.orientation === 'landscape' || c.type === 'Battlefield';
+      var box = land ? [0.03, 0.11, 0.94, 0.43] : [0.05, 0.06, 0.9, 0.68];
+      var W = Math.max(w / box[2], h / box[3]);
+      var left = -(box[0] * W + (box[2] * W - w) / 2), top = -(box[1] * W + Math.max(0, box[3] * W - h) * 0.3);
+      return (artCache[key] = '<span style="position:relative;display:block;width:100%;height:100%;overflow:hidden"><img src="' + url + '" alt="" style="position:absolute;width:' + W.toFixed(1) + 'px;max-width:none;left:' + left.toFixed(1) + 'px;top:' + top.toFixed(1) + 'px"></span>');
+    }
     var doms = RT.cardDomains(c); if (!doms.length) doms = ['Colorless'];
     var c1 = DC[doms[0]], c2 = DC[doms[1] || doms[0]], seed = hash(c.name), r = seed;
     var rnd = function () { r = (Math.imul(r ^ (r >>> 15), 2246822507) + 0x9e3779b9) >>> 0; return (r % 10000) / 10000; };
@@ -244,7 +265,7 @@
     return '<h2>' + esc(c.name) + '</h2><div class="chips"><span class="chip">' + esc(c.type + (c.supertype ? ' · ' + c.supertype : '')) + '</span>' +
       doms.map(function (d) { return '<span class="chip dom" style="--dc:' + DC[d] + '">' + d + '</span>'; }).join('') +
       (c.tags || []).slice(0, 3).map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join('') + '</div>' +
-      '<div class="banner">' + art(c, 340, 70) + '</div>';
+      (imgOf(c) ? '<div class="fullcard' + (c.type === 'Battlefield' ? ' land' : '') + '"><img src="' + imgOf(c) + '" alt="' + esc(c.name) + ' card"></div>' : '<div class="banner">' + art(c, 340, 70) + '</div>');
   }
   function cardSheet(card) {
     var G = S.G, c = card.c;
