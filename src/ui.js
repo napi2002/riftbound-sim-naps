@@ -269,7 +269,7 @@
     var h = '';
     h += stripHtml(ai, 1, G);
     h += '<div class="runes">' + runesHtml(ai, 'AI runes') + '</div>';
-    h += '<div class="zone"><div class="zl"><span>AI base</span></div><div class="row">' + RT.unitsAt(G, 'base', 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.gear.map(gearHtml).join('') + '</div></div>';
+    h += '<div class="zone"><div class="zl"><span>AI base</span></div><div class="row">' + RT.unitsAt(G, 'base', 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
     h += '<div class="bfs">' + G.bfs.map(function (b, i) {
       var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
       return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
@@ -277,10 +277,10 @@
         '<div class="scored">' + [0, 1].filter(function (q) { return G.players[q].scored[i]; }).map(function (q) { return '<span class="sc p' + q + '">★ ' + (q === 0 ? 'You' : 'AI') + ' scored here</span>'; }).join('') +
         (b.ctrl != null && !G.players[b.ctrl].scored[i] ? '<span class="sc hint">' + (b.ctrl === 0 ? 'You' : 'AI') + ' score +1 if still held next turn</span>' : '') + '</div>' +
         '<div class="bfx">' + esc(b.c.P.lines.map(function (l) { return l.text; }).join(' ')) + '</div>' +
-        '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + '</div>' +
-        '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + '</div></div>';
+        '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + ai.gear.filter(function (g) { return g.loc === i; }).map(gearHtml).join('') + '</div>' +
+        '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + me.gear.filter(function (g) { return g.loc === i; }).map(gearHtml).join('') + '</div></div>';
     }).join('') + '</div>';
-    h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.map(gearHtml).join('') + '</div></div>';
+    h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
     h += '<div class="runes">' + runesHtml(me, 'Runes') + '</div>';
     var canLeg = RT.canUseLegend(G, 0).ok && !S.busy;
     var legState = [me.legend.exhausted ? 'exhausted' : '', me.legend.empowered ? '✦ EMPOWERED' : ''].filter(Boolean).join(' · ');
@@ -375,7 +375,7 @@
         (c.type === 'Unit' ? (c.might || 0) : c.P.equip ? '+' + c.P.equipBonus : '–') + '</b><small>Might</small></div></div>';
     }
     body += linesHtml(c);
-    if (c.P.equip) body += '<p style="font-size:13px;color:var(--muted)">Equipment: after playing it, pay its Equip cost (' + esc(RT.equipCostText(c)) + ') to attach it to a unit. The Might bonus is estimated from cost.</p>';
+    if (c.P.equip) body += '<p style="font-size:13px;color:var(--muted)">Equipment: after playing it, pay its Equip cost (' + esc(RT.equipCostText(c)) + ') to attach it to a unit.' + (c.P.bonusEstimated ? ' The Might bonus is estimated from cost.' : '') + '</p>';
     if (findHiddenOf(card)) body += '<p style="font-size:13px;color:var(--muted)">Face down at ' + esc(S.G.bfs[findHiddenOf(card).loc].c.name) + '. Play it for 0 energy (you still pay power), on your turn or in a showdown there.</p>';
     var foot = '', chk = RT.canPlay(G, 0, card.iid, false);
     if (S.busy || G.active !== 0) chk = { ok: false, why: "Wait for your turn." };
@@ -393,6 +393,7 @@
         if (!ac.ok) foot += '<span class="why">Accelerate: ' + esc(ac.why) + '</span>';
       }
       spots.forEach(function (bi) { foot += '<button class="btn" data-play="' + card.iid + '" data-loc="' + bi + '">Ambush → ' + esc(shortName(G.bfs[bi].c.name)) + '</button>'; });
+      if (c.type === 'Spell' && RT.seraphineReady(G, 0)) foot += '<button class="btn" data-play="' + card.iid + '" data-seraphine="1">Play −2 energy (exhaust Seraphine + 3 units)</button>';
       RT.roostSpots(G, 0, c).forEach(function (bi) {
         var rk = RT.canPlay(G, 0, card.iid, false, { roost: bi });
         foot += '<button class="btn" data-play="' + card.iid + '" data-roost="' + bi + '"' + (rk.ok ? '' : ' disabled') + '>Play to Dragon Roost (+2 power)</button>';
@@ -404,6 +405,7 @@
       else if (c.type === 'Spell' && c.P.spell.length) foot += '<span class="why" style="color:var(--muted)">You\'ll pick targets after tapping Play.</span>';
     } else {
       foot += '<span class="why">' + esc(chk.why) + '</span>';
+      if (c.type === 'Spell' && G.active === 0 && !S.busy && RT.seraphineReady(G, 0) && RT.canPlay(G, 0, card.iid, false, { seraphine: true }).ok) foot += '<button class="btn primary" data-play="' + card.iid + '" data-seraphine="1">Play −2 energy (exhaust Seraphine + 3 units)</button>';
       if (c.P.kw.accelerate && c.type === 'Unit') foot += '<button class="btn" disabled>Play ready (Accelerate)</button>';
       foot += '<button class="btn" disabled>Play</button>';
     }
@@ -520,12 +522,12 @@
   }
 
   /* ---------- playing with targets ---------- */
-  function beginPlay(iid, accel, loc, roost) {
+  function beginPlay(iid, accel, loc, roost, seraphine) {
     var G = S.G, p = G.players[0];
     var card = findMine(p, iid);
     if (!card) return;
     closeSheet();
-    run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc, roost: roost }); });
+    run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc, roost: roost, seraphine: seraphine }); });
   }
   function beginLegend(idx) {
     var G = S.G;
@@ -592,7 +594,7 @@
     if (la) { beginLegend(+la.dataset.legact); return; }
     if (S.prompt) return;
     var pl = t.closest('[data-play]');
-    if (pl) { beginPlay(+pl.dataset.play, !!pl.dataset.accel, pl.dataset.loc != null ? +pl.dataset.loc : undefined, pl.dataset.roost != null ? +pl.dataset.roost : undefined); return; }
+    if (pl) { beginPlay(+pl.dataset.play, !!pl.dataset.accel, pl.dataset.loc != null ? +pl.dataset.loc : undefined, pl.dataset.roost != null ? +pl.dataset.roost : undefined, !!pl.dataset.seraphine); return; }
     var mv = t.closest('[data-move]');
     if (mv) {
       var dest = mv.dataset.move === 'base' ? 'base' : +mv.dataset.move;
