@@ -6,4 +6,5 @@
 - `tools/fetch_images.py` downloads the card images for the built-in decks, shrinks them and saves them as WebP files in `src/img/`, which the build embeds.
 - `src/engine.js` holds the rules-text parser, game rules, decks and AI. `src/ui.js` and `src/style.css` hold the mobile UI.
 - `python3 tools/build.py` assembles `riftable.html`.
+- `node test/battlefields.js` sets up each battlefield used by the decks and checks that its effect happens.
 - `node test/sim.js 30` plays 30 headless AI-vs-AI games using the built file and prints a coverage report for each deck.

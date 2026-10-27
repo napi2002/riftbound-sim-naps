@@ -396,7 +396,9 @@ var RT = (function () {
     // When you play a card from anywhere other than your hand (here: the champion zone), empower me.
     onPlayCard: function (G, pi, from) {
       var L = G.players[pi].legend;
-      if (from !== 'hand' && !L.empowered) { L.empowered = true; log(G, L.c.name + ' is empowered.', pi); }
+      if (from === 'hand') return;
+      if (!L.empowered) { L.empowered = true; log(G, '✦ ' + L.c.name + ' is empowered (you played a card from ' + ({ champion: 'your champion zone', hidden: 'face down', trash: 'your trash' }[from] || 'outside your hand') + ').', pi); }
+      else log(G, L.c.name + ' is already empowered.', pi);
     },
     acts: [{
       label: 'Disempower me, exhaust: give a unit [Assault 2] this turn', energy: 0, exhaust: true,
@@ -409,7 +411,7 @@ var RT = (function () {
     acts: [{
       id: 'empower', label: 'Empower me (3 energy + 1 power)', energy: 3, power: 1, powerAny: true, exhaust: false,
       req: function (G, pi, L) { return L.empowered ? 'Already empowered.' : null; },
-      effs: [], pay: function (G, pi, L) { L.empowered = true; log(G, L.c.name + ' is empowered.', pi); }
+      effs: [], pay: function (G, pi, L) { L.empowered = true; log(G, '✦ ' + L.c.name + ' is empowered.', pi); }
     }, {
       label: 'Exhaust: move a friendly unit at a battlefield to base (and ready it if I\'m empowered)', energy: 0, exhaust: true,
       req: function (G) { return null; },
@@ -505,6 +507,10 @@ var RT = (function () {
     var c = card.c, p = G.players[pi];
     var u = makeUnit(G, pi, c, card.iid, loc, !!c.P.kw.entersready, false);
     log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + ' for free.', pi);
+    G.playedThisTurn++;
+    var lsc = p.legend.c && p.legend.c.P.script;
+    if (lsc && lsc.onPlayCard) lsc.onPlayCard(G, pi, 'elsewhere');
+    await unitEntered(G, pi, u, 'elsewhere');
     await fireLegend(G, pi, 'playUnit', { loc: loc });
     await resolveEffects(G, pi, playEffects(c), { src: u, loc: loc, srcName: c.name });
     if (loc !== 'base' && !u.dead && G.winner == null) {
@@ -589,7 +595,7 @@ var RT = (function () {
       await resolveEffects(G, pi, card.c.P.spell, { src: null, loc: null, srcName: card.c.name, spell: card });
       p.deck.push(card);
     },
-    empowerTemp: async function (G, pi, e, tg, ctx) { tg.forEach(function (u) { if (!u.empowered) { u.empowered = true; u.tempEmpowered = true; } }); log(G, (ctx.srcName || 'Effect') + ' empowers ' + tg[0].c.name + ' until end of turn.', pi); },
+    empowerTemp: async function (G, pi, e, tg, ctx) { tg.forEach(function (u) { if (!u.empowered) { u.empowered = true; u.tempEmpowered = true; } }); log(G, '✦ ' + (ctx.srcName || 'Effect') + ' empowers ' + tg[0].c.name + ' until end of turn.', pi); },
     predict: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi];
       if (!p.deck.length) return;
@@ -723,9 +729,9 @@ var RT = (function () {
     fight: async function (G, pi, e, tg, ctx) {
       var a = ctx.it, b = tg[0];
       if (!a || a.dead || !b) return;
-      var ma = might(a), mb = might(b);
+      var ma = might(a) + voidBonus(G, b), mb = might(b) + voidBonus(G, a);
       b.damage += ma; a.damage += mb;
-      log(G, a.c.name + ' and ' + b.c.name + ' deal ' + ma + ' and ' + mb + ' damage to each other.', pi);
+      log(G, a.c.name + ' and ' + b.c.name + ' deal ' + ma + ' and ' + mb + ' damage to each other' + (voidBonus(G, a) || voidBonus(G, b) ? ' (Void Gate +1)' : '') + '.', pi);
     },
     engarde: async function (G, pi, e, tg, ctx) {
       var u = tg[0], extra = unitsAt(G, u.loc, pi).length === 1 ? 1 : 0;
@@ -758,7 +764,7 @@ var RT = (function () {
       if (chosen) await playFree(G, pi, chosen, 'base', ctx.srcName);
       else log(G, (ctx.srcName || 'Effect') + ': nothing played; the cards are recycled.', pi);
     },
-    empowerSelf: async function (G, pi, e, tg, ctx) { if (ctx.src) { ctx.src.empowered = true; log(G, ctx.src.c.name + ' is empowered.', pi); } },
+    empowerSelf: async function (G, pi, e, tg, ctx) { if (ctx.src) { ctx.src.empowered = true; log(G, '✦ ' + ctx.src.c.name + ' is empowered.', pi); } },
     extraCost: async function (G, pi, e, tg, ctx) {
       var u = ctx.src, p = G.players[pi];
       var free = hasEzreal(G, pi);
@@ -1082,10 +1088,10 @@ var RT = (function () {
       u.stun = G.active === u.ctrl ? 2 : 1; u.noMove = true;
       log(G, v.c.name + ' stuns ' + u.c.name + '; it can\'t move this turn.', v.ctrl);
     });
-    if (u.loc !== 'base' && bfNorm(G, u.loc) === 'starspring' && !u.token && !G.starSpringUsed) {
+    if (u.loc !== 'base' && bfNorm(G, u.loc) === 'starspring' && !u.token && !(G.starSpringUsed || {})[pi]) {
       var others = unitsAt(G, u.loc, pi).filter(function (x) { return x !== u; });
       if (others.length) {
-        G.starSpringUsed = true;
+        G.starSpringUsed = G.starSpringUsed || {}; G.starSpringUsed[pi] = true;
         var pick = await ask(G, pi, { type: 'target', title: 'Star Spring', text: 'Move another unit you control here to its base?', cands: others.map(function (x) { return x.uid; }), optional: true, auto: null });
         var mv = others.filter(function (x) { return x.uid === pick; })[0];
         if (mv) { mv.loc = 'base'; updateControl(G); log(G, 'Star Spring: ' + mv.c.name + ' returns to base.', pi); }
@@ -1174,7 +1180,7 @@ var RT = (function () {
     p.runes.forEach(function (r) { r.ex = false; });
     p.gear.forEach(function (g) { g.ex = false; });
     p.legend.exhausted = false; p.legend.used = {};
-    G.phase = 'beginning'; G.starSpringUsed = false;
+    G.phase = 'beginning'; G.starSpringUsed = {};
     for (var dl = 0; dl < G.bfs.length; dl++) {
       if (bfNorm(G, dl) !== 'duskroselab') continue;
       var mineHere = unitsAt(G, dl, pi);
@@ -1681,7 +1687,7 @@ var RT = (function () {
     }
     if (G.winner != null) return;
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
-    att.concat(def).forEach(function (u) { if (u.c.P.combatEnd === 'empower' && !u.empowered) { u.empowered = true; log(G, u.c.name + ' is empowered.', u.ctrl); } });
+    att.concat(def).forEach(function (u) { if (u.c.P.combatEnd === 'empower' && !u.empowered) { u.empowered = true; log(G, '✦ ' + u.c.name + ' is empowered (+' + (u.c.P.empoweredMight || 0) + ' Might).', u.ctrl); } });
     var winners = att.length && !def.length ? att : !att.length && def.length ? def : [];
     for (i = 0; i < winners.length; i++) await fireUnit(G, winners[i], 'winCombat');
     att = unitsAt(G, bi, pi); def = unitsAt(G, bi, opp(pi));
@@ -1900,6 +1906,12 @@ var RT = (function () {
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
+    empoweredList: function (G, pi) {
+      var out = [], L = G.players[pi].legend;
+      if (L.empowered) out.push(L.c.name);
+      G.units.forEach(function (u) { if (u.ctrl === pi && u.empowered) out.push(u.c.name); });
+      return out;
+    },
     canUseGear: canUseGear, useGear: useGear, hideSpots: hideSpots, hideCard: hideCard, canEquip: canEquip, equipGear: equipGear, equipCostText: equipCostText, canUseUnit: canUseUnit, useUnit: useUnit, canFlow: canFlow, playFlow: playFlow, legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
     equipBonus: equipBonus, describeEffect: describeEffect, cardCost: cardCost, aiTurn: aiTurn, deckCoverage: deckCoverage, cardDomains: cardDomains
   };

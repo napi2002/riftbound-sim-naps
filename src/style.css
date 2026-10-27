@@ -182,3 +182,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .u.hid { border-style: dashed; }
 .u.back { background: repeating-linear-gradient(45deg, var(--panel2), var(--panel2) 5px, var(--line) 5px, var(--line) 10px); }
 .card .cost.cheap { background: #c9f2d3; }
+/* empowered */
+:root { --emp: #a259ff; }
+.u.emp { border-color: var(--emp); box-shadow: 0 0 0 2px var(--emp), 0 0 10px var(--emp); }
+.legbtn.emp { border: 2px solid var(--emp); box-shadow: 0 0 12px var(--emp); }
+.legbtn.emp .t small { color: var(--emp); font-weight: 700; }
+.strip .empc { border: 0; background: transparent; padding: 0 2px; color: var(--muted); font: inherit; }
+.strip .empc.on { color: var(--emp); }
+.strip .empc.on b { color: var(--emp); }
+.chip.empchip { background: var(--emp); color: #fff; }
+.bf .bfx { font-size: 10.5px; line-height: 1.2; max-height: 2.4em; margin: 2px 2px 3px; color: var(--muted); padding: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+#toast { position: fixed; left: 50%; top: 10px; transform: translate(-50%, -80px); z-index: 40; max-width: 92vw; padding: 8px 14px; border-radius: 12px; background: var(--emp); color: #fff; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); transition: transform .25s; pointer-events: none; text-align: center; }
+#toast.show { transform: translate(-50%, 0); }

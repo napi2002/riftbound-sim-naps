@@ -168,7 +168,7 @@
     if (u.buff) flags.push('★');
     if (u.equips.length) flags.push('⚔');
     if (k.tank) flags.push('T');
-    if (u.empowered) flags.push('✦');
+    if (u.empowered) { flags.push('✦'); cls += ' emp'; }
     if (u.ctrl === 0 && u.c.P.unitAct && G.active === 0 && RT.canUseUnit(G, 0, u.uid).ok) cls += ' can';
     return '<button class="' + cls + '" data-uid="' + u.uid + '" aria-label="' + esc(u.c.name) + '">' +
       '<span class="art">' + art(u.c, 50, 58) + '</span>' +
@@ -185,7 +185,30 @@
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
-      pips(p.points) + '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
+      pips(p.points) + '<button class="stat empc' + (RT.empoweredList(G, pi).length ? ' on' : '') + '" data-emp="' + pi + '" aria-label="Empowered count">✦<b>' + RT.empoweredList(G, pi).length + '</b></button>' +
+      '<span class="stat">XP <b>' + p.xp + '</b></span><span class="stat">✋<b>' + p.hand.length + '</b></span><span class="stat">▤<b>' + p.deck.length + '</b></span></div>';
+  }
+  // Pop up a short notice for log lines starting with ✦ (something became empowered) so it's hard to miss.
+  var seenLog = 0;
+  function flashNew(G) {
+    if (seenLog > G.log.length) seenLog = 0;
+    var fresh = G.log.slice(seenLog).filter(function (l) { return /^✦/.test(l.t); });
+    seenLog = G.log.length;
+    if (!fresh.length) return;
+    var el = $('toast');
+    el.textContent = fresh[fresh.length - 1].t;
+    el.className = 'show p' + fresh[fresh.length - 1].p;
+    clearTimeout(flashNew.t);
+    flashNew.t = setTimeout(function () { el.className = ''; }, 2600);
+  }
+  function empSheet(pi) {
+    var G = S.G, list = RT.empoweredList(G, pi), L = G.players[pi].legend.c;
+    var how = /Heart of the Tempest/.test(L.name) ? 'Kennen becomes empowered whenever you play a card from anywhere except your hand: your champion zone, a face-down (Hidden) card, Flow from the trash, or a unit played free from the trash or deck.'
+      : /Rogue Assassin/.test(L.name) ? 'Akali empowers with her legend ability (3 energy + 1 power).' : '';
+    openSheet('<h2>✦ Empowered (' + (pi === 0 ? 'you' : 'AI') + ')</h2>' +
+      (list.length ? '<ul class="lines">' + list.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '<p style="color:var(--muted)">Nothing is empowered right now.</p>') +
+      '<p style="font-size:14px;line-height:1.4">Empowered is an on/off state: a card is either empowered or not. ' + esc(how) + ' Mournful Witness empowers after a combat it was in (+2 Might), Tail-Cloaked Matriarch with its Empower ability, Tornado Warrior until end of turn.</p>',
+      '<button class="btn" data-act="close">Close</button>');
   }
   function render() {
     var G = S.G; if (!G) return;
@@ -199,20 +222,22 @@
       var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
       return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
         '<span class="own">' + (b.ctrl === 0 ? 'You' : b.ctrl === 1 ? 'AI' : 'Open') + '</span></div>' +
+        '<div class="bfx">' + esc(b.c.P.lines.map(function (l) { return l.text; }).join(' ')) + '</div>' +
         '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + '</div>' +
         '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + '</div></div>';
     }).join('') + '</div>';
     h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.map(gearHtml).join('') + '</div></div>';
     h += '<div class="runes">' + runesHtml(me, 'Runes') + '</div>';
     var canLeg = RT.canUseLegend(G, 0).ok && !S.busy;
-    var legState = [me.legend.exhausted ? 'exhausted' : '', me.legend.empowered ? 'empowered' : ''].filter(Boolean).join(' · ');
-    h += '<div class="legrow"><button class="legbtn' + (me.legend.exhausted ? ' ex' : '') + (canLeg ? ' can' : '') + '" data-legend="0"><span class="art">' + art(me.legend.c, 30, 30) + '</span><span class="t"><b>' + esc(shortName(me.legend.c.name)) + '</b><small>Legend' + (legState ? ' · ' + legState : '') + '</small></span></button>' +
+    var legState = [me.legend.exhausted ? 'exhausted' : '', me.legend.empowered ? '✦ EMPOWERED' : ''].filter(Boolean).join(' · ');
+    h += '<div class="legrow"><button class="legbtn' + (me.legend.exhausted ? ' ex' : '') + (canLeg ? ' can' : '') + (me.legend.empowered ? ' emp' : '') + '" data-legend="0"><span class="art">' + art(me.legend.c, 30, 30) + '</span><span class="t"><b>' + esc(shortName(me.legend.c.name)) + '</b><small>Legend' + (legState ? ' · ' + legState : '') + '</small></span></button>' +
       (me.champion ? '<button class="champ" data-iid="' + me.champion.iid + '"><span class="art">' + art(me.champion.c, 30, 30) + '</span><span class="t"><b>' + esc(me.champion.c.name) + '</b><small>Champion · ' + me.champion.c.energy + ' energy</small></span></button>'
         : '<div class="champ empty"><span class="t"><b>Champion</b><small>played</small></span></div>') + '</div>';
     h += stripHtml(me, 0, G);
     var last = G.log[G.log.length - 1];
     h += '<div class="ticker" data-log="1">' + esc(last ? last.t : '') + '</div>';
     $('board').innerHTML = h;
+    flashNew(G);
     // hand
     var hand = me.hand.map(function (card) {
       var c = card.c, can = G.active === 0 && !S.busy && RT.canPlay(G, 0, card.iid, false).ok;
@@ -359,7 +384,7 @@
     var G = S.G, L = G.players[0].legend;
     var body = cardHead(L.c) + linesHtml(L.c), foot = '';
     var acts = RT.legendActs(G, 0);
-    if (L.empowered) body = body.replace('</h2>', ' <span class="chip">Empowered</span></h2>');
+    body = body.replace('</h2>', L.empowered ? ' <span class="chip empchip">✦ Empowered</span></h2>' : (/Empower|empower/.test(L.c.plain || '') ? ' <span class="chip">Not empowered</span></h2>' : '</h2>'));
     acts.forEach(function (a, i) {
       var chk = RT.canUseLegend(G, 0, i); if (S.busy || S.prompt) chk = { ok: false, why: 'Wait for your turn.' };
       foot += '<button class="btn ' + (chk.ok ? 'primary' : '') + '" data-legact="' + i + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(a.label) + '</button>';
@@ -509,6 +534,8 @@
     }
     var ge = t.closest('[data-gear]');
     if (ge) { gearSheet(+ge.dataset.gear); return; }
+    var em = t.closest('[data-emp]');
+    if (em) { empSheet(+em.dataset.emp); return; }
     if (t.closest('[data-legend]')) { legendSheet(); return; }
     if (t.closest('[data-log]')) { logSheet(); return; }
     var be = t.closest('[data-bf]');
