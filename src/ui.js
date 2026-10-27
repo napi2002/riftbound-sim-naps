@@ -83,6 +83,32 @@
       }).join('');
     });
     $('matchup').innerHTML = matchupLine();
+    $('guides').innerHTML = RT.DECKS.map(function (d) { return '<details><summary>' + esc(d.name) + ' — ' + esc((RT.plan(d.id) || {}).style || '') + '</summary>' + guideHtml(d.id) + '</details>'; }).join('');
+  }
+  // Researched game plan for a deck (shared with the AI, which follows the same plan).
+  var STYLE_AI = { aggro: 'attacks aggressively and takes even trades', normal: 'attacks when it can conquer', safe: 'only attacks with a safety margin for your tricks' };
+  function guideHtml(id, who) {
+    var pl = RT.plan(id), d = RT.DECKS.filter(function (x) { return x.id === id; })[0], r = RT.real(id);
+    if (!pl || !d) return '';
+    var A = pl.ai, notes = [STYLE_AI[A.attack] || ''];
+    if (A.reserve) notes.push('keeps ' + A.reserve + ' energy open for reactions');
+    if (A.holdLone) notes.push('defends each battlefield with a single unit');
+    if (A.reinforce) notes.push('reinforces battlefields you could attack');
+    if (A.moveDraw) notes.push('shuttles draw-on-move units');
+    if (A.hideEager) notes.push('hides cards often');
+    if (A.equipAlways) notes.push('plays Equipment every turn');
+    if (A.seraphine) notes.push('uses the Seraphine discount');
+    return '<div class="guide"><div class="gh"><b>' + esc(d.name) + '</b> <span class="chip">' + esc(pl.style) + '</span>' + (who ? ' <span class="chip">' + who + '</span>' : '') + '</div>' +
+      '<p>' + esc(pl.plan) + '</p>' +
+      '<div class="gk">Key cards: ' + pl.keys.map(function (k) { return '<span class="chip">' + esc(k) + '</span>'; }).join(' ') + '</div>' +
+      '<ul>' + pl.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+      '<p class="gai">When the AI plays this deck it ' + esc(notes.filter(Boolean).join(', ')) + '.</p>' +
+      (r ? '<p class="gai">Tournaments: ' + Math.round(r.wr * 100) + '% win rate over ' + r.n.toLocaleString() + ' matches' + (r.tier ? ', tier ' + r.tier : '') + '.</p>' : '') +
+      '<p class="gsrc">Source: ' + esc(pl.source) + '</p></div>';
+  }
+  function guideSheet() {
+    var G = S.G;
+    openSheet('<h2>Game plans</h2>' + guideHtml(G.players[0].deckDef.id, 'You') + guideHtml(G.players[1].deckDef.id, 'AI'), '<button class="btn" data-act="close">Close</button>');
   }
   // Real tournament stats (riftbound.gg snapshot) shown on each deck.
   function realLine(d) {
@@ -355,7 +381,7 @@
         (S.sel.length === 1 ? '<button class="btn small" data-act="info">Info</button>' : '') + '<button class="btn small" data-act="clear">✕</button>';
     } else {
       var flowable = G.players[0].trash.some(function (x) { return RT.canFlow(G, 0, x.iid).ok; });
-      h = '<button class="btn" data-act="log">Log</button><button class="btn' + (flowable ? ' primary' : '') + '" data-act="trash">Trash ' + G.players[0].trash.length + '</button><span class="msg" style="text-align:center;color:var(--muted);font-size:13px">Tap units or gear to move or use them</span><button class="btn primary" data-act="end">End turn</button>';
+      h = '<button class="btn" data-act="log">Log</button><button class="btn' + (flowable ? ' primary' : '') + '" data-act="trash">Trash ' + G.players[0].trash.length + '</button><button class="btn" data-act="guide">Guide</button><span class="msg" style="text-align:center;color:var(--muted);font-size:12px">Tap units or gear to act</span><button class="btn primary" data-act="end">End turn</button>';
     }
     $('actions').innerHTML = h;
   }
@@ -583,6 +609,7 @@
       else if (a === 'log') { $('end').classList.add('hidden'); logSheet(); }
       else if (a === 'cancel') { S.targeting = null; render(); }
       else if (a === 'trash') trashSheet();
+      else if (a === 'guide') guideSheet();
       else if (a === 'skipslot' && S.targeting) { S.targeting.picks.push(null); S.targeting.i++; advanceTargeting(); if (S.targeting) render(); }
       else if (a === 'reprompt' && S.prompt) promptSheet(S.prompt.req);
       else if (a === 'clear') { S.sel = []; render(); }

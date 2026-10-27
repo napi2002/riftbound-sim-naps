@@ -1158,7 +1158,7 @@ var RT = (function () {
     var chk = canEquip(G, pi, g);
     if (!chk.ok) return chk;
     var p = G.players[pi], ec = g.c.P.equipCost || { energy: 0, power: [], recycleTrash: 0 };
-    var units = unitsOf(G, pi), best = units.slice().sort(function (a, b) { return might(b) - might(a); })[0];
+    var units = unitsOf(G, pi), best = units.slice().sort(function (a, b) { return a.equips.length - b.equips.length || might(b) - might(a); })[0];
     var hid = hostUid != null ? hostUid : await ask(G, pi, { type: 'target', title: g.c.name, text: 'Attach to which unit? (+' + g.c.P.equipBonus + ' Might)', cands: units.map(function (u) { return u.uid; }), optional: false, auto: best.uid });
     var host = units.filter(function (u) { return u.uid === hid; })[0] || best;
     var doms = ec.power.filter(function (d) { return d !== 'any'; });
@@ -2734,6 +2734,97 @@ var RT = (function () {
     await checkDeaths(G);
   }
 
+  /* ---------------- deck game plans (guide text + AI behaviour) ---------------- */
+  // Researched from riftbound.gg legend guides and tier lists (Oct 2026). `ai` tunes how the computer plays the deck:
+  // key: play-priority bonus per card; attack: 'aggro' | 'normal' | 'safe'; reserve: energy kept open for reactions;
+  // holdLone: defend a battlefield with exactly one unit; reinforce: send spare units to defend held battlefields;
+  // moveDraw: shuttle "when I move, draw" units; hideEager: hide Hidden cards often; equipAlways: play Equipment even
+  // without units (Azir); seraphine: use Seraphine's discount.
+  var PLANS = {
+    kennen: { style: 'Value / off-tempo', source: 'riftbound.gg/kennen-heart-of-the-tempest-guide',
+      plan: 'Keep the opponent at bay early while filling your trash, then drop cheap threats. Rhasa the Sunderer costs 1 less per card in your trash, Lightning Rush and Traveling Merchant dig and discard, and Last Rites, Fizz and Tail-Cloaked Matriarch replay cards from the trash. Kennen\'s legend gives a unit Assault 2 once you\'ve played something from outside your hand.',
+      keys: ['Rhasa the Sunderer', 'Lightning Rush', 'Tail-Cloaked Matriarch', 'Switcheroo', 'Star-Crossed', 'Ride The Wind'],
+      tips: ['Play cheap digging cards first; Rhasa gets cheaper with every card in your trash.', 'Play your champion from the champion zone or a face-down card to empower Kennen, then give an attacker Assault 2 in the showdown.', 'Save Switcheroo and Star-Crossed for the opponent\'s biggest unit.'],
+      ai: { key: { 'Rhasa the Sunderer': 3, 'Lightning Rush': 2, 'Traveling Merchant': 1.5, 'Tail-Cloaked Matriarch': 1.5 }, attack: 'normal', reserve: 2, hideEager: true, reinforce: true } },
+    leblanc: { style: 'Deathknell synergy', source: 'riftbound.gg/leblanc-deceiver-guide',
+      plan: 'Build around Deathknell: units that give value when they die. LeBlanc - Fragmented and Karthus (Deathknells trigger twice) are the engine; Baited Hook kills your own unit to pull a bigger one from the deck. Snowball the mid-game or out-value the opponent.',
+      keys: ['Karthus - Eternal', 'LeBlanc - Fragmented', 'Baited Hook', 'Mirror Image', 'Ruined Rex', 'Glasc Mixologist'],
+      tips: ['Get Karthus on the board before your big Deathknell units die.', 'Use Baited Hook on a unit whose Deathknell you want anyway.', 'Mirror Image can copy an enemy unit to fight the original.'],
+      ai: { key: { 'Karthus - Eternal': 3, 'Baited Hook': 2, 'Ruined Rex': 1, 'Glasc Mixologist': 1 }, attack: 'aggro', reserve: 0, reinforce: true } },
+    rengar: { style: 'Aggro', source: 'riftbound.gg/rengar-pridestalker-guide',
+      plan: 'Seize the lead early and never give it back. Win the first showdowns with cheap units like Inferna (3 Might when attacking) and Irresistible Faefolk (drags a defender in), use Ambush to hide how much Might you really have, and keep drawing with Kai\'Sa, Kinkou Initiate and Nidalee.',
+      keys: ['Inferna', 'Irresistible Faefolk', 'Pit Rookie', 'Kai\'Sa, Survivor', 'Punch First', 'Rengar, Trophy Hunter'],
+      tips: ['Attack every turn early — Rengar has few comeback tools.', 'Play a unit before attacking: the legend gives +1 Might.', 'Hold Ambush units to surprise a defender or an attacker.'],
+      ai: { key: { 'Inferna': 2, 'Irresistible Faefolk': 1.5, 'Pit Rookie': 1, 'Punch First': 1 }, attack: 'aggro', reserve: 0 } },
+    irelia: { style: 'Tempo / value', source: 'riftbound.gg/irelia-blade-dancer-guide',
+      plan: 'Control the pace while Irelia, Fervent dominates the board and Stellacorn Herder draws cards whenever it moves. Some lists add Astral Heron to hold battlefields late. Protect key units with Zhonya\'s Hourglass, Discipline, Defiant Dance and Defy; move them with Tideturner, Ride The Wind and Boots of Swiftness.',
+      keys: ['Irelia, Fervent', 'Stellacorn Herder', 'Tideturner', 'Discipline', 'Defy', 'Zhonya\'s Hourglass'],
+      tips: ['Keep 1–2 runes open for Defy or Discipline once your key units are out.', 'Move Stellacorn Herder back and forth to keep drawing.', 'Target your own exhausted units with spells to ready them through the legend.'],
+      ai: { key: { 'Irelia, Fervent': 3, 'Stellacorn Herder': 2.5, 'Tideturner': 1, 'Zhonya\'s Hourglass': 1 }, attack: 'safe', reserve: 2, moveDraw: true, reinforce: true } },
+    akali: { style: 'Value / protect', source: 'riftbound.gg/akali-rogue-assassin-guide',
+      plan: 'Draw cards and keep key units alive. Use Shuriken Flip early so you don\'t fall behind, then land Stellacorn Herder and Irelia, Fervent when they\'re safe (bigger lists add Astral Heron to hold a battlefield). Defy, Discipline and Zhonya\'s Hourglass protect them; every removal they eat puts you further ahead.',
+      keys: ['Stellacorn Herder', 'Irelia, Fervent', 'Shuriken Flip', 'Discipline', 'Defy', 'Zhonya\'s Hourglass'],
+      tips: ['Don\'t fall behind on board early — Shuriken Flip is your catch-up tool.', 'Keep runes up to protect your must-remove units.', 'Akali\'s legend can pull a unit out of a losing showdown.'],
+      ai: { key: { 'Stellacorn Herder': 2.5, 'Irelia, Fervent': 2, 'Shuriken Flip': 1.5, 'Zhonya\'s Hourglass': 1 }, attack: 'normal', reserve: 2, moveDraw: true, reinforce: true } },
+    jayce: { style: 'Ramp / big threats', source: 'riftbound.gg/jayce-defender-of-tomorrow-guide',
+      plan: 'Ramp and draw, then cheat big units into play. Dazzling Aurora (end of turn: play the top unit of your deck for free) and Promising Future put Elder Dragon on the board early to take a battlefield. Gutter Palace is a backup win condition in long games.',
+      keys: ['Dazzling Aurora', 'Promising Future', 'Elder Dragon', 'Catalyst of Aeons', 'Mobilize', 'Platewyrm Egg'],
+      tips: ['Ramp with Mobilize and Catalyst of Aeons early.', 'Land Dazzling Aurora as soon as you can — it wins long games.', 'Elder Dragon\'s damage kills anything it touches; aim it at their best units.'],
+      ai: { key: { 'Dazzling Aurora': 4, 'Promising Future': 3, 'Elder Dragon': 3, 'Catalyst of Aeons': 2, 'Mobilize': 1.5, 'Platewyrm Egg': 1.5 }, attack: 'normal', reserve: 0, reinforce: true } },
+    masteryi: { style: 'Hold with a lone defender', source: 'riftbound.gg/master-yi-wuju-bladesman-guide',
+      plan: 'Seize a battlefield early and hold it with a single unit: Master Yi gives a lone defender +2 Might, so cheap units like Lonely Poro and Scuttle Crab beat early attackers. The opponent either lets you score, or spends cards to break through. Then develop bigger threats like Ruin Runner and retake battlefields.',
+      keys: ['Master Yi - Tempered', 'Lonely Poro', 'Scuttle Crab', 'Ruin Runner', 'Charm', 'Punch First'],
+      tips: ['Defend each battlefield with exactly one unit to get the +2.', 'Play a 2-cost unit on turn 2 every game.', 'Charm can drag a unit into your defender or pull a defender away.'],
+      ai: { key: { 'Master Yi - Tempered': 2, 'Ruin Runner': 2, 'Lonely Poro': 1, 'Scuttle Crab': 1 }, attack: 'normal', reserve: 1, holdLone: true } },
+    azir: { style: 'Equipment → Sand Soldiers', source: 'riftbound.gg/azir-emperor-of-the-sands-guide',
+      plan: 'Play cheap Equipment every turn so Azir\'s legend can make a Sand Soldier, and build a wide board while controlling the opponent with stuns and removal (Back Off, Hidden Blade). Late game, Arise! makes a Sand Soldier per Equipment, two of them ready to conquer immediately.',
+      keys: ['Arise!', 'Guards!', 'Back Off', 'Hidden Blade', 'Discipline', 'Defy'],
+      tips: ['Play an Equipment every turn, then use the legend for a Sand Soldier.', 'Save Arise! for when you control many Equipment.', 'Stun the attacker that threatens your Sand Soldiers.'],
+      ai: { key: { 'Arise!': 3, 'Back Off': 1, 'Hidden Blade': 1 }, attack: 'normal', reserve: 1, equipAlways: true, reinforce: true } },
+    vex: { style: 'Hold / control', source: 'riftbound.gg/vex-gloomist-guide',
+      plan: 'Get set on a battlefield and control whatever the opponent sends at it. Vex, Apathetic stuns units played while she\'s on a battlefield; Astral Heron makes your support cards cheap. Use Back Off, Switcheroo and Star-Crossed on big attackers, and Boots of Swiftness or Ride The Wind to threaten the other battlefield.',
+      keys: ['Vex - Apathetic', 'Astral Heron', 'Steel Paws', 'Back Off', 'Switcheroo', 'Star-Crossed'],
+      tips: ['Holding draws a card each turn through the legend — keep units on your battlefield.', 'Get Vex, Apathetic onto a battlefield early.', 'Stun or bounce big attackers instead of trading.'],
+      ai: { key: { 'Vex - Apathetic': 3, 'Astral Heron': 2, 'Back Off': 1 }, attack: 'safe', reserve: 2, reinforce: true } },
+    reksai: { style: 'Aggro tokens', source: 'riftbound.gg tier list (heading to Radiance)',
+      plan: 'A proactive deck that plays on its own turn: flood the board with tokens (Noxian Emissary, Forge of the Future), remove blockers cheaply (Cull the Weak, Imperial Decree), and conquer — Rek\'Sai\'s legend plays cards off the top of your deck every time you conquer. Strong when the opponent can\'t remove the tokens; predictable otherwise.',
+      keys: ['Noxian Emissary', 'Forge of the Future', 'Void Rush', 'Cleave', 'Blood Rush', 'Rek\'Sai - Breacher'],
+      tips: ['Conquer every turn you can — the legend refunds you in cards.', 'Assault spells (Cleave, Blood Rush) turn small tokens into attackers.', 'Cull the Weak is great when you have tokens and they don\'t.'],
+      ai: { key: { 'Noxian Emissary': 1.5, 'Forge of the Future': 1.5, 'Void Rush': 2, 'Rek\'Sai - Breacher': 1.5 }, attack: 'aggro', reserve: 0 } },
+    riven: { style: 'Hold / exhaust synergy', source: 'riftbound.gg/riven-the-exile-guide',
+      plan: 'Units you play to battlefields you control enter ready, and Riven\'s cards reward exhausting your own units (Riven, Broken Blade buffs, stuns or readies itself; Reckless Innovator makes Gold or draws). Settle on one battlefield, stun attackers, and use Blade of the Exile (Ganking) or Charm to threaten the other.',
+      keys: ['Riven - Broken Blade', 'Blade of the Exile', 'Reckless Innovator', 'Astral Heron', 'Stellacorn Herder', 'Blitzcrank - Impassive'],
+      tips: ['Hold one battlefield and stun whatever attacks it.', 'Equip Blade of the Exile to Riven for +3 Might and Ganking.', 'Moving Stellacorn Herder draws a card each time.'],
+      ai: { key: { 'Riven - Broken Blade': 2.5, 'Blade of the Exile': 2, 'Astral Heron': 2, 'Reckless Innovator': 1 }, attack: 'normal', reserve: 1, moveDraw: true, reinforce: true } },
+    evelynn: { style: 'Hidden cards', source: 'riftbound.gg/evelynn-agonys-embrace-guide',
+      plan: 'Hide cards on battlefields you hold and reveal them on your own turn: Evelynn\'s legend draws a card the first time each turn you play from face down. The opponent either attacks into a battlefield full of surprises or lets you hold and grow. Gold tokens (Pyke, Treasure Hunter, Gutter Guardian) pay for hiding.',
+      keys: ['Evelynn - Entrancing', 'Pyke - Returned', 'Switcheroo', 'Gutter Guardian', 'Hold \'Em', 'Edge of Night'],
+      tips: ['Hide a card every turn you can afford it.', 'Reveal hidden cards on your turn to draw from the legend.', 'Keep a hidden Switcheroo where the opponent wants to attack.'],
+      ai: { key: { 'Evelynn - Entrancing': 1.5, 'Pyke - Returned': 1.5, 'Gutter Guardian': 1 }, attack: 'normal', reserve: 1, hideEager: true, reinforce: true } },
+    mordekaiser: { style: 'Brute force', source: 'riftbound.gg/mordekaiser-iron-revenant-guide',
+      plan: 'Win through big units. Mordekaiser\'s legend banishes units or gear from your trash to pay power for more units, so trade early units freely. Trifarian Captain and Spectral Matron dig and recur; Mordekaiser, Dominating and Brynhir Thundersong are the finishers.',
+      keys: ['Mordekaiser - Dominating', 'Brynhir Thundersong', 'Trifarian Captain', 'Spectral Matron', 'Realm of Death', 'Vanguard Captain'],
+      tips: ['Trade early units — they fuel the legend\'s power later.', 'Play Brynhir Thundersong before a big attack so they can\'t respond.', 'Mordekaiser, Dominating can discard to kill their best unit.'],
+      ai: { key: { 'Mordekaiser - Dominating': 3, 'Brynhir Thundersong': 2, 'Trifarian Captain': 1.5, 'Spectral Matron': 1.5 }, attack: 'aggro', reserve: 0 } },
+    orianna: { style: 'Gear into units', source: 'riftbound.gg/orianna-lady-of-clockwork-guide',
+      plan: 'Play strong gear and turn the biggest one into a unit each turn with Orianna\'s legend (Might = its Energy cost). Orianna, Exquisite only deals damage with a gear nearby, so keep gear on her battlefield. Protect your gear from removal and hold a battlefield.',
+      keys: ['The Ball', 'Hunting Blind', 'Resplendent Rostrum', 'Orianna - Exquisite', 'Command: Attack', 'Frigid Jewel'],
+      tips: ['Turn your most expensive gear into a unit each turn.', 'Deploy The Ball or Hunting Blind where Orianna, Exquisite fights.', 'Expect gear removal — keep a counter if you can.'],
+      ai: { key: { 'The Ball': 2.5, 'Hunting Blind': 2, 'Resplendent Rostrum': 2, 'Orianna - Exquisite': 1.5 }, attack: 'safe', reserve: 1, reinforce: true } },
+    seraphine: { style: 'Token swarm', source: 'riftbound.gg/seraphine-starry-eyed-songstress-guide',
+      plan: 'Flood the board with Recruit tokens and exhaust three units at once to trigger Seraphine: her legend makes a spell cost 2 less, and Seraphine, Inspiring draws when you exhaust three. Raucous Anthem is the finisher; Encore and Concert Poster keep the tokens coming.',
+      keys: ['Seraphine - Inspiring', 'Encore', 'Concert Poster', 'Raucous Anthem', 'Vanguard Captain', 'Eclipse'],
+      tips: ['Make tokens early; exhausting three at once is your engine.', 'Use the legend discount on your expensive spells.', 'Raucous Anthem with a wide board usually wins the game.'],
+      ai: { key: { 'Seraphine - Inspiring': 2, 'Encore': 2, 'Raucous Anthem': 2, 'Concert Poster': 1 }, attack: 'normal', reserve: 0, seraphine: true } }
+  };
+  function keyBonus(A, name) {
+    if (!A.key) return 0;
+    if (!A.keyN) { A.keyN = {}; Object.keys(A.key).forEach(function (k) { A.keyN[norm(k)] = A.key[k]; }); }
+    return A.keyN[norm(name)] || 0;
+  }
+  function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && PLANS[d.id]) || null; }
+  function aiOf(G, pi) { var pl = planOf(G, pi); return (pl && pl.ai) || {}; }
+
   /* ---------------- AI ---------------- */
   function evalEffects(G, pi, effs, ctx) {
     var value = 0, good = true, targets = [];
@@ -2768,24 +2859,32 @@ var RT = (function () {
     return { value: value, good: good, targets: targets };
   }
   function aiCardChoice(G, pi, card) {
-    var c = card.c;
-    if (!canPlay(G, pi, card.iid, false).ok) return null;
+    var c = card.c, A = aiOf(G, pi), p = G.players[pi], bonus = keyBonus(A, c.name), sera = false;
+    if (!canPlay(G, pi, card.iid, false).ok) {
+      // Seraphine: exhaust the legend and three units to make a spell affordable
+      if (A.seraphine && c.type === 'Spell' && seraphineReady(G, pi) && canPlay(G, pi, card.iid, false, { seraphine: true }).ok) sera = true;
+      else return null;
+    }
+    // Keep energy open for reactions (Defy, Discipline...) once the board is developed, unless this is a key card.
+    if (A.reserve && !sera && !c.P.kw.reaction && unitsOf(G, pi).length >= 2 && bonus < 2.5 &&
+        p.hand.some(function (x) { return x !== card && (x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction)); }) &&
+        energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.reserve) return null;
     var ctx = { src: null, loc: c.type === 'Unit' ? 'base' : null, reserveRunes: c.power || 0 };
     if (c.type === 'Unit') {
       var ev = evalEffects(G, pi, playEffects(c), ctx);
-      var v = (c.energy || 0) + (c.might || 0) + (c.power || 0) * 0.5 + (ev.good ? Math.max(0, ev.value) : 0);
+      var v = (c.energy || 0) + (c.might || 0) + (c.power || 0) * 0.5 + (ev.good ? Math.max(0, ev.value) : 0) + bonus;
       var accel = !!c.P.kw.accelerate && canPlay(G, pi, card.iid, true).ok;
       return { value: v, opts: { accel: accel, targets: ev.targets } };
     }
     if (c.type === 'Spell') {
       var es = evalEffects(G, pi, c.P.spell, ctx);
-      if (!es.good || es.value < 1.5) return null;
-      return { value: es.value + 0.5, opts: { targets: es.targets } };
+      if (!es.good || es.value + bonus < 1.5) return null;
+      return { value: es.value + 0.5 + bonus, opts: { targets: es.targets, seraphine: sera } };
     }
     if (c.type === 'Gear') {
-      if (c.P.equip) return unitsOf(G, pi).length ? { value: 2 + c.P.equipBonus, opts: {} } : null;
+      if (c.P.equip) return unitsOf(G, pi).length || A.equipAlways ? { value: 2 + c.P.equipBonus + bonus, opts: {} } : null;
       var eg = evalEffects(G, pi, playEffects(c), { src: null, loc: 'base' });
-      return { value: 0.5 + Math.max(0, eg.value), opts: { targets: eg.targets } };
+      return { value: 0.5 + Math.max(0, eg.value) + bonus, opts: { targets: eg.targets } };
     }
     return null;
   }
@@ -2796,6 +2895,15 @@ var RT = (function () {
         var ch = aiCardChoice(G, pi, card);
         if (ch && (!best || ch.value > best.value)) best = { value: ch.value, card: card, opts: ch.opts };
       });
+      // Legend abilities compete with cards for energy (e.g. Azir's Sand Soldier needs 1 energy after the Equipment).
+      legendActs(G, pi).forEach(function (a, idx) {
+        if (!canUseLegend(G, pi, idx).ok) return;
+        var le = actEffects(G, pi, a);
+        if (!le.length || le.some(function (e) { return e.op === 'assault' || e.op === 'tobase'; })) return;
+        var ev = evalEffects(G, pi, le, { src: null, loc: null });
+        if (ev.good && ev.value >= 1.5 && (!best || ev.value + 1 > best.value)) best = { value: ev.value + 1, legend: idx, targets: ev.targets };
+      });
+      if (best && best.legend != null) { await useLegend(G, pi, best.legend, best.targets); await wait(); continue; }
       if (!best) {
         var did = false;
         var loose = p.gear.filter(function (g) { return g.c.P.equip && canEquip(G, pi, g).ok; })[0];
@@ -2830,7 +2938,8 @@ var RT = (function () {
     }
   }
   function subsets(arr, f) { var n = Math.min(arr.length, 12); for (var m = 1; m < (1 << n); m++) { var s = []; for (var i = 0; i < n; i++) if (m & (1 << i)) s.push(arr[i]); f(s); } }
-  function planAttack(G, pi, bi, avail, bonus) {
+  function planAttack(G, pi, bi, avail, bonus, margin) {
+    margin = margin || 0;
     var defs = unitsAt(G, bi, opp(pi));
     var need = defs.reduce(function (s, u) { return s + Math.max(1, might(u, 'def') - u.damage); }, 0);
     var dD = defs.reduce(function (s, u) { return s + (dealsDamage(u) ? might(u, 'def') : 0); }, 0);
@@ -2838,7 +2947,7 @@ var RT = (function () {
     subsets(avail, function (S) {
       var aD = S.reduce(function (s, u) { return s + might(u, 'att'); }, 0) + (bonus || 0);
       var tough = S.reduce(function (s, u) { return s + Math.max(1, might(u, 'att')); }, 0) + (bonus || 0);
-      if (aD >= need && dD < tough) {
+      if (aD >= need && dD + margin < tough) {
         var cost = S.reduce(function (s, u) { return s + might(u, 'att'); }, 0) + S.length * 0.1;
         if (!best || cost < best.cost) best = { cost: cost, units: S };
       }
@@ -2870,7 +2979,17 @@ var RT = (function () {
         var weakest = avail.slice().sort(function (a, b) { return unitValue(a) - unitValue(b); })[0];
         await moveUnits(G, pi, [weakest.uid], bi); await wait(); continue;
       }
-      var S = planAttack(G, pi, bi, avail, 0);
+      var A = aiOf(G, pi), oppEnergy = energyAvail(G.players[opp(pi)]);
+      // 'safe' decks leave room for the opponent's tricks when they have energy up
+      var margin = A.attack === 'safe' && oppEnergy > 0 ? 2 : A.attack === 'aggro' ? 0 : (oppEnergy > 1 ? 1 : 0);
+      var S = planAttack(G, pi, bi, avail, 0, margin);
+      if (!S && A.attack === 'aggro') {
+        // aggro: take a trade that clears every defender even if nobody survives to conquer
+        var needAll = enemies.reduce(function (s2, u) { return s2 + Math.max(1, might(u, 'def') - u.damage); }, 0);
+        var allD = avail.reduce(function (s2, u) { return s2 + might(u, 'att'); }, 0);
+        var lostV = avail.reduce(function (s2, u) { return s2 + unitValue(u); }, 0), killV = enemies.reduce(function (s2, u) { return s2 + unitValue(u); }, 0);
+        if (allD >= needAll && killV >= lostV * 0.8) S = avail;
+      }
       if (!S) {
         var pump = aiPumps(G, pi)[0];
         if (pump) {
@@ -2904,20 +3023,56 @@ var RT = (function () {
     if (G.winner != null) return;
     await aiPlayLoop(G, pi, wait);
     if (G.winner == null) await aiLegend(G, pi, wait);
+    if (G.winner == null) await aiLoneDefenders(G, pi, wait);
     if (G.winner == null) await aiAttack(G, pi, wait);
     if (G.winner == null) await aiPlayLoop(G, pi, wait);
     if (G.winner == null) await aiLegend(G, pi, wait);
+    if (G.winner == null) await aiPosition(G, pi, wait);
     if (G.winner == null) await aiHide(G, pi, wait);
+  }
+  function moveDraws(u) { return (u.c.P.trig.move || []).concat(u.c.P.trig.moveBf || []).some(function (t) { return t.effs.some(function (e) { return e.op === 'draw'; }); }); }
+  // Master Yi: a battlefield is defended by exactly one unit (it gets +2 Might alone); extras go back to base.
+  async function aiLoneDefenders(G, pi, wait) {
+    if (!aiOf(G, pi).holdLone) return;
+    for (var bi = 0; bi < G.bfs.length; bi++) {
+      var mine = unitsAt(G, bi, pi);
+      if (mine.length < 2 || G.bfs[bi].ctrl !== pi) continue;
+      var keep = mine.slice().sort(function (a, b) { return might(b, 'def') - might(a, 'def'); })[0];
+      var extra = mine.filter(function (u) { return u !== keep && !u.ex; });
+      if (extra.length) { await moveUnits(G, pi, extra.map(function (u) { return u.uid; }), 'base'); await wait(); }
+    }
+  }
+  // After attacking: shuttle draw-on-move units and reinforce held battlefields the opponent can attack.
+  async function aiPosition(G, pi, wait) {
+    var A = aiOf(G, pi);
+    if (A.moveDraw) {
+      for (var bi = 0; bi < G.bfs.length; bi++) {
+        var here = unitsAt(G, bi, pi), mv = here.filter(function (u) { return !u.ex && !u.stun && moveDraws(u); });
+        if (mv.length && here.length > mv.length && G.bfs[bi].ctrl === pi) { await moveUnits(G, pi, [mv[0].uid], 'base'); await wait(); }
+      }
+    }
+    if (!A.reinforce || A.holdLone) return;
+    var enemyThreat = unitsAt(G, 'base', opp(pi)).reduce(function (s2, u) { return s2 + might(u, 'att'); }, 0);
+    for (var b2 = 0; b2 < G.bfs.length && G.winner == null; b2++) {
+      if (G.bfs[b2].ctrl !== pi) continue;
+      var def = unitsAt(G, b2, pi).reduce(function (s2, u) { return s2 + might(u, 'def'); }, 0);
+      var spare = unitsAt(G, 'base', pi).filter(function (u) { return !u.ex && !u.stun; }).sort(function (a, b) { return moveDraws(b) - moveDraws(a) || might(b, 'def') - might(a, 'def'); });
+      var send = [];
+      while (spare.length && def <= enemyThreat) { var u = spare.shift(); send.push(u); def += might(u, 'def'); }
+      if (send.length) { await moveUnits(G, pi, send.map(function (x) { return x.uid; }), b2); await wait(); }
+    }
   }
   // Hide one reactive card per turn when there are runes to spare.
   async function aiHide(G, pi, wait) {
-    var p = G.players[pi];
-    if (p.runes.length < 5) return;
-    var cands = p.hand.filter(function (x) { return hideSpots(G, pi, x.iid).length; })
-      .sort(function (a, b) { return (b.c.type === 'Spell') - (a.c.type === 'Spell') || (b.c.energy || 0) - (a.c.energy || 0); });
-    if (!cands.length) return;
-    hideCard(G, pi, cands[0].iid, hideSpots(G, pi, cands[0].iid)[0]);
-    await wait();
+    var p = G.players[pi], eager = aiOf(G, pi).hideEager;
+    for (var n = 0; n < (eager ? 2 : 1); n++) {
+      if (p.runes.length < (eager ? 3 : 5)) return;
+      var cands = p.hand.filter(function (x) { return hideSpots(G, pi, x.iid).length; })
+        .sort(function (a, b) { return (b.c.type === 'Spell') - (a.c.type === 'Spell') || (b.c.energy || 0) - (a.c.energy || 0); });
+      if (!cands.length) return;
+      hideCard(G, pi, cands[0].iid, hideSpots(G, pi, cands[0].iid)[0]);
+      await wait();
+    }
   }
 
   /* ---------------- coverage stats ---------------- */
@@ -3019,6 +3174,7 @@ var RT = (function () {
   }
 
   return {
+    plan: function (id) { return PLANS[id] || null; },
     real: function (id) { return REAL[id] || null; }, REAL_DATE: REAL_DATE, REAL_MATCHES: REAL_MATCHES,
     reviewGame: reviewGame,
     levelCards: levelCards,
