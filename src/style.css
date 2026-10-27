@@ -179,3 +179,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .fullcard.land { max-width: 340px; }
 .fullcard img { width: 100%; display: block; border-radius: 10px; box-shadow: var(--shadow); }
 .u .art img, .card .art img { filter: saturate(1.05); }
+.u.hid { border-style: dashed; }
+.u.back { background: repeating-linear-gradient(45deg, var(--panel2), var(--panel2) 5px, var(--line) 5px, var(--line) 10px); }
+.card .cost.cheap { background: #c9f2d3; }

@@ -57,6 +57,15 @@
     if (glyph) s += '<path transform="translate(' + (w / 2) + ',' + (h / 2) + ') scale(' + (Math.min(w, h) / 30).toFixed(2) + ')" d="' + glyph + '" fill="' + W + '.55)" stroke="' + B + '.25)" stroke-width="1"/>';
     return (artCache[key] = '<svg viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + s + '</svg>');
   }
+  function findHiddenOf(card) { return S.G.players[0].hidden.filter(function (h) { return h.card === card; })[0] || null; }
+  function findMine(p, iid) {
+    return p.hand.filter(function (x) { return x.iid === iid; })[0] || (p.champion && p.champion.iid === iid ? p.champion : null) ||
+      (p.hidden.filter(function (h) { return h.card.iid === iid; })[0] || {}).card || null;
+  }
+  function hiddenChip(h, mine) {
+    return mine ? '<button class="u mine hid" data-iid="' + h.card.iid + '" aria-label="Your hidden ' + esc(h.card.c.name) + '"><span class="art">' + art(h.card.c, 50, 58) + '</span><span class="nm">🂠 ' + esc(shortName(h.card.c.name)) + '</span></button>'
+      : '<button class="u theirs hid back" data-facedown="1" aria-label="AI face-down card"><span class="nm">Face-down</span></button>';
+  }
   function shortName(n) { return n.split(/ - |, /)[0]; }
   function deckById(id) { return RT.DECKS.filter(function (d) { return d.id === id; })[0] || RT.DECKS[0]; }
 
@@ -190,8 +199,8 @@
       var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
       return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
         '<span class="own">' + (b.ctrl === 0 ? 'You' : b.ctrl === 1 ? 'AI' : 'Open') + '</span></div>' +
-        '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + '</div>' +
-        '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + '</div></div>';
+        '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + '</div>' +
+        '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + '</div></div>';
     }).join('') + '</div>';
     h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.map(gearHtml).join('') + '</div></div>';
     h += '<div class="runes">' + runesHtml(me, 'Runes') + '</div>';
@@ -208,7 +217,7 @@
     var hand = me.hand.map(function (card) {
       var c = card.c, can = G.active === 0 && !S.busy && RT.canPlay(G, 0, card.iid, false).ok;
       var pw = ''; for (var i = 0; i < (c.power || 0); i++) pw += '<i style="background:' + DC[RT.cardDomains(c)[0] || 'Colorless'] + '"></i>';
-      return '<button class="card' + (can ? ' can' : '') + '" data-iid="' + card.iid + '"><div class="art">' + art(c, 84, 58) + '</div><span class="cost">' + (c.energy || 0) + '</span><span class="pw">' + pw + '</span>' +
+      return '<button class="card' + (can ? ' can' : '') + '" data-iid="' + card.iid + '"><div class="art">' + art(c, 84, 58) + '</div><span class="cost' + (RT.cardCost(c, false, G, 0).energy < (c.energy || 0) ? ' cheap' : '') + '">' + RT.cardCost(c, false, G, 0).energy + '</span><span class="pw">' + pw + '</span>' +
         '<div class="nm">' + esc(c.name) + '</div><div class="ty">' + esc(c.type) + '</div>' + (c.type === 'Unit' ? '<span class="mt">' + (c.might || 0) + '⚔</span>' : '') + '</button>';
     }).join('');
     $('hand').innerHTML = hand || '<div class="empty">No cards in hand</div>';
@@ -271,13 +280,20 @@
     var G = S.G, c = card.c;
     var body = cardHead(c);
     if (c.type !== 'Legend' && c.type !== 'Battlefield') {
-      body += '<div class="stats"><div><b>' + (c.energy || 0) + '</b><small>Energy</small></div><div><b>' + (c.power || 0) + '</b><small>Power</small></div><div><b>' +
+      var ec = RT.cardCost(c, false, G, 0, findHiddenOf(card) ? 'hidden' : 'hand').energy;
+      body += '<div class="stats"><div><b>' + ec + (ec !== (c.energy || 0) ? ' <s style="font-size:13px;color:var(--muted)">' + (c.energy || 0) + '</s>' : '') + '</b><small>Energy</small></div><div><b>' + (c.power || 0) + '</b><small>Power</small></div><div><b>' +
         (c.type === 'Unit' ? (c.might || 0) : c.P.equip ? '+' + c.P.equipBonus : '–') + '</b><small>Might</small></div></div>';
     }
     body += linesHtml(c);
-    if (c.P.equip) body += '<p style="font-size:13px;color:var(--muted)">Equipment auto-attaches to your strongest unit. The Might bonus is estimated from cost.</p>';
+    if (c.P.equip) body += '<p style="font-size:13px;color:var(--muted)">Equipment: after playing it, pay its Equip cost (' + esc(RT.equipCostText(c)) + ') to attach it to a unit. The Might bonus is estimated from cost.</p>';
+    if (findHiddenOf(card)) body += '<p style="font-size:13px;color:var(--muted)">Face down at ' + esc(S.G.bfs[findHiddenOf(card).loc].c.name) + '. Play it for 0 energy (you still pay power), on your turn or in a showdown there.</p>';
     var foot = '', chk = RT.canPlay(G, 0, card.iid, false);
     if (S.busy || G.active !== 0) chk = { ok: false, why: "Wait for your turn." };
+    if (c.P.kw.hidden && !findHiddenOf(card) && !S.busy && G.active === 0) {
+      var hs = RT.hideSpots(G, 0, card.iid);
+      hs.forEach(function (bi) { foot += '<button class="btn" data-hide="' + card.iid + '" data-bf2="' + bi + '">Hide at ' + esc(shortName(G.bfs[bi].c.name)) + ' (1 power)</button>'; });
+      if (!hs.length) foot += '<span class="why" style="color:var(--muted)">Hidden: you can hide this face down at a battlefield you control for 1 power, then play it later for 0 energy.</span>';
+    }
     if (chk.ok) {
       var spots = RT.ambushSpots(G, 0, c);
       foot += '<button class="btn primary" data-play="' + card.iid + '">Play</button>';
@@ -364,6 +380,11 @@
       foot += '<button class="btn primary" data-gearact="' + iid + '"' + (chk.ok ? '' : ' disabled') + '>' + esc(g.c.P.gearAct.label) + '</button>';
       if (!chk.ok) foot += '<span class="why">' + esc(chk.why) + '</span>';
     }
+    if (g.c.P.equip && G.players[0].gear.indexOf(g) >= 0) {
+      var eq = RT.canEquip(G, 0, g); if (S.busy || S.prompt) eq = { ok: false, why: 'Wait for your turn.' };
+      foot += '<button class="btn primary" data-equip="' + iid + '"' + (eq.ok ? '' : ' disabled') + '>Equip (' + esc(RT.equipCostText(g.c)) + ')</button>';
+      if (!eq.ok) foot += '<span class="why">' + esc(eq.why) + '</span>';
+    }
     if (g.c.P.addPower) foot += '<span class="why" style="color:var(--muted)">Used automatically when you pay ' + g.c.P.addPower + ' power, so you keep a rune.</span>';
     openSheet(cardHead(g.c) + (g.ex ? '<p class="chip">Exhausted</p>' : '') + linesHtml(g.c), foot + '<button class="btn" data-act="close">Close</button>');
   }
@@ -386,7 +407,7 @@
   /* ---------- playing with targets ---------- */
   function beginPlay(iid, accel, loc) {
     var G = S.G, p = G.players[0];
-    var card = p.hand.filter(function (x) { return x.iid === iid; })[0] || (p.champion && p.champion.iid === iid ? p.champion : null);
+    var card = findMine(p, iid);
     if (!card) return;
     closeSheet();
     run(function () { return RT.playCard(G, 0, iid, { accel: accel, loc: loc }); });
@@ -445,6 +466,11 @@
     if (fl) { closeSheet(); var fid = +fl.dataset.flow; run(function () { return RT.playFlow(G, 0, fid); }); return; }
     var su0 = t.closest('[data-selectu]');
     if (su0) { closeSheet(); S.sel = [+su0.dataset.selectu]; render(); return; }
+    var hd = t.closest('[data-hide]');
+    if (hd) { closeSheet(); var hiid = +hd.dataset.hide, hbi = +hd.dataset.bf2; run(function () { return Promise.resolve(RT.hideCard(G, 0, hiid, hbi)); }); return; }
+    var eqb = t.closest('[data-equip]');
+    if (eqb) { closeSheet(); var eg = G.players[0].gear.filter(function (x) { return x.iid === +eqb.dataset.equip; })[0]; if (eg) run(function () { return RT.equipGear(G, 0, eg); }); return; }
+    if (t.closest('[data-facedown]')) { openSheet('<h2>Face-down card</h2><p>The AI has hidden a card here. It can play it for 0 energy, even during your attack.</p>', '<button class="btn" data-act="close">Close</button>'); return; }
     var ga = t.closest('[data-gearact]');
     if (ga) { closeSheet(); var gid = +ga.dataset.gearact; run(function () { return RT.useGear(G, 0, gid); }); return; }
     var la = t.closest('[data-legact]');
@@ -477,7 +503,7 @@
     var ce = t.closest('[data-iid]');
     if (ce) {
       var p = G.players[0], iid = +ce.dataset.iid;
-      var card = p.hand.filter(function (x) { return x.iid === iid; })[0] || (p.champion && p.champion.iid === iid ? p.champion : null);
+      var card = findMine(p, iid);
       if (card) cardSheet(card);
       return;
     }
