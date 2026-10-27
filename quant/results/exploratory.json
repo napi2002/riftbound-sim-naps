@@ -1,0 +1,116 @@
+{
+ "meta": {
+  "mode": "exploratory",
+  "run_at": "2026-10-27T12:32Z",
+  "engine": "e4157fd",
+  "freeze_tag": "engine-freeze-v1",
+  "freeze_date": "2026-10-27T11:59:47Z",
+  "snapshots_total": 1,
+  "snapshots_holdout": 0,
+  "snapshots_used": [
+   "2720"
+  ]
+ },
+ "results": {
+  "H1": {
+   "status": "tested",
+   "snapshot": "2720",
+   "decks": 10,
+   "rho": 0.5662208585049305,
+   "p": 0.045497725113744315,
+   "ci95": [
+    -0.15713484026367722,
+    0.9486832980505138
+   ],
+   "threshold_met": false,
+   "per_deck": {
+    "irelia": [
+     0.39207142857142857,
+     0.56,
+     7224
+    ],
+    "kennen": [
+     0.6663571428571429,
+     0.58,
+     6289
+    ],
+    "leblanc": [
+     0.8066785714285715,
+     0.53,
+     6216
+    ],
+    "rengar": [
+     0.6504285714285715,
+     0.55,
+     5600
+    ],
+    "jayce": [
+     0.4850714285714286,
+     0.52,
+     4984
+    ],
+    "masteryi": [
+     0.6888214285714286,
+     0.53,
+     4571
+    ],
+    "akali": [
+     0.30464285714285716,
+     0.48,
+     4108
+    ],
+    "azir": [
+     0.2564642857142857,
+     0.51,
+     3831
+    ],
+    "vex": [
+     0.5561071428571429,
+     0.53,
+     4011
+    ],
+    "reksai": [
+     0.45553571428571427,
+     0.52,
+     3239
+    ]
+   }
+  },
+  "H2": {
+   "status": "insufficient data",
+   "why": "16 matchup cells with n >= 30 between mapped decks (20 required)"
+  },
+  "H3": {
+   "status": "insufficient data",
+   "why": "1 weekly snapshots (6 needed for the panel, 8+ for the walk-forward test)"
+  },
+  "H4": {
+   "status": "insufficient data",
+   "why": "1 non-overlapping snapshots in set RAD (4 needed)",
+   "series": [
+    {
+     "snapshot": "2720",
+     "exploitability": 0.10346550519533437,
+     "nash_value": 0.5,
+     "filled_cells": 187,
+     "nash_support": {
+      "kennen": 1.0
+     }
+    }
+   ]
+  },
+  "H5": {
+   "status": "tested",
+   "snapshot": "2720",
+   "pairs": 149,
+   "decks": 15,
+   "rho": 0.04322801777916863,
+   "p": 0.30373481325933704,
+   "ci95": [
+    -0.1119025899329113,
+    0.19001809440286824
+   ],
+   "threshold_met": false
+  }
+ }
+}

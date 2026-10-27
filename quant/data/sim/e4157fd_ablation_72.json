@@ -1,0 +1,2582 @@
+{
+ "commit": "e4157fd",
+ "pairs_per_opponent": 72,
+ "games_per_condition": 2016,
+ "seed_base": 20261027,
+ "seconds": 383.752,
+ "baseline": {
+  "kennen": 0.660218253968254,
+  "leblanc": 0.8154761904761905,
+  "rengar": 0.6547619047619048,
+  "irelia": 0.3943452380952381,
+  "akali": 0.2986111111111111,
+  "jayce": 0.5049603174603174,
+  "masteryi": 0.6810515873015873,
+  "azir": 0.2554563492063492,
+  "vex": 0.5500992063492064,
+  "reksai": 0.4489087301587302,
+  "riven": 0.5674603174603174,
+  "evelynn": 0.654265873015873,
+  "mordekaiser": 0.595734126984127,
+  "orianna": 0.2802579365079365,
+  "seraphine": 0.1349206349206349
+ },
+ "rows": [
+  {
+   "deck": "kennen",
+   "card": "Kennen, Storm of Shuriken",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.623015873015873,
+   "base_wr": 0.660218253968254,
+   "delta": 0.03720238095238093
+  },
+  {
+   "deck": "kennen",
+   "card": "Lightning Rush",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5704365079365079,
+   "base_wr": 0.660218253968254,
+   "delta": 0.08978174603174605
+  },
+  {
+   "deck": "kennen",
+   "card": "Rhasa the Sunderer",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5218253968253969,
+   "base_wr": 0.660218253968254,
+   "delta": 0.1383928571428571
+  },
+  {
+   "deck": "kennen",
+   "card": "Seal of Discord",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5783730158730159,
+   "base_wr": 0.660218253968254,
+   "delta": 0.08184523809523803
+  },
+  {
+   "deck": "kennen",
+   "card": "Shadow Order Disciple",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6567460317460317,
+   "base_wr": 0.660218253968254,
+   "delta": 0.00347222222222221
+  },
+  {
+   "deck": "kennen",
+   "card": "Tail-Cloaked Matriarch",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6349206349206349,
+   "base_wr": 0.660218253968254,
+   "delta": 0.02529761904761907
+  },
+  {
+   "deck": "kennen",
+   "card": "Traveling Merchant",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6428571428571429,
+   "base_wr": 0.660218253968254,
+   "delta": 0.01736111111111105
+  },
+  {
+   "deck": "kennen",
+   "card": "Fizz - Trickster",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6453373015873016,
+   "base_wr": 0.660218253968254,
+   "delta": 0.014880952380952328
+  },
+  {
+   "deck": "kennen",
+   "card": "Last Rites",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6651785714285714,
+   "base_wr": 0.660218253968254,
+   "delta": -0.004960317460317443
+  },
+  {
+   "deck": "kennen",
+   "card": "Star-Crossed",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6845238095238095,
+   "base_wr": 0.660218253968254,
+   "delta": -0.02430555555555558
+  },
+  {
+   "deck": "kennen",
+   "card": "Switcheroo",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6884920634920635,
+   "base_wr": 0.660218253968254,
+   "delta": -0.028273809523809534
+  },
+  {
+   "deck": "kennen",
+   "card": "Tornado Warrior",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6329365079365079,
+   "base_wr": 0.660218253968254,
+   "delta": 0.027281746031746046
+  },
+  {
+   "deck": "kennen",
+   "card": "Baron Nashor",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.652281746031746,
+   "base_wr": 0.660218253968254,
+   "delta": 0.007936507936507908
+  },
+  {
+   "deck": "kennen",
+   "card": "Existential Dread",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.660218253968254,
+   "base_wr": 0.660218253968254,
+   "delta": 0
+  },
+  {
+   "deck": "kennen",
+   "card": "Ezreal, Prodigy",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6587301587301587,
+   "base_wr": 0.660218253968254,
+   "delta": 0.0014880952380952328
+  },
+  {
+   "deck": "kennen",
+   "card": "Flash",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6636904761904762,
+   "base_wr": 0.660218253968254,
+   "delta": -0.00347222222222221
+  },
+  {
+   "deck": "kennen",
+   "card": "Gust",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6448412698412699,
+   "base_wr": 0.660218253968254,
+   "delta": 0.015376984126984072
+  },
+  {
+   "deck": "kennen",
+   "card": "Ride The Wind",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6726190476190477,
+   "base_wr": 0.660218253968254,
+   "delta": -0.012400793650793718
+  },
+  {
+   "deck": "kennen",
+   "card": "Salvage",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.658234126984127,
+   "base_wr": 0.660218253968254,
+   "delta": 0.001984126984126977
+  },
+  {
+   "deck": "kennen",
+   "card": "Shadows of the Past",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6512896825396826,
+   "base_wr": 0.660218253968254,
+   "delta": 0.008928571428571397
+  },
+  {
+   "deck": "kennen",
+   "card": "The Harrowing",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6607142857142857,
+   "base_wr": 0.660218253968254,
+   "delta": -0.0004960317460317443
+  },
+  {
+   "deck": "kennen",
+   "card": "Tideturner",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6537698412698413,
+   "base_wr": 0.660218253968254,
+   "delta": 0.0064484126984126755
+  },
+  {
+   "deck": "kennen",
+   "card": "Treasure Hunter",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.658234126984127,
+   "base_wr": 0.660218253968254,
+   "delta": 0.001984126984126977
+  },
+  {
+   "deck": "leblanc",
+   "card": "LeBlanc - Fragmented",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6646825396825397,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.1507936507936508
+  },
+  {
+   "deck": "leblanc",
+   "card": "Honest Broker",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.8070436507936508,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.008432539682539653
+  },
+  {
+   "deck": "leblanc",
+   "card": "Soaring Scout",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7807539682539683,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.03472222222222221
+  },
+  {
+   "deck": "leblanc",
+   "card": "Watchful Sentry",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.7991071428571429,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.01636904761904756
+  },
+  {
+   "deck": "leblanc",
+   "card": "Black Rose Dignitary",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.8015873015873016,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.01388888888888884
+  },
+  {
+   "deck": "leblanc",
+   "card": "Karthus - Eternal",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7787698412698413,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.03670634920634919
+  },
+  {
+   "deck": "leblanc",
+   "card": "Glasc Mixologist",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7842261904761905,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.03125
+  },
+  {
+   "deck": "leblanc",
+   "card": "Vi - Peacekeeper",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.8035714285714286,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.011904761904761862
+  },
+  {
+   "deck": "leblanc",
+   "card": "Ruined Rex",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7867063492063492,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.02876984126984128
+  },
+  {
+   "deck": "leblanc",
+   "card": "Thousand-Tailed Watcher",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.7956349206349206,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.019841269841269882
+  },
+  {
+   "deck": "leblanc",
+   "card": "Harnessed Dragon",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7470238095238095,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.06845238095238093
+  },
+  {
+   "deck": "leblanc",
+   "card": "Rift Herald",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.7961309523809523,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.019345238095238138
+  },
+  {
+   "deck": "leblanc",
+   "card": "Baited Hook",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.8258928571428571,
+   "base_wr": 0.8154761904761905,
+   "delta": -0.01041666666666663
+  },
+  {
+   "deck": "leblanc",
+   "card": "Sacrifice",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.8283730158730159,
+   "base_wr": 0.8154761904761905,
+   "delta": -0.012896825396825462
+  },
+  {
+   "deck": "leblanc",
+   "card": "Deathgrip",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.8214285714285714,
+   "base_wr": 0.8154761904761905,
+   "delta": -0.005952380952380931
+  },
+  {
+   "deck": "leblanc",
+   "card": "Hidden Blade",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.8065476190476191,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.008928571428571397
+  },
+  {
+   "deck": "leblanc",
+   "card": "Mirror Image",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.8125,
+   "base_wr": 0.8154761904761905,
+   "delta": 0.0029761904761904656
+  },
+  {
+   "deck": "rengar",
+   "card": "Rengar - Trophy Hunter",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6547619047619048,
+   "base_wr": 0.6547619047619048,
+   "delta": 0
+  },
+  {
+   "deck": "rengar",
+   "card": "Inferna",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6393849206349206,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.015376984126984183
+  },
+  {
+   "deck": "rengar",
+   "card": "Irresistible Faefolk",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6770833333333334,
+   "base_wr": 0.6547619047619048,
+   "delta": -0.022321428571428603
+  },
+  {
+   "deck": "rengar",
+   "card": "Pit Rookie",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6354166666666666,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.019345238095238138
+  },
+  {
+   "deck": "rengar",
+   "card": "First Mate",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6374007936507936,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.01736111111111116
+  },
+  {
+   "deck": "rengar",
+   "card": "Grim Apothecary",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6810515873015873,
+   "base_wr": 0.6547619047619048,
+   "delta": -0.026289682539682557
+  },
+  {
+   "deck": "rengar",
+   "card": "Kinkou Initiate",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6329365079365079,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.02182539682539686
+  },
+  {
+   "deck": "rengar",
+   "card": "Nidalee - Cat Form",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6493055555555556,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.005456349206349187
+  },
+  {
+   "deck": "rengar",
+   "card": "Pakaa Cub",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6502976190476191,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "rengar",
+   "card": "Pyke - Dockside Butcher",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6369047619047619,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.017857142857142905
+  },
+  {
+   "deck": "rengar",
+   "card": "Kai'Sa - Survivor",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6418650793650794,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.012896825396825351
+  },
+  {
+   "deck": "rengar",
+   "card": "Noxus Hopeful",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6463293650793651,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.008432539682539653
+  },
+  {
+   "deck": "rengar",
+   "card": "Darius - Trifarian",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6433531746031746,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.011408730158730118
+  },
+  {
+   "deck": "rengar",
+   "card": "Ferrous Forerunner",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6443452380952381,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.01041666666666663
+  },
+  {
+   "deck": "rengar",
+   "card": "Punch First",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.628968253968254,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.025793650793650813
+  },
+  {
+   "deck": "rengar",
+   "card": "Sabotage",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6458333333333334,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.008928571428571397
+  },
+  {
+   "deck": "rengar",
+   "card": "Thrill of the Hunt",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6408730158730159,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.01388888888888884
+  },
+  {
+   "deck": "rengar",
+   "card": "Rampage",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6408730158730159,
+   "base_wr": 0.6547619047619048,
+   "delta": 0.01388888888888884
+  },
+  {
+   "deck": "irelia",
+   "card": "Irelia - Fervent",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.35119047619047616,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.04315476190476192
+  },
+  {
+   "deck": "irelia",
+   "card": "Scuttle Crab",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3253968253968254,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.06894841269841268
+  },
+  {
+   "deck": "irelia",
+   "card": "Tideturner",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3472222222222222,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.04712301587301587
+  },
+  {
+   "deck": "irelia",
+   "card": "Pyke - Returned",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.3864087301587302,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.007936507936507908
+  },
+  {
+   "deck": "irelia",
+   "card": "Akali, Silent",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.3864087301587302,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.007936507936507908
+  },
+  {
+   "deck": "irelia",
+   "card": "Stellacorn Herder",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3412698412698413,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.0530753968253968
+  },
+  {
+   "deck": "irelia",
+   "card": "Vex - Apathetic",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.3898809523809524,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "irelia",
+   "card": "Guardian Angel",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.39632936507936506,
+   "base_wr": 0.3943452380952381,
+   "delta": -0.001984126984126977
+  },
+  {
+   "deck": "irelia",
+   "card": "Zhonya's Hourglass",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.36607142857142855,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.028273809523809534
+  },
+  {
+   "deck": "irelia",
+   "card": "Boots of Swiftness",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.40128968253968256,
+   "base_wr": 0.3943452380952381,
+   "delta": -0.006944444444444475
+  },
+  {
+   "deck": "irelia",
+   "card": "Charm",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.37896825396825395,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.015376984126984128
+  },
+  {
+   "deck": "irelia",
+   "card": "Defiant Dance",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3070436507936508,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.08730158730158727
+  },
+  {
+   "deck": "irelia",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3725198412698413,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.021825396825396803
+  },
+  {
+   "deck": "irelia",
+   "card": "En Garde",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.3382936507936508,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.05605158730158727
+  },
+  {
+   "deck": "irelia",
+   "card": "Gust",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.36607142857142855,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.028273809523809534
+  },
+  {
+   "deck": "irelia",
+   "card": "Twilight Shroud",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.38492063492063494,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.009424603174603141
+  },
+  {
+   "deck": "irelia",
+   "card": "Abandon",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.3740079365079365,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.02033730158730157
+  },
+  {
+   "deck": "irelia",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.31746031746031744,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.07688492063492064
+  },
+  {
+   "deck": "irelia",
+   "card": "Flash",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.39880952380952384,
+   "base_wr": 0.3943452380952381,
+   "delta": -0.004464285714285754
+  },
+  {
+   "deck": "irelia",
+   "card": "Not So Fast",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.3834325396825397,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.010912698412698374
+  },
+  {
+   "deck": "irelia",
+   "card": "Ride The Wind",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.3834325396825397,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.010912698412698374
+  },
+  {
+   "deck": "irelia",
+   "card": "Star-Crossed",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.39186507936507936,
+   "base_wr": 0.3943452380952381,
+   "delta": 0.0024801587301587213
+  },
+  {
+   "deck": "akali",
+   "card": "Akali, Silent",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.28720238095238093,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.011408730158730174
+  },
+  {
+   "deck": "akali",
+   "card": "Charm",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2916666666666667,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.00694444444444442
+  },
+  {
+   "deck": "akali",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.29117063492063494,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.007440476190476164
+  },
+  {
+   "deck": "akali",
+   "card": "Shuriken Flip",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2941468253968254,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "akali",
+   "card": "Twilight Shroud",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.283234126984127,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.015376984126984128
+  },
+  {
+   "deck": "akali",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.24801587301587302,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.05059523809523808
+  },
+  {
+   "deck": "akali",
+   "card": "Inferna",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2777777777777778,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.020833333333333315
+  },
+  {
+   "deck": "akali",
+   "card": "Lonely Poro",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2802579365079365,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.018353174603174593
+  },
+  {
+   "deck": "akali",
+   "card": "Mask of Foresight",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.25,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.048611111111111105
+  },
+  {
+   "deck": "akali",
+   "card": "Mournful Witness",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2881944444444444,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.010416666666666685
+  },
+  {
+   "deck": "akali",
+   "card": "Scuttle Crab",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.28521825396825395,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.01339285714285715
+  },
+  {
+   "deck": "akali",
+   "card": "Zhonya's Hourglass",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.25793650793650796,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.04067460317460314
+  },
+  {
+   "deck": "akali",
+   "card": "Back Off",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2698412698412698,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.02876984126984128
+  },
+  {
+   "deck": "akali",
+   "card": "Pendulum Blade",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3134920634920635,
+   "base_wr": 0.2986111111111111,
+   "delta": -0.014880952380952384
+  },
+  {
+   "deck": "akali",
+   "card": "Stellacorn Herder",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.27976190476190477,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.018849206349206338
+  },
+  {
+   "deck": "akali",
+   "card": "Irelia - Fervent",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.2941468253968254,
+   "base_wr": 0.2986111111111111,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "jayce",
+   "card": "Jayce, Brilliant Inventor",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5084325396825397,
+   "base_wr": 0.5049603174603174,
+   "delta": -0.00347222222222221
+  },
+  {
+   "deck": "jayce",
+   "card": "Bellows Breath",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5386904761904762,
+   "base_wr": 0.5049603174603174,
+   "delta": -0.03373015873015872
+  },
+  {
+   "deck": "jayce",
+   "card": "Catalyst of Aeons",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.42658730158730157,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.07837301587301587
+  },
+  {
+   "deck": "jayce",
+   "card": "Clairvoyance",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.4990079365079365,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.005952380952380931
+  },
+  {
+   "deck": "jayce",
+   "card": "Dazzling Aurora",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.16220238095238096,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.3427579365079365
+  },
+  {
+   "deck": "jayce",
+   "card": "Dredge Up",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.44841269841269843,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.05654761904761901
+  },
+  {
+   "deck": "jayce",
+   "card": "Elder Dragon",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.12301587301587301,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.3819444444444444
+  },
+  {
+   "deck": "jayce",
+   "card": "Mobilize",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.41220238095238093,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.09275793650793651
+  },
+  {
+   "deck": "jayce",
+   "card": "Platewyrm Egg",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.42410714285714285,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.0808531746031746
+  },
+  {
+   "deck": "jayce",
+   "card": "Promising Future",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.47668650793650796,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.02827380952380948
+  },
+  {
+   "deck": "jayce",
+   "card": "Flurry of Blades",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.49503968253968256,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.009920634920634885
+  },
+  {
+   "deck": "jayce",
+   "card": "Garbage Grabber",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.46378968253968256,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.041170634920634885
+  },
+  {
+   "deck": "jayce",
+   "card": "Sabotage",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5391865079365079,
+   "base_wr": 0.5049603174603174,
+   "delta": -0.034226190476190466
+  },
+  {
+   "deck": "jayce",
+   "card": "Sprite Burst",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.47966269841269843,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.025297619047619013
+  },
+  {
+   "deck": "jayce",
+   "card": "Deadly Flourish",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5004960317460317,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "jayce",
+   "card": "Downstage Dramatics",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.4975198412698413,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.007440476190476164
+  },
+  {
+   "deck": "jayce",
+   "card": "Gutter Palace",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5009920634920635,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.003968253968253954
+  },
+  {
+   "deck": "jayce",
+   "card": "Rocket Barrage",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5024801587301587,
+   "base_wr": 0.5049603174603174,
+   "delta": 0.0024801587301587213
+  },
+  {
+   "deck": "masteryi",
+   "card": "Master Yi - Tempered",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6805555555555556,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0004960317460317443
+  },
+  {
+   "deck": "masteryi",
+   "card": "Charm",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6140873015873016,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0669642857142857
+  },
+  {
+   "deck": "masteryi",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6592261904761905,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.02182539682539686
+  },
+  {
+   "deck": "masteryi",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6254960317460317,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.05555555555555558
+  },
+  {
+   "deck": "masteryi",
+   "card": "First Mate",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6765873015873016,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "masteryi",
+   "card": "Lonely Poro",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6612103174603174,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.019841269841269882
+  },
+  {
+   "deck": "masteryi",
+   "card": "Pit Rookie",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6532738095238095,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.02777777777777779
+  },
+  {
+   "deck": "masteryi",
+   "card": "Punch First",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6200396825396826,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.06101190476190477
+  },
+  {
+   "deck": "masteryi",
+   "card": "Rengar - Trophy Hunter",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6785714285714286,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0024801587301587213
+  },
+  {
+   "deck": "masteryi",
+   "card": "Scuttle Crab",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6453373015873016,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0357142857142857
+  },
+  {
+   "deck": "masteryi",
+   "card": "En Garde",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6433531746031746,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.037698412698412676
+  },
+  {
+   "deck": "masteryi",
+   "card": "Rampage",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6716269841269841,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.009424603174603252
+  },
+  {
+   "deck": "masteryi",
+   "card": "Ruin Runner",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6755952380952381,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.005456349206349187
+  },
+  {
+   "deck": "masteryi",
+   "card": "Zhonya's Hourglass",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6408730158730159,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0401785714285714
+  },
+  {
+   "deck": "masteryi",
+   "card": "Alpha Strike",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6800595238095238,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.0009920634920634885
+  },
+  {
+   "deck": "masteryi",
+   "card": "Not So Fast",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6760912698412699,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.004960317460317443
+  },
+  {
+   "deck": "masteryi",
+   "card": "Onslaught",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6711309523809523,
+   "base_wr": 0.6810515873015873,
+   "delta": 0.009920634920634996
+  },
+  {
+   "deck": "masteryi",
+   "card": "Sabotage",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6840277777777778,
+   "base_wr": 0.6810515873015873,
+   "delta": -0.0029761904761904656
+  },
+  {
+   "deck": "azir",
+   "card": "Azir - Sovereign",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.2787698412698413,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.02331349206349209
+  },
+  {
+   "deck": "azir",
+   "card": "Arise!",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.21875,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.03670634920634919
+  },
+  {
+   "deck": "azir",
+   "card": "B.F. Sword",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2728174603174603,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.017361111111111105
+  },
+  {
+   "deck": "azir",
+   "card": "Brutalizer",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.29811507936507936,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.042658730158730174
+  },
+  {
+   "deck": "azir",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.24107142857142858,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.014384920634920612
+  },
+  {
+   "deck": "azir",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.23561507936507936,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.019841269841269826
+  },
+  {
+   "deck": "azir",
+   "card": "Doran's Shield",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.32936507936507936,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.07390873015873017
+  },
+  {
+   "deck": "azir",
+   "card": "Eye of the Herald",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3343253968253968,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.07886904761904762
+  },
+  {
+   "deck": "azir",
+   "card": "Guards!",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.23363095238095238,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.021825396825396803
+  },
+  {
+   "deck": "azir",
+   "card": "Hidden Blade",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.23313492063492064,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.022321428571428548
+  },
+  {
+   "deck": "azir",
+   "card": "Soul Sword",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.32936507936507936,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.07390873015873017
+  },
+  {
+   "deck": "azir",
+   "card": "Desert's Call",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.24156746031746032,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.013888888888888867
+  },
+  {
+   "deck": "azir",
+   "card": "Guardian Angel",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.27331349206349204,
+   "base_wr": 0.2554563492063492,
+   "delta": -0.01785714285714285
+  },
+  {
+   "deck": "azir",
+   "card": "Sacrifice",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2490079365079365,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.0064484126984126755
+  },
+  {
+   "deck": "azir",
+   "card": "Back Off",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.2554563492063492,
+   "base_wr": 0.2554563492063492,
+   "delta": 0
+  },
+  {
+   "deck": "azir",
+   "card": "Charm",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.251984126984127,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.00347222222222221
+  },
+  {
+   "deck": "azir",
+   "card": "Deathgrip",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.25496031746031744,
+   "base_wr": 0.2554563492063492,
+   "delta": 0.0004960317460317443
+  },
+  {
+   "deck": "vex",
+   "card": "Vex - Apathetic",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5193452380952381,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.030753968253968256
+  },
+  {
+   "deck": "vex",
+   "card": "Astral Heron",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5456349206349206,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.0044642857142858094
+  },
+  {
+   "deck": "vex",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.558531746031746,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.008432539682539653
+  },
+  {
+   "deck": "vex",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.47271825396825395,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.07738095238095244
+  },
+  {
+   "deck": "vex",
+   "card": "Stacked Deck",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5203373015873016,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.029761904761904767
+  },
+  {
+   "deck": "vex",
+   "card": "Steel Paws",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5262896825396826,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.023809523809523836
+  },
+  {
+   "deck": "vex",
+   "card": "Switcheroo",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5947420634920635,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.044642857142857095
+  },
+  {
+   "deck": "vex",
+   "card": "Tornado Warrior",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5327380952380952,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.01736111111111116
+  },
+  {
+   "deck": "vex",
+   "card": "Boots of Swiftness",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5649801587301587,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.014880952380952328
+  },
+  {
+   "deck": "vex",
+   "card": "Evelynn - Entrancing",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5530753968253969,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.0029761904761904656
+  },
+  {
+   "deck": "vex",
+   "card": "Back Off",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5406746031746031,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.009424603174603252
+  },
+  {
+   "deck": "vex",
+   "card": "Charm",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5436507936507936,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.0064484126984127865
+  },
+  {
+   "deck": "vex",
+   "card": "Edge of Night",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5763888888888888,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.026289682539682446
+  },
+  {
+   "deck": "vex",
+   "card": "Gust",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5168650793650794,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.03323412698412698
+  },
+  {
+   "deck": "vex",
+   "card": "Gust Monk",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5401785714285714,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.009920634920634996
+  },
+  {
+   "deck": "vex",
+   "card": "Irelia - Fervent",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5461309523809523,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.003968253968254065
+  },
+  {
+   "deck": "vex",
+   "card": "Mutated Mouser",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5327380952380952,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.01736111111111116
+  },
+  {
+   "deck": "vex",
+   "card": "Rebuke",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5367063492063492,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.013392857142857206
+  },
+  {
+   "deck": "vex",
+   "card": "Ride The Wind",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5520833333333334,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.001984126984126977
+  },
+  {
+   "deck": "vex",
+   "card": "Scuttle Crab",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5456349206349206,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.0044642857142858094
+  },
+  {
+   "deck": "vex",
+   "card": "Star-Crossed",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5629960317460317,
+   "base_wr": 0.5500992063492064,
+   "delta": -0.012896825396825351
+  },
+  {
+   "deck": "vex",
+   "card": "Tideturner",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5307539682539683,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.019345238095238138
+  },
+  {
+   "deck": "vex",
+   "card": "Zhonya's Hourglass",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5416666666666666,
+   "base_wr": 0.5500992063492064,
+   "delta": 0.008432539682539764
+  },
+  {
+   "deck": "reksai",
+   "card": "Rek'Sai - Breacher",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.45535714285714285,
+   "base_wr": 0.4489087301587302,
+   "delta": -0.0064484126984126755
+  },
+  {
+   "deck": "reksai",
+   "card": "Blood Rush",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.44841269841269843,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.0004960317460317443
+  },
+  {
+   "deck": "reksai",
+   "card": "Carrion Dredger",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.4310515873015873,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.01785714285714285
+  },
+  {
+   "deck": "reksai",
+   "card": "Cull the Weak",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.4444444444444444,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.004464285714285754
+  },
+  {
+   "deck": "reksai",
+   "card": "Faithful Manufactor",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.41865079365079366,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.03025793650793651
+  },
+  {
+   "deck": "reksai",
+   "card": "Falling Star",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.3725198412698413,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.0763888888888889
+  },
+  {
+   "deck": "reksai",
+   "card": "Honest Broker",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.43353174603174605,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.015376984126984128
+  },
+  {
+   "deck": "reksai",
+   "card": "Imperial Decree",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.46478174603174605,
+   "base_wr": 0.4489087301587302,
+   "delta": -0.015873015873015872
+  },
+  {
+   "deck": "reksai",
+   "card": "Inferna",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.408234126984127,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.0406746031746032
+  },
+  {
+   "deck": "reksai",
+   "card": "Noxus Hopeful",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.4166666666666667,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.03224206349206349
+  },
+  {
+   "deck": "reksai",
+   "card": "Cleave",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.44543650793650796,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.00347222222222221
+  },
+  {
+   "deck": "reksai",
+   "card": "Escaped Grayback",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.44841269841269843,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.0004960317460317443
+  },
+  {
+   "deck": "reksai",
+   "card": "Legion Rearguard",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.4494047619047619,
+   "base_wr": 0.4489087301587302,
+   "delta": -0.0004960317460317443
+  },
+  {
+   "deck": "reksai",
+   "card": "Noxian Emissary",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.4280753968253968,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.02083333333333337
+  },
+  {
+   "deck": "reksai",
+   "card": "Void Rush",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.44543650793650796,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.00347222222222221
+  },
+  {
+   "deck": "reksai",
+   "card": "Forge of the Future",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.4365079365079365,
+   "base_wr": 0.4489087301587302,
+   "delta": 0.012400793650793662
+  },
+  {
+   "deck": "reksai",
+   "card": "Salvage",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.45634920634920634,
+   "base_wr": 0.4489087301587302,
+   "delta": -0.007440476190476164
+  },
+  {
+   "deck": "riven",
+   "card": "Riven - Broken Blade",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.4915674603174603,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.07589285714285715
+  },
+  {
+   "deck": "riven",
+   "card": "Astral Heron",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.566468253968254,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.0009920634920634885
+  },
+  {
+   "deck": "riven",
+   "card": "Blade of the Exile",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5858134920634921,
+   "base_wr": 0.5674603174603174,
+   "delta": -0.01835317460317465
+  },
+  {
+   "deck": "riven",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5550595238095238,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.012400793650793607
+  },
+  {
+   "deck": "riven",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.4935515873015873,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.07390873015873012
+  },
+  {
+   "deck": "riven",
+   "card": "Scuttle Crab",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5297619047619048,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.037698412698412676
+  },
+  {
+   "deck": "riven",
+   "card": "Stellacorn Herder",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5218253968253969,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.045634920634920584
+  },
+  {
+   "deck": "riven",
+   "card": "Tideturner",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.527281746031746,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.0401785714285714
+  },
+  {
+   "deck": "riven",
+   "card": "Zhonya's Hourglass",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5307539682539683,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.03670634920634919
+  },
+  {
+   "deck": "riven",
+   "card": "Battle Preparations",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5426587301587301,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.024801587301587324
+  },
+  {
+   "deck": "riven",
+   "card": "Bedeviling Stranger",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5555555555555556,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.011904761904761862
+  },
+  {
+   "deck": "riven",
+   "card": "Blitzcrank - Impassive",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5823412698412699,
+   "base_wr": 0.5674603174603174,
+   "delta": -0.014880952380952439
+  },
+  {
+   "deck": "riven",
+   "card": "Gust",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.4935515873015873,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.07390873015873012
+  },
+  {
+   "deck": "riven",
+   "card": "Reckless Innovator",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5481150793650794,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.019345238095238027
+  },
+  {
+   "deck": "riven",
+   "card": "Switcheroo",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5798611111111112,
+   "base_wr": 0.5674603174603174,
+   "delta": -0.012400793650793718
+  },
+  {
+   "deck": "riven",
+   "card": "Not So Fast",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5580357142857143,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.009424603174603141
+  },
+  {
+   "deck": "riven",
+   "card": "Rebuke",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5555555555555556,
+   "base_wr": 0.5674603174603174,
+   "delta": 0.011904761904761862
+  },
+  {
+   "deck": "riven",
+   "card": "Star-Crossed",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5699404761904762,
+   "base_wr": 0.5674603174603174,
+   "delta": -0.0024801587301587213
+  },
+  {
+   "deck": "evelynn",
+   "card": "Evelynn - Entrancing",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6597222222222222,
+   "base_wr": 0.654265873015873,
+   "delta": -0.005456349206349187
+  },
+  {
+   "deck": "evelynn",
+   "card": "Gutter Guardian",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5788690476190477,
+   "base_wr": 0.654265873015873,
+   "delta": 0.07539682539682535
+  },
+  {
+   "deck": "evelynn",
+   "card": "Kinkou Initiate",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.628968253968254,
+   "base_wr": 0.654265873015873,
+   "delta": 0.02529761904761907
+  },
+  {
+   "deck": "evelynn",
+   "card": "Pyke - Returned",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5927579365079365,
+   "base_wr": 0.654265873015873,
+   "delta": 0.06150793650793651
+  },
+  {
+   "deck": "evelynn",
+   "card": "Tail-Cloaked Matriarch",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6388888888888888,
+   "base_wr": 0.654265873015873,
+   "delta": 0.015376984126984183
+  },
+  {
+   "deck": "evelynn",
+   "card": "Tornado Warrior",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6021825396825397,
+   "base_wr": 0.654265873015873,
+   "delta": 0.05208333333333337
+  },
+  {
+   "deck": "evelynn",
+   "card": "Boots of Swiftness",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6661706349206349,
+   "base_wr": 0.654265873015873,
+   "delta": -0.011904761904761862
+  },
+  {
+   "deck": "evelynn",
+   "card": "Edge of Night",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6919642857142857,
+   "base_wr": 0.654265873015873,
+   "delta": -0.037698412698412676
+  },
+  {
+   "deck": "evelynn",
+   "card": "Ezreal, Prodigy",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6130952380952381,
+   "base_wr": 0.654265873015873,
+   "delta": 0.041170634920634885
+  },
+  {
+   "deck": "evelynn",
+   "card": "Fizz - Trickster",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6552579365079365,
+   "base_wr": 0.654265873015873,
+   "delta": -0.0009920634920634885
+  },
+  {
+   "deck": "evelynn",
+   "card": "Hold 'Em",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6468253968253969,
+   "base_wr": 0.654265873015873,
+   "delta": 0.007440476190476164
+  },
+  {
+   "deck": "evelynn",
+   "card": "K'Sante - Courageous",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6324404761904762,
+   "base_wr": 0.654265873015873,
+   "delta": 0.02182539682539686
+  },
+  {
+   "deck": "evelynn",
+   "card": "Rampage",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.654265873015873,
+   "base_wr": 0.654265873015873,
+   "delta": 0
+  },
+  {
+   "deck": "evelynn",
+   "card": "Rengar - Trophy Hunter",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6532738095238095,
+   "base_wr": 0.654265873015873,
+   "delta": 0.0009920634920634885
+  },
+  {
+   "deck": "evelynn",
+   "card": "Star-Crossed",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6701388888888888,
+   "base_wr": 0.654265873015873,
+   "delta": -0.015873015873015817
+  },
+  {
+   "deck": "evelynn",
+   "card": "Vex - Apathetic",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6488095238095238,
+   "base_wr": 0.654265873015873,
+   "delta": 0.005456349206349187
+  },
+  {
+   "deck": "evelynn",
+   "card": "Baron Nashor",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6354166666666666,
+   "base_wr": 0.654265873015873,
+   "delta": 0.018849206349206393
+  },
+  {
+   "deck": "evelynn",
+   "card": "Kharox",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6527777777777778,
+   "base_wr": 0.654265873015873,
+   "delta": 0.0014880952380952328
+  },
+  {
+   "deck": "evelynn",
+   "card": "Onslaught",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6517857142857143,
+   "base_wr": 0.654265873015873,
+   "delta": 0.0024801587301587213
+  },
+  {
+   "deck": "evelynn",
+   "card": "Switcheroo",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6746031746031746,
+   "base_wr": 0.654265873015873,
+   "delta": -0.020337301587301626
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Mordekaiser - Dominating",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5461309523809523,
+   "base_wr": 0.595734126984127,
+   "delta": 0.04960317460317465
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Carrion Dredger",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5798611111111112,
+   "base_wr": 0.595734126984127,
+   "delta": 0.015873015873015817
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Kai'Sa - Survivor",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5783730158730159,
+   "base_wr": 0.595734126984127,
+   "delta": 0.01736111111111105
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Realm of Death",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.6235119047619048,
+   "base_wr": 0.595734126984127,
+   "delta": -0.02777777777777779
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Trifarian Captain",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5679563492063492,
+   "base_wr": 0.595734126984127,
+   "delta": 0.02777777777777779
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Vi - Peacekeeper",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.5793650793650794,
+   "base_wr": 0.595734126984127,
+   "delta": 0.01636904761904756
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Bilgewater Tracker",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5739087301587301,
+   "base_wr": 0.595734126984127,
+   "delta": 0.02182539682539686
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Blast Corps Cadet",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5927579365079365,
+   "base_wr": 0.595734126984127,
+   "delta": 0.0029761904761904656
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Escaped Grayback",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.595734126984127,
+   "base_wr": 0.595734126984127,
+   "delta": 0
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Hidden Blade",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5590277777777778,
+   "base_wr": 0.595734126984127,
+   "delta": 0.03670634920634919
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "LeBlanc - Fragmented",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5828373015873016,
+   "base_wr": 0.595734126984127,
+   "delta": 0.012896825396825351
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Long Sword",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.6071428571428571,
+   "base_wr": 0.595734126984127,
+   "delta": -0.011408730158730118
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Seal of Unity",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5391865079365079,
+   "base_wr": 0.595734126984127,
+   "delta": 0.05654761904761907
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Spectral Matron",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5892857142857143,
+   "base_wr": 0.595734126984127,
+   "delta": 0.0064484126984126755
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Xin Zhao - Vigilant",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.5907738095238095,
+   "base_wr": 0.595734126984127,
+   "delta": 0.004960317460317443
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Brynhir Thundersong",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.59375,
+   "base_wr": 0.595734126984127,
+   "delta": 0.001984126984126977
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Darius - Trifarian",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5813492063492064,
+   "base_wr": 0.595734126984127,
+   "delta": 0.014384920634920584
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Falling Star",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6145833333333334,
+   "base_wr": 0.595734126984127,
+   "delta": -0.018849206349206393
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Ferrous Forerunner",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.5858134920634921,
+   "base_wr": 0.595734126984127,
+   "delta": 0.009920634920634885
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Honest Broker",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.59375,
+   "base_wr": 0.595734126984127,
+   "delta": 0.001984126984126977
+  },
+  {
+   "deck": "mordekaiser",
+   "card": "Vanguard Captain",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.6001984126984127,
+   "base_wr": 0.595734126984127,
+   "delta": -0.004464285714285698
+  },
+  {
+   "deck": "orianna",
+   "card": "Orianna - Exquisite",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.31547619047619047,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.035218253968253954
+  },
+  {
+   "deck": "orianna",
+   "card": "Defy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.28174603174603174,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.0014880952380952328
+  },
+  {
+   "deck": "orianna",
+   "card": "Discipline",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.21428571428571427,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.06597222222222224
+  },
+  {
+   "deck": "orianna",
+   "card": "Frigid Jewel",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2683531746031746,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.011904761904761918
+  },
+  {
+   "deck": "orianna",
+   "card": "Mask of Foresight",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2435515873015873,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.036706349206349215
+  },
+  {
+   "deck": "orianna",
+   "card": "Stupefy",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2931547619047619,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.012896825396825407
+  },
+  {
+   "deck": "orianna",
+   "card": "The Ball",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.2847222222222222,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.004464285714285698
+  },
+  {
+   "deck": "orianna",
+   "card": "Akali, Silent",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2708333333333333,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.009424603174603197
+  },
+  {
+   "deck": "orianna",
+   "card": "Brutalizer",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.3159722222222222,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.0357142857142857
+  },
+  {
+   "deck": "orianna",
+   "card": "Cloth Armor",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2822420634920635,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.001984126984126977
+  },
+  {
+   "deck": "orianna",
+   "card": "Command: Attack",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.3080357142857143,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.02777777777777779
+  },
+  {
+   "deck": "orianna",
+   "card": "Consult the Past",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.28273809523809523,
+   "base_wr": 0.2802579365079365,
+   "delta": -0.0024801587301587213
+  },
+  {
+   "deck": "orianna",
+   "card": "Hunting Blind",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.27380952380952384,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.0064484126984126755
+  },
+  {
+   "deck": "orianna",
+   "card": "Patched Porobot",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2748015873015873,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.005456349206349187
+  },
+  {
+   "deck": "orianna",
+   "card": "Plundering Poro",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.2718253968253968,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.008432539682539708
+  },
+  {
+   "deck": "orianna",
+   "card": "Zhonya's Hourglass",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.27033730158730157,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.009920634920634941
+  },
+  {
+   "deck": "orianna",
+   "card": "Resplendent Rostrum",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.2757936507936508,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.004464285714285698
+  },
+  {
+   "deck": "orianna",
+   "card": "Thousand-Tailed Watcher",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.25396825396825395,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.026289682539682557
+  },
+  {
+   "deck": "orianna",
+   "card": "Twilight Shroud",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.26785714285714285,
+   "base_wr": 0.2802579365079365,
+   "delta": 0.012400793650793662
+  },
+  {
+   "deck": "seraphine",
+   "card": "Seraphine - Inspiring",
+   "copies": 1,
+   "games": 2016,
+   "wr": 0.11557539682539683,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.019345238095238082
+  },
+  {
+   "deck": "seraphine",
+   "card": "Bellows Breath",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.17857142857142858,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.04365079365079366
+  },
+  {
+   "deck": "seraphine",
+   "card": "Carrion Dredger",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.12351190476190477,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.011408730158730146
+  },
+  {
+   "deck": "seraphine",
+   "card": "Concert Poster",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.12103174603174603,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.013888888888888881
+  },
+  {
+   "deck": "seraphine",
+   "card": "Encore",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.11507936507936507,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.01984126984126984
+  },
+  {
+   "deck": "seraphine",
+   "card": "Imperial Decree",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.15178571428571427,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.01686507936507936
+  },
+  {
+   "deck": "seraphine",
+   "card": "Trifarian Captain",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.1056547619047619,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.02926587301587301
+  },
+  {
+   "deck": "seraphine",
+   "card": "Vanguard Captain",
+   "copies": 3,
+   "games": 2016,
+   "wr": 0.1359126984126984,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.0009920634920634885
+  },
+  {
+   "deck": "seraphine",
+   "card": "Eclipse",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.15873015873015872,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.023809523809523808
+  },
+  {
+   "deck": "seraphine",
+   "card": "Faithful Manufactor",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.13095238095238096,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.003968253968253954
+  },
+  {
+   "deck": "seraphine",
+   "card": "Hidden Blade",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.11359126984126984,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.021329365079365073
+  },
+  {
+   "deck": "seraphine",
+   "card": "Mordekaiser - Dominating",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.125,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.009920634920634913
+  },
+  {
+   "deck": "seraphine",
+   "card": "Raucous Anthem",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.1130952380952381,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.021825396825396817
+  },
+  {
+   "deck": "seraphine",
+   "card": "Seal of Unity",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.10813492063492064,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.026785714285714274
+  },
+  {
+   "deck": "seraphine",
+   "card": "Shadow's Call",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.1597222222222222,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.024801587301587297
+  },
+  {
+   "deck": "seraphine",
+   "card": "Stupefy",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.13938492063492064,
+   "base_wr": 0.1349206349206349,
+   "delta": -0.004464285714285726
+  },
+  {
+   "deck": "seraphine",
+   "card": "Thousand-Tailed Watcher",
+   "copies": 2,
+   "games": 2016,
+   "wr": 0.1076388888888889,
+   "base_wr": 0.1349206349206349,
+   "delta": 0.027281746031746018
+  }
+ ]
+}

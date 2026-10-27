@@ -1,0 +1,34 @@
+{
+ "meta": {
+  "mode": "confirmatory",
+  "run_at": "2026-10-27T12:32Z",
+  "engine": "e4157fd",
+  "freeze_tag": "engine-freeze-v1",
+  "freeze_date": "2026-10-27T11:59:47Z",
+  "snapshots_total": 1,
+  "snapshots_holdout": 0,
+  "snapshots_used": []
+ },
+ "results": {
+  "H1": {
+   "status": "insufficient data",
+   "why": "no holdout snapshot yet"
+  },
+  "H2": {
+   "status": "insufficient data",
+   "why": "0 matchup cells with n >= 30 between mapped decks (20 required)"
+  },
+  "H3": {
+   "status": "insufficient data",
+   "why": "0 weekly snapshots (6 needed for the panel, 8+ for the walk-forward test)"
+  },
+  "H4": {
+   "status": "insufficient data",
+   "why": "no snapshots"
+  },
+  "H5": {
+   "status": "insufficient data",
+   "why": "no holdout snapshot yet"
+  }
+ }
+}
