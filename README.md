@@ -4,7 +4,7 @@
 
 **Play Riftbound, the League of Legends trading card game, against an AI on your phone, and measure how well a simulator prices the real tournament metagame.**
 
-[**▶ Play in your browser**](https://napi2002.github.io/riftbound-sim/play.html) · [**📊 Research report**](https://napi2002.github.io/riftbound-sim/report.html) · [**🌐 Project site**](https://napi2002.github.io/riftbound-sim/)
+[**▶ Play in your browser**](https://napi2002.github.io/riftbound-sim-naps/play.html) · [**📊 Research report**](https://napi2002.github.io/riftbound-sim-naps/report.html) · [**🌐 Project site**](https://napi2002.github.io/riftbound-sim-naps/)
 
 ![JavaScript](https://img.shields.io/badge/engine-JavaScript-ef7d00)
 ![Cards](https://img.shields.io/badge/cards-1%2C115-0a3a52)
@@ -95,7 +95,7 @@ Simulated win rates use 95% Wilson intervals of about ±0.6 points. The first pl
 
 **Main finding so far: a piloting gap.** Simulated win rates spread far wider than real ones, so part of each simulated number measures how well the AI pilots a deck, not just how strong the deck is. Simple proactive plans are overrated, while decks that depend on combat timing or slow engines are underrated. The confirmatory tests run on tournament data collected after the engine is frozen.
 
-➡️ The full write-up, with charts, is in the [research report](https://napi2002.github.io/riftbound-sim/report.html) ([source](docs/report.html)).
+➡️ The full write-up, with charts, is in the [research report](https://napi2002.github.io/riftbound-sim-naps/report.html) ([source](docs/report.html)).
 
 ## 🚀 Quick start
 
