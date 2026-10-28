@@ -6,7 +6,13 @@
 // (common random numbers), accept the best if it beats the current list by > 2 paired standard errors.
 // Finally every optimised list is re-scored on a large fresh seed set (no selection on those seeds).
 //
+// Budget mode (--budget USD --prices quant/data/prices/<date>.json): the whole deck (legend, main deck, battlefields,
+// runes) must cost at most USD at the snapshot's cheapest printing; unpriced cards are excluded. An over-budget
+// tournament list is first repaired: each step screens cost-reducing swaps (biased towards expensive cards) and
+// keeps the best-scoring one, until the list fits; then the usual search runs with every move kept within budget.
+//
 // Usage: node quant/optimise.js [--decks a,b] [--rounds R] [--moves M] [--screen N1] [--confirm N2] [--final N3] [--workers W]
+//        [--budget USD --prices file]
 'use strict';
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const ROOT = path.join(__dirname, '..');
@@ -41,6 +47,13 @@ async function main() {
   const W = +arg('--workers', String(os.cpus().length)), R = +arg('--rounds', '20'), M = +arg('--moves', '40');
   const P = +arg('--patience', '3'), FROM = arg('--from', null), N1 = +arg('--screen', '4'), N2 = +arg('--confirm', '24'), N3 = +arg('--final', '100'), maxTurns = 200;
   const RT = loadRT(), rng = mulberry32(+arg('--seed', '7'));
+  const BUDGET = arg('--budget') ? +arg('--budget') : null, PF = arg('--prices', null);
+  const nm = n => n.toLowerCase().replace(/[^a-z0-9]/g, ''), PN = {};
+  if (PF) { const P = JSON.parse(fs.readFileSync(PF, 'utf8')).prices; Object.keys(P).forEach(k => { PN[nm(k)] = P[k]; }); }
+  const priceCache = {};
+  // exact name, else the cheapest priced name containing it (e.g. 'Heart of the Tempest' -> 'Kennen - Heart of the Tempest')
+  const price = n => { const k = nm(n); if (!(k in priceCache)) { let p = PN[k]; if (p == null) { const m = Object.keys(PN).filter(x => x.includes(k)).map(x => PN[x]); p = m.length ? Math.min(...m) : Infinity; } priceCache[k] = p; } return priceCache[k]; };
+  const cost = s => price(s.legend) + s.list.reduce((t, e) => t + e[0] * price(e[1]), 0) + s.bfs.reduce((t, b) => t + price(b), 0) + Object.keys(s.runes).reduce((t, d) => t + s.runes[d] * price(d + ' Rune'), 0);
   const ids = arg('--decks') ? arg('--decks').split(',') : RT.DECKS.map(d => d.id);
 
   // meta weights: real share of each engine deck in the latest snapshot, renormalised over the 15
@@ -78,13 +91,15 @@ async function main() {
   // move generators
   const clone = s => ({ id: s.id, name: s.name, legend: s.legend, champion: s.champion, runes: Object.assign({}, s.runes), bfs: s.bfs.slice(), list: s.list.map(e => [e[0], e[1]]) });
   const pick = a => a[Math.floor(rng() * a.length)];
-  function moves(s, pool, bfPool, doms) {
+  function moves(s, pool, bfPool, doms, repair) {
     const out = [], have = {}; s.list.forEach(e => { have[e[1]] = e[0]; });
     const sig = s.list.reduce((t, e) => t + (RT.findCard(e[1]).supertype === 'Signature' ? e[0] : 0), 0);
     for (let tries = 0; out.length < M && tries < M * 20; tries++) {
       const r = rng(), t = clone(s);
-      if (r < 0.85) { // swap one copy
-        const rem = pick(t.list), add = pick(pool);
+      if (r < 0.85 || repair) { // swap one copy (repair: remove an expensive card, price-weighted)
+        let rem = pick(t.list);
+        if (repair) { const tw = t.list.reduce((a, e) => a + e[0] * price(e[1]), 0); let x = rng() * tw; rem = t.list.find(e => (x -= e[0] * price(e[1])) <= 0) || rem; }
+        const add = pick(pool);
         if (add.name === rem[1] || (have[add.name] || 0) >= 3) continue;
         if (rem[1] === s.champion && rem[0] === 1) continue;
         if (add.supertype === 'Signature' && RT.findCard(rem[1]).supertype !== 'Signature' && sig >= 3) continue;
@@ -98,6 +113,7 @@ async function main() {
         t.desc = `bf ${t.bfs[i]} -> ${b.name}`; t.bfs[i] = b.name;
       }
       if (!RT.validateDeck(t).ok) continue;
+      if (BUDGET != null && (repair ? cost(t) >= cost(s) : cost(t) > BUDGET)) continue;
       const k = keyOf(t); if (out.some(o => keyOf(o) === k)) continue;
       out.push(t);
     }
@@ -112,11 +128,19 @@ async function main() {
     const cnt = {}; d.cards.forEach(c => { cnt[c.name] = (cnt[c.name] || 0) + 1; });
     const s0 = { id: d.id, name: d.name, legend: leg.name, champion: d.championCard.name, runes: Object.assign({}, d.runes), bfs: d.bfCards.map(b => b.name), list: Object.keys(cnt).map(n => [cnt[n], n]) };
     const v0 = RT.validateDeck(s0); if (!v0.ok) console.log(`  ${id} tournament list fails the rules check: ${v0.errors.join(' ')}`);
-    const pool = RT.deckPool(leg).filter(c => RT.cardSimulated(c) && !c.banned);
+    const pool = RT.deckPool(leg).filter(c => RT.cardSimulated(c) && !c.banned && (BUDGET == null || price(c.name) < Infinity));
     const bfPool = RT.battlefieldPool(leg).filter(c => RT.cardSimulated(c) && !c.banned);
     const doms = leg.domain.filter(x => RT.DOMAIN_LIST.includes(x));
     const prev = FROM && JSON.parse(fs.readFileSync(FROM, 'utf8')).results.find(x => x.id === id);
     let cur = prev ? prev.best : s0, log = prev ? prev.log.slice() : [], stale = 0;
+    if (BUDGET != null && price(leg.name) + price(d.championCard.name) > BUDGET) { console.log(`  ${id}: legend + champion alone exceed the budget`); continue; }
+    while (BUDGET != null && cost(cur) > BUDGET) { // repair: cheapest-first is not the goal; keep the best-scoring cost cut
+      const cand = moves(cur, pool, bfPool, doms, true);
+      if (!cand.length) { console.log(`  ${id}: cannot repair to budget`); break; }
+      const sc = await score(cand, N1 * 2, seedBase++), bi = sc.reduce((b, x, i) => x.score > sc[b].score ? i : b, 0);
+      log.push(`repair ${cand[bi].desc} ($${cost(cur).toFixed(0)} -> $${cost(cand[bi]).toFixed(0)})`); cur = cand[bi]; delete cur.desc;
+    }
+    if (BUDGET != null && cost(cur) > BUDGET) continue;
     for (let r = 0; r < R && stale < P; r++) {
       const cand = moves(cur, pool, bfPool, doms);
       const sc = await score([cur, ...cand], N1, seedBase++);
@@ -128,7 +152,7 @@ async function main() {
       if (best) { const desc = best.c.desc; cur = best.c; delete cur.desc; log.push(`${desc || ''} (+${(100 * best.dlt).toFixed(1)} ± ${(100 * best.se).toFixed(1)})`); stale = 0; console.log(`  ${id} r${r}: ${log[log.length - 1]}`); }
       else stale++;
     }
-    results.push({ id, start: s0, best: cur, log });
+    results.push({ id, start: s0, best: cur, log, start_cost: PF ? cost(s0) : null, best_cost: PF ? cost(cur) : null });
     console.log(`${id}: ${log.length} accepted changes  [${((Date.now() - t0) / 1000).toFixed(0)}s, ${games} games]`);
   }
   // fresh-seed final scoring: tournament list and optimised list per legend
@@ -139,11 +163,11 @@ async function main() {
     // per-opponent win rate of the optimised list
     r.vs = {}; let i = 0; field.forEach(o => { let s = 0; for (let k = 0; k < 2 * N3; k++) s += f[1].g[i++] / (wt[o.id] / (2 * N3)); r.vs[o.id] = s / (2 * N3); });
     r.best.label = 'Optimised'; r.text = RT.deckToText(r.best);
-    console.log(`${r.id.padEnd(12)} tournament ${(100 * r.start_score).toFixed(1)}  optimised ${(100 * r.best_score).toFixed(1)}  (gain ${(100 * (r.best_score - r.start_score)).toFixed(1)} ± ${(100 * r.gain_se).toFixed(1)})`);
+    console.log(`${r.id.padEnd(12)} ${PF ? `$${r.start_cost.toFixed(0)} -> $${r.best_cost.toFixed(0)}  ` : ''}tournament ${(100 * r.start_score).toFixed(1)}  optimised ${(100 * r.best_score).toFixed(1)}  (gain ${(100 * (r.best_score - r.start_score)).toFixed(1)} ± ${(100 * r.gain_se).toFixed(1)})`);
   }
   let commit = 'unknown'; try { commit = cp.execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim(); } catch (e) { /* */ }
-  const out = path.join(__dirname, 'data/sim', `${commit}_optimise${FROM ? '_deep' : ''}.json`);
-  fs.writeFileSync(out, JSON.stringify({ commit, snapshot_id: last, weights: wt, params: { R, M, N1, N2, N3 }, games, seconds: (Date.now() - t0) / 1000, results }, null, 1) + '\n');
+  const out = path.join(__dirname, 'data/sim', `${commit}_optimise${FROM ? '_deep' : ''}${BUDGET != null ? '_budget' + BUDGET : ''}.json`);
+  fs.writeFileSync(out, JSON.stringify({ commit, snapshot_id: last, weights: wt, params: { R, M, N1, N2, N3, BUDGET, prices: PF }, games, seconds: (Date.now() - t0) / 1000, results }, null, 1) + '\n');
   console.log(`done: ${games} games in ${((Date.now() - t0) / 1000).toFixed(0)}s -> ${path.relative(ROOT, out)}`);
   ws.forEach(w => w.kill());
 }
