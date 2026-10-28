@@ -179,7 +179,7 @@ var RT = (function () {
       if (section === 'side') return;
       var m = line.match(/^(\d+)\s*x?\s+(.+)$/i) || line.match(/^(.+?)\s+x\s*(\d+)$/i), n = 1, name = line;
       if (m) { if (/^\d+$/.test(m[1])) { n = +m[1]; name = m[2]; } else { name = m[1]; n = +m[2]; } }
-      name = name.replace(/\s*\([A-Z0-9]{2,5}\)\s*[\w-]*$/, '').replace(/\s+[A-Z]{2,4}-\d{3}[a-z*]?$/, '').trim();
+      name = name.replace(/\s*\[[A-Za-z0-9*-]+\]\s*$/, '').replace(/\s*\([A-Z0-9]{2,5}\)\s*[\w-]*$/, '').replace(/\s+[A-Z]{2,4}-\d{3}[a-z*]?$/, '').trim();
       var rd = name.match(/^(fury|calm|mind|body|chaos|order)( rune)?s?$/i);
       if (rd || section === 'runes') {
         var dom = rd ? rd[1][0].toUpperCase() + rd[1].slice(1).toLowerCase() : null;

@@ -124,3 +124,7 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    (`process.send(out, () => process.exit(0))`) changes only how results are passed back; games, seeds,
    conditions and the measurement are unchanged, and `src/` (engine, AI, cards) is untouched. The baseline
    ablation was run with the fixed script on the frozen engine and is labelled with the engine commit `e4157fd`.
+2. **2026-10-28, before any holdout data.** `parseDeckText` in `src/engine.js` (text deck import in the game UI)
+   now also strips a trailing card code in square brackets, e.g. `3 Ruined Rex [UNL-067]`. It is not called during
+   games; 120 seeded games give an identical fingerprint before and after the change, and the rules tests pass.
+   Simulated rules, AI and card data are unchanged, so results labelled `e4157fd` remain the frozen baseline.
