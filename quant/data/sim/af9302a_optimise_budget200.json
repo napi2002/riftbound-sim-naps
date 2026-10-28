@@ -1,0 +1,3411 @@
+{
+ "commit": "af9302a",
+ "snapshot_id": 2720,
+ "weights": {
+  "kennen": 0.12020033388981634,
+  "leblanc": 0.11686143572621033,
+  "rengar": 0.10350584307178629,
+  "irelia": 0.14524207011686138,
+  "akali": 0.08514190317195323,
+  "jayce": 0.10016694490818027,
+  "masteryi": 0.09515859766277127,
+  "azir": 0.0751252086811352,
+  "vex": 0.0734557595993322,
+  "reksai": 0.061769616026711174,
+  "riven": 0.011686143572621032,
+  "evelynn": 0.0033388981636060097,
+  "mordekaiser": 0.0033388981636060097,
+  "orianna": 0.0033388981636060097,
+  "seraphine": 0.0016694490818030048
+ },
+ "params": {
+  "R": 30,
+  "M": 60,
+  "N1": 4,
+  "N2": 32,
+  "N3": 250,
+  "BUDGET": 200,
+  "prices": "quant/data/prices/2026-10-28.json"
+ },
+ "games": 2595600,
+ "seconds": 1882.304,
+ "results": [
+  {
+   "id": "kennen",
+   "start": {
+    "id": "kennen",
+    "name": "Kennen",
+    "legend": "Heart of the Tempest",
+    "champion": "Kennen, Storm of Shuriken",
+    "runes": {
+     "Chaos": 9,
+     "Order": 3
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Minefield",
+     "Shadow Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      3,
+      "Lightning Rush"
+     ],
+     [
+      3,
+      "Rhasa the Sunderer"
+     ],
+     [
+      3,
+      "Seal of Discord"
+     ],
+     [
+      3,
+      "Shadow Order Disciple"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Traveling Merchant"
+     ],
+     [
+      2,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Last Rites"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Switcheroo"
+     ],
+     [
+      2,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Existential Dread"
+     ],
+     [
+      1,
+      "Ezreal, Prodigy"
+     ],
+     [
+      1,
+      "Flash"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Ride The Wind"
+     ],
+     [
+      1,
+      "Salvage"
+     ],
+     [
+      1,
+      "Shadows of the Past"
+     ],
+     [
+      1,
+      "The Harrowing"
+     ],
+     [
+      1,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Treasure Hunter"
+     ]
+    ]
+   },
+   "best": {
+    "id": "kennen",
+    "name": "Kennen",
+    "legend": "Heart of the Tempest",
+    "champion": "Kennen, Storm of Shuriken",
+    "runes": {
+     "Chaos": 9,
+     "Order": 3
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Minefield",
+     "Shadow Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      3,
+      "Lightning Rush"
+     ],
+     [
+      3,
+      "Rhasa the Sunderer"
+     ],
+     [
+      3,
+      "Seal of Discord"
+     ],
+     [
+      3,
+      "Shadow Order Disciple"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Traveling Merchant"
+     ],
+     [
+      1,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Last Rites"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      1,
+      "Switcheroo"
+     ],
+     [
+      2,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Existential Dread"
+     ],
+     [
+      1,
+      "Ezreal, Prodigy"
+     ],
+     [
+      1,
+      "Flash"
+     ],
+     [
+      2,
+      "Gust"
+     ],
+     [
+      1,
+      "Ride The Wind"
+     ],
+     [
+      1,
+      "Shadows of the Past"
+     ],
+     [
+      1,
+      "The Harrowing"
+     ],
+     [
+      1,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Treasure Hunter"
+     ],
+     [
+      1,
+      "Glasc Mixologist"
+     ],
+     [
+      1,
+      "Vengeance"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Baron Nashor, +1 Glasc Mixologist ($249 -> $204)",
+    "repair -1 Salvage, +1 Vengeance ($204 -> $200)",
+    "repair -1 Fizz - Trickster, +1 Gust ($200 -> $197)",
+    "-1 Switcheroo, +1 Hidden Blade (+7.4 ± 2.1)"
+   ],
+   "start_cost": 248.66000000000003,
+   "best_cost": 194.15,
+   "start_score": 0.6112921535893582,
+   "best_score": 0.675619365609395,
+   "gain_se": 0.007621527999826141,
+   "vs": {
+    "kennen": 0.618,
+    "leblanc": 0.368,
+    "rengar": 0.574,
+    "irelia": 0.816,
+    "akali": 0.918,
+    "jayce": 0.634,
+    "masteryi": 0.564,
+    "azir": 0.96,
+    "vex": 0.684,
+    "reksai": 0.746,
+    "riven": 0.646,
+    "evelynn": 0.646,
+    "mordekaiser": 0.67,
+    "orianna": 0.918,
+    "seraphine": 0.966
+   },
+   "text": "Legend:\n1 Heart of the Tempest\n\nChampion:\n1 Kennen, Storm of Shuriken\n\nMain Deck:\n3 Rhasa the Sunderer\n3 Shadow Order Disciple\n3 Tail-Cloaked Matriarch\n3 Traveling Merchant\n1 Fizz - Trickster\n2 Tornado Warrior\n1 Ezreal, Prodigy\n1 Tideturner\n1 Treasure Hunter\n1 Glasc Mixologist\n3 Lightning Rush\n2 Star-Crossed\n1 Switcheroo\n1 Existential Dread\n1 Flash\n2 Gust\n1 Ride The Wind\n1 Shadows of the Past\n1 The Harrowing\n1 Vengeance\n1 Hidden Blade\n3 Seal of Discord\n2 Last Rites\n\nBattlefields:\n1 Zaun Warrens\n1 Minefield\n1 Shadow Temple\n\nRunes:\n9 Chaos Rune\n3 Order Rune"
+  },
+  {
+   "id": "leblanc",
+   "start": {
+    "id": "leblanc",
+    "name": "LeBlanc",
+    "legend": "LeBlanc - Deceiver",
+    "champion": "LeBlanc - Fragmented",
+    "runes": {
+     "Mind": 4,
+     "Order": 8
+    },
+    "bfs": [
+     "Dusk Rose Lab",
+     "Star Spring",
+     "Windswept Hillock"
+    ],
+    "list": [
+     [
+      1,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      2,
+      "Watchful Sentry"
+     ],
+     [
+      3,
+      "Black Rose Dignitary"
+     ],
+     [
+      3,
+      "Karthus - Eternal"
+     ],
+     [
+      3,
+      "Glasc Mixologist"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      3,
+      "Ruined Rex"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Rift Herald"
+     ],
+     [
+      3,
+      "Baited Hook"
+     ],
+     [
+      3,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Deathgrip"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "Mirror Image"
+     ]
+    ]
+   },
+   "best": {
+    "id": "leblanc",
+    "name": "LeBlanc",
+    "legend": "LeBlanc - Deceiver",
+    "champion": "LeBlanc - Fragmented",
+    "runes": {
+     "Mind": 4,
+     "Order": 8
+    },
+    "bfs": [
+     "Dusk Rose Lab",
+     "Star Spring",
+     "Windswept Hillock"
+    ],
+    "list": [
+     [
+      1,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      2,
+      "Watchful Sentry"
+     ],
+     [
+      3,
+      "Black Rose Dignitary"
+     ],
+     [
+      3,
+      "Karthus - Eternal"
+     ],
+     [
+      3,
+      "Glasc Mixologist"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      3,
+      "Ruined Rex"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Rift Herald"
+     ],
+     [
+      2,
+      "Baited Hook"
+     ],
+     [
+      3,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Deathgrip"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "Mirror Image"
+     ],
+     [
+      1,
+      "Riptide Rex"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Baited Hook, +1 Riptide Rex ($231 -> $183)"
+   ],
+   "start_cost": 230.77,
+   "best_cost": 182.78,
+   "start_score": 0.751769616026781,
+   "best_score": 0.7780801335559975,
+   "gain_se": 0.004898519484534591,
+   "vs": {
+    "kennen": 0.772,
+    "leblanc": 0.518,
+    "rengar": 0.808,
+    "irelia": 0.842,
+    "akali": 0.948,
+    "jayce": 0.738,
+    "masteryi": 0.682,
+    "azir": 0.97,
+    "vex": 0.696,
+    "reksai": 0.908,
+    "riven": 0.798,
+    "evelynn": 0.68,
+    "mordekaiser": 0.85,
+    "orianna": 0.934,
+    "seraphine": 0.99
+   },
+   "text": "Legend:\n1 LeBlanc - Deceiver\n\nChampion:\n1 LeBlanc - Fragmented\n\nMain Deck:\n2 Honest Broker\n3 Soaring Scout\n2 Watchful Sentry\n3 Black Rose Dignitary\n3 Karthus - Eternal\n3 Glasc Mixologist\n3 Vi - Peacekeeper\n3 Ruined Rex\n1 Thousand-Tailed Watcher\n3 Harnessed Dragon\n3 Rift Herald\n1 Riptide Rex\n3 Sacrifice\n1 Deathgrip\n1 Hidden Blade\n2 Mirror Image\n2 Baited Hook\n\nBattlefields:\n1 Dusk Rose Lab\n1 Star Spring\n1 Windswept Hillock\n\nRunes:\n4 Mind Rune\n8 Order Rune"
+  },
+  {
+   "id": "rengar",
+   "start": {
+    "id": "rengar",
+    "name": "Rengar",
+    "legend": "Rengar - Pridestalker",
+    "champion": "Rengar - Trophy Hunter",
+    "runes": {
+     "Fury": 4,
+     "Body": 8
+    },
+    "bfs": [
+     "Emperor's Dais",
+     "Seat of Power",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Irresistible Faefolk"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      2,
+      "First Mate"
+     ],
+     [
+      3,
+      "Grim Apothecary"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      2,
+      "Nidalee - Cat Form"
+     ],
+     [
+      1,
+      "Pakaa Cub"
+     ],
+     [
+      1,
+      "Pyke - Dockside Butcher"
+     ],
+     [
+      3,
+      "Kai'Sa - Survivor"
+     ],
+     [
+      3,
+      "Noxus Hopeful"
+     ],
+     [
+      1,
+      "Darius - Trifarian"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      3,
+      "Sabotage"
+     ],
+     [
+      2,
+      "Thrill of the Hunt"
+     ],
+     [
+      2,
+      "Rampage"
+     ]
+    ]
+   },
+   "best": {
+    "id": "rengar",
+    "name": "Rengar",
+    "legend": "Rengar - Pridestalker",
+    "champion": "Rengar - Trophy Hunter",
+    "runes": {
+     "Fury": 4,
+     "Body": 8
+    },
+    "bfs": [
+     "Emperor's Dais",
+     "Seat of Power",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      1,
+      "Irresistible Faefolk"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      2,
+      "First Mate"
+     ],
+     [
+      3,
+      "Grim Apothecary"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      2,
+      "Nidalee - Cat Form"
+     ],
+     [
+      1,
+      "Pakaa Cub"
+     ],
+     [
+      1,
+      "Pyke - Dockside Butcher"
+     ],
+     [
+      1,
+      "Kai'Sa - Survivor"
+     ],
+     [
+      3,
+      "Noxus Hopeful"
+     ],
+     [
+      2,
+      "Darius - Trifarian"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      2,
+      "Sabotage"
+     ],
+     [
+      2,
+      "Thrill of the Hunt"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      1,
+      "Anivia - Primal"
+     ],
+     [
+      1,
+      "Blazing Scorcher"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Master Yi - Honed"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Sabotage, +1 Anivia - Primal ($310 -> $300)",
+    "repair -1 Irresistible Faefolk, +1 Blazing Scorcher ($300 -> $296)",
+    "repair -1 Irresistible Faefolk, +1 Onslaught ($296 -> $293)",
+    "repair -1 Kai'Sa - Survivor, +1 Darius - Trifarian ($293 -> $228)",
+    "repair -1 Kai'Sa - Survivor, +1 Master Yi - Honed ($228 -> $163)"
+   ],
+   "start_cost": 310.47999999999996,
+   "best_cost": 162.83000000000004,
+   "start_score": 0.5975993322204083,
+   "best_score": 0.6341803005008785,
+   "gain_se": 0.007888745788682535,
+   "vs": {
+    "kennen": 0.582,
+    "leblanc": 0.264,
+    "rengar": 0.556,
+    "irelia": 0.78,
+    "akali": 0.912,
+    "jayce": 0.6,
+    "masteryi": 0.494,
+    "azir": 0.946,
+    "vex": 0.582,
+    "reksai": 0.768,
+    "riven": 0.674,
+    "evelynn": 0.566,
+    "mordekaiser": 0.65,
+    "orianna": 0.89,
+    "seraphine": 0.964
+   },
+   "text": "Legend:\n1 Rengar - Pridestalker\n\nChampion:\n1 Rengar - Trophy Hunter\n\nMain Deck:\n3 Inferna\n1 Irresistible Faefolk\n3 Pit Rookie\n2 First Mate\n3 Grim Apothecary\n3 Kinkou Initiate\n2 Nidalee - Cat Form\n1 Pakaa Cub\n1 Pyke - Dockside Butcher\n1 Kai'Sa - Survivor\n3 Noxus Hopeful\n2 Darius - Trifarian\n1 Ferrous Forerunner\n1 Anivia - Primal\n1 Blazing Scorcher\n1 Master Yi - Honed\n3 Punch First\n2 Sabotage\n2 Thrill of the Hunt\n2 Rampage\n1 Onslaught\n\nBattlefields:\n1 Emperor's Dais\n1 Seat of Power\n1 Star Spring\n\nRunes:\n4 Fury Rune\n8 Body Rune"
+  },
+  {
+   "id": "irelia",
+   "start": {
+    "id": "irelia",
+    "name": "Irelia",
+    "legend": "Irelia - Blade Dancer",
+    "champion": "Irelia - Fervent",
+    "runes": {
+     "Calm": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Abandoned Hall",
+     "Sunken Temple",
+     "Targon's Peak"
+    ],
+    "list": [
+     [
+      1,
+      "Irelia - Fervent"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Pyke - Returned"
+     ],
+     [
+      1,
+      "Akali, Silent"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      1,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Guardian Angel"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Charm"
+     ],
+     [
+      3,
+      "Defiant Dance"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Twilight Shroud"
+     ],
+     [
+      1,
+      "Abandon"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      1,
+      "Flash"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      2,
+      "Ride The Wind"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ]
+    ]
+   },
+   "best": {
+    "id": "irelia",
+    "name": "Irelia",
+    "legend": "Irelia - Blade Dancer",
+    "champion": "Irelia - Fervent",
+    "runes": {
+     "Calm": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Abandoned Hall",
+     "Sunken Temple",
+     "Fortified Position"
+    ],
+    "list": [
+     [
+      2,
+      "Irelia - Fervent"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      2,
+      "Pyke - Returned"
+     ],
+     [
+      2,
+      "Akali, Silent"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      1,
+      "Vex - Apathetic"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Charm"
+     ],
+     [
+      3,
+      "Defiant Dance"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      2,
+      "Ride The Wind"
+     ],
+     [
+      3,
+      "Gust Monk"
+     ],
+     [
+      1,
+      "Sterak's Gage"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Not So Fast, +1 Gust Monk (+3.7 ± 1.5)",
+    "-1 Flash, +1 Sterak's Gage (+4.6 ± 1.8)",
+    "-1 Abandon, +1 Pyke - Returned (+4.8 ± 2.1)",
+    "bf Targon's Peak -> Fortified Position (+3.3 ± 1.2)",
+    "-1 Guardian Angel, +1 Gust Monk (+6.9 ± 2.0)",
+    "-1 Star-Crossed, +1 Gust Monk (+4.3 ± 1.2)",
+    "-1 Star-Crossed, +1 Irelia - Fervent (+5.7 ± 2.3)",
+    "-1 Twilight Shroud, +1 Akali, Silent (+4.3 ± 2.1)"
+   ],
+   "start_cost": 156.00000000000003,
+   "best_cost": 168.95000000000002,
+   "start_score": 0.3704006677796478,
+   "best_score": 0.5667278797997042,
+   "gain_se": 0.008630780443691446,
+   "vs": {
+    "kennen": 0.508,
+    "leblanc": 0.428,
+    "rengar": 0.462,
+    "irelia": 0.672,
+    "akali": 0.754,
+    "jayce": 0.464,
+    "masteryi": 0.392,
+    "azir": 0.808,
+    "vex": 0.57,
+    "reksai": 0.74,
+    "riven": 0.51,
+    "evelynn": 0.606,
+    "mordekaiser": 0.574,
+    "orianna": 0.766,
+    "seraphine": 0.906
+   },
+   "text": "Legend:\n1 Irelia - Blade Dancer\n\nChampion:\n1 Irelia - Fervent\n\nMain Deck:\n1 Irelia - Fervent\n3 Scuttle Crab\n3 Tideturner\n2 Pyke - Returned\n2 Akali, Silent\n3 Stellacorn Herder\n1 Vex - Apathetic\n3 Gust Monk\n2 Charm\n3 Defiant Dance\n3 Defy\n2 En Garde\n1 Gust\n3 Discipline\n2 Ride The Wind\n2 Zhonya's Hourglass\n2 Boots of Swiftness\n1 Sterak's Gage\n\nBattlefields:\n1 Abandoned Hall\n1 Sunken Temple\n1 Fortified Position\n\nRunes:\n6 Calm Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "akali",
+   "start": {
+    "id": "akali",
+    "name": "Akali",
+    "legend": "Akali - Rogue Assassin",
+    "champion": "Akali, Silent",
+    "runes": {
+     "Calm": 6,
+     "Fury": 6
+    },
+    "bfs": [
+     "Back-Alley Bar",
+     "Star Spring",
+     "Void Gate"
+    ],
+    "list": [
+     [
+      1,
+      "Akali, Silent"
+     ],
+     [
+      2,
+      "Charm"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Shuriken Flip"
+     ],
+     [
+      2,
+      "Twilight Shroud"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Mournful Witness"
+     ],
+     [
+      2,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Back Off"
+     ],
+     [
+      3,
+      "Pendulum Blade"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      1,
+      "Irelia - Fervent"
+     ]
+    ]
+   },
+   "best": {
+    "id": "akali",
+    "name": "Akali",
+    "legend": "Akali - Rogue Assassin",
+    "champion": "Akali, Silent",
+    "runes": {
+     "Calm": 6,
+     "Fury": 6
+    },
+    "bfs": [
+     "Back-Alley Bar",
+     "Star Spring",
+     "Fortified Position"
+    ],
+    "list": [
+     [
+      1,
+      "Akali, Silent"
+     ],
+     [
+      1,
+      "Charm"
+     ],
+     [
+      2,
+      "Defy"
+     ],
+     [
+      2,
+      "Shuriken Flip"
+     ],
+     [
+      2,
+      "Twilight Shroud"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Mournful Witness"
+     ],
+     [
+      2,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Back Off"
+     ],
+     [
+      3,
+      "Pendulum Blade"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      1,
+      "Irelia - Fervent"
+     ],
+     [
+      1,
+      "Jinx - Demolitionist"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Defy, +1 Jinx - Demolitionist (+5.4 ± 1.9)",
+    "bf Void Gate -> Fortified Position (+3.8 ± 1.3)",
+    "-1 Shuriken Flip, +1 Ferrous Forerunner (+4.4 ± 2.1)",
+    "-1 Charm, +1 Trevor Snoozebottom (+5.7 ± 2.1)"
+   ],
+   "start_cost": 131.97,
+   "best_cost": 127.78999999999998,
+   "start_score": 0.28776293823039556,
+   "best_score": 0.4320166944908401,
+   "gain_se": 0.00783609901554793,
+   "vs": {
+    "kennen": 0.232,
+    "leblanc": 0.226,
+    "rengar": 0.318,
+    "irelia": 0.616,
+    "akali": 0.69,
+    "jayce": 0.462,
+    "masteryi": 0.276,
+    "azir": 0.67,
+    "vex": 0.436,
+    "reksai": 0.516,
+    "riven": 0.326,
+    "evelynn": 0.366,
+    "mordekaiser": 0.362,
+    "orianna": 0.648,
+    "seraphine": 0.844
+   },
+   "text": "Legend:\n1 Akali - Rogue Assassin\n\nChampion:\n1 Akali, Silent\n\nMain Deck:\n3 Inferna\n3 Lonely Poro\n3 Mournful Witness\n2 Scuttle Crab\n3 Stellacorn Herder\n1 Irelia - Fervent\n1 Jinx - Demolitionist\n1 Ferrous Forerunner\n1 Trevor Snoozebottom\n1 Charm\n2 Defy\n2 Shuriken Flip\n2 Twilight Shroud\n3 Discipline\n2 Back Off\n3 Mask of Foresight\n3 Zhonya's Hourglass\n3 Pendulum Blade\n\nBattlefields:\n1 Back-Alley Bar\n1 Star Spring\n1 Fortified Position\n\nRunes:\n6 Calm Rune\n6 Fury Rune"
+  },
+  {
+   "id": "jayce",
+   "start": {
+    "id": "jayce",
+    "name": "Jayce",
+    "legend": "Jayce - Defender of Tomorrow",
+    "champion": "Jayce, Brilliant Inventor",
+    "runes": {
+     "Mind": 5,
+     "Body": 7
+    },
+    "bfs": [
+     "Sigil of the Storm",
+     "Forgotten Monument",
+     "Dragon Roost"
+    ],
+    "list": [
+     [
+      1,
+      "Jayce, Brilliant Inventor"
+     ],
+     [
+      3,
+      "Bellows Breath"
+     ],
+     [
+      3,
+      "Catalyst of Aeons"
+     ],
+     [
+      3,
+      "Clairvoyance"
+     ],
+     [
+      3,
+      "Dazzling Aurora"
+     ],
+     [
+      3,
+      "Dredge Up"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      3,
+      "Mobilize"
+     ],
+     [
+      3,
+      "Platewyrm Egg"
+     ],
+     [
+      3,
+      "Promising Future"
+     ],
+     [
+      2,
+      "Flurry of Blades"
+     ],
+     [
+      2,
+      "Garbage Grabber"
+     ],
+     [
+      2,
+      "Sabotage"
+     ],
+     [
+      2,
+      "Sprite Burst"
+     ],
+     [
+      1,
+      "Deadly Flourish"
+     ],
+     [
+      1,
+      "Downstage Dramatics"
+     ],
+     [
+      1,
+      "Gutter Palace"
+     ],
+     [
+      1,
+      "Rocket Barrage"
+     ]
+    ]
+   },
+   "best": {
+    "id": "jayce",
+    "name": "Jayce",
+    "legend": "Jayce - Defender of Tomorrow",
+    "champion": "Jayce, Brilliant Inventor",
+    "runes": {
+     "Mind": 4,
+     "Body": 8
+    },
+    "bfs": [
+     "Sigil of the Storm",
+     "Forgotten Monument",
+     "Dragon Roost"
+    ],
+    "list": [
+     [
+      1,
+      "Jayce, Brilliant Inventor"
+     ],
+     [
+      1,
+      "Bellows Breath"
+     ],
+     [
+      3,
+      "Catalyst of Aeons"
+     ],
+     [
+      3,
+      "Clairvoyance"
+     ],
+     [
+      3,
+      "Dazzling Aurora"
+     ],
+     [
+      3,
+      "Dredge Up"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      3,
+      "Mobilize"
+     ],
+     [
+      3,
+      "Platewyrm Egg"
+     ],
+     [
+      2,
+      "Promising Future"
+     ],
+     [
+      2,
+      "Flurry of Blades"
+     ],
+     [
+      2,
+      "Garbage Grabber"
+     ],
+     [
+      3,
+      "Sprite Burst"
+     ],
+     [
+      2,
+      "Deadly Flourish"
+     ],
+     [
+      1,
+      "Downstage Dramatics"
+     ],
+     [
+      1,
+      "Gutter Palace"
+     ],
+     [
+      2,
+      "Rocket Barrage"
+     ],
+     [
+      1,
+      "Stupefy"
+     ],
+     [
+      1,
+      "Stormclaw Ursine"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Sabotage, +1 Rocket Barrage (+5.0 ± 1.7)",
+    "-1 Promising Future, +1 Sprite Burst (+5.0 ± 1.9)",
+    "-1 Sabotage, +1 Industrious Mechsmith (+5.0 ± 1.8)",
+    "-1 Industrious Mechsmith, +1 Stupefy (+3.0 ± 1.5)",
+    "rune Mind -> Body (+2.7 ± 1.1)",
+    "-1 Bellows Breath, +1 Deadly Flourish (+5.8 ± 2.4)",
+    "-1 Bellows Breath, +1 Stormclaw Ursine (+7.6 ± 2.4)"
+   ],
+   "start_cost": 147.75000000000003,
+   "best_cost": 120.60000000000002,
+   "start_score": 0.4768213689482699,
+   "best_score": 0.612644407345611,
+   "gain_se": 0.009255254680467765,
+   "vs": {
+    "kennen": 0.578,
+    "leblanc": 0.41,
+    "rengar": 0.54,
+    "irelia": 0.734,
+    "akali": 0.806,
+    "jayce": 0.702,
+    "masteryi": 0.544,
+    "azir": 0.726,
+    "vex": 0.542,
+    "reksai": 0.54,
+    "riven": 0.632,
+    "evelynn": 0.508,
+    "mordekaiser": 0.418,
+    "orianna": 0.794,
+    "seraphine": 0.724
+   },
+   "text": "Legend:\n1 Jayce - Defender of Tomorrow\n\nChampion:\n1 Jayce, Brilliant Inventor\n\nMain Deck:\n3 Elder Dragon\n1 Stormclaw Ursine\n1 Bellows Breath\n3 Catalyst of Aeons\n3 Clairvoyance\n3 Dredge Up\n3 Mobilize\n2 Promising Future\n2 Flurry of Blades\n3 Sprite Burst\n2 Deadly Flourish\n1 Downstage Dramatics\n2 Rocket Barrage\n1 Stupefy\n3 Dazzling Aurora\n3 Platewyrm Egg\n2 Garbage Grabber\n1 Gutter Palace\n\nBattlefields:\n1 Sigil of the Storm\n1 Forgotten Monument\n1 Dragon Roost\n\nRunes:\n4 Mind Rune\n8 Body Rune"
+  },
+  {
+   "id": "masteryi",
+   "start": {
+    "id": "masteryi",
+    "name": "Master Yi",
+    "legend": "Master Yi - Wuju Bladesman",
+    "champion": "Master Yi - Tempered",
+    "runes": {
+     "Calm": 5,
+     "Body": 7
+    },
+    "bfs": [
+     "Grove of the God-Willow",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Master Yi - Tempered"
+     ],
+     [
+      3,
+      "Charm"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "First Mate"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      3,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Ruin Runner"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Alpha Strike"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Sabotage"
+     ]
+    ]
+   },
+   "best": {
+    "id": "masteryi",
+    "name": "Master Yi",
+    "legend": "Master Yi - Wuju Bladesman",
+    "champion": "Master Yi - Tempered",
+    "runes": {
+     "Calm": 5,
+     "Body": 7
+    },
+    "bfs": [
+     "Grove of the God-Willow",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Master Yi - Tempered"
+     ],
+     [
+      3,
+      "Charm"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "First Mate"
+     ],
+     [
+      2,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Pit Rookie"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      3,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      2,
+      "En Garde"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Ruin Runner"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Alpha Strike"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Ribbon Dancer"
+     ],
+     [
+      1,
+      "Tasty Faefolk"
+     ],
+     [
+      1,
+      "Akali, Silent"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Sabotage, +1 Ribbon Dancer ($203 -> $193)",
+    "-1 Not So Fast, +1 Tasty Faefolk (+3.3 ± 1.5)",
+    "-1 Lonely Poro, +1 Akali, Silent (+5.0 ± 1.9)"
+   ],
+   "start_cost": 203.39000000000001,
+   "best_cost": 191.85,
+   "start_score": 0.6246310517529644,
+   "best_score": 0.6929682804674943,
+   "gain_se": 0.0072015754773954235,
+   "vs": {
+    "kennen": 0.606,
+    "leblanc": 0.406,
+    "rengar": 0.64,
+    "irelia": 0.822,
+    "akali": 0.91,
+    "jayce": 0.62,
+    "masteryi": 0.584,
+    "azir": 0.92,
+    "vex": 0.696,
+    "reksai": 0.886,
+    "riven": 0.646,
+    "evelynn": 0.656,
+    "mordekaiser": 0.754,
+    "orianna": 0.904,
+    "seraphine": 0.988
+   },
+   "text": "Legend:\n1 Master Yi - Wuju Bladesman\n\nChampion:\n1 Master Yi - Tempered\n\nMain Deck:\n3 First Mate\n2 Lonely Poro\n3 Pit Rookie\n3 Rengar - Trophy Hunter\n3 Scuttle Crab\n2 Ruin Runner\n1 Ribbon Dancer\n1 Tasty Faefolk\n1 Akali, Silent\n3 Charm\n3 Defy\n3 Discipline\n3 Punch First\n2 En Garde\n2 Rampage\n1 Alpha Strike\n1 Onslaught\n2 Zhonya's Hourglass\n\nBattlefields:\n1 Grove of the God-Willow\n1 Emperor's Dais\n1 Star Spring\n\nRunes:\n5 Calm Rune\n7 Body Rune"
+  },
+  {
+   "id": "azir",
+   "start": {
+    "id": "azir",
+    "name": "Azir",
+    "legend": "Azir - Emperor of the Sands",
+    "champion": "Azir - Sovereign",
+    "runes": {
+     "Calm": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Trifarian War Camp",
+     "Hall of Legends",
+     "Ornn's Forge"
+    ],
+    "list": [
+     [
+      1,
+      "Azir - Sovereign"
+     ],
+     [
+      3,
+      "Arise!"
+     ],
+     [
+      3,
+      "B.F. Sword"
+     ],
+     [
+      3,
+      "Brutalizer"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Doran's Shield"
+     ],
+     [
+      3,
+      "Eye of the Herald"
+     ],
+     [
+      3,
+      "Guards!"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Soul Sword"
+     ],
+     [
+      2,
+      "Desert's Call"
+     ],
+     [
+      2,
+      "Guardian Angel"
+     ],
+     [
+      2,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Back Off"
+     ],
+     [
+      1,
+      "Charm"
+     ],
+     [
+      1,
+      "Deathgrip"
+     ]
+    ]
+   },
+   "best": {
+    "id": "azir",
+    "name": "Azir",
+    "legend": "Azir - Emperor of the Sands",
+    "champion": "Azir - Sovereign",
+    "runes": {
+     "Calm": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Trifarian War Camp",
+     "Hall of Legends",
+     "Ornn's Forge"
+    ],
+    "list": [
+     [
+      1,
+      "Azir - Sovereign"
+     ],
+     [
+      2,
+      "Arise!"
+     ],
+     [
+      3,
+      "B.F. Sword"
+     ],
+     [
+      3,
+      "Brutalizer"
+     ],
+     [
+      2,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Doran's Shield"
+     ],
+     [
+      1,
+      "Eye of the Herald"
+     ],
+     [
+      3,
+      "Guards!"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Soul Sword"
+     ],
+     [
+      2,
+      "Desert's Call"
+     ],
+     [
+      2,
+      "Guardian Angel"
+     ],
+     [
+      2,
+      "Sacrifice"
+     ],
+     [
+      1,
+      "Back Off"
+     ],
+     [
+      2,
+      "Charm"
+     ],
+     [
+      1,
+      "Sunlit Guardian"
+     ],
+     [
+      1,
+      "Hunting Dog"
+     ],
+     [
+      1,
+      "Leona - Determined"
+     ],
+     [
+      1,
+      "Solari Shieldbearer"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Eye of the Herald, +1 Charm (+3.9 ± 1.7)",
+    "-1 Eye of the Herald, +1 Sunlit Guardian (+7.2 ± 1.7)",
+    "-1 Defy, +1 Hunting Dog (+5.7 ± 1.9)",
+    "-1 Arise!, +1 Leona - Determined (+6.4 ± 2.1)",
+    "-1 Deathgrip, +1 Solari Shieldbearer (+3.9 ± 1.7)"
+   ],
+   "start_cost": 78.83999999999997,
+   "best_cost": 59.860000000000014,
+   "start_score": 0.2357863105175281,
+   "best_score": 0.3728347245409173,
+   "gain_se": 0.007565131264119095,
+   "vs": {
+    "kennen": 0.192,
+    "leblanc": 0.1,
+    "rengar": 0.176,
+    "irelia": 0.51,
+    "akali": 0.642,
+    "jayce": 0.512,
+    "masteryi": 0.284,
+    "azir": 0.728,
+    "vex": 0.348,
+    "reksai": 0.374,
+    "riven": 0.308,
+    "evelynn": 0.294,
+    "mordekaiser": 0.302,
+    "orianna": 0.748,
+    "seraphine": 0.818
+   },
+   "text": "Legend:\n1 Azir - Emperor of the Sands\n\nChampion:\n1 Azir - Sovereign\n\nMain Deck:\n1 Sunlit Guardian\n1 Hunting Dog\n1 Leona - Determined\n1 Solari Shieldbearer\n2 Arise!\n2 Defy\n3 Discipline\n3 Guards!\n3 Hidden Blade\n2 Desert's Call\n2 Sacrifice\n1 Back Off\n2 Charm\n3 B.F. Sword\n3 Brutalizer\n3 Doran's Shield\n1 Eye of the Herald\n3 Soul Sword\n2 Guardian Angel\n\nBattlefields:\n1 Trifarian War Camp\n1 Hall of Legends\n1 Ornn's Forge\n\nRunes:\n6 Calm Rune\n6 Order Rune"
+  },
+  {
+   "id": "vex",
+   "start": {
+    "id": "vex",
+    "name": "Vex",
+    "legend": "Vex - Gloomist",
+    "champion": "Vex - Apathetic",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Fortified Position",
+     "Targon's Peak",
+     "Threshold of the Gray"
+    ],
+    "list": [
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Stacked Deck"
+     ],
+     [
+      3,
+      "Steel Paws"
+     ],
+     [
+      3,
+      "Switcheroo"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Evelynn - Entrancing"
+     ],
+     [
+      1,
+      "Back Off"
+     ],
+     [
+      1,
+      "Charm"
+     ],
+     [
+      1,
+      "Edge of Night"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Gust Monk"
+     ],
+     [
+      1,
+      "Irelia - Fervent"
+     ],
+     [
+      1,
+      "Mutated Mouser"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Ride The Wind"
+     ],
+     [
+      1,
+      "Scuttle Crab"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ],
+     [
+      1,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Zhonya's Hourglass"
+     ]
+    ]
+   },
+   "best": {
+    "id": "vex",
+    "name": "Vex",
+    "legend": "Vex - Gloomist",
+    "champion": "Vex - Apathetic",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Fortified Position",
+     "Targon's Peak",
+     "Threshold of the Gray"
+    ],
+    "list": [
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Stacked Deck"
+     ],
+     [
+      3,
+      "Steel Paws"
+     ],
+     [
+      1,
+      "Switcheroo"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Evelynn - Entrancing"
+     ],
+     [
+      1,
+      "Back Off"
+     ],
+     [
+      1,
+      "Charm"
+     ],
+     [
+      1,
+      "Edge of Night"
+     ],
+     [
+      1,
+      "Gust"
+     ],
+     [
+      1,
+      "Gust Monk"
+     ],
+     [
+      1,
+      "Mutated Mouser"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Scuttle Crab"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "En Garde"
+     ],
+     [
+      1,
+      "Irelia - Fervent"
+     ],
+     [
+      1,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      1,
+      "Bedeviling Stranger"
+     ],
+     [
+      1,
+      "Zephyr Sage"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Irelia - Fervent, +1 En Garde ($272 -> $256)",
+    "repair -1 Astral Heron, +1 Irelia - Fervent ($256 -> $219)",
+    "repair -1 Astral Heron, +1 Tideturner ($219 -> $168)",
+    "-1 Switcheroo, +1 Kennen, Storm of Shuriken (+5.0 ± 2.2)",
+    "-1 Ride The Wind, +1 Bedeviling Stranger (+4.9 ± 2.1)",
+    "-1 Switcheroo, +1 Zephyr Sage (+7.6 ± 2.3)"
+   ],
+   "start_cost": 272.32000000000005,
+   "best_cost": 161.22000000000003,
+   "start_score": 0.5091652754591316,
+   "best_score": 0.60650751252091,
+   "gain_se": 0.008442948613657894,
+   "vs": {
+    "kennen": 0.464,
+    "leblanc": 0.444,
+    "rengar": 0.556,
+    "irelia": 0.714,
+    "akali": 0.77,
+    "jayce": 0.586,
+    "masteryi": 0.452,
+    "azir": 0.86,
+    "vex": 0.618,
+    "reksai": 0.732,
+    "riven": 0.558,
+    "evelynn": 0.648,
+    "mordekaiser": 0.626,
+    "orianna": 0.83,
+    "seraphine": 0.936
+   },
+   "text": "Legend:\n1 Vex - Gloomist\n\nChampion:\n1 Vex - Apathetic\n\nMain Deck:\n1 Vex - Apathetic\n1 Astral Heron\n3 Steel Paws\n3 Tornado Warrior\n2 Evelynn - Entrancing\n1 Gust Monk\n1 Mutated Mouser\n1 Scuttle Crab\n2 Tideturner\n1 Irelia - Fervent\n1 Kennen, Storm of Shuriken\n1 Bedeviling Stranger\n1 Zephyr Sage\n3 Defy\n3 Discipline\n3 Stacked Deck\n1 Switcheroo\n1 Back Off\n1 Charm\n1 Gust\n1 Rebuke\n1 Star-Crossed\n1 En Garde\n2 Boots of Swiftness\n1 Edge of Night\n1 Zhonya's Hourglass\n\nBattlefields:\n1 Fortified Position\n1 Targon's Peak\n1 Threshold of the Gray\n\nRunes:\n5 Calm Rune\n7 Chaos Rune"
+  },
+  {
+   "id": "reksai",
+   "start": {
+    "id": "reksai",
+    "name": "Rek'Sai",
+    "legend": "Rek'sai - Void Burrower",
+    "champion": "Rek'Sai - Breacher",
+    "runes": {
+     "Fury": 7,
+     "Order": 5
+    },
+    "bfs": [
+     "The Candlelit Sanctum",
+     "Forbidding Waste",
+     "Mystic Vortex"
+    ],
+    "list": [
+     [
+      1,
+      "Rek'Sai - Breacher"
+     ],
+     [
+      3,
+      "Blood Rush"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Cull the Weak"
+     ],
+     [
+      3,
+      "Faithful Manufactor"
+     ],
+     [
+      3,
+      "Falling Star"
+     ],
+     [
+      3,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Imperial Decree"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Noxus Hopeful"
+     ],
+     [
+      2,
+      "Cleave"
+     ],
+     [
+      2,
+      "Escaped Grayback"
+     ],
+     [
+      2,
+      "Legion Rearguard"
+     ],
+     [
+      2,
+      "Noxian Emissary"
+     ],
+     [
+      2,
+      "Void Rush"
+     ],
+     [
+      1,
+      "Forge of the Future"
+     ],
+     [
+      1,
+      "Salvage"
+     ]
+    ]
+   },
+   "best": {
+    "id": "reksai",
+    "name": "Rek'Sai",
+    "legend": "Rek'sai - Void Burrower",
+    "champion": "Rek'Sai - Breacher",
+    "runes": {
+     "Fury": 7,
+     "Order": 5
+    },
+    "bfs": [
+     "The Candlelit Sanctum",
+     "Forbidding Waste",
+     "Mystic Vortex"
+    ],
+    "list": [
+     [
+      1,
+      "Rek'Sai - Breacher"
+     ],
+     [
+      3,
+      "Blood Rush"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Cull the Weak"
+     ],
+     [
+      3,
+      "Faithful Manufactor"
+     ],
+     [
+      3,
+      "Falling Star"
+     ],
+     [
+      3,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Imperial Decree"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Noxus Hopeful"
+     ],
+     [
+      2,
+      "Cleave"
+     ],
+     [
+      2,
+      "Escaped Grayback"
+     ],
+     [
+      2,
+      "Legion Rearguard"
+     ],
+     [
+      2,
+      "Noxian Emissary"
+     ],
+     [
+      2,
+      "Void Rush"
+     ],
+     [
+      1,
+      "Forge of the Future"
+     ],
+     [
+      1,
+      "Spectral Matron"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Salvage, +1 Spectral Matron (+3.0 ± 1.0)"
+   ],
+   "start_cost": 71.92999999999999,
+   "best_cost": 68.36,
+   "start_score": 0.4242504173622917,
+   "best_score": 0.46131886477465095,
+   "gain_se": 0.0037978151583861774,
+   "vs": {
+    "kennen": 0.394,
+    "leblanc": 0.118,
+    "rengar": 0.31,
+    "irelia": 0.62,
+    "akali": 0.684,
+    "jayce": 0.648,
+    "masteryi": 0.212,
+    "azir": 0.8,
+    "vex": 0.39,
+    "reksai": 0.56,
+    "riven": 0.428,
+    "evelynn": 0.36,
+    "mordekaiser": 0.378,
+    "orianna": 0.718,
+    "seraphine": 0.906
+   },
+   "text": "Legend:\n1 Rek'sai - Void Burrower\n\nChampion:\n1 Rek'Sai - Breacher\n\nMain Deck:\n3 Carrion Dredger\n3 Faithful Manufactor\n3 Honest Broker\n3 Inferna\n3 Noxus Hopeful\n2 Escaped Grayback\n2 Legion Rearguard\n2 Noxian Emissary\n1 Spectral Matron\n3 Blood Rush\n3 Cull the Weak\n3 Falling Star\n3 Imperial Decree\n2 Cleave\n2 Void Rush\n1 Forge of the Future\n\nBattlefields:\n1 The Candlelit Sanctum\n1 Forbidding Waste\n1 Mystic Vortex\n\nRunes:\n7 Fury Rune\n5 Order Rune"
+  },
+  {
+   "id": "riven",
+   "start": {
+    "id": "riven",
+    "name": "Riven",
+    "legend": "Riven - The Exile",
+    "champion": "Riven - Broken Blade",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Rakelstake",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Riven - Broken Blade"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Blade of the Exile"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Zhonya's Hourglass"
+     ],
+     [
+      2,
+      "Battle Preparations"
+     ],
+     [
+      2,
+      "Bedeviling Stranger"
+     ],
+     [
+      2,
+      "Blitzcrank - Impassive"
+     ],
+     [
+      2,
+      "Gust"
+     ],
+     [
+      2,
+      "Reckless Innovator"
+     ],
+     [
+      2,
+      "Switcheroo"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ]
+    ]
+   },
+   "best": {
+    "id": "riven",
+    "name": "Riven",
+    "legend": "Riven - The Exile",
+    "champion": "Riven - Broken Blade",
+    "runes": {
+     "Calm": 5,
+     "Chaos": 7
+    },
+    "bfs": [
+     "Rakelstake",
+     "Emperor's Dais",
+     "Star Spring"
+    ],
+    "list": [
+     [
+      1,
+      "Riven - Broken Blade"
+     ],
+     [
+      1,
+      "Astral Heron"
+     ],
+     [
+      2,
+      "Blade of the Exile"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      2,
+      "Battle Preparations"
+     ],
+     [
+      3,
+      "Bedeviling Stranger"
+     ],
+     [
+      1,
+      "Blitzcrank - Impassive"
+     ],
+     [
+      3,
+      "Gust"
+     ],
+     [
+      2,
+      "Reckless Innovator"
+     ],
+     [
+      1,
+      "Not So Fast"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Star-Crossed"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ],
+     [
+      1,
+      "Playful Phantom"
+     ],
+     [
+      2,
+      "Pyke - Returned"
+     ],
+     [
+      1,
+      "Whiteflame Protector"
+     ],
+     [
+      1,
+      "Field Musicians"
+     ],
+     [
+      1,
+      "Evershade Stalker"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Blitzcrank - Impassive, +1 Trevor Snoozebottom ($411 -> $406)",
+    "repair -1 Astral Heron, +1 Gust ($406 -> $352)",
+    "repair -1 Blade of the Exile, +1 Playful Phantom ($352 -> $313)",
+    "repair -1 Zhonya's Hourglass, +1 Pyke - Returned ($313 -> $291)",
+    "repair -1 Switcheroo, +1 Bedeviling Stranger ($291 -> $288)",
+    "repair -1 Zhonya's Hourglass, +1 Whiteflame Protector ($288 -> $267)",
+    "repair -1 Zhonya's Hourglass, +1 Field Musicians ($267 -> $243)",
+    "repair -1 Astral Heron, +1 Pyke - Returned ($243 -> $191)",
+    "-1 Switcheroo, +1 Evershade Stalker (+7.4 ± 2.0)"
+   ],
+   "start_cost": 411.36,
+   "best_cost": 187.54999999999995,
+   "start_score": 0.5184273789649727,
+   "best_score": 0.6787312186978749,
+   "gain_se": 0.008450054138366917,
+   "vs": {
+    "kennen": 0.61,
+    "leblanc": 0.472,
+    "rengar": 0.558,
+    "irelia": 0.844,
+    "akali": 0.916,
+    "jayce": 0.546,
+    "masteryi": 0.56,
+    "azir": 0.914,
+    "vex": 0.684,
+    "reksai": 0.776,
+    "riven": 0.692,
+    "evelynn": 0.676,
+    "mordekaiser": 0.656,
+    "orianna": 0.88,
+    "seraphine": 0.974
+   },
+   "text": "Legend:\n1 Riven - The Exile\n\nChampion:\n1 Riven - Broken Blade\n\nMain Deck:\n1 Astral Heron\n3 Scuttle Crab\n3 Stellacorn Herder\n3 Tideturner\n3 Bedeviling Stranger\n1 Blitzcrank - Impassive\n2 Reckless Innovator\n1 Trevor Snoozebottom\n1 Playful Phantom\n2 Pyke - Returned\n1 Whiteflame Protector\n1 Field Musicians\n1 Evershade Stalker\n3 Defy\n3 Discipline\n2 Battle Preparations\n3 Gust\n1 Not So Fast\n1 Rebuke\n1 Star-Crossed\n2 Blade of the Exile\n\nBattlefields:\n1 Rakelstake\n1 Emperor's Dais\n1 Star Spring\n\nRunes:\n5 Calm Rune\n7 Chaos Rune"
+  },
+  {
+   "id": "evelynn",
+   "start": {
+    "id": "evelynn",
+    "name": "Evelynn",
+    "legend": "Evelynn - Agony's Embrace",
+    "champion": "Evelynn - Entrancing",
+    "runes": {
+     "Body": 4,
+     "Chaos": 8
+    },
+    "bfs": [
+     "Startipped Peak",
+     "Bandle Scouts' Academy",
+     "Rakelstake"
+    ],
+    "list": [
+     [
+      1,
+      "Evelynn - Entrancing"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Pyke - Returned"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Edge of Night"
+     ],
+     [
+      2,
+      "Ezreal, Prodigy"
+     ],
+     [
+      2,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Hold 'Em"
+     ],
+     [
+      2,
+      "K'Sante - Courageous"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Kharox"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Switcheroo"
+     ]
+    ]
+   },
+   "best": {
+    "id": "evelynn",
+    "name": "Evelynn",
+    "legend": "Evelynn - Agony's Embrace",
+    "champion": "Evelynn - Entrancing",
+    "runes": {
+     "Body": 4,
+     "Chaos": 8
+    },
+    "bfs": [
+     "Startipped Peak",
+     "Bandle Scouts' Academy",
+     "Rakelstake"
+    ],
+    "list": [
+     [
+      1,
+      "Evelynn - Entrancing"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      2,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Pyke - Returned"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Boots of Swiftness"
+     ],
+     [
+      2,
+      "Edge of Night"
+     ],
+     [
+      2,
+      "Ezreal, Prodigy"
+     ],
+     [
+      1,
+      "Fizz - Trickster"
+     ],
+     [
+      2,
+      "Hold 'Em"
+     ],
+     [
+      2,
+      "K'Sante - Courageous"
+     ],
+     [
+      2,
+      "Rampage"
+     ],
+     [
+      2,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      2,
+      "Star-Crossed"
+     ],
+     [
+      2,
+      "Vex - Apathetic"
+     ],
+     [
+      1,
+      "Baron Nashor"
+     ],
+     [
+      1,
+      "Kharox"
+     ],
+     [
+      1,
+      "Onslaught"
+     ],
+     [
+      1,
+      "Ruin Runner"
+     ],
+     [
+      2,
+      "Pakaa Cub"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Fizz - Trickster, +1 Rebuke (+5.4 ± 1.9)",
+    "-1 Switcheroo, +1 Ruin Runner (+3.5 ± 1.5)",
+    "-1 Rebuke, +1 Pakaa Cub (+3.2 ± 1.4)",
+    "-1 Kinkou Initiate, +1 Pakaa Cub (+4.5 ± 2.2)"
+   ],
+   "start_cost": 182.53000000000006,
+   "best_cost": 175.84000000000006,
+   "start_score": 0.5890784641068867,
+   "best_score": 0.6707011686144048,
+   "gain_se": 0.00790634778486102,
+   "vs": {
+    "kennen": 0.578,
+    "leblanc": 0.526,
+    "rengar": 0.614,
+    "irelia": 0.772,
+    "akali": 0.896,
+    "jayce": 0.664,
+    "masteryi": 0.498,
+    "azir": 0.894,
+    "vex": 0.57,
+    "reksai": 0.784,
+    "riven": 0.634,
+    "evelynn": 0.606,
+    "mordekaiser": 0.728,
+    "orianna": 0.874,
+    "seraphine": 0.988
+   },
+   "text": "Legend:\n1 Evelynn - Agony's Embrace\n\nChampion:\n1 Evelynn - Entrancing\n\nMain Deck:\n3 Gutter Guardian\n2 Kinkou Initiate\n3 Pyke - Returned\n3 Tail-Cloaked Matriarch\n3 Tornado Warrior\n2 Ezreal, Prodigy\n1 Fizz - Trickster\n2 K'Sante - Courageous\n2 Rengar - Trophy Hunter\n2 Vex - Apathetic\n1 Baron Nashor\n1 Kharox\n1 Ruin Runner\n2 Pakaa Cub\n2 Hold 'Em\n2 Rampage\n2 Star-Crossed\n1 Onslaught\n2 Boots of Swiftness\n2 Edge of Night\n\nBattlefields:\n1 Startipped Peak\n1 Bandle Scouts' Academy\n1 Rakelstake\n\nRunes:\n4 Body Rune\n8 Chaos Rune"
+  },
+  {
+   "id": "mordekaiser",
+   "start": {
+    "id": "mordekaiser",
+    "name": "Mordekaiser",
+    "legend": "Mordekaiser - Iron Revenant",
+    "champion": "Mordekaiser - Dominating",
+    "runes": {
+     "Order": 6,
+     "Fury": 6
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Ruined Monastery",
+     "Minefield"
+    ],
+    "list": [
+     [
+      1,
+      "Mordekaiser - Dominating"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Kai'Sa - Survivor"
+     ],
+     [
+      3,
+      "Realm of Death"
+     ],
+     [
+      3,
+      "Trifarian Captain"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      2,
+      "Bilgewater Tracker"
+     ],
+     [
+      2,
+      "Blast Corps Cadet"
+     ],
+     [
+      2,
+      "Escaped Grayback"
+     ],
+     [
+      2,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Long Sword"
+     ],
+     [
+      2,
+      "Seal of Unity"
+     ],
+     [
+      2,
+      "Spectral Matron"
+     ],
+     [
+      2,
+      "Xin Zhao - Vigilant"
+     ],
+     [
+      1,
+      "Brynhir Thundersong"
+     ],
+     [
+      1,
+      "Darius - Trifarian"
+     ],
+     [
+      1,
+      "Falling Star"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      1,
+      "Honest Broker"
+     ],
+     [
+      1,
+      "Vanguard Captain"
+     ]
+    ]
+   },
+   "best": {
+    "id": "mordekaiser",
+    "name": "Mordekaiser",
+    "legend": "Mordekaiser - Iron Revenant",
+    "champion": "Mordekaiser - Dominating",
+    "runes": {
+     "Order": 6,
+     "Fury": 6
+    },
+    "bfs": [
+     "Zaun Warrens",
+     "Ruined Monastery",
+     "Minefield"
+    ],
+    "list": [
+     [
+      1,
+      "Mordekaiser - Dominating"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      1,
+      "Kai'Sa - Survivor"
+     ],
+     [
+      3,
+      "Realm of Death"
+     ],
+     [
+      3,
+      "Trifarian Captain"
+     ],
+     [
+      3,
+      "Vi - Peacekeeper"
+     ],
+     [
+      3,
+      "Bilgewater Tracker"
+     ],
+     [
+      2,
+      "Blast Corps Cadet"
+     ],
+     [
+      2,
+      "Escaped Grayback"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      2,
+      "Long Sword"
+     ],
+     [
+      1,
+      "Seal of Unity"
+     ],
+     [
+      2,
+      "Spectral Matron"
+     ],
+     [
+      2,
+      "Xin Zhao - Vigilant"
+     ],
+     [
+      1,
+      "Brynhir Thundersong"
+     ],
+     [
+      1,
+      "Darius - Trifarian"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      1,
+      "Honest Broker"
+     ],
+     [
+      1,
+      "Vanguard Captain"
+     ],
+     [
+      1,
+      "Horns of the Dragon"
+     ],
+     [
+      1,
+      "Blast of Power"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "repair -1 Falling Star, +1 Horns of the Dragon ($312 -> $297)",
+    "repair -1 Seal of Unity, +1 Blast of Power ($297 -> $283)",
+    "repair -1 Kai'Sa - Survivor, +1 Hidden Blade ($283 -> $217)",
+    "repair -1 Kai'Sa - Survivor, +1 Bilgewater Tracker ($217 -> $151)"
+   ],
+   "start_cost": 312.43,
+   "best_cost": 151.35999999999999,
+   "start_score": 0.5440500834724896,
+   "best_score": 0.583896494156969,
+   "gain_se": 0.008013418635869938,
+   "vs": {
+    "kennen": 0.458,
+    "leblanc": 0.25,
+    "rengar": 0.436,
+    "irelia": 0.74,
+    "akali": 0.848,
+    "jayce": 0.712,
+    "masteryi": 0.342,
+    "azir": 0.924,
+    "vex": 0.58,
+    "reksai": 0.704,
+    "riven": 0.632,
+    "evelynn": 0.476,
+    "mordekaiser": 0.56,
+    "orianna": 0.904,
+    "seraphine": 0.952
+   },
+   "text": "Legend:\n1 Mordekaiser - Iron Revenant\n\nChampion:\n1 Mordekaiser - Dominating\n\nMain Deck:\n3 Carrion Dredger\n1 Kai'Sa - Survivor\n3 Trifarian Captain\n3 Vi - Peacekeeper\n3 Bilgewater Tracker\n2 Blast Corps Cadet\n2 Escaped Grayback\n2 LeBlanc - Fragmented\n2 Spectral Matron\n2 Xin Zhao - Vigilant\n1 Brynhir Thundersong\n1 Darius - Trifarian\n1 Ferrous Forerunner\n1 Honest Broker\n1 Vanguard Captain\n1 Horns of the Dragon\n3 Realm of Death\n3 Hidden Blade\n1 Blast of Power\n2 Long Sword\n1 Seal of Unity\n\nBattlefields:\n1 Zaun Warrens\n1 Ruined Monastery\n1 Minefield\n\nRunes:\n6 Order Rune\n6 Fury Rune"
+  },
+  {
+   "id": "orianna",
+   "start": {
+    "id": "orianna",
+    "name": "Orianna",
+    "legend": "Orianna - Lady of Clockwork",
+    "champion": "Orianna - Exquisite",
+    "runes": {
+     "Calm": 8,
+     "Mind": 4
+    },
+    "bfs": [
+     "Ornn's Forge",
+     "Rockfall Path",
+     "Veiled Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Orianna - Exquisite"
+     ],
+     [
+      3,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Frigid Jewel"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Stupefy"
+     ],
+     [
+      3,
+      "The Ball"
+     ],
+     [
+      2,
+      "Akali, Silent"
+     ],
+     [
+      2,
+      "Brutalizer"
+     ],
+     [
+      2,
+      "Cloth Armor"
+     ],
+     [
+      2,
+      "Command: Attack"
+     ],
+     [
+      2,
+      "Consult the Past"
+     ],
+     [
+      2,
+      "Hunting Blind"
+     ],
+     [
+      2,
+      "Patched Porobot"
+     ],
+     [
+      2,
+      "Plundering Poro"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Resplendent Rostrum"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      1,
+      "Twilight Shroud"
+     ]
+    ]
+   },
+   "best": {
+    "id": "orianna",
+    "name": "Orianna",
+    "legend": "Orianna - Lady of Clockwork",
+    "champion": "Orianna - Exquisite",
+    "runes": {
+     "Calm": 8,
+     "Mind": 4
+    },
+    "bfs": [
+     "Ornn's Forge",
+     "Rockfall Path",
+     "Veiled Temple"
+    ],
+    "list": [
+     [
+      1,
+      "Orianna - Exquisite"
+     ],
+     [
+      2,
+      "Defy"
+     ],
+     [
+      3,
+      "Discipline"
+     ],
+     [
+      3,
+      "Frigid Jewel"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      2,
+      "Stupefy"
+     ],
+     [
+      3,
+      "The Ball"
+     ],
+     [
+      2,
+      "Akali, Silent"
+     ],
+     [
+      2,
+      "Brutalizer"
+     ],
+     [
+      2,
+      "Cloth Armor"
+     ],
+     [
+      1,
+      "Consult the Past"
+     ],
+     [
+      2,
+      "Hunting Blind"
+     ],
+     [
+      2,
+      "Patched Porobot"
+     ],
+     [
+      2,
+      "Plundering Poro"
+     ],
+     [
+      2,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Resplendent Rostrum"
+     ],
+     [
+      3,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      1,
+      "Twilight Shroud"
+     ],
+     [
+      1,
+      "Sterak's Gage"
+     ],
+     [
+      1,
+      "Cloud Drake"
+     ],
+     [
+      1,
+      "Doran's Shield"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Consult the Past, +1 Thousand-Tailed Watcher (+4.2 ± 1.5)",
+    "-1 Stupefy, +1 Sterak's Gage (+5.3 ± 2.0)",
+    "-1 Defy, +1 Thousand-Tailed Watcher (+5.7 ± 2.0)",
+    "-1 Command: Attack, +1 Cloud Drake (+6.9 ± 1.9)",
+    "-1 Command: Attack, +1 Doran's Shield (+4.9 ± 2.0)"
+   ],
+   "start_cost": 120.79,
+   "best_cost": 157.53,
+   "start_score": 0.2711552587646177,
+   "best_score": 0.4409949916527757,
+   "gain_se": 0.008033471761302476,
+   "vs": {
+    "kennen": 0.27,
+    "leblanc": 0.19,
+    "rengar": 0.288,
+    "irelia": 0.65,
+    "akali": 0.748,
+    "jayce": 0.452,
+    "masteryi": 0.36,
+    "azir": 0.65,
+    "vex": 0.4,
+    "reksai": 0.492,
+    "riven": 0.374,
+    "evelynn": 0.346,
+    "mordekaiser": 0.28,
+    "orianna": 0.746,
+    "seraphine": 0.806
+   },
+   "text": "Legend:\n1 Orianna - Lady of Clockwork\n\nChampion:\n1 Orianna - Exquisite\n\nMain Deck:\n2 Akali, Silent\n2 Patched Porobot\n2 Plundering Poro\n3 Thousand-Tailed Watcher\n1 Cloud Drake\n2 Defy\n3 Discipline\n2 Stupefy\n1 Consult the Past\n1 Twilight Shroud\n3 Frigid Jewel\n3 Mask of Foresight\n3 The Ball\n2 Brutalizer\n2 Cloth Armor\n2 Hunting Blind\n2 Zhonya's Hourglass\n1 Resplendent Rostrum\n1 Sterak's Gage\n1 Doran's Shield\n\nBattlefields:\n1 Ornn's Forge\n1 Rockfall Path\n1 Veiled Temple\n\nRunes:\n8 Calm Rune\n4 Mind Rune"
+  },
+  {
+   "id": "seraphine",
+   "start": {
+    "id": "seraphine",
+    "name": "Seraphine",
+    "legend": "Seraphine - Starry-Eyed Songstress",
+    "champion": "Seraphine - Inspiring",
+    "runes": {
+     "Order": 6,
+     "Mind": 6
+    },
+    "bfs": [
+     "Void Gate",
+     "Black Rose Sanctum",
+     "Forgotten Monument"
+    ],
+    "list": [
+     [
+      1,
+      "Seraphine - Inspiring"
+     ],
+     [
+      3,
+      "Bellows Breath"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Concert Poster"
+     ],
+     [
+      3,
+      "Encore"
+     ],
+     [
+      3,
+      "Imperial Decree"
+     ],
+     [
+      3,
+      "Trifarian Captain"
+     ],
+     [
+      3,
+      "Vanguard Captain"
+     ],
+     [
+      2,
+      "Eclipse"
+     ],
+     [
+      2,
+      "Faithful Manufactor"
+     ],
+     [
+      2,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "Mordekaiser - Dominating"
+     ],
+     [
+      2,
+      "Raucous Anthem"
+     ],
+     [
+      2,
+      "Seal of Unity"
+     ],
+     [
+      2,
+      "Shadow's Call"
+     ],
+     [
+      2,
+      "Stupefy"
+     ],
+     [
+      2,
+      "Thousand-Tailed Watcher"
+     ]
+    ]
+   },
+   "best": {
+    "id": "seraphine",
+    "name": "Seraphine",
+    "legend": "Seraphine - Starry-Eyed Songstress",
+    "champion": "Seraphine - Inspiring",
+    "runes": {
+     "Order": 6,
+     "Mind": 6
+    },
+    "bfs": [
+     "Void Gate",
+     "Black Rose Sanctum",
+     "Forgotten Monument"
+    ],
+    "list": [
+     [
+      1,
+      "Seraphine - Inspiring"
+     ],
+     [
+      1,
+      "Bellows Breath"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Concert Poster"
+     ],
+     [
+      3,
+      "Encore"
+     ],
+     [
+      3,
+      "Imperial Decree"
+     ],
+     [
+      3,
+      "Trifarian Captain"
+     ],
+     [
+      3,
+      "Vanguard Captain"
+     ],
+     [
+      2,
+      "Eclipse"
+     ],
+     [
+      2,
+      "Faithful Manufactor"
+     ],
+     [
+      2,
+      "Hidden Blade"
+     ],
+     [
+      2,
+      "Mordekaiser - Dominating"
+     ],
+     [
+      2,
+      "Raucous Anthem"
+     ],
+     [
+      2,
+      "Seal of Unity"
+     ],
+     [
+      2,
+      "Shadow's Call"
+     ],
+     [
+      2,
+      "Stupefy"
+     ],
+     [
+      2,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      1,
+      "Eminent Benefactor"
+     ],
+     [
+      1,
+      "Sprite Mother"
+     ]
+    ],
+    "label": "Optimised"
+   },
+   "log": [
+    "-1 Bellows Breath, +1 Eminent Benefactor (+3.5 ± 1.6)",
+    "-1 Bellows Breath, +1 Sprite Mother (+3.7 ± 1.7)"
+   ],
+   "start_cost": 98.78000000000002,
+   "best_cost": 93.11000000000001,
+   "start_score": 0.14505509181970141,
+   "best_score": 0.1834524207011695,
+   "gain_se": 0.006131031911756315,
+   "vs": {
+    "kennen": 0.058,
+    "leblanc": 0.028,
+    "rengar": 0.038,
+    "irelia": 0.256,
+    "akali": 0.28,
+    "jayce": 0.456,
+    "masteryi": 0.04,
+    "azir": 0.468,
+    "vex": 0.14,
+    "reksai": 0.148,
+    "riven": 0.126,
+    "evelynn": 0.046,
+    "mordekaiser": 0.07,
+    "orianna": 0.42,
+    "seraphine": 0.554
+   },
+   "text": "Legend:\n1 Seraphine - Starry-Eyed Songstress\n\nChampion:\n1 Seraphine - Inspiring\n\nMain Deck:\n3 Carrion Dredger\n3 Trifarian Captain\n3 Vanguard Captain\n2 Faithful Manufactor\n2 Mordekaiser - Dominating\n2 Thousand-Tailed Watcher\n1 Eminent Benefactor\n1 Sprite Mother\n1 Bellows Breath\n3 Encore\n3 Imperial Decree\n2 Eclipse\n2 Hidden Blade\n2 Raucous Anthem\n2 Shadow's Call\n2 Stupefy\n3 Concert Poster\n2 Seal of Unity\n\nBattlefields:\n1 Void Gate\n1 Black Rose Sanctum\n1 Forgotten Monument\n\nRunes:\n6 Order Rune\n6 Mind Rune"
+  }
+ ]
+}
