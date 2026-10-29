@@ -1466,11 +1466,12 @@ var RT = (function () {
       u.stun = 1; u.noMove = true;
       log(G, v.c.name + ' stuns ' + u.c.name + '; it can\'t move this turn.', v.ctrl);
     });
+    // Only the first non-token unit a player plays here each turn triggers it, even if nothing else is here to move.
     if (u.loc !== 'base' && bfNorm(G, u.loc) === 'starspring' && !u.token && !(G.starSpringUsed || {})[pi]) {
+      G.starSpringUsed = G.starSpringUsed || {}; G.starSpringUsed[pi] = true;
       var others = unitsAt(G, u.loc, pi).filter(function (x) { return x !== u; });
       if (others.length) {
-        G.starSpringUsed = G.starSpringUsed || {}; G.starSpringUsed[pi] = true;
-        var pick = await ask(G, pi, { type: 'target', title: 'Star Spring', text: 'Move another unit you control here to its base?', cands: others.map(function (x) { return x.uid; }), optional: true, auto: null });
+        var pick = await ask(G, pi, { type: 'target', title: 'Star Spring (battlefield)', text: 'The first time each turn you play a unit here, you may move another of your units here back to your base. Pick one, or skip.', cands: others.map(function (x) { return x.uid; }), optional: true, auto: null });
         var mv = others.filter(function (x) { return x.uid === pick; })[0];
         if (mv) { mv.loc = 'base'; updateControl(G); log(G, 'Star Spring: ' + mv.c.name + ' returns to base.', pi); }
       }

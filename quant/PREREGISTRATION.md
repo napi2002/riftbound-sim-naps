@@ -128,3 +128,8 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    now also strips a trailing card code in square brackets, e.g. `3 Ruined Rex [UNL-067]`. It is not called during
    games; 120 seeded games give an identical fingerprint before and after the change, and the rules tests pass.
    Simulated rules, AI and card data are unchanged, so results labelled `e4157fd` remain the frozen baseline.
+3. **2026-10-29, before any holdout data.** Star Spring rules fix in `src/engine.js`: the battlefield's "first time a
+   player plays a non-token unit here each turn" was only used up when another friendly unit was already there, so a
+   second unit played there the same turn could wrongly send a unit home. This changes simulated games involving Star
+   Spring. The frozen baseline (`e4157fd` summaries and ablation) is kept as is and remains what the confirmatory
+   tests use; any later simulation is labelled with its own engine commit and is exploratory.

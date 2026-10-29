@@ -47,6 +47,19 @@ async function fresh(opts) {
   // 812.1.b.1: Legion counts only your own cards
   G = await fresh(); G.playedBy = [0, 1];
   check("Legion ignores the opponent's cards (812.1.b.1)", RT.cardCost(card('Noxus Hopeful'), false, G, 0, 'hand').energy === (card('Noxus Hopeful').energy || 0), G);
+  // Star Spring: only the first non-token unit a player plays there each turn may send another unit home
+  const spring = async (pre) => {
+    const G = await fresh(); let asks = 0;
+    G.ask = async (req) => { if (/Star Spring/.test(req.title || '')) asks++; return pass(req); };
+    G.bfs[0].c = card('Star Spring'); G.bfs[0].ctrl = 0;
+    if (pre) unit(G, 0, 'Scuttle Crab', 0);
+    for (const n of ['Lonely Poro', 'Scuttle Crab']) { const h = { iid: ++iid, c: card(n) }; G.players[0].hand.push(h); await RT.playCard(G, 0, h.iid, { loc: 0 }); }
+    return { G, asks };
+  };
+  let sp = await spring(false);
+  check('Star Spring: a second unit played the same turn does not trigger it', sp.asks === 0 && RT.unitsAt(sp.G, 0, 0).length === 2, sp.G);
+  sp = await spring(true);
+  check('Star Spring: the first unit played next to another unit offers the move once', sp.asks === 1, sp.G);
   console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
   process.exit(fails ? 1 : 0);
 })();
