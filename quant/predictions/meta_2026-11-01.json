@@ -1,0 +1,5754 @@
+{
+ "commit": "2d8a317",
+ "created": "2026-11-01T13:05:05.967Z",
+ "params": {
+  "ITERS": 8,
+  "R1": 40,
+  "R": 15,
+  "M": 40,
+  "P": 4,
+  "N1": 4,
+  "N2": 24,
+  "NM": 100,
+  "NF": 300
+ },
+ "games": 10442704,
+ "seconds": 5654.48,
+ "ids": [
+  "akali",
+  "azir",
+  "draven",
+  "evelynn",
+  "kennen",
+  "irelia",
+  "jayce",
+  "leblanc",
+  "leesin",
+  "masteryi",
+  "mordekaiser",
+  "orianna",
+  "pyke",
+  "reksai",
+  "rengar",
+  "riven",
+  "seraphine",
+  "vex",
+  "viktor"
+ ],
+ "final_matrix": [
+  [
+   0.5,
+   0.22500000000000048,
+   0.2166666666666671,
+   0.26833333333333376,
+   0.1783333333333335,
+   0.34833333333333294,
+   0.4683333333333317,
+   0.09999999999999988,
+   0.13999999999999993,
+   0.11999999999999984,
+   0.2233333333333338,
+   0.5299999999999987,
+   0.5549999999999993,
+   0.34499999999999964,
+   0.3399999999999997,
+   0.2833333333333336,
+   0.5533333333333326,
+   0.27833333333333365,
+   0.3033333333333334
+  ],
+  [
+   0.7749999999999995,
+   0.5,
+   0.3699999999999994,
+   0.32166666666666655,
+   0.4316666666666654,
+   0.5216666666666652,
+   0.6633333333333351,
+   0.376666666666666,
+   0.38833333333333253,
+   0.2833333333333336,
+   0.39499999999999913,
+   0.6816666666666689,
+   0.7083333333333361,
+   0.5416666666666656,
+   0.4816666666666649,
+   0.4849999999999982,
+   0.7383333333333368,
+   0.39166666666666583,
+   0.3933333333333325
+  ],
+  [
+   0.7833333333333329,
+   0.6300000000000006,
+   0.5,
+   0.47333333333333166,
+   0.5549999999999993,
+   0.5966666666666669,
+   0.686666666666669,
+   0.3933333333333325,
+   0.4883333333333315,
+   0.36499999999999944,
+   0.5033333333333314,
+   0.7400000000000035,
+   0.8300000000000056,
+   0.6783333333333355,
+   0.556666666666666,
+   0.6333333333333344,
+   0.7383333333333368,
+   0.5383333333333322,
+   0.5649999999999995
+  ],
+  [
+   0.7316666666666662,
+   0.6783333333333335,
+   0.5266666666666684,
+   0.5,
+   0.5183333333333318,
+   0.715000000000003,
+   0.6700000000000019,
+   0.5516666666666659,
+   0.5249999999999986,
+   0.438333333333332,
+   0.5916666666666668,
+   0.646666666666668,
+   0.8250000000000055,
+   0.7233333333333365,
+   0.573333333333333,
+   0.630000000000001,
+   0.7250000000000032,
+   0.6033333333333337,
+   0.6483333333333348
+  ],
+  [
+   0.8216666666666665,
+   0.5683333333333346,
+   0.44500000000000073,
+   0.48166666666666824,
+   0.5,
+   0.5399999999999989,
+   0.6500000000000015,
+   0.4199999999999989,
+   0.4749999999999983,
+   0.34166666666666634,
+   0.601666666666667,
+   0.7100000000000029,
+   0.7816666666666712,
+   0.6383333333333345,
+   0.5649999999999995,
+   0.5499999999999992,
+   0.743333333333337,
+   0.4266666666666655,
+   0.5900000000000001
+  ],
+  [
+   0.6516666666666671,
+   0.47833333333333483,
+   0.4033333333333331,
+   0.28499999999999703,
+   0.4600000000000011,
+   0.5,
+   0.5183333333333318,
+   0.19666666666666696,
+   0.343333333333333,
+   0.18500000000000022,
+   0.3033333333333334,
+   0.5666666666666662,
+   0.7583333333333373,
+   0.601666666666667,
+   0.43999999999999867,
+   0.47666666666666496,
+   0.6183333333333341,
+   0.36166666666666614,
+   0.4249999999999988
+  ],
+  [
+   0.5316666666666683,
+   0.3366666666666649,
+   0.313333333333331,
+   0.3299999999999981,
+   0.34999999999999853,
+   0.48166666666666824,
+   0.5,
+   0.2700000000000004,
+   0.2633333333333338,
+   0.1349999999999999,
+   0.25500000000000056,
+   0.544999999999999,
+   0.5749999999999997,
+   0.38833333333333253,
+   0.39833333333333243,
+   0.31499999999999995,
+   0.48999999999999816,
+   0.2383333333333339,
+   0.2300000000000005
+  ],
+  [
+   0.9000000000000001,
+   0.623333333333334,
+   0.6066666666666676,
+   0.44833333333333414,
+   0.5800000000000012,
+   0.803333333333333,
+   0.7299999999999995,
+   0.5,
+   0.47999999999999826,
+   0.37499999999999933,
+   0.6000000000000003,
+   0.7950000000000048,
+   0.8783333333333401,
+   0.6883333333333357,
+   0.7250000000000032,
+   0.6966666666666692,
+   0.7900000000000047,
+   0.6066666666666671,
+   0.6450000000000014
+  ],
+  [
+   0.8600000000000001,
+   0.6116666666666675,
+   0.5116666666666685,
+   0.4750000000000014,
+   0.5250000000000017,
+   0.656666666666667,
+   0.7366666666666661,
+   0.5200000000000018,
+   0.5,
+   0.48999999999999816,
+   0.6116666666666672,
+   0.7733333333333376,
+   0.8566666666666729,
+   0.7483333333333371,
+   0.715000000000003,
+   0.6950000000000025,
+   0.7516666666666705,
+   0.46999999999999836,
+   0.4983333333333314
+  ],
+  [
+   0.8800000000000001,
+   0.7166666666666663,
+   0.6350000000000006,
+   0.561666666666668,
+   0.6583333333333337,
+   0.8149999999999997,
+   0.8650000000000001,
+   0.6250000000000007,
+   0.5100000000000018,
+   0.5,
+   0.6433333333333346,
+   0.805000000000005,
+   0.9083333333333408,
+   0.7450000000000037,
+   0.7916666666666714,
+   0.7733333333333376,
+   0.8700000000000065,
+   0.6433333333333346,
+   0.6283333333333343
+  ],
+  [
+   0.7766666666666662,
+   0.6050000000000009,
+   0.4966666666666686,
+   0.4083333333333332,
+   0.398333333333333,
+   0.6966666666666665,
+   0.7449999999999994,
+   0.3999999999999997,
+   0.38833333333333275,
+   0.35666666666666536,
+   0.5,
+   0.7650000000000041,
+   0.7300000000000033,
+   0.5683333333333329,
+   0.5649999999999995,
+   0.5699999999999996,
+   0.7850000000000046,
+   0.471666666666665,
+   0.5066666666666648
+  ],
+  [
+   0.4700000000000013,
+   0.31833333333333114,
+   0.25999999999999646,
+   0.35333333333333194,
+   0.28999999999999715,
+   0.4333333333333338,
+   0.45500000000000096,
+   0.20499999999999519,
+   0.22666666666666235,
+   0.19499999999999496,
+   0.23499999999999588,
+   0.5,
+   0.5549999999999993,
+   0.31,
+   0.36499999999999944,
+   0.30500000000000005,
+   0.4783333333333316,
+   0.28833333333333355,
+   0.30166666666666675
+  ],
+  [
+   0.44500000000000073,
+   0.29166666666666385,
+   0.16999999999999438,
+   0.1749999999999945,
+   0.21833333333332883,
+   0.2416666666666627,
+   0.42500000000000027,
+   0.12166666666665993,
+   0.1433333333333271,
+   0.09166666666665924,
+   0.2699999999999967,
+   0.44500000000000073,
+   0.5,
+   0.343333333333333,
+   0.25500000000000056,
+   0.2383333333333339,
+   0.5099999999999982,
+   0.10666666666666653,
+   0.3266666666666665
+  ],
+  [
+   0.6550000000000004,
+   0.45833333333333437,
+   0.32166666666666455,
+   0.2766666666666635,
+   0.36166666666666547,
+   0.398333333333333,
+   0.6116666666666675,
+   0.3116666666666643,
+   0.25166666666666293,
+   0.25499999999999634,
+   0.4316666666666671,
+   0.69,
+   0.656666666666667,
+   0.5,
+   0.48666666666666486,
+   0.37499999999999933,
+   0.6283333333333343,
+   0.23500000000000054,
+   0.409999999999999
+  ],
+  [
+   0.6600000000000004,
+   0.5183333333333351,
+   0.443333333333334,
+   0.42666666666666697,
+   0.4350000000000005,
+   0.5600000000000014,
+   0.6016666666666676,
+   0.2749999999999968,
+   0.28499999999999703,
+   0.2083333333333286,
+   0.4350000000000005,
+   0.6350000000000006,
+   0.7449999999999994,
+   0.5133333333333352,
+   0.5,
+   0.3866666666666659,
+   0.6800000000000022,
+   0.3799999999999993,
+   0.4416666666666653
+  ],
+  [
+   0.7166666666666663,
+   0.5150000000000018,
+   0.3666666666666656,
+   0.369999999999999,
+   0.45000000000000084,
+   0.523333333333335,
+   0.685,
+   0.3033333333333308,
+   0.3049999999999975,
+   0.22666666666666235,
+   0.4300000000000004,
+   0.695,
+   0.761666666666666,
+   0.6250000000000007,
+   0.6133333333333342,
+   0.5,
+   0.6716666666666686,
+   0.43333333333333207,
+   0.4749999999999983
+  ],
+  [
+   0.44666666666666743,
+   0.26166666666666316,
+   0.26166666666666316,
+   0.2749999999999968,
+   0.25666666666666305,
+   0.38166666666666593,
+   0.5100000000000018,
+   0.2099999999999953,
+   0.24833333333332952,
+   0.12999999999999345,
+   0.21499999999999542,
+   0.5216666666666684,
+   0.49000000000000177,
+   0.3716666666666657,
+   0.31999999999999784,
+   0.32833333333333137,
+   0.5,
+   0.2450000000000006,
+   0.23333333333333386
+  ],
+  [
+   0.7216666666666663,
+   0.6083333333333342,
+   0.4616666666666678,
+   0.3966666666666663,
+   0.5733333333333346,
+   0.6383333333333339,
+   0.761666666666666,
+   0.39333333333333287,
+   0.5300000000000016,
+   0.35666666666666536,
+   0.528333333333335,
+   0.7116666666666664,
+   0.8933333333333334,
+   0.7649999999999995,
+   0.6200000000000008,
+   0.566666666666668,
+   0.7549999999999994,
+   0.5,
+   0.5516666666666659
+  ],
+  [
+   0.6966666666666665,
+   0.6066666666666676,
+   0.4350000000000005,
+   0.35166666666666524,
+   0.4099999999999999,
+   0.5750000000000012,
+   0.7699999999999995,
+   0.35499999999999865,
+   0.5016666666666686,
+   0.3716666666666657,
+   0.4933333333333352,
+   0.6983333333333333,
+   0.6733333333333336,
+   0.590000000000001,
+   0.5583333333333347,
+   0.5250000000000017,
+   0.7666666666666662,
+   0.44833333333333414,
+   0.5
+  ]
+ ],
+ "nash_value": 0.5000000000000009,
+ "rows": [
+  {
+   "id": "masteryi",
+   "legend": "Master Yi - Wuju Bladesman",
+   "champion_simulated": true,
+   "nash": 1,
+   "avg_wr": 0.726388888888891,
+   "vs_nash": 0.5,
+   "deck": {
+    "id": "masteryi",
+    "name": "Master Yi - Wuju Bladesman",
+    "legend": "Master Yi - Wuju Bladesman",
+    "champion": "Master Yi - Tempered",
+    "runes": {
+     "Calm": 6,
+     "Body": 6
+    },
+    "bfs": [
+     "Rockfall Path",
+     "Mystic Vortex",
+     "The Candlelit Sanctum"
+    ],
+    "list": [
+     [
+      3,
+      "Master Yi - Tempered"
+     ],
+     [
+      2,
+      "Platewyrm Egg"
+     ],
+     [
+      3,
+      "Ribbon Dancer"
+     ],
+     [
+      3,
+      "Whiteflame Protector"
+     ],
+     [
+      3,
+      "Demacian Diplomat"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Ruin Runner"
+     ],
+     [
+      1,
+      "Navori Scout"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      2,
+      "Mobilize"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Wrath of the Freljord"
+     ],
+     [
+      3,
+      "Mournful Witness"
+     ],
+     [
+      1,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Stormclaw Ursine"
+     ],
+     [
+      1,
+      "First Mate"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Master Yi - Wuju Bladesman\n\nChampion:\n1 Master Yi - Tempered\n\nMain Deck:\n2 Master Yi - Tempered\n3 Ribbon Dancer\n3 Whiteflame Protector\n3 Demacian Diplomat\n3 Kinkou Initiate\n3 Ruin Runner\n1 Navori Scout\n3 Elder Dragon\n3 Astral Heron\n3 Wrath of the Freljord\n3 Mournful Witness\n3 Stormclaw Ursine\n1 First Mate\n2 Mobilize\n2 Platewyrm Egg\n1 Mask of Foresight\n\nBattlefields:\n1 Rockfall Path\n1 Mystic Vortex\n1 The Candlelit Sanctum\n\nRunes:\n6 Calm Rune\n6 Body Rune"
+  },
+  {
+   "id": "leesin",
+   "legend": "Lee Sin - Blind Monk",
+   "champion_simulated": false,
+   "nash": 0,
+   "avg_wr": 0.6392592592592607,
+   "vs_nash": 0.48999999999999816,
+   "deck": {
+    "id": "leesin",
+    "name": "Lee Sin - Blind Monk",
+    "legend": "Lee Sin - Blind Monk",
+    "champion": "Lee Sin - Centered",
+    "runes": {
+     "Calm": 6,
+     "Body": 6
+    },
+    "bfs": [
+     "Altar to Unity",
+     "The Candlelit Sanctum",
+     "Windswept Hillock"
+    ],
+    "list": [
+     [
+      2,
+      "Lee Sin - Centered"
+     ],
+     [
+      3,
+      "Sunlit Guardian"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      2,
+      "Whiteflame Protector"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      3,
+      "Stalwart Poro"
+     ],
+     [
+      3,
+      "Dazzling Aurora"
+     ],
+     [
+      3,
+      "Pakaa Cub"
+     ],
+     [
+      3,
+      "Lonely Poro"
+     ],
+     [
+      3,
+      "Trevor Snoozebottom"
+     ],
+     [
+      3,
+      "Back Off"
+     ],
+     [
+      3,
+      "Astral Heron"
+     ],
+     [
+      3,
+      "Tasty Faefolk"
+     ],
+     [
+      1,
+      "Pit Rookie"
+     ],
+     [
+      1,
+      "Mountain Drake"
+     ],
+     [
+      1,
+      "Doran's Blade"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Lee Sin - Blind Monk\n\nChampion:\n1 Lee Sin - Centered\n\nMain Deck:\n1 Lee Sin - Centered\n3 Sunlit Guardian\n3 Elder Dragon\n2 Whiteflame Protector\n3 Kinkou Initiate\n3 Stalwart Poro\n3 Pakaa Cub\n3 Lonely Poro\n3 Trevor Snoozebottom\n3 Astral Heron\n3 Tasty Faefolk\n1 Pit Rookie\n1 Mountain Drake\n3 Back Off\n3 Dazzling Aurora\n1 Doran's Blade\n\nBattlefields:\n1 Altar to Unity\n1 The Candlelit Sanctum\n1 Windswept Hillock\n\nRunes:\n6 Calm Rune\n6 Body Rune"
+  },
+  {
+   "id": "evelynn",
+   "legend": "Evelynn - Agony's Embrace",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.6289814814814824,
+   "vs_nash": 0.438333333333332,
+   "deck": {
+    "id": "evelynn",
+    "name": "Evelynn - Agony's Embrace",
+    "legend": "Evelynn - Agony's Embrace",
+    "champion": "Evelynn - Entrancing",
+    "runes": {
+     "Body": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Windswept Hillock",
+     "Dusk Rose Lab",
+     "The Candlelit Sanctum"
+    ],
+    "list": [
+     [
+      2,
+      "Evelynn - Entrancing"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      3,
+      "First Mate"
+     ],
+     [
+      3,
+      "Bedeviling Stranger"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Towering Combatant"
+     ],
+     [
+      2,
+      "Pakaa Cub"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Stormclaw Ursine"
+     ],
+     [
+      3,
+      "Ruin Runner"
+     ],
+     [
+      3,
+      "Kharox"
+     ],
+     [
+      1,
+      "Mountain Drake"
+     ],
+     [
+      1,
+      "Pit Rookie"
+     ],
+     [
+      3,
+      "Wrath of the Freljord"
+     ],
+     [
+      1,
+      "Voracious Gromp"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Evelynn - Agony's Embrace\n\nChampion:\n1 Evelynn - Entrancing\n\nMain Deck:\n1 Evelynn - Entrancing\n3 Elder Dragon\n3 First Mate\n3 Bedeviling Stranger\n3 Tornado Warrior\n3 Tideturner\n3 Towering Combatant\n2 Pakaa Cub\n3 Gutter Guardian\n3 Stormclaw Ursine\n3 Ruin Runner\n3 Kharox\n1 Mountain Drake\n1 Pit Rookie\n3 Wrath of the Freljord\n1 Voracious Gromp\n\nBattlefields:\n1 Windswept Hillock\n1 Dusk Rose Lab\n1 The Candlelit Sanctum\n\nRunes:\n6 Body Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "leblanc",
+   "legend": "LeBlanc - Deceiver",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.665092592592594,
+   "vs_nash": 0.37499999999999933,
+   "deck": {
+    "id": "leblanc",
+    "name": "LeBlanc - Deceiver",
+    "legend": "LeBlanc - Deceiver",
+    "champion": "LeBlanc - Fragmented",
+    "runes": {
+     "Mind": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Star Spring",
+     "Seat of Power",
+     "Rockfall Path"
+    ],
+    "list": [
+     [
+      1,
+      "LeBlanc - Fragmented"
+     ],
+     [
+      3,
+      "Hunting Dog"
+     ],
+     [
+      3,
+      "Raucous Anthem"
+     ],
+     [
+      3,
+      "Sandshifter"
+     ],
+     [
+      3,
+      "Noxian Drummer"
+     ],
+     [
+      2,
+      "Trifarian Captain"
+     ],
+     [
+      3,
+      "Daring Poro"
+     ],
+     [
+      3,
+      "Vanguard Sergeant"
+     ],
+     [
+      3,
+      "Cloud Drake"
+     ],
+     [
+      3,
+      "Mega-Mech"
+     ],
+     [
+      3,
+      "Corina Veraza"
+     ],
+     [
+      3,
+      "Horns of the Dragon"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      1,
+      "Soaring Scout"
+     ],
+     [
+      1,
+      "Dredge Up"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 LeBlanc - Deceiver\n\nChampion:\n1 LeBlanc - Fragmented\n\nMain Deck:\n3 Hunting Dog\n3 Sandshifter\n3 Noxian Drummer\n2 Trifarian Captain\n3 Daring Poro\n3 Vanguard Sergeant\n3 Cloud Drake\n3 Mega-Mech\n3 Corina Veraza\n3 Horns of the Dragon\n3 Harnessed Dragon\n1 Thousand-Tailed Watcher\n1 Soaring Scout\n3 Raucous Anthem\n1 Dredge Up\n1 Hidden Blade\n\nBattlefields:\n1 Star Spring\n1 Seat of Power\n1 Rockfall Path\n\nRunes:\n6 Mind Rune\n6 Order Rune"
+  },
+  {
+   "id": "viktor",
+   "legend": "Viktor - Herald of the Arcane",
+   "champion_simulated": false,
+   "nash": 0,
+   "avg_wr": 0.5459259259259263,
+   "vs_nash": 0.3716666666666657,
+   "deck": {
+    "id": "viktor",
+    "name": "Viktor - Herald of the Arcane",
+    "legend": "Viktor - Herald of the Arcane",
+    "champion": "Viktor - Leader",
+    "runes": {
+     "Mind": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Grove of the God-Willow",
+     "Amateur Recital",
+     "Fortified Position"
+    ],
+    "list": [
+     [
+      1,
+      "Viktor - Leader"
+     ],
+     [
+      1,
+      "Royal Guard"
+     ],
+     [
+      2,
+      "Plundering Poro"
+     ],
+     [
+      3,
+      "Soul Harvest"
+     ],
+     [
+      3,
+      "Cloud Drake"
+     ],
+     [
+      3,
+      "Vengeance"
+     ],
+     [
+      3,
+      "Vanguard Sergeant"
+     ],
+     [
+      2,
+      "Faithful Manufactor"
+     ],
+     [
+      2,
+      "Trinket Peddler"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Rift Herald"
+     ],
+     [
+      1,
+      "Petty Officer"
+     ],
+     [
+      1,
+      "Blade of the Ruined King"
+     ],
+     [
+      3,
+      "Sandshifter"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      1,
+      "Falling Comet"
+     ],
+     [
+      2,
+      "Shepherd's Heirloom"
+     ],
+     [
+      2,
+      "Riptide Rex"
+     ],
+     [
+      1,
+      "Trifarian Captain"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Viktor - Herald of the Arcane\n\nChampion:\n1 Viktor - Leader\n\nMain Deck:\n1 Royal Guard\n2 Plundering Poro\n3 Cloud Drake\n3 Vanguard Sergeant\n2 Faithful Manufactor\n2 Trinket Peddler\n3 Harnessed Dragon\n3 Rift Herald\n1 Petty Officer\n3 Sandshifter\n2 Riptide Rex\n1 Trifarian Captain\n3 Soul Harvest\n3 Vengeance\n3 Hidden Blade\n1 Falling Comet\n1 Blade of the Ruined King\n2 Shepherd's Heirloom\n\nBattlefields:\n1 Grove of the God-Willow\n1 Amateur Recital\n1 Fortified Position\n\nRunes:\n6 Mind Rune\n6 Order Rune"
+  },
+  {
+   "id": "draven",
+   "legend": "Draven - Glorious Executioner",
+   "champion_simulated": false,
+   "nash": 0,
+   "avg_wr": 0.5975000000000006,
+   "vs_nash": 0.36499999999999944,
+   "deck": {
+    "id": "draven",
+    "name": "Draven - Glorious Executioner",
+    "legend": "Draven - Glorious Executioner",
+    "champion": "Draven - Audacious",
+    "runes": {
+     "Fury": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Dragon Roost",
+     "Navori Fighting Pit",
+     "Shadow Temple"
+    ],
+    "list": [
+     [
+      2,
+      "Draven - Audacious"
+     ],
+     [
+      3,
+      "Evershade Stalker"
+     ],
+     [
+      3,
+      "Blighted Battleaxe"
+     ],
+     [
+      3,
+      "Brynhir Thundersong"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Chemtech Enforcer"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Bedeviling Stranger"
+     ],
+     [
+      3,
+      "Blazing Scorcher"
+     ],
+     [
+      3,
+      "Spinning Axe"
+     ],
+     [
+      3,
+      "Ferrous Forerunner"
+     ],
+     [
+      2,
+      "Antagonistic Apparatus"
+     ],
+     [
+      3,
+      "Rebuke"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Draven - Glorious Executioner\n\nChampion:\n1 Draven - Audacious\n\nMain Deck:\n1 Draven - Audacious\n3 Evershade Stalker\n3 Brynhir Thundersong\n3 Tideturner\n3 Chemtech Enforcer\n3 Tornado Warrior\n3 Gutter Guardian\n3 Bedeviling Stranger\n3 Blazing Scorcher\n3 Ferrous Forerunner\n2 Antagonistic Apparatus\n3 Rebuke\n3 Blighted Battleaxe\n3 Spinning Axe\n\nBattlefields:\n1 Dragon Roost\n1 Navori Fighting Pit\n1 Shadow Temple\n\nRunes:\n6 Fury Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "mordekaiser",
+   "legend": "Mordekaiser - Iron Revenant",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.5685185185185189,
+   "vs_nash": 0.35666666666666536,
+   "deck": {
+    "id": "mordekaiser",
+    "name": "Mordekaiser - Iron Revenant",
+    "legend": "Mordekaiser - Iron Revenant",
+    "champion": "Mordekaiser - Dominating",
+    "runes": {
+     "Fury": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Ornn's Forge",
+     "Rockfall Path",
+     "Hall of Legends"
+    ],
+    "list": [
+     [
+      3,
+      "Mordekaiser - Dominating"
+     ],
+     [
+      3,
+      "Inviolus Vox"
+     ],
+     [
+      3,
+      "Blazing Scorcher"
+     ],
+     [
+      3,
+      "Cull the Weak"
+     ],
+     [
+      3,
+      "Ferrous Forerunner"
+     ],
+     [
+      2,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Bilgewater Tracker"
+     ],
+     [
+      3,
+      "Brynhir Thundersong"
+     ],
+     [
+      3,
+      "Noxian Drummer"
+     ],
+     [
+      1,
+      "Noxian Emissary"
+     ],
+     [
+      3,
+      "Shepherd's Heirloom"
+     ],
+     [
+      3,
+      "Pouty Poro"
+     ],
+     [
+      1,
+      "Twilight Reveler"
+     ],
+     [
+      3,
+      "Hunting Dog"
+     ],
+     [
+      3,
+      "Petty Officer"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Mordekaiser - Iron Revenant\n\nChampion:\n1 Mordekaiser - Dominating\n\nMain Deck:\n2 Mordekaiser - Dominating\n3 Inviolus Vox\n3 Blazing Scorcher\n3 Ferrous Forerunner\n2 Carrion Dredger\n3 Bilgewater Tracker\n3 Brynhir Thundersong\n3 Noxian Drummer\n1 Noxian Emissary\n3 Pouty Poro\n1 Twilight Reveler\n3 Hunting Dog\n3 Petty Officer\n3 Cull the Weak\n3 Shepherd's Heirloom\n\nBattlefields:\n1 Ornn's Forge\n1 Rockfall Path\n1 Hall of Legends\n\nRunes:\n6 Fury Rune\n6 Order Rune"
+  },
+  {
+   "id": "vex",
+   "legend": "Vex - Gloomist",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.6018518518518521,
+   "vs_nash": 0.35666666666666536,
+   "deck": {
+    "id": "vex",
+    "name": "Vex - Gloomist",
+    "legend": "Vex - Gloomist",
+    "champion": "Vex - Apathetic",
+    "runes": {
+     "Calm": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Threshold of the Gray",
+     "Mystic Vortex",
+     "Grove of the God-Willow"
+    ],
+    "list": [
+     [
+      3,
+      "Vex - Apathetic"
+     ],
+     [
+      3,
+      "Playful Phantom"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Twilight Shroud"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      3,
+      "Traveling Merchant"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Bedeviling Stranger"
+     ],
+     [
+      1,
+      "Solari Shieldbearer"
+     ],
+     [
+      3,
+      "Back Off"
+     ],
+     [
+      3,
+      "Reckless Innovator"
+     ],
+     [
+      3,
+      "Sterak's Gage"
+     ],
+     [
+      3,
+      "Whiteflame Protector"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Vex - Gloomist\n\nChampion:\n1 Vex - Apathetic\n\nMain Deck:\n2 Vex - Apathetic\n3 Playful Phantom\n3 Tail-Cloaked Matriarch\n3 Tideturner\n3 Tornado Warrior\n3 Traveling Merchant\n3 Gutter Guardian\n3 Bedeviling Stranger\n1 Solari Shieldbearer\n3 Reckless Innovator\n3 Whiteflame Protector\n3 Twilight Shroud\n3 Back Off\n3 Sterak's Gage\n\nBattlefields:\n1 Threshold of the Gray\n1 Mystic Vortex\n1 Grove of the God-Willow\n\nRunes:\n6 Calm Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "kennen",
+   "legend": "Heart of the Tempest",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.5750000000000006,
+   "vs_nash": 0.34166666666666634,
+   "deck": {
+    "id": "kennen",
+    "name": "Heart of the Tempest",
+    "legend": "Heart of the Tempest",
+    "champion": "Kennen, Storm of Shuriken",
+    "runes": {
+     "Order": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Trifarian War Camp",
+     "Minefield",
+     "Sigil of the Storm"
+    ],
+    "list": [
+     [
+      3,
+      "Kennen, Storm of Shuriken"
+     ],
+     [
+      3,
+      "Honest Broker"
+     ],
+     [
+      3,
+      "Raucous Anthem"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Tideturner"
+     ],
+     [
+      3,
+      "Evershade Stalker"
+     ],
+     [
+      3,
+      "Vanguard Sergeant"
+     ],
+     [
+      3,
+      "Corina Veraza"
+     ],
+     [
+      3,
+      "Glasc Mixologist"
+     ],
+     [
+      2,
+      "Shadow Order Disciple"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Traveling Merchant"
+     ],
+     [
+      3,
+      "Gust Monk"
+     ],
+     [
+      1,
+      "Sandshifter"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Heart of the Tempest\n\nChampion:\n1 Kennen, Storm of Shuriken\n\nMain Deck:\n2 Kennen, Storm of Shuriken\n3 Honest Broker\n3 Harnessed Dragon\n3 Tideturner\n3 Evershade Stalker\n3 Vanguard Sergeant\n3 Corina Veraza\n3 Glasc Mixologist\n2 Shadow Order Disciple\n3 Tornado Warrior\n1 Traveling Merchant\n3 Gust Monk\n1 Sandshifter\n3 Raucous Anthem\n3 Hidden Blade\n\nBattlefields:\n1 Trifarian War Camp\n1 Minefield\n1 Sigil of the Storm\n\nRunes:\n6 Order Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "azir",
+   "legend": "Azir - Emperor of the Sands",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.4971296296296295,
+   "vs_nash": 0.2833333333333336,
+   "deck": {
+    "id": "azir",
+    "name": "Azir - Emperor of the Sands",
+    "legend": "Azir - Emperor of the Sands",
+    "champion": "Azir - Sovereign",
+    "runes": {
+     "Calm": 7,
+     "Order": 5
+    },
+    "bfs": [
+     "Navori Fighting Pit",
+     "Forgotten Monument",
+     "Dragon Roost"
+    ],
+    "list": [
+     [
+      2,
+      "Azir - Sovereign"
+     ],
+     [
+      3,
+      "Field Musicians"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Zephyr Sage"
+     ],
+     [
+      3,
+      "Eminent Benefactor"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      3,
+      "Shepherd's Heirloom"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      3,
+      "Playful Phantom"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Sandshifter"
+     ],
+     [
+      3,
+      "Charm"
+     ],
+     [
+      1,
+      "Astral Heron"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Azir - Emperor of the Sands\n\nChampion:\n1 Azir - Sovereign\n\nMain Deck:\n1 Azir - Sovereign\n3 Field Musicians\n3 Scuttle Crab\n3 Stellacorn Herder\n3 Zephyr Sage\n3 Eminent Benefactor\n3 Soaring Scout\n3 Harnessed Dragon\n3 Playful Phantom\n3 Sandshifter\n1 Astral Heron\n1 Trevor Snoozebottom\n3 Hidden Blade\n3 Charm\n3 Shepherd's Heirloom\n\nBattlefields:\n1 Navori Fighting Pit\n1 Forgotten Monument\n1 Dragon Roost\n\nRunes:\n7 Calm Rune\n5 Order Rune"
+  },
+  {
+   "id": "reksai",
+   "legend": "Rek'sai - Void Burrower",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.43416666666666576,
+   "vs_nash": 0.25499999999999634,
+   "deck": {
+    "id": "reksai",
+    "name": "Rek'sai - Void Burrower",
+    "legend": "Rek'sai - Void Burrower",
+    "champion": "Rek'Sai - Breacher",
+    "runes": {
+     "Fury": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "The Candlelit Sanctum",
+     "Grove of the God-Willow",
+     "Ornn's Forge"
+    ],
+    "list": [
+     [
+      2,
+      "Rek'Sai - Breacher"
+     ],
+     [
+      3,
+      "Petty Officer"
+     ],
+     [
+      3,
+      "Shepherd's Heirloom"
+     ],
+     [
+      3,
+      "Legion Rearguard"
+     ],
+     [
+      2,
+      "Upstage Comedy"
+     ],
+     [
+      3,
+      "Ferrous Forerunner"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      1,
+      "Vanguard Sergeant"
+     ],
+     [
+      1,
+      "Glasc Mixologist"
+     ],
+     [
+      3,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Soulspinner"
+     ],
+     [
+      3,
+      "Blade of the Ruined King"
+     ],
+     [
+      1,
+      "Sharkling"
+     ],
+     [
+      1,
+      "Chemtech Enforcer"
+     ],
+     [
+      2,
+      "Noxus Hopeful"
+     ],
+     [
+      3,
+      "Daring Poro"
+     ],
+     [
+      3,
+      "Blighted Battleaxe"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Rek'sai - Void Burrower\n\nChampion:\n1 Rek'Sai - Breacher\n\nMain Deck:\n1 Rek'Sai - Breacher\n3 Petty Officer\n3 Legion Rearguard\n3 Ferrous Forerunner\n3 Carrion Dredger\n1 Vanguard Sergeant\n1 Glasc Mixologist\n3 Soulspinner\n1 Sharkling\n1 Chemtech Enforcer\n2 Noxus Hopeful\n3 Daring Poro\n2 Upstage Comedy\n3 Hidden Blade\n3 Shepherd's Heirloom\n3 Blade of the Ruined King\n3 Blighted Battleaxe\n\nBattlefields:\n1 The Candlelit Sanctum\n1 Grove of the God-Willow\n1 Ornn's Forge\n\nRunes:\n6 Fury Rune\n6 Order Rune"
+  },
+  {
+   "id": "riven",
+   "legend": "Riven - The Exile",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.509259259259259,
+   "vs_nash": 0.22666666666666235,
+   "deck": {
+    "id": "riven",
+    "name": "Riven - The Exile",
+    "legend": "Riven - The Exile",
+    "champion": "Riven - Broken Blade",
+    "runes": {
+     "Calm": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Forgotten Monument",
+     "Ornn's Forge",
+     "Black Rose Sanctum"
+    ],
+    "list": [
+     [
+      3,
+      "Riven - Broken Blade"
+     ],
+     [
+      3,
+      "Corrupt Enforcer"
+     ],
+     [
+      3,
+      "Playful Phantom"
+     ],
+     [
+      3,
+      "Stalwart Poro"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      2,
+      "Kharox"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ],
+     [
+      2,
+      "Steel Paws"
+     ],
+     [
+      1,
+      "Sterak's Gage"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Whiteflame Protector"
+     ],
+     [
+      3,
+      "Back Off"
+     ],
+     [
+      1,
+      "Gust Monk"
+     ],
+     [
+      1,
+      "Battle Preparations"
+     ],
+     [
+      1,
+      "En Garde"
+     ],
+     [
+      3,
+      "Blade of the Exile"
+     ],
+     [
+      3,
+      "Tasty Faefolk"
+     ],
+     [
+      1,
+      "Discipline"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Riven - The Exile\n\nChampion:\n1 Riven - Broken Blade\n\nMain Deck:\n2 Riven - Broken Blade\n3 Corrupt Enforcer\n3 Playful Phantom\n3 Stalwart Poro\n3 Tornado Warrior\n2 Kharox\n1 Trevor Snoozebottom\n2 Steel Paws\n3 Whiteflame Protector\n1 Gust Monk\n3 Tasty Faefolk\n3 Back Off\n1 Battle Preparations\n1 En Garde\n1 Discipline\n1 Sterak's Gage\n3 Mask of Foresight\n3 Blade of the Exile\n\nBattlefields:\n1 Forgotten Monument\n1 Ornn's Forge\n1 Black Rose Sanctum\n\nRunes:\n6 Calm Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "rengar",
+   "legend": "Rengar - Pridestalker",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.4794444444444442,
+   "vs_nash": 0.2083333333333286,
+   "deck": {
+    "id": "rengar",
+    "name": "Rengar - Pridestalker",
+    "legend": "Rengar - Pridestalker",
+    "champion": "Rengar - Trophy Hunter",
+    "runes": {
+     "Fury": 6,
+     "Body": 6
+    },
+    "bfs": [
+     "The Candlelit Sanctum",
+     "Veiled Temple",
+     "Rockfall Path"
+    ],
+    "list": [
+     [
+      3,
+      "Rengar - Trophy Hunter"
+     ],
+     [
+      3,
+      "Inviolus Vox"
+     ],
+     [
+      3,
+      "Ferrous Forerunner"
+     ],
+     [
+      3,
+      "Sharkling"
+     ],
+     [
+      2,
+      "Pit Rookie"
+     ],
+     [
+      3,
+      "Bilgewater Tracker"
+     ],
+     [
+      3,
+      "Pouty Poro"
+     ],
+     [
+      3,
+      "Antagonistic Apparatus"
+     ],
+     [
+      3,
+      "Punch First"
+     ],
+     [
+      1,
+      "Twilight Reveler"
+     ],
+     [
+      3,
+      "Pakaa Cub"
+     ],
+     [
+      3,
+      "Kinkou Initiate"
+     ],
+     [
+      1,
+      "Doran's Blade"
+     ],
+     [
+      3,
+      "Noxus Hopeful"
+     ],
+     [
+      3,
+      "Hextech Ray"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Rengar - Pridestalker\n\nChampion:\n1 Rengar - Trophy Hunter\n\nMain Deck:\n2 Rengar - Trophy Hunter\n3 Inviolus Vox\n3 Ferrous Forerunner\n3 Sharkling\n2 Pit Rookie\n3 Bilgewater Tracker\n3 Pouty Poro\n3 Antagonistic Apparatus\n1 Twilight Reveler\n3 Pakaa Cub\n3 Kinkou Initiate\n3 Noxus Hopeful\n3 Punch First\n3 Hextech Ray\n1 Doran's Blade\n\nBattlefields:\n1 The Candlelit Sanctum\n1 Veiled Temple\n1 Rockfall Path\n\nRunes:\n6 Fury Rune\n6 Body Rune"
+  },
+  {
+   "id": "orianna",
+   "legend": "Orianna - Lady of Clockwork",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.3358333333333318,
+   "vs_nash": 0.19499999999999496,
+   "deck": {
+    "id": "orianna",
+    "name": "Orianna - Lady of Clockwork",
+    "legend": "Orianna - Lady of Clockwork",
+    "champion": "Orianna - Exquisite",
+    "runes": {
+     "Calm": 6,
+     "Mind": 6
+    },
+    "bfs": [
+     "Ornn's Forge",
+     "Sigil of the Storm",
+     "Dusk Rose Lab"
+    ],
+    "list": [
+     [
+      2,
+      "Orianna - Exquisite"
+     ],
+     [
+      3,
+      "Stalwart Poro"
+     ],
+     [
+      3,
+      "Riptide Rex"
+     ],
+     [
+      2,
+      "Plundering Poro"
+     ],
+     [
+      2,
+      "Whiteflame Protector"
+     ],
+     [
+      3,
+      "Hunting Blind"
+     ],
+     [
+      3,
+      "Tasty Faefolk"
+     ],
+     [
+      2,
+      "Zephyr Sage"
+     ],
+     [
+      3,
+      "Soul Sword"
+     ],
+     [
+      3,
+      "Wages of Pain"
+     ],
+     [
+      3,
+      "Industrious Mechsmith"
+     ],
+     [
+      3,
+      "Experimental Hexplate"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "En Garde"
+     ],
+     [
+      1,
+      "Discipline"
+     ],
+     [
+      1,
+      "Frisky Hunter"
+     ],
+     [
+      1,
+      "Zhonya's Hourglass"
+     ],
+     [
+      1,
+      "Falling Comet"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Orianna - Lady of Clockwork\n\nChampion:\n1 Orianna - Exquisite\n\nMain Deck:\n1 Orianna - Exquisite\n3 Stalwart Poro\n3 Riptide Rex\n2 Plundering Poro\n2 Whiteflame Protector\n3 Tasty Faefolk\n2 Zephyr Sage\n3 Industrious Mechsmith\n1 Thousand-Tailed Watcher\n1 Frisky Hunter\n3 Wages of Pain\n3 En Garde\n1 Discipline\n1 Falling Comet\n3 Hunting Blind\n3 Soul Sword\n3 Experimental Hexplate\n1 Zhonya's Hourglass\n\nBattlefields:\n1 Ornn's Forge\n1 Sigil of the Storm\n1 Dusk Rose Lab\n\nRunes:\n6 Calm Rune\n6 Mind Rune"
+  },
+  {
+   "id": "irelia",
+   "legend": "Irelia - Blade Dancer",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.44851851851851837,
+   "vs_nash": 0.18500000000000022,
+   "deck": {
+    "id": "irelia",
+    "name": "Irelia - Blade Dancer",
+    "legend": "Irelia - Blade Dancer",
+    "champion": "Irelia - Fervent",
+    "runes": {
+     "Calm": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Veiled Temple",
+     "Dusk Rose Lab",
+     "Rakelstake"
+    ],
+    "list": [
+     [
+      2,
+      "Irelia - Fervent"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      3,
+      "Playful Phantom"
+     ],
+     [
+      3,
+      "Stalwart Poro"
+     ],
+     [
+      3,
+      "Whiteflame Protector"
+     ],
+     [
+      3,
+      "Zephyr Sage"
+     ],
+     [
+      3,
+      "En Garde"
+     ],
+     [
+      3,
+      "Rhasa the Sunderer"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      1,
+      "Back Off"
+     ],
+     [
+      2,
+      "Tideturner"
+     ],
+     [
+      1,
+      "Evershade Stalker"
+     ],
+     [
+      3,
+      "Tasty Faefolk"
+     ],
+     [
+      1,
+      "Lunar Boon"
+     ],
+     [
+      2,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Trevor Snoozebottom"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Irelia - Blade Dancer\n\nChampion:\n1 Irelia - Fervent\n\nMain Deck:\n1 Irelia - Fervent\n3 Tornado Warrior\n3 Playful Phantom\n3 Stalwart Poro\n3 Whiteflame Protector\n3 Zephyr Sage\n3 Rhasa the Sunderer\n3 Stellacorn Herder\n3 Gutter Guardian\n2 Tideturner\n1 Evershade Stalker\n3 Tasty Faefolk\n1 Trevor Snoozebottom\n3 En Garde\n1 Back Off\n1 Lunar Boon\n2 Rebuke\n\nBattlefields:\n1 Veiled Temple\n1 Dusk Rose Lab\n1 Rakelstake\n\nRunes:\n6 Calm Rune\n6 Chaos Rune"
+  },
+  {
+   "id": "jayce",
+   "legend": "Jayce - Defender of Tomorrow",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.3581481481481478,
+   "vs_nash": 0.1349999999999999,
+   "deck": {
+    "id": "jayce",
+    "name": "Jayce - Defender of Tomorrow",
+    "legend": "Jayce - Defender of Tomorrow",
+    "champion": "Jayce, Brilliant Inventor",
+    "runes": {
+     "Mind": 6,
+     "Body": 6
+    },
+    "bfs": [
+     "Rakelstake",
+     "Rockfall Path",
+     "Minefield"
+    ],
+    "list": [
+     [
+      3,
+      "Jayce, Brilliant Inventor"
+     ],
+     [
+      1,
+      "Progress Day"
+     ],
+     [
+      3,
+      "Sprite Burst"
+     ],
+     [
+      3,
+      "Plundering Poro"
+     ],
+     [
+      3,
+      "Garbage Grabber"
+     ],
+     [
+      3,
+      "Riptide Rex"
+     ],
+     [
+      3,
+      "Elder Dragon"
+     ],
+     [
+      3,
+      "Industrious Mechsmith"
+     ],
+     [
+      3,
+      "Watchful Sentry"
+     ],
+     [
+      1,
+      "Crackshot Corsair"
+     ],
+     [
+      3,
+      "Mobilize"
+     ],
+     [
+      3,
+      "Mega-Mech"
+     ],
+     [
+      3,
+      "Wages of Pain"
+     ],
+     [
+      1,
+      "Stupefy"
+     ],
+     [
+      1,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Wrath of the Freljord"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Jayce - Defender of Tomorrow\n\nChampion:\n1 Jayce, Brilliant Inventor\n\nMain Deck:\n2 Jayce, Brilliant Inventor\n3 Plundering Poro\n3 Riptide Rex\n3 Elder Dragon\n3 Industrious Mechsmith\n3 Watchful Sentry\n1 Crackshot Corsair\n3 Mega-Mech\n1 Thousand-Tailed Watcher\n3 Wrath of the Freljord\n1 Progress Day\n3 Sprite Burst\n3 Mobilize\n3 Wages of Pain\n1 Stupefy\n3 Garbage Grabber\n\nBattlefields:\n1 Rakelstake\n1 Rockfall Path\n1 Minefield\n\nRunes:\n6 Mind Rune\n6 Body Rune"
+  },
+  {
+   "id": "seraphine",
+   "legend": "Seraphine - Starry-Eyed Songstress",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.31703703703703534,
+   "vs_nash": 0.12999999999999345,
+   "deck": {
+    "id": "seraphine",
+    "name": "Seraphine - Starry-Eyed Songstress",
+    "legend": "Seraphine - Starry-Eyed Songstress",
+    "champion": "Seraphine - Inspiring",
+    "runes": {
+     "Mind": 6,
+     "Order": 6
+    },
+    "bfs": [
+     "Black Rose Sanctum",
+     "Shadow Temple",
+     "Startipped Peak"
+    ],
+    "list": [
+     [
+      3,
+      "Seraphine - Inspiring"
+     ],
+     [
+      2,
+      "Mega-Mech"
+     ],
+     [
+      3,
+      "Soaring Scout"
+     ],
+     [
+      3,
+      "Riptide Rex"
+     ],
+     [
+      3,
+      "Carrion Dredger"
+     ],
+     [
+      3,
+      "Raucous Anthem"
+     ],
+     [
+      3,
+      "Sprite Mother"
+     ],
+     [
+      2,
+      "Recruit the Vanguard"
+     ],
+     [
+      2,
+      "Stupefy"
+     ],
+     [
+      3,
+      "Wages of Pain"
+     ],
+     [
+      1,
+      "Vanguard Sergeant"
+     ],
+     [
+      3,
+      "Petty Officer"
+     ],
+     [
+      1,
+      "Hidden Blade"
+     ],
+     [
+      3,
+      "Thousand-Tailed Watcher"
+     ],
+     [
+      3,
+      "Harnessed Dragon"
+     ],
+     [
+      1,
+      "Supernova"
+     ],
+     [
+      1,
+      "Shepherd's Heirloom"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Seraphine - Starry-Eyed Songstress\n\nChampion:\n1 Seraphine - Inspiring\n\nMain Deck:\n2 Seraphine - Inspiring\n2 Mega-Mech\n3 Soaring Scout\n3 Riptide Rex\n3 Carrion Dredger\n3 Sprite Mother\n1 Vanguard Sergeant\n3 Petty Officer\n3 Thousand-Tailed Watcher\n3 Harnessed Dragon\n3 Raucous Anthem\n2 Recruit the Vanguard\n2 Stupefy\n3 Wages of Pain\n1 Hidden Blade\n1 Supernova\n1 Shepherd's Heirloom\n\nBattlefields:\n1 Black Rose Sanctum\n1 Shadow Temple\n1 Startipped Peak\n\nRunes:\n6 Mind Rune\n6 Order Rune"
+  },
+  {
+   "id": "akali",
+   "legend": "Akali - Rogue Assassin",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.30425925925925906,
+   "vs_nash": 0.11999999999999984,
+   "deck": {
+    "id": "akali",
+    "name": "Akali - Rogue Assassin",
+    "legend": "Akali - Rogue Assassin",
+    "champion": "Akali, Silent",
+    "runes": {
+     "Fury": 6,
+     "Calm": 6
+    },
+    "bfs": [
+     "Minefield",
+     "Ornn's Forge",
+     "Forgotten Monument"
+    ],
+    "list": [
+     [
+      2,
+      "Akali, Silent"
+     ],
+     [
+      3,
+      "Scuttle Crab"
+     ],
+     [
+      2,
+      "Long Sword"
+     ],
+     [
+      3,
+      "Trevor Snoozebottom"
+     ],
+     [
+      2,
+      "Mournful Witness"
+     ],
+     [
+      3,
+      "Mutated Mouser"
+     ],
+     [
+      3,
+      "Ribbon Dancer"
+     ],
+     [
+      3,
+      "Blazing Scorcher"
+     ],
+     [
+      3,
+      "Stellacorn Herder"
+     ],
+     [
+      1,
+      "Stalwart Poro"
+     ],
+     [
+      3,
+      "Whiteflame Protector"
+     ],
+     [
+      2,
+      "Back Off"
+     ],
+     [
+      3,
+      "Mask of Foresight"
+     ],
+     [
+      3,
+      "Ferrous Forerunner"
+     ],
+     [
+      1,
+      "En Garde"
+     ],
+     [
+      3,
+      "Zephyr Sage"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Akali - Rogue Assassin\n\nChampion:\n1 Akali, Silent\n\nMain Deck:\n1 Akali, Silent\n3 Scuttle Crab\n3 Trevor Snoozebottom\n2 Mournful Witness\n3 Mutated Mouser\n3 Ribbon Dancer\n3 Blazing Scorcher\n3 Stellacorn Herder\n1 Stalwart Poro\n3 Whiteflame Protector\n3 Ferrous Forerunner\n3 Zephyr Sage\n2 Back Off\n1 En Garde\n2 Long Sword\n3 Mask of Foresight\n\nBattlefields:\n1 Minefield\n1 Ornn's Forge\n1 Forgotten Monument\n\nRunes:\n6 Fury Rune\n6 Calm Rune"
+  },
+  {
+   "id": "pyke",
+   "legend": "Pyke - Bloodharbor Ripper",
+   "champion_simulated": true,
+   "nash": 0,
+   "avg_wr": 0.26768518518518264,
+   "vs_nash": 0.09166666666665924,
+   "deck": {
+    "id": "pyke",
+    "name": "Pyke - Bloodharbor Ripper",
+    "legend": "Pyke - Bloodharbor Ripper",
+    "champion": "Pyke - Dockside Butcher",
+    "runes": {
+     "Fury": 6,
+     "Chaos": 6
+    },
+    "bfs": [
+     "Minefield",
+     "Star Spring",
+     "Zaun Warrens"
+    ],
+    "list": [
+     [
+      2,
+      "Pyke - Dockside Butcher"
+     ],
+     [
+      3,
+      "Gutter Guardian"
+     ],
+     [
+      3,
+      "Inferna"
+     ],
+     [
+      3,
+      "Twilight Reveler"
+     ],
+     [
+      3,
+      "Blighted Battleaxe"
+     ],
+     [
+      2,
+      "Doran's Ring"
+     ],
+     [
+      3,
+      "Antagonistic Apparatus"
+     ],
+     [
+      2,
+      "War Scout"
+     ],
+     [
+      2,
+      "Mister Root"
+     ],
+     [
+      1,
+      "Abandon"
+     ],
+     [
+      3,
+      "Tail-Cloaked Matriarch"
+     ],
+     [
+      3,
+      "Tornado Warrior"
+     ],
+     [
+      1,
+      "Ferrous Forerunner"
+     ],
+     [
+      3,
+      "Blood Rush"
+     ],
+     [
+      2,
+      "Blazing Scorcher"
+     ],
+     [
+      1,
+      "Traveling Merchant"
+     ],
+     [
+      1,
+      "Rhasa the Sunderer"
+     ],
+     [
+      1,
+      "Rebuke"
+     ],
+     [
+      1,
+      "Brynhir Thundersong"
+     ]
+    ]
+   },
+   "text": "Legend:\n1 Pyke - Bloodharbor Ripper\n\nChampion:\n1 Pyke - Dockside Butcher\n\nMain Deck:\n1 Pyke - Dockside Butcher\n3 Gutter Guardian\n3 Inferna\n3 Twilight Reveler\n3 Antagonistic Apparatus\n2 War Scout\n2 Mister Root\n3 Tail-Cloaked Matriarch\n3 Tornado Warrior\n1 Ferrous Forerunner\n2 Blazing Scorcher\n1 Traveling Merchant\n1 Rhasa the Sunderer\n1 Brynhir Thundersong\n1 Abandon\n3 Blood Rush\n1 Rebuke\n3 Blighted Battleaxe\n2 Doran's Ring\n\nBattlefields:\n1 Minefield\n1 Star Spring\n1 Zaun Warrens\n\nRunes:\n6 Fury Rune\n6 Chaos Rune"
+  }
+ ],
+ "history": [
+  {
+   "iter": 1,
+   "matrix": [
+    [
+     0.5,
+     0.17000000000000007,
+     0.16500000000000006,
+     0.23000000000000012,
+     0.15500000000000005,
+     0.39500000000000024,
+     0.5700000000000004,
+     0.10500000000000002,
+     0.11000000000000003,
+     0.11000000000000003,
+     0.22500000000000012,
+     0.4550000000000003,
+     0.6900000000000005,
+     0.38500000000000023,
+     0.40000000000000024,
+     0.41000000000000025,
+     0.5250000000000004,
+     0.3600000000000002,
+     0.28500000000000014
+    ],
+    [
+     0.83,
+     0.5,
+     0.3250000000000002,
+     0.30500000000000016,
+     0.3450000000000002,
+     0.5550000000000004,
+     0.6950000000000005,
+     0.39000000000000024,
+     0.29000000000000015,
+     0.2600000000000001,
+     0.3600000000000002,
+     0.6650000000000005,
+     0.7350000000000005,
+     0.5400000000000004,
+     0.4900000000000003,
+     0.4700000000000003,
+     0.6200000000000004,
+     0.3650000000000002,
+     0.31500000000000017
+    ],
+    [
+     0.835,
+     0.6749999999999998,
+     0.5,
+     0.4550000000000003,
+     0.6200000000000004,
+     0.7600000000000006,
+     0.8700000000000007,
+     0.4600000000000003,
+     0.42000000000000026,
+     0.40000000000000024,
+     0.5750000000000004,
+     0.7700000000000006,
+     0.8900000000000007,
+     0.7700000000000006,
+     0.6750000000000005,
+     0.6850000000000005,
+     0.7600000000000006,
+     0.6550000000000005,
+     0.5800000000000004
+    ],
+    [
+     0.7699999999999999,
+     0.6949999999999998,
+     0.5449999999999997,
+     0.5,
+     0.5900000000000004,
+     0.7100000000000005,
+     0.8850000000000007,
+     0.7000000000000005,
+     0.5250000000000004,
+     0.6050000000000004,
+     0.7300000000000005,
+     0.6800000000000005,
+     0.8700000000000007,
+     0.8000000000000006,
+     0.6850000000000005,
+     0.7150000000000005,
+     0.7150000000000005,
+     0.7100000000000005,
+     0.6900000000000005
+    ],
+    [
+     0.845,
+     0.6549999999999998,
+     0.37999999999999956,
+     0.4099999999999996,
+     0.5,
+     0.5700000000000004,
+     0.8300000000000006,
+     0.4900000000000003,
+     0.49500000000000033,
+     0.5350000000000004,
+     0.6950000000000005,
+     0.7200000000000005,
+     0.8400000000000006,
+     0.6500000000000005,
+     0.6950000000000005,
+     0.6350000000000005,
+     0.7350000000000005,
+     0.41000000000000025,
+     0.6150000000000004
+    ],
+    [
+     0.6049999999999998,
+     0.4449999999999996,
+     0.23999999999999944,
+     0.2899999999999995,
+     0.4299999999999996,
+     0.5,
+     0.7650000000000006,
+     0.2150000000000001,
+     0.28500000000000014,
+     0.2600000000000001,
+     0.4550000000000003,
+     0.5550000000000004,
+     0.7500000000000006,
+     0.6300000000000004,
+     0.5250000000000004,
+     0.4750000000000003,
+     0.6200000000000004,
+     0.4350000000000003,
+     0.39500000000000024
+    ],
+    [
+     0.4299999999999996,
+     0.3049999999999995,
+     0.12999999999999934,
+     0.11499999999999932,
+     0.16999999999999937,
+     0.23499999999999943,
+     0.5,
+     0.17000000000000007,
+     0.13000000000000003,
+     0.10500000000000002,
+     0.22500000000000012,
+     0.31500000000000017,
+     0.4750000000000003,
+     0.2550000000000001,
+     0.31500000000000017,
+     0.31000000000000016,
+     0.3500000000000002,
+     0.18500000000000008,
+     0.12500000000000003
+    ],
+    [
+     0.895,
+     0.6099999999999998,
+     0.5399999999999997,
+     0.2999999999999995,
+     0.5099999999999997,
+     0.7849999999999999,
+     0.83,
+     0.5,
+     0.4850000000000003,
+     0.3250000000000002,
+     0.5050000000000003,
+     0.7300000000000005,
+     0.8800000000000007,
+     0.6850000000000005,
+     0.6850000000000005,
+     0.7400000000000005,
+     0.7550000000000006,
+     0.5650000000000004,
+     0.5550000000000004
+    ],
+    [
+     0.89,
+     0.7099999999999999,
+     0.5799999999999997,
+     0.47499999999999964,
+     0.5049999999999997,
+     0.7149999999999999,
+     0.87,
+     0.5149999999999997,
+     0.5,
+     0.49500000000000033,
+     0.6900000000000005,
+     0.7000000000000005,
+     0.9000000000000007,
+     0.7450000000000006,
+     0.8050000000000006,
+     0.7550000000000006,
+     0.7400000000000005,
+     0.5250000000000004,
+     0.5600000000000004
+    ],
+    [
+     0.89,
+     0.7399999999999999,
+     0.5999999999999998,
+     0.3949999999999996,
+     0.46499999999999964,
+     0.7399999999999999,
+     0.895,
+     0.6749999999999998,
+     0.5049999999999997,
+     0.5,
+     0.6700000000000005,
+     0.7450000000000006,
+     0.8850000000000007,
+     0.6300000000000004,
+     0.8150000000000006,
+     0.7400000000000005,
+     0.8000000000000006,
+     0.6150000000000004,
+     0.6250000000000004
+    ],
+    [
+     0.7749999999999999,
+     0.6399999999999998,
+     0.4249999999999996,
+     0.26999999999999946,
+     0.3049999999999995,
+     0.5449999999999997,
+     0.7749999999999999,
+     0.49499999999999966,
+     0.3099999999999995,
+     0.3299999999999995,
+     0.5,
+     0.7650000000000006,
+     0.7250000000000005,
+     0.5500000000000004,
+     0.5250000000000004,
+     0.6500000000000005,
+     0.7750000000000006,
+     0.3200000000000002,
+     0.5000000000000003
+    ],
+    [
+     0.5449999999999997,
+     0.3349999999999995,
+     0.22999999999999943,
+     0.3199999999999995,
+     0.27999999999999947,
+     0.4449999999999996,
+     0.6849999999999998,
+     0.26999999999999946,
+     0.2999999999999995,
+     0.25499999999999945,
+     0.23499999999999943,
+     0.5,
+     0.5650000000000004,
+     0.3400000000000002,
+     0.3800000000000002,
+     0.3500000000000002,
+     0.4500000000000003,
+     0.3500000000000002,
+     0.38500000000000023
+    ],
+    [
+     0.3099999999999995,
+     0.26499999999999946,
+     0.10999999999999932,
+     0.12999999999999934,
+     0.15999999999999936,
+     0.24999999999999944,
+     0.5249999999999997,
+     0.11999999999999933,
+     0.09999999999999931,
+     0.11499999999999932,
+     0.27499999999999947,
+     0.4349999999999996,
+     0.5,
+     0.3750000000000002,
+     0.30500000000000016,
+     0.18000000000000008,
+     0.4650000000000003,
+     0.09000000000000001,
+     0.23500000000000013
+    ],
+    [
+     0.6149999999999998,
+     0.45999999999999963,
+     0.22999999999999943,
+     0.1999999999999994,
+     0.34999999999999953,
+     0.36999999999999955,
+     0.7449999999999999,
+     0.3149999999999995,
+     0.25499999999999945,
+     0.36999999999999955,
+     0.4499999999999996,
+     0.6599999999999998,
+     0.6249999999999998,
+     0.5,
+     0.5350000000000004,
+     0.41500000000000026,
+     0.5950000000000004,
+     0.22500000000000012,
+     0.40000000000000024
+    ],
+    [
+     0.5999999999999998,
+     0.5099999999999997,
+     0.3249999999999995,
+     0.3149999999999995,
+     0.3049999999999995,
+     0.47499999999999964,
+     0.6849999999999998,
+     0.3149999999999995,
+     0.1949999999999994,
+     0.1849999999999994,
+     0.47499999999999964,
+     0.6199999999999998,
+     0.6949999999999998,
+     0.46499999999999964,
+     0.5,
+     0.3600000000000002,
+     0.6650000000000005,
+     0.28500000000000014,
+     0.3700000000000002
+    ],
+    [
+     0.5899999999999997,
+     0.5299999999999997,
+     0.3149999999999995,
+     0.2849999999999995,
+     0.36499999999999955,
+     0.5249999999999997,
+     0.6899999999999998,
+     0.25999999999999945,
+     0.24499999999999944,
+     0.25999999999999945,
+     0.34999999999999953,
+     0.6499999999999998,
+     0.82,
+     0.5849999999999997,
+     0.6399999999999998,
+     0.5,
+     0.5700000000000004,
+     0.4700000000000003,
+     0.4650000000000003
+    ],
+    [
+     0.47499999999999964,
+     0.37999999999999956,
+     0.23999999999999944,
+     0.2849999999999995,
+     0.26499999999999946,
+     0.37999999999999956,
+     0.6499999999999998,
+     0.24499999999999944,
+     0.25999999999999945,
+     0.1999999999999994,
+     0.22499999999999942,
+     0.5499999999999997,
+     0.5349999999999997,
+     0.4049999999999996,
+     0.3349999999999995,
+     0.4299999999999996,
+     0.5,
+     0.24500000000000013,
+     0.27000000000000013
+    ],
+    [
+     0.6399999999999998,
+     0.6349999999999998,
+     0.34499999999999953,
+     0.2899999999999995,
+     0.5899999999999997,
+     0.5649999999999997,
+     0.815,
+     0.4349999999999996,
+     0.47499999999999964,
+     0.38499999999999956,
+     0.6799999999999998,
+     0.6499999999999998,
+     0.91,
+     0.7749999999999999,
+     0.7149999999999999,
+     0.5299999999999997,
+     0.7549999999999999,
+     0.5,
+     0.5600000000000004
+    ],
+    [
+     0.7149999999999999,
+     0.6849999999999998,
+     0.4199999999999996,
+     0.3099999999999995,
+     0.38499999999999956,
+     0.6049999999999998,
+     0.875,
+     0.4449999999999996,
+     0.4399999999999996,
+     0.37499999999999956,
+     0.49999999999999967,
+     0.6149999999999998,
+     0.7649999999999999,
+     0.5999999999999998,
+     0.6299999999999998,
+     0.5349999999999997,
+     0.7299999999999999,
+     0.4399999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5000000000000007,
+   "avg": [
+    0.3191666666666669,
+    0.4752777777777781,
+    0.6586111111111115,
+    0.7011111111111115,
+    0.6225000000000003,
+    0.46527777777777796,
+    0.24138888888888882,
+    0.6322222222222224,
+    0.6763888888888892,
+    0.6905555555555558,
+    0.5377777777777778,
+    0.3733333333333331,
+    0.2469444444444441,
+    0.4341666666666664,
+    0.4358333333333332,
+    0.47861111111111093,
+    0.3541666666666663,
+    0.5972222222222219,
+    0.5594444444444443
+   ]
+  },
+  {
+   "iter": 2,
+   "matrix": [
+    [
+     0.5,
+     0.1950000000000001,
+     0.16000000000000006,
+     0.1950000000000001,
+     0.14500000000000005,
+     0.38500000000000023,
+     0.6300000000000004,
+     0.11500000000000003,
+     0.11500000000000003,
+     0.16000000000000006,
+     0.2650000000000001,
+     0.5300000000000004,
+     0.5950000000000004,
+     0.3400000000000002,
+     0.38500000000000023,
+     0.29000000000000015,
+     0.5200000000000004,
+     0.30000000000000016,
+     0.27000000000000013
+    ],
+    [
+     0.8049999999999999,
+     0.5,
+     0.29500000000000015,
+     0.29500000000000015,
+     0.3350000000000002,
+     0.4900000000000003,
+     0.7550000000000006,
+     0.40500000000000025,
+     0.3450000000000002,
+     0.2650000000000001,
+     0.4400000000000003,
+     0.6750000000000005,
+     0.7450000000000006,
+     0.5150000000000003,
+     0.5650000000000004,
+     0.5450000000000004,
+     0.7000000000000005,
+     0.3300000000000002,
+     0.4500000000000003
+    ],
+    [
+     0.84,
+     0.7049999999999998,
+     0.5,
+     0.5450000000000004,
+     0.6000000000000004,
+     0.7400000000000005,
+     0.8650000000000007,
+     0.4750000000000003,
+     0.4700000000000003,
+     0.39000000000000024,
+     0.5400000000000004,
+     0.7950000000000006,
+     0.9300000000000007,
+     0.7850000000000006,
+     0.6800000000000005,
+     0.7300000000000005,
+     0.7550000000000006,
+     0.7050000000000005,
+     0.5450000000000004
+    ],
+    [
+     0.8049999999999999,
+     0.7049999999999998,
+     0.4549999999999996,
+     0.5,
+     0.5850000000000004,
+     0.7000000000000005,
+     0.7750000000000006,
+     0.5900000000000004,
+     0.5100000000000003,
+     0.42500000000000027,
+     0.6700000000000005,
+     0.6700000000000005,
+     0.9150000000000007,
+     0.7350000000000005,
+     0.7000000000000005,
+     0.7050000000000005,
+     0.7250000000000005,
+     0.7250000000000005,
+     0.6950000000000005
+    ],
+    [
+     0.855,
+     0.6649999999999998,
+     0.3999999999999996,
+     0.4149999999999996,
+     0.5,
+     0.5950000000000004,
+     0.8200000000000006,
+     0.4800000000000003,
+     0.4500000000000003,
+     0.39500000000000024,
+     0.6650000000000005,
+     0.7400000000000005,
+     0.8450000000000006,
+     0.6800000000000005,
+     0.6850000000000005,
+     0.6100000000000004,
+     0.7900000000000006,
+     0.4700000000000003,
+     0.7000000000000005
+    ],
+    [
+     0.6149999999999998,
+     0.5099999999999997,
+     0.25999999999999945,
+     0.2999999999999995,
+     0.4049999999999996,
+     0.5,
+     0.6750000000000005,
+     0.23000000000000012,
+     0.2650000000000001,
+     0.17500000000000007,
+     0.42000000000000026,
+     0.5750000000000004,
+     0.8300000000000006,
+     0.6000000000000004,
+     0.4550000000000003,
+     0.4600000000000003,
+     0.6350000000000005,
+     0.41500000000000026,
+     0.39500000000000024
+    ],
+    [
+     0.36999999999999955,
+     0.24499999999999944,
+     0.13499999999999934,
+     0.22499999999999942,
+     0.17999999999999938,
+     0.3249999999999995,
+     0.5,
+     0.1950000000000001,
+     0.18000000000000008,
+     0.10000000000000002,
+     0.2050000000000001,
+     0.31500000000000017,
+     0.5050000000000003,
+     0.3200000000000002,
+     0.30500000000000016,
+     0.24000000000000013,
+     0.40500000000000025,
+     0.2200000000000001,
+     0.2050000000000001
+    ],
+    [
+     0.885,
+     0.5949999999999998,
+     0.5249999999999997,
+     0.4099999999999996,
+     0.5199999999999997,
+     0.7699999999999999,
+     0.8049999999999999,
+     0.5,
+     0.3400000000000002,
+     0.2650000000000001,
+     0.6650000000000005,
+     0.7900000000000006,
+     0.9350000000000007,
+     0.6600000000000005,
+     0.6850000000000005,
+     0.7150000000000005,
+     0.7150000000000005,
+     0.4700000000000003,
+     0.5850000000000004
+    ],
+    [
+     0.885,
+     0.6549999999999998,
+     0.5299999999999997,
+     0.48999999999999966,
+     0.5499999999999997,
+     0.7349999999999999,
+     0.82,
+     0.6599999999999998,
+     0.5,
+     0.42000000000000026,
+     0.6850000000000005,
+     0.7600000000000006,
+     0.9100000000000007,
+     0.7400000000000005,
+     0.8300000000000006,
+     0.7050000000000005,
+     0.7700000000000006,
+     0.5450000000000004,
+     0.5950000000000004
+    ],
+    [
+     0.84,
+     0.7349999999999999,
+     0.6099999999999998,
+     0.5749999999999997,
+     0.6049999999999998,
+     0.825,
+     0.9,
+     0.7349999999999999,
+     0.5799999999999997,
+     0.5,
+     0.6700000000000005,
+     0.7800000000000006,
+     0.9250000000000007,
+     0.7200000000000005,
+     0.8450000000000006,
+     0.7450000000000006,
+     0.8400000000000006,
+     0.5950000000000004,
+     0.6000000000000004
+    ],
+    [
+     0.7349999999999999,
+     0.5599999999999997,
+     0.45999999999999963,
+     0.3299999999999995,
+     0.3349999999999995,
+     0.5799999999999997,
+     0.7949999999999999,
+     0.3349999999999995,
+     0.3149999999999995,
+     0.3299999999999995,
+     0.5,
+     0.7400000000000005,
+     0.7850000000000006,
+     0.5250000000000004,
+     0.5400000000000004,
+     0.5200000000000004,
+     0.7750000000000006,
+     0.29500000000000015,
+     0.4650000000000003
+    ],
+    [
+     0.46999999999999964,
+     0.3249999999999995,
+     0.2049999999999994,
+     0.3299999999999995,
+     0.25999999999999945,
+     0.4249999999999996,
+     0.6849999999999998,
+     0.2099999999999994,
+     0.23999999999999944,
+     0.21999999999999942,
+     0.25999999999999945,
+     0.5,
+     0.6350000000000005,
+     0.3450000000000002,
+     0.39000000000000024,
+     0.3200000000000002,
+     0.4550000000000003,
+     0.29500000000000015,
+     0.28000000000000014
+    ],
+    [
+     0.4049999999999996,
+     0.25499999999999945,
+     0.06999999999999929,
+     0.0849999999999993,
+     0.15499999999999936,
+     0.16999999999999937,
+     0.49499999999999966,
+     0.06499999999999928,
+     0.0899999999999993,
+     0.07499999999999929,
+     0.2149999999999994,
+     0.36499999999999955,
+     0.5,
+     0.31500000000000017,
+     0.2150000000000001,
+     0.18500000000000008,
+     0.3800000000000002,
+     0.06499999999999999,
+     0.24500000000000013
+    ],
+    [
+     0.6599999999999998,
+     0.48499999999999965,
+     0.2149999999999994,
+     0.26499999999999946,
+     0.3199999999999995,
+     0.3999999999999996,
+     0.6799999999999998,
+     0.3399999999999995,
+     0.25999999999999945,
+     0.27999999999999947,
+     0.47499999999999964,
+     0.6549999999999998,
+     0.6849999999999998,
+     0.5,
+     0.5550000000000004,
+     0.4350000000000003,
+     0.5550000000000004,
+     0.2200000000000001,
+     0.38500000000000023
+    ],
+    [
+     0.6149999999999998,
+     0.4349999999999996,
+     0.3199999999999995,
+     0.2999999999999995,
+     0.3149999999999995,
+     0.5449999999999997,
+     0.6949999999999998,
+     0.3149999999999995,
+     0.16999999999999937,
+     0.15499999999999936,
+     0.45999999999999963,
+     0.6099999999999998,
+     0.7849999999999999,
+     0.4449999999999996,
+     0.5,
+     0.40500000000000025,
+     0.6350000000000005,
+     0.27000000000000013,
+     0.42000000000000026
+    ],
+    [
+     0.7099999999999999,
+     0.4549999999999996,
+     0.26999999999999946,
+     0.2949999999999995,
+     0.38999999999999957,
+     0.5399999999999997,
+     0.7599999999999999,
+     0.2849999999999995,
+     0.2949999999999995,
+     0.25499999999999945,
+     0.47999999999999965,
+     0.6799999999999998,
+     0.815,
+     0.5649999999999997,
+     0.5949999999999998,
+     0.5,
+     0.5750000000000004,
+     0.5150000000000003,
+     0.4600000000000003
+    ],
+    [
+     0.47999999999999965,
+     0.2999999999999995,
+     0.24499999999999944,
+     0.27499999999999947,
+     0.2099999999999994,
+     0.36499999999999955,
+     0.5949999999999998,
+     0.2849999999999995,
+     0.22999999999999943,
+     0.15999999999999936,
+     0.22499999999999942,
+     0.5449999999999997,
+     0.6199999999999998,
+     0.4449999999999996,
+     0.36499999999999955,
+     0.4249999999999996,
+     0.5,
+     0.2550000000000001,
+     0.28500000000000014
+    ],
+    [
+     0.6999999999999998,
+     0.6699999999999998,
+     0.2949999999999995,
+     0.27499999999999947,
+     0.5299999999999997,
+     0.5849999999999997,
+     0.7799999999999999,
+     0.5299999999999997,
+     0.4549999999999996,
+     0.4049999999999996,
+     0.7049999999999998,
+     0.7049999999999998,
+     0.935,
+     0.7799999999999999,
+     0.7299999999999999,
+     0.48499999999999965,
+     0.7449999999999999,
+     0.5,
+     0.5650000000000004
+    ],
+    [
+     0.7299999999999999,
+     0.5499999999999997,
+     0.4549999999999996,
+     0.3049999999999995,
+     0.2999999999999995,
+     0.6049999999999998,
+     0.7949999999999999,
+     0.4149999999999996,
+     0.4049999999999996,
+     0.3999999999999996,
+     0.5349999999999997,
+     0.7199999999999999,
+     0.7549999999999999,
+     0.6149999999999998,
+     0.5799999999999997,
+     0.5399999999999997,
+     0.7149999999999999,
+     0.4349999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5000000000000022,
+   "avg": [
+    0.31083333333333346,
+    0.4975000000000004,
+    0.6719444444444448,
+    0.6716666666666673,
+    0.625555555555556,
+    0.4566666666666668,
+    0.25972222222222213,
+    0.6297222222222224,
+    0.6825000000000002,
+    0.7291666666666669,
+    0.5233333333333332,
+    0.3527777777777775,
+    0.21388888888888857,
+    0.43722222222222196,
+    0.4386111111111109,
+    0.4966666666666664,
+    0.3505555555555552,
+    0.6041666666666665,
+    0.5474999999999997
+   ]
+  },
+  {
+   "iter": 3,
+   "matrix": [
+    [
+     0.5,
+     0.28000000000000014,
+     0.16500000000000006,
+     0.19000000000000009,
+     0.17000000000000007,
+     0.4450000000000003,
+     0.6600000000000005,
+     0.13000000000000003,
+     0.13500000000000004,
+     0.14000000000000004,
+     0.29500000000000015,
+     0.5300000000000004,
+     0.6100000000000004,
+     0.3350000000000002,
+     0.4450000000000003,
+     0.2200000000000001,
+     0.4700000000000003,
+     0.3350000000000002,
+     0.29500000000000015
+    ],
+    [
+     0.7199999999999999,
+     0.5,
+     0.31500000000000017,
+     0.27000000000000013,
+     0.3600000000000002,
+     0.5150000000000003,
+     0.7450000000000006,
+     0.3750000000000002,
+     0.3700000000000002,
+     0.31500000000000017,
+     0.41500000000000026,
+     0.6400000000000005,
+     0.6250000000000004,
+     0.5750000000000004,
+     0.5850000000000004,
+     0.5200000000000004,
+     0.6800000000000005,
+     0.39500000000000024,
+     0.4350000000000003
+    ],
+    [
+     0.835,
+     0.6849999999999998,
+     0.5,
+     0.4850000000000003,
+     0.6300000000000004,
+     0.6900000000000005,
+     0.8200000000000006,
+     0.5450000000000004,
+     0.3600000000000002,
+     0.41000000000000025,
+     0.6350000000000005,
+     0.7700000000000006,
+     0.8950000000000007,
+     0.7800000000000006,
+     0.6700000000000005,
+     0.6650000000000005,
+     0.7200000000000005,
+     0.6600000000000005,
+     0.6100000000000004
+    ],
+    [
+     0.8099999999999999,
+     0.7299999999999999,
+     0.5149999999999997,
+     0.5,
+     0.5450000000000004,
+     0.7200000000000005,
+     0.7750000000000006,
+     0.6250000000000004,
+     0.5350000000000004,
+     0.4600000000000003,
+     0.6400000000000005,
+     0.6750000000000005,
+     0.8800000000000007,
+     0.7400000000000005,
+     0.6050000000000004,
+     0.7250000000000005,
+     0.7100000000000005,
+     0.6500000000000005,
+     0.6200000000000004
+    ],
+    [
+     0.83,
+     0.6399999999999998,
+     0.36999999999999955,
+     0.4549999999999996,
+     0.5,
+     0.5900000000000004,
+     0.8550000000000006,
+     0.4900000000000003,
+     0.4450000000000003,
+     0.41000000000000025,
+     0.6950000000000005,
+     0.6900000000000005,
+     0.8100000000000006,
+     0.7250000000000005,
+     0.6500000000000005,
+     0.6100000000000004,
+     0.7250000000000005,
+     0.4700000000000003,
+     0.6150000000000004
+    ],
+    [
+     0.5549999999999997,
+     0.48499999999999965,
+     0.3099999999999995,
+     0.27999999999999947,
+     0.4099999999999996,
+     0.5,
+     0.7100000000000005,
+     0.2050000000000001,
+     0.2500000000000001,
+     0.17500000000000007,
+     0.39500000000000024,
+     0.5350000000000004,
+     0.8050000000000006,
+     0.5600000000000004,
+     0.4800000000000003,
+     0.4450000000000003,
+     0.5900000000000004,
+     0.31500000000000017,
+     0.4400000000000003
+    ],
+    [
+     0.3399999999999995,
+     0.25499999999999945,
+     0.17999999999999938,
+     0.22499999999999942,
+     0.14499999999999935,
+     0.2899999999999995,
+     0.5,
+     0.15000000000000005,
+     0.14500000000000005,
+     0.085,
+     0.15500000000000005,
+     0.41000000000000025,
+     0.4450000000000003,
+     0.27500000000000013,
+     0.30500000000000016,
+     0.2150000000000001,
+     0.40500000000000025,
+     0.18000000000000008,
+     0.13500000000000004
+    ],
+    [
+     0.87,
+     0.6249999999999998,
+     0.4549999999999996,
+     0.37499999999999956,
+     0.5099999999999997,
+     0.7949999999999999,
+     0.85,
+     0.5,
+     0.40500000000000025,
+     0.39000000000000024,
+     0.6600000000000005,
+     0.7950000000000006,
+     0.8750000000000007,
+     0.6600000000000005,
+     0.7500000000000006,
+     0.6800000000000005,
+     0.7500000000000006,
+     0.5200000000000004,
+     0.6350000000000005
+    ],
+    [
+     0.865,
+     0.6299999999999998,
+     0.6399999999999998,
+     0.46499999999999964,
+     0.5549999999999997,
+     0.7499999999999999,
+     0.855,
+     0.5949999999999998,
+     0.5,
+     0.4900000000000003,
+     0.7100000000000005,
+     0.7700000000000006,
+     0.9350000000000007,
+     0.7300000000000005,
+     0.8500000000000006,
+     0.7000000000000005,
+     0.8150000000000006,
+     0.4900000000000003,
+     0.5700000000000004
+    ],
+    [
+     0.86,
+     0.6849999999999998,
+     0.5899999999999997,
+     0.5399999999999997,
+     0.5899999999999997,
+     0.825,
+     0.915,
+     0.6099999999999998,
+     0.5099999999999997,
+     0.5,
+     0.6350000000000005,
+     0.8350000000000006,
+     0.8900000000000007,
+     0.7250000000000005,
+     0.8800000000000007,
+     0.7350000000000005,
+     0.8400000000000006,
+     0.6100000000000004,
+     0.7050000000000005
+    ],
+    [
+     0.7049999999999998,
+     0.5849999999999997,
+     0.36499999999999955,
+     0.35999999999999954,
+     0.3049999999999995,
+     0.6049999999999998,
+     0.845,
+     0.3399999999999995,
+     0.2899999999999995,
+     0.36499999999999955,
+     0.5,
+     0.7500000000000006,
+     0.6500000000000005,
+     0.5350000000000004,
+     0.5400000000000004,
+     0.5600000000000004,
+     0.7900000000000006,
+     0.3250000000000002,
+     0.5150000000000003
+    ],
+    [
+     0.46999999999999964,
+     0.35999999999999954,
+     0.22999999999999943,
+     0.3249999999999995,
+     0.3099999999999995,
+     0.46499999999999964,
+     0.5899999999999997,
+     0.2049999999999994,
+     0.22999999999999943,
+     0.16499999999999937,
+     0.24999999999999944,
+     0.5,
+     0.5550000000000004,
+     0.39500000000000024,
+     0.4700000000000003,
+     0.28000000000000014,
+     0.5450000000000004,
+     0.31000000000000016,
+     0.31500000000000017
+    ],
+    [
+     0.38999999999999957,
+     0.37499999999999956,
+     0.10499999999999932,
+     0.11999999999999933,
+     0.1899999999999994,
+     0.1949999999999994,
+     0.5549999999999997,
+     0.12499999999999933,
+     0.06499999999999928,
+     0.10999999999999932,
+     0.34999999999999953,
+     0.4449999999999996,
+     0.5,
+     0.3600000000000002,
+     0.3400000000000002,
+     0.19000000000000009,
+     0.4900000000000003,
+     0.05999999999999999,
+     0.3450000000000002
+    ],
+    [
+     0.6649999999999998,
+     0.4249999999999996,
+     0.21999999999999942,
+     0.25999999999999945,
+     0.27499999999999947,
+     0.4399999999999996,
+     0.7249999999999999,
+     0.3399999999999995,
+     0.26999999999999946,
+     0.27499999999999947,
+     0.46499999999999964,
+     0.6049999999999998,
+     0.6399999999999998,
+     0.5,
+     0.5750000000000004,
+     0.41000000000000025,
+     0.6300000000000004,
+     0.23000000000000012,
+     0.5000000000000003
+    ],
+    [
+     0.5549999999999997,
+     0.4149999999999996,
+     0.3299999999999995,
+     0.3949999999999996,
+     0.34999999999999953,
+     0.5199999999999997,
+     0.6949999999999998,
+     0.24999999999999944,
+     0.14999999999999936,
+     0.11999999999999933,
+     0.45999999999999963,
+     0.5299999999999997,
+     0.6599999999999998,
+     0.4249999999999996,
+     0.5,
+     0.3200000000000002,
+     0.6650000000000005,
+     0.27000000000000013,
+     0.42000000000000026
+    ],
+    [
+     0.7799999999999999,
+     0.47999999999999965,
+     0.3349999999999995,
+     0.27499999999999947,
+     0.38999999999999957,
+     0.5549999999999997,
+     0.7849999999999999,
+     0.3199999999999995,
+     0.2999999999999995,
+     0.26499999999999946,
+     0.4399999999999996,
+     0.7199999999999999,
+     0.8099999999999999,
+     0.5899999999999997,
+     0.6799999999999998,
+     0.5,
+     0.6200000000000004,
+     0.5300000000000004,
+     0.5050000000000003
+    ],
+    [
+     0.5299999999999997,
+     0.3199999999999995,
+     0.27999999999999947,
+     0.2899999999999995,
+     0.27499999999999947,
+     0.4099999999999996,
+     0.5949999999999998,
+     0.24999999999999944,
+     0.1849999999999994,
+     0.15999999999999936,
+     0.2099999999999994,
+     0.4549999999999996,
+     0.5099999999999997,
+     0.36999999999999955,
+     0.3349999999999995,
+     0.37999999999999956,
+     0.5,
+     0.27500000000000013,
+     0.27000000000000013
+    ],
+    [
+     0.6649999999999998,
+     0.6049999999999998,
+     0.3399999999999995,
+     0.34999999999999953,
+     0.5299999999999997,
+     0.6849999999999998,
+     0.82,
+     0.47999999999999965,
+     0.5099999999999997,
+     0.38999999999999957,
+     0.6749999999999998,
+     0.6899999999999998,
+     0.9400000000000001,
+     0.7699999999999999,
+     0.7299999999999999,
+     0.46999999999999964,
+     0.7249999999999999,
+     0.5,
+     0.5750000000000004
+    ],
+    [
+     0.7049999999999998,
+     0.5649999999999997,
+     0.38999999999999957,
+     0.37999999999999956,
+     0.38499999999999956,
+     0.5599999999999997,
+     0.865,
+     0.36499999999999955,
+     0.4299999999999996,
+     0.2949999999999995,
+     0.48499999999999965,
+     0.6849999999999998,
+     0.6549999999999998,
+     0.49999999999999967,
+     0.5799999999999997,
+     0.49499999999999966,
+     0.7299999999999999,
+     0.4249999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5000000000000007,
+   "avg": [
+    0.3250000000000001,
+    0.4919444444444447,
+    0.6591666666666671,
+    0.6644444444444448,
+    0.6152777777777781,
+    0.4413888888888889,
+    0.24111111111111094,
+    0.6444444444444444,
+    0.6897222222222225,
+    0.7211111111111114,
+    0.5238888888888888,
+    0.35944444444444434,
+    0.26722222222222186,
+    0.44166666666666643,
+    0.4183333333333332,
+    0.521111111111111,
+    0.3388888888888886,
+    0.6083333333333332,
+    0.5274999999999996
+   ]
+  },
+  {
+   "iter": 4,
+   "matrix": [
+    [
+     0.5,
+     0.2000000000000001,
+     0.31000000000000016,
+     0.2550000000000001,
+     0.18500000000000008,
+     0.4450000000000003,
+     0.6900000000000005,
+     0.09000000000000001,
+     0.15000000000000005,
+     0.17500000000000007,
+     0.23000000000000012,
+     0.5550000000000004,
+     0.5900000000000004,
+     0.24500000000000013,
+     0.4450000000000003,
+     0.24500000000000013,
+     0.4800000000000003,
+     0.28000000000000014,
+     0.3350000000000002
+    ],
+    [
+     0.7999999999999999,
+     0.5,
+     0.38500000000000023,
+     0.2500000000000001,
+     0.42000000000000026,
+     0.5750000000000004,
+     0.7550000000000006,
+     0.3700000000000002,
+     0.3600000000000002,
+     0.2550000000000001,
+     0.4550000000000003,
+     0.6800000000000005,
+     0.7150000000000005,
+     0.5300000000000004,
+     0.5800000000000004,
+     0.4400000000000003,
+     0.7200000000000005,
+     0.39500000000000024,
+     0.4400000000000003
+    ],
+    [
+     0.6899999999999998,
+     0.6149999999999998,
+     0.5,
+     0.41000000000000025,
+     0.6200000000000004,
+     0.7750000000000006,
+     0.8500000000000006,
+     0.4800000000000003,
+     0.5050000000000003,
+     0.39000000000000024,
+     0.5900000000000004,
+     0.7400000000000005,
+     0.8700000000000007,
+     0.7150000000000005,
+     0.6850000000000005,
+     0.6400000000000005,
+     0.7400000000000005,
+     0.6250000000000004,
+     0.5750000000000004
+    ],
+    [
+     0.7449999999999999,
+     0.7499999999999999,
+     0.5899999999999997,
+     0.5,
+     0.5400000000000004,
+     0.7100000000000005,
+     0.7850000000000006,
+     0.6250000000000004,
+     0.5550000000000004,
+     0.4550000000000003,
+     0.6150000000000004,
+     0.6100000000000004,
+     0.8500000000000006,
+     0.7250000000000005,
+     0.7600000000000006,
+     0.6000000000000004,
+     0.7300000000000005,
+     0.6000000000000004,
+     0.6750000000000005
+    ],
+    [
+     0.815,
+     0.5799999999999997,
+     0.37999999999999956,
+     0.45999999999999963,
+     0.5,
+     0.6050000000000004,
+     0.7900000000000006,
+     0.39500000000000024,
+     0.40000000000000024,
+     0.3800000000000002,
+     0.5700000000000004,
+     0.7000000000000005,
+     0.8100000000000006,
+     0.6650000000000005,
+     0.6350000000000005,
+     0.6250000000000004,
+     0.7850000000000006,
+     0.3800000000000002,
+     0.6800000000000005
+    ],
+    [
+     0.5549999999999997,
+     0.4249999999999996,
+     0.22499999999999942,
+     0.2899999999999995,
+     0.3949999999999996,
+     0.5,
+     0.6400000000000005,
+     0.29500000000000015,
+     0.24000000000000013,
+     0.18500000000000008,
+     0.3550000000000002,
+     0.5800000000000004,
+     0.8050000000000006,
+     0.4850000000000003,
+     0.42500000000000027,
+     0.39500000000000024,
+     0.6750000000000005,
+     0.3350000000000002,
+     0.4700000000000003
+    ],
+    [
+     0.3099999999999995,
+     0.24499999999999944,
+     0.14999999999999936,
+     0.2149999999999994,
+     0.2099999999999994,
+     0.35999999999999954,
+     0.5,
+     0.2050000000000001,
+     0.15000000000000005,
+     0.075,
+     0.2150000000000001,
+     0.3400000000000002,
+     0.42500000000000027,
+     0.17000000000000007,
+     0.3450000000000002,
+     0.18500000000000008,
+     0.38500000000000023,
+     0.1950000000000001,
+     0.15000000000000005
+    ],
+    [
+     0.91,
+     0.6299999999999998,
+     0.5199999999999997,
+     0.37499999999999956,
+     0.6049999999999998,
+     0.7049999999999998,
+     0.7949999999999999,
+     0.5,
+     0.39000000000000024,
+     0.3800000000000002,
+     0.6350000000000005,
+     0.7450000000000006,
+     0.8700000000000007,
+     0.6400000000000005,
+     0.7800000000000006,
+     0.6500000000000005,
+     0.7100000000000005,
+     0.5600000000000004,
+     0.6300000000000004
+    ],
+    [
+     0.85,
+     0.6399999999999998,
+     0.49499999999999966,
+     0.4449999999999996,
+     0.5999999999999998,
+     0.7599999999999999,
+     0.85,
+     0.6099999999999998,
+     0.5,
+     0.5200000000000004,
+     0.7150000000000005,
+     0.7750000000000006,
+     0.9250000000000007,
+     0.7150000000000005,
+     0.7900000000000006,
+     0.7200000000000005,
+     0.8100000000000006,
+     0.49500000000000033,
+     0.5150000000000003
+    ],
+    [
+     0.825,
+     0.7449999999999999,
+     0.6099999999999998,
+     0.5449999999999997,
+     0.6199999999999998,
+     0.815,
+     0.925,
+     0.6199999999999998,
+     0.47999999999999965,
+     0.5,
+     0.6800000000000005,
+     0.7950000000000006,
+     0.9100000000000007,
+     0.6600000000000005,
+     0.8900000000000007,
+     0.6900000000000005,
+     0.7900000000000006,
+     0.6650000000000005,
+     0.5550000000000004
+    ],
+    [
+     0.7699999999999999,
+     0.5449999999999997,
+     0.4099999999999996,
+     0.38499999999999956,
+     0.4299999999999996,
+     0.6449999999999998,
+     0.7849999999999999,
+     0.36499999999999955,
+     0.2849999999999995,
+     0.3199999999999995,
+     0.5,
+     0.6950000000000005,
+     0.6850000000000005,
+     0.5150000000000003,
+     0.5550000000000004,
+     0.5300000000000004,
+     0.7250000000000005,
+     0.3700000000000002,
+     0.49500000000000033
+    ],
+    [
+     0.4449999999999996,
+     0.3199999999999995,
+     0.25999999999999945,
+     0.38999999999999957,
+     0.2999999999999995,
+     0.4199999999999996,
+     0.6599999999999998,
+     0.25499999999999945,
+     0.22499999999999942,
+     0.2049999999999994,
+     0.3049999999999995,
+     0.5,
+     0.5200000000000004,
+     0.2550000000000001,
+     0.41500000000000026,
+     0.31000000000000016,
+     0.4850000000000003,
+     0.28000000000000014,
+     0.3350000000000002
+    ],
+    [
+     0.4099999999999996,
+     0.2849999999999995,
+     0.12999999999999934,
+     0.14999999999999936,
+     0.1899999999999994,
+     0.1949999999999994,
+     0.5749999999999997,
+     0.12999999999999934,
+     0.07499999999999929,
+     0.0899999999999993,
+     0.3149999999999995,
+     0.47999999999999965,
+     0.5,
+     0.29500000000000015,
+     0.3650000000000002,
+     0.2150000000000001,
+     0.49500000000000033,
+     0.13500000000000004,
+     0.30000000000000016
+    ],
+    [
+     0.7549999999999999,
+     0.46999999999999964,
+     0.2849999999999995,
+     0.27499999999999947,
+     0.3349999999999995,
+     0.5149999999999997,
+     0.83,
+     0.35999999999999954,
+     0.2849999999999995,
+     0.3399999999999995,
+     0.48499999999999965,
+     0.7449999999999999,
+     0.7049999999999998,
+     0.5,
+     0.5650000000000004,
+     0.4600000000000003,
+     0.6400000000000005,
+     0.27500000000000013,
+     0.3650000000000002
+    ],
+    [
+     0.5549999999999997,
+     0.4199999999999996,
+     0.3149999999999995,
+     0.23999999999999944,
+     0.36499999999999955,
+     0.5749999999999997,
+     0.6549999999999998,
+     0.21999999999999942,
+     0.2099999999999994,
+     0.10999999999999932,
+     0.4449999999999996,
+     0.5849999999999997,
+     0.6349999999999998,
+     0.4349999999999996,
+     0.5,
+     0.27000000000000013,
+     0.6050000000000004,
+     0.2200000000000001,
+     0.3600000000000002
+    ],
+    [
+     0.7549999999999999,
+     0.5599999999999997,
+     0.35999999999999954,
+     0.3999999999999996,
+     0.37499999999999956,
+     0.6049999999999998,
+     0.815,
+     0.34999999999999953,
+     0.27999999999999947,
+     0.3099999999999995,
+     0.46999999999999964,
+     0.6899999999999998,
+     0.7849999999999999,
+     0.5399999999999997,
+     0.7299999999999999,
+     0.5,
+     0.6500000000000005,
+     0.5450000000000004,
+     0.43000000000000027
+    ],
+    [
+     0.5199999999999997,
+     0.27999999999999947,
+     0.25999999999999945,
+     0.26999999999999946,
+     0.2149999999999994,
+     0.3249999999999995,
+     0.6149999999999998,
+     0.2899999999999995,
+     0.1899999999999994,
+     0.2099999999999994,
+     0.27499999999999947,
+     0.5149999999999997,
+     0.5049999999999997,
+     0.35999999999999954,
+     0.3949999999999996,
+     0.34999999999999953,
+     0.5,
+     0.30500000000000016,
+     0.29500000000000015
+    ],
+    [
+     0.7199999999999999,
+     0.6049999999999998,
+     0.37499999999999956,
+     0.3999999999999996,
+     0.6199999999999998,
+     0.6649999999999998,
+     0.8049999999999999,
+     0.4399999999999996,
+     0.5049999999999997,
+     0.3349999999999995,
+     0.6299999999999998,
+     0.7199999999999999,
+     0.865,
+     0.7249999999999999,
+     0.7799999999999999,
+     0.4549999999999996,
+     0.6949999999999998,
+     0.5,
+     0.6050000000000004
+    ],
+    [
+     0.6649999999999998,
+     0.5599999999999997,
+     0.4249999999999996,
+     0.3249999999999995,
+     0.3199999999999995,
+     0.5299999999999997,
+     0.85,
+     0.36999999999999955,
+     0.48499999999999965,
+     0.4449999999999996,
+     0.5049999999999997,
+     0.6649999999999998,
+     0.6999999999999998,
+     0.6349999999999998,
+     0.6399999999999998,
+     0.5699999999999997,
+     0.7049999999999998,
+     0.3949999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0.1666666666666692,
+    0,
+    0,
+    0,
+    0,
+    0.37499999999999717,
+    0.4583333333333337,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5,
+   "avg": [
+    0.32805555555555577,
+    0.5069444444444446,
+    0.6397222222222225,
+    0.6622222222222224,
+    0.5919444444444446,
+    0.4319444444444446,
+    0.24055555555555547,
+    0.6405555555555559,
+    0.6794444444444445,
+    0.7122222222222224,
+    0.5283333333333334,
+    0.354722222222222,
+    0.2683333333333329,
+    0.48277777777777764,
+    0.40111111111111086,
+    0.5361111111111109,
+    0.3430555555555552,
+    0.6080555555555553,
+    0.5438888888888886
+   ]
+  },
+  {
+   "iter": 5,
+   "matrix": [
+    [
+     0.5,
+     0.22500000000000012,
+     0.23000000000000012,
+     0.2550000000000001,
+     0.1950000000000001,
+     0.3800000000000002,
+     0.6650000000000005,
+     0.09500000000000001,
+     0.16000000000000006,
+     0.15000000000000005,
+     0.30500000000000016,
+     0.5000000000000003,
+     0.6300000000000004,
+     0.31500000000000017,
+     0.5150000000000003,
+     0.2650000000000001,
+     0.5150000000000003,
+     0.28000000000000014,
+     0.27500000000000013
+    ],
+    [
+     0.7749999999999999,
+     0.5,
+     0.31500000000000017,
+     0.2500000000000001,
+     0.40500000000000025,
+     0.4850000000000003,
+     0.7400000000000005,
+     0.42000000000000026,
+     0.42000000000000026,
+     0.31500000000000017,
+     0.41500000000000026,
+     0.6850000000000005,
+     0.6700000000000005,
+     0.5200000000000004,
+     0.5850000000000004,
+     0.5200000000000004,
+     0.6650000000000005,
+     0.3350000000000002,
+     0.38500000000000023
+    ],
+    [
+     0.7699999999999999,
+     0.6849999999999998,
+     0.5,
+     0.41000000000000025,
+     0.6150000000000004,
+     0.6750000000000005,
+     0.7950000000000006,
+     0.39500000000000024,
+     0.4450000000000003,
+     0.3400000000000002,
+     0.5950000000000004,
+     0.7700000000000006,
+     0.8500000000000006,
+     0.7400000000000005,
+     0.6600000000000005,
+     0.5650000000000004,
+     0.7450000000000006,
+     0.5900000000000004,
+     0.5600000000000004
+    ],
+    [
+     0.7449999999999999,
+     0.7499999999999999,
+     0.5899999999999997,
+     0.5,
+     0.5450000000000004,
+     0.6850000000000005,
+     0.7600000000000006,
+     0.6600000000000005,
+     0.5000000000000003,
+     0.4700000000000003,
+     0.6400000000000005,
+     0.6950000000000005,
+     0.8450000000000006,
+     0.7350000000000005,
+     0.6500000000000005,
+     0.6650000000000005,
+     0.7700000000000006,
+     0.5850000000000004,
+     0.6550000000000005
+    ],
+    [
+     0.8049999999999999,
+     0.5949999999999998,
+     0.38499999999999956,
+     0.4549999999999996,
+     0.5,
+     0.5950000000000004,
+     0.7100000000000005,
+     0.39000000000000024,
+     0.4750000000000003,
+     0.42000000000000026,
+     0.6850000000000005,
+     0.7550000000000006,
+     0.7750000000000006,
+     0.6700000000000005,
+     0.6700000000000005,
+     0.5200000000000004,
+     0.7300000000000005,
+     0.3550000000000002,
+     0.6050000000000004
+    ],
+    [
+     0.6199999999999998,
+     0.5149999999999997,
+     0.3249999999999995,
+     0.3149999999999995,
+     0.4049999999999996,
+     0.5,
+     0.6950000000000005,
+     0.2650000000000001,
+     0.3200000000000002,
+     0.2600000000000001,
+     0.3800000000000002,
+     0.6600000000000005,
+     0.7700000000000006,
+     0.6000000000000004,
+     0.5600000000000004,
+     0.5250000000000004,
+     0.5550000000000004,
+     0.3550000000000002,
+     0.4400000000000003
+    ],
+    [
+     0.3349999999999995,
+     0.25999999999999945,
+     0.2049999999999994,
+     0.23999999999999944,
+     0.2899999999999995,
+     0.3049999999999995,
+     0.5,
+     0.14500000000000005,
+     0.12000000000000004,
+     0.10000000000000002,
+     0.18500000000000008,
+     0.3600000000000002,
+     0.38500000000000023,
+     0.23500000000000013,
+     0.3300000000000002,
+     0.2150000000000001,
+     0.3700000000000002,
+     0.2000000000000001,
+     0.14500000000000005
+    ],
+    [
+     0.905,
+     0.5799999999999997,
+     0.6049999999999998,
+     0.3399999999999995,
+     0.6099999999999998,
+     0.7349999999999999,
+     0.855,
+     0.5,
+     0.5150000000000003,
+     0.3550000000000002,
+     0.7050000000000005,
+     0.7650000000000006,
+     0.8800000000000007,
+     0.6450000000000005,
+     0.6950000000000005,
+     0.6100000000000004,
+     0.7350000000000005,
+     0.5250000000000004,
+     0.6200000000000004
+    ],
+    [
+     0.84,
+     0.5799999999999997,
+     0.5549999999999997,
+     0.49999999999999967,
+     0.5249999999999997,
+     0.6799999999999998,
+     0.88,
+     0.48499999999999965,
+     0.5,
+     0.5050000000000003,
+     0.6600000000000005,
+     0.8150000000000006,
+     0.9200000000000007,
+     0.7300000000000005,
+     0.7700000000000006,
+     0.7000000000000005,
+     0.7650000000000006,
+     0.4650000000000003,
+     0.4750000000000003
+    ],
+    [
+     0.85,
+     0.6849999999999998,
+     0.6599999999999998,
+     0.5299999999999997,
+     0.5799999999999997,
+     0.7399999999999999,
+     0.9,
+     0.6449999999999998,
+     0.49499999999999966,
+     0.5,
+     0.6750000000000005,
+     0.8150000000000006,
+     0.8600000000000007,
+     0.7000000000000005,
+     0.8500000000000006,
+     0.7500000000000006,
+     0.8300000000000006,
+     0.5950000000000004,
+     0.5750000000000004
+    ],
+    [
+     0.6949999999999998,
+     0.5849999999999997,
+     0.4049999999999996,
+     0.35999999999999954,
+     0.3149999999999995,
+     0.6199999999999998,
+     0.815,
+     0.2949999999999995,
+     0.3399999999999995,
+     0.3249999999999995,
+     0.5,
+     0.7200000000000005,
+     0.6300000000000004,
+     0.49500000000000033,
+     0.4800000000000003,
+     0.5850000000000004,
+     0.7500000000000006,
+     0.42500000000000027,
+     0.4800000000000003
+    ],
+    [
+     0.49999999999999967,
+     0.3149999999999995,
+     0.22999999999999943,
+     0.3049999999999995,
+     0.24499999999999944,
+     0.3399999999999995,
+     0.6399999999999998,
+     0.23499999999999943,
+     0.1849999999999994,
+     0.1849999999999994,
+     0.27999999999999947,
+     0.5,
+     0.5150000000000003,
+     0.31000000000000016,
+     0.41000000000000025,
+     0.30500000000000016,
+     0.4750000000000003,
+     0.3450000000000002,
+     0.3400000000000002
+    ],
+    [
+     0.36999999999999955,
+     0.3299999999999995,
+     0.14999999999999936,
+     0.15499999999999936,
+     0.22499999999999942,
+     0.22999999999999943,
+     0.6149999999999998,
+     0.11999999999999933,
+     0.0799999999999993,
+     0.13999999999999935,
+     0.36999999999999955,
+     0.48499999999999965,
+     0.5,
+     0.3450000000000002,
+     0.3600000000000002,
+     0.18000000000000008,
+     0.5400000000000004,
+     0.13500000000000004,
+     0.3300000000000002
+    ],
+    [
+     0.6849999999999998,
+     0.47999999999999965,
+     0.25999999999999945,
+     0.26499999999999946,
+     0.3299999999999995,
+     0.3999999999999996,
+     0.7649999999999999,
+     0.35499999999999954,
+     0.26999999999999946,
+     0.2999999999999995,
+     0.5049999999999997,
+     0.6899999999999998,
+     0.6549999999999998,
+     0.5,
+     0.5400000000000004,
+     0.43000000000000027,
+     0.5550000000000004,
+     0.28500000000000014,
+     0.42000000000000026
+    ],
+    [
+     0.48499999999999965,
+     0.4149999999999996,
+     0.3399999999999995,
+     0.34999999999999953,
+     0.3299999999999995,
+     0.4399999999999996,
+     0.6699999999999998,
+     0.3049999999999995,
+     0.22999999999999943,
+     0.14999999999999936,
+     0.5199999999999997,
+     0.5899999999999997,
+     0.6399999999999998,
+     0.45999999999999963,
+     0.5,
+     0.28500000000000014,
+     0.5700000000000004,
+     0.22500000000000012,
+     0.40000000000000024
+    ],
+    [
+     0.7349999999999999,
+     0.47999999999999965,
+     0.4349999999999996,
+     0.3349999999999995,
+     0.47999999999999965,
+     0.47499999999999964,
+     0.7849999999999999,
+     0.38999999999999957,
+     0.2999999999999995,
+     0.24999999999999944,
+     0.4149999999999996,
+     0.6949999999999998,
+     0.82,
+     0.5699999999999997,
+     0.7149999999999999,
+     0.5,
+     0.7450000000000006,
+     0.4900000000000003,
+     0.4750000000000003
+    ],
+    [
+     0.48499999999999965,
+     0.3349999999999995,
+     0.25499999999999945,
+     0.22999999999999943,
+     0.26999999999999946,
+     0.4449999999999996,
+     0.6299999999999998,
+     0.26499999999999946,
+     0.23499999999999943,
+     0.16999999999999937,
+     0.24999999999999944,
+     0.5249999999999997,
+     0.45999999999999963,
+     0.4449999999999996,
+     0.4299999999999996,
+     0.25499999999999945,
+     0.5,
+     0.2050000000000001,
+     0.2050000000000001
+    ],
+    [
+     0.7199999999999999,
+     0.6649999999999998,
+     0.4099999999999996,
+     0.4149999999999996,
+     0.6449999999999998,
+     0.6449999999999998,
+     0.7999999999999999,
+     0.47499999999999964,
+     0.5349999999999997,
+     0.4049999999999996,
+     0.5749999999999997,
+     0.6549999999999998,
+     0.865,
+     0.7149999999999999,
+     0.7749999999999999,
+     0.5099999999999997,
+     0.7949999999999999,
+     0.5,
+     0.5650000000000004
+    ],
+    [
+     0.7249999999999999,
+     0.6149999999999998,
+     0.4399999999999996,
+     0.34499999999999953,
+     0.3949999999999996,
+     0.5599999999999997,
+     0.855,
+     0.37999999999999956,
+     0.5249999999999997,
+     0.4249999999999996,
+     0.5199999999999997,
+     0.6599999999999998,
+     0.6699999999999998,
+     0.5799999999999997,
+     0.5999999999999998,
+     0.5249999999999997,
+     0.7949999999999999,
+     0.4349999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.7037037037037046,
+    0.25925925925925586,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.03703703703703951,
+    0
+   ],
+   "value": 0.5,
+   "avg": [
+    0.3308333333333336,
+    0.49472222222222256,
+    0.6225000000000004,
+    0.6636111111111116,
+    0.5886111111111113,
+    0.4758333333333334,
+    0.24583333333333326,
+    0.6488888888888892,
+    0.6583333333333335,
+    0.7075000000000004,
+    0.5177777777777778,
+    0.34222222222222204,
+    0.2866666666666663,
+    0.4549999999999998,
+    0.4113888888888887,
+    0.5327777777777776,
+    0.33861111111111075,
+    0.6205555555555553,
+    0.5583333333333331
+   ]
+  },
+  {
+   "iter": 6,
+   "matrix": [
+    [
+     0.5,
+     0.2650000000000001,
+     0.2500000000000001,
+     0.2200000000000001,
+     0.2100000000000001,
+     0.41500000000000026,
+     0.6400000000000005,
+     0.12500000000000003,
+     0.12500000000000003,
+     0.17000000000000007,
+     0.29000000000000015,
+     0.5300000000000004,
+     0.5700000000000004,
+     0.31500000000000017,
+     0.3400000000000002,
+     0.3300000000000002,
+     0.5800000000000004,
+     0.29500000000000015,
+     0.30500000000000016
+    ],
+    [
+     0.7349999999999999,
+     0.5,
+     0.41500000000000026,
+     0.31500000000000017,
+     0.40000000000000024,
+     0.5200000000000004,
+     0.7800000000000006,
+     0.38500000000000023,
+     0.4400000000000003,
+     0.3450000000000002,
+     0.38500000000000023,
+     0.7500000000000006,
+     0.6650000000000005,
+     0.5450000000000004,
+     0.5100000000000003,
+     0.5700000000000004,
+     0.6650000000000005,
+     0.42000000000000026,
+     0.42500000000000027
+    ],
+    [
+     0.7499999999999999,
+     0.5849999999999997,
+     0.5,
+     0.4700000000000003,
+     0.5750000000000004,
+     0.5500000000000004,
+     0.7800000000000006,
+     0.40000000000000024,
+     0.5200000000000004,
+     0.3300000000000002,
+     0.4400000000000003,
+     0.7550000000000006,
+     0.8350000000000006,
+     0.7000000000000005,
+     0.5550000000000004,
+     0.6150000000000004,
+     0.7800000000000006,
+     0.5450000000000004,
+     0.6000000000000004
+    ],
+    [
+     0.7799999999999999,
+     0.6849999999999998,
+     0.5299999999999997,
+     0.5,
+     0.5650000000000004,
+     0.7050000000000005,
+     0.7950000000000006,
+     0.5500000000000004,
+     0.4850000000000003,
+     0.4400000000000003,
+     0.6050000000000004,
+     0.6300000000000004,
+     0.8650000000000007,
+     0.7150000000000005,
+     0.5750000000000004,
+     0.7050000000000005,
+     0.7350000000000005,
+     0.5750000000000004,
+     0.6800000000000005
+    ],
+    [
+     0.7899999999999999,
+     0.5999999999999998,
+     0.4249999999999996,
+     0.4349999999999996,
+     0.5,
+     0.5750000000000004,
+     0.7550000000000006,
+     0.3600000000000002,
+     0.4450000000000003,
+     0.43000000000000027,
+     0.5400000000000004,
+     0.7150000000000005,
+     0.7150000000000005,
+     0.6700000000000005,
+     0.5550000000000004,
+     0.6150000000000004,
+     0.7750000000000006,
+     0.3250000000000002,
+     0.5600000000000004
+    ],
+    [
+     0.5849999999999997,
+     0.47999999999999965,
+     0.4499999999999996,
+     0.2949999999999995,
+     0.4249999999999996,
+     0.5,
+     0.6950000000000005,
+     0.28500000000000014,
+     0.39000000000000024,
+     0.2100000000000001,
+     0.2650000000000001,
+     0.6150000000000004,
+     0.7200000000000005,
+     0.5350000000000004,
+     0.4400000000000003,
+     0.43000000000000027,
+     0.6350000000000005,
+     0.3250000000000002,
+     0.4600000000000003
+    ],
+    [
+     0.35999999999999954,
+     0.21999999999999942,
+     0.21999999999999942,
+     0.2049999999999994,
+     0.24499999999999944,
+     0.3049999999999995,
+     0.5,
+     0.18500000000000008,
+     0.14500000000000005,
+     0.14000000000000004,
+     0.15500000000000005,
+     0.39500000000000024,
+     0.41000000000000025,
+     0.2650000000000001,
+     0.27500000000000013,
+     0.2150000000000001,
+     0.42500000000000027,
+     0.2550000000000001,
+     0.15000000000000005
+    ],
+    [
+     0.875,
+     0.6149999999999998,
+     0.5999999999999998,
+     0.4499999999999996,
+     0.6399999999999998,
+     0.7149999999999999,
+     0.815,
+     0.5,
+     0.41000000000000025,
+     0.40500000000000025,
+     0.6350000000000005,
+     0.7950000000000006,
+     0.8550000000000006,
+     0.6000000000000004,
+     0.7100000000000005,
+     0.6400000000000005,
+     0.7800000000000006,
+     0.5800000000000004,
+     0.5650000000000004
+    ],
+    [
+     0.875,
+     0.5599999999999997,
+     0.47999999999999965,
+     0.5149999999999997,
+     0.5549999999999997,
+     0.6099999999999998,
+     0.855,
+     0.5899999999999997,
+     0.5,
+     0.4650000000000003,
+     0.6300000000000004,
+     0.7600000000000006,
+     0.8350000000000006,
+     0.7150000000000005,
+     0.6700000000000005,
+     0.6550000000000005,
+     0.7850000000000006,
+     0.4350000000000003,
+     0.5350000000000004
+    ],
+    [
+     0.83,
+     0.6549999999999998,
+     0.6699999999999998,
+     0.5599999999999997,
+     0.5699999999999997,
+     0.7899999999999999,
+     0.86,
+     0.5949999999999998,
+     0.5349999999999997,
+     0.5,
+     0.6200000000000004,
+     0.8900000000000007,
+     0.8950000000000007,
+     0.7750000000000006,
+     0.7500000000000006,
+     0.7600000000000006,
+     0.8550000000000006,
+     0.6100000000000004,
+     0.6200000000000004
+    ],
+    [
+     0.7099999999999999,
+     0.6149999999999998,
+     0.5599999999999997,
+     0.3949999999999996,
+     0.45999999999999963,
+     0.7349999999999999,
+     0.845,
+     0.36499999999999955,
+     0.36999999999999955,
+     0.37999999999999956,
+     0.5,
+     0.7350000000000005,
+     0.6700000000000005,
+     0.5600000000000004,
+     0.4800000000000003,
+     0.49500000000000033,
+     0.7700000000000006,
+     0.4800000000000003,
+     0.5450000000000004
+    ],
+    [
+     0.46999999999999964,
+     0.24999999999999944,
+     0.24499999999999944,
+     0.36999999999999955,
+     0.2849999999999995,
+     0.38499999999999956,
+     0.6049999999999998,
+     0.2049999999999994,
+     0.23999999999999944,
+     0.10999999999999932,
+     0.26499999999999946,
+     0.5,
+     0.5250000000000004,
+     0.3350000000000002,
+     0.3500000000000002,
+     0.27000000000000013,
+     0.4500000000000003,
+     0.27000000000000013,
+     0.31000000000000016
+    ],
+    [
+     0.4299999999999996,
+     0.3349999999999995,
+     0.16499999999999937,
+     0.13499999999999934,
+     0.2849999999999995,
+     0.27999999999999947,
+     0.5899999999999997,
+     0.14499999999999935,
+     0.16499999999999937,
+     0.10499999999999932,
+     0.3299999999999995,
+     0.47499999999999964,
+     0.5,
+     0.38500000000000023,
+     0.2550000000000001,
+     0.2100000000000001,
+     0.5050000000000003,
+     0.085,
+     0.29000000000000015
+    ],
+    [
+     0.6849999999999998,
+     0.4549999999999996,
+     0.2999999999999995,
+     0.2849999999999995,
+     0.3299999999999995,
+     0.46499999999999964,
+     0.7349999999999999,
+     0.3999999999999996,
+     0.2849999999999995,
+     0.22499999999999942,
+     0.4399999999999996,
+     0.6649999999999998,
+     0.6149999999999998,
+     0.5,
+     0.4500000000000003,
+     0.4600000000000003,
+     0.6500000000000005,
+     0.2650000000000001,
+     0.41000000000000025
+    ],
+    [
+     0.6599999999999998,
+     0.48999999999999966,
+     0.4449999999999996,
+     0.4249999999999996,
+     0.4449999999999996,
+     0.5599999999999997,
+     0.7249999999999999,
+     0.2899999999999995,
+     0.3299999999999995,
+     0.24999999999999944,
+     0.5199999999999997,
+     0.6499999999999998,
+     0.7449999999999999,
+     0.5499999999999997,
+     0.5,
+     0.40000000000000024,
+     0.7100000000000005,
+     0.41000000000000025,
+     0.4600000000000003
+    ],
+    [
+     0.6699999999999998,
+     0.4299999999999996,
+     0.38499999999999956,
+     0.2949999999999995,
+     0.38499999999999956,
+     0.5699999999999997,
+     0.7849999999999999,
+     0.35999999999999954,
+     0.34499999999999953,
+     0.23999999999999944,
+     0.5049999999999997,
+     0.7299999999999999,
+     0.7899999999999999,
+     0.5399999999999997,
+     0.5999999999999998,
+     0.5,
+     0.6600000000000005,
+     0.42500000000000027,
+     0.5400000000000004
+    ],
+    [
+     0.4199999999999996,
+     0.3349999999999995,
+     0.21999999999999942,
+     0.26499999999999946,
+     0.22499999999999942,
+     0.36499999999999955,
+     0.5749999999999997,
+     0.21999999999999942,
+     0.2149999999999994,
+     0.14499999999999935,
+     0.22999999999999943,
+     0.5499999999999997,
+     0.49499999999999966,
+     0.34999999999999953,
+     0.2899999999999995,
+     0.3399999999999995,
+     0.5,
+     0.2600000000000001,
+     0.2650000000000001
+    ],
+    [
+     0.7049999999999998,
+     0.5799999999999997,
+     0.4549999999999996,
+     0.4249999999999996,
+     0.6749999999999998,
+     0.6749999999999998,
+     0.7449999999999999,
+     0.4199999999999996,
+     0.5649999999999997,
+     0.38999999999999957,
+     0.5199999999999997,
+     0.7299999999999999,
+     0.915,
+     0.7349999999999999,
+     0.5899999999999997,
+     0.5749999999999997,
+     0.7399999999999999,
+     0.5,
+     0.5750000000000004
+    ],
+    [
+     0.6949999999999998,
+     0.5749999999999997,
+     0.3999999999999996,
+     0.3199999999999995,
+     0.4399999999999996,
+     0.5399999999999997,
+     0.85,
+     0.4349999999999996,
+     0.46499999999999964,
+     0.37999999999999956,
+     0.4549999999999996,
+     0.6899999999999998,
+     0.7099999999999999,
+     0.5899999999999997,
+     0.5399999999999997,
+     0.45999999999999963,
+     0.7349999999999999,
+     0.4249999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.499999999999998,
+   "avg": [
+    0.3319444444444446,
+    0.5150000000000003,
+    0.599166666666667,
+    0.645555555555556,
+    0.5713888888888892,
+    0.457777777777778,
+    0.2538888888888888,
+    0.649166666666667,
+    0.640277777777778,
+    0.7133333333333336,
+    0.5650000000000001,
+    0.32999999999999985,
+    0.28722222222222193,
+    0.45111111111111096,
+    0.5036111111111109,
+    0.5141666666666665,
+    0.32027777777777744,
+    0.6119444444444443,
+    0.5391666666666662
+   ]
+  },
+  {
+   "iter": 7,
+   "matrix": [
+    [
+     0.5,
+     0.24500000000000013,
+     0.19000000000000009,
+     0.2500000000000001,
+     0.24000000000000013,
+     0.3750000000000002,
+     0.6300000000000004,
+     0.05999999999999999,
+     0.16500000000000006,
+     0.13500000000000004,
+     0.2150000000000001,
+     0.5550000000000004,
+     0.5500000000000004,
+     0.30500000000000016,
+     0.38500000000000023,
+     0.28000000000000014,
+     0.5700000000000004,
+     0.28500000000000014,
+     0.29000000000000015
+    ],
+    [
+     0.7549999999999999,
+     0.5,
+     0.41500000000000026,
+     0.24500000000000013,
+     0.40000000000000024,
+     0.4650000000000003,
+     0.7800000000000006,
+     0.4500000000000003,
+     0.43000000000000027,
+     0.3350000000000002,
+     0.4500000000000003,
+     0.6750000000000005,
+     0.6600000000000005,
+     0.5550000000000004,
+     0.5400000000000004,
+     0.4650000000000003,
+     0.6750000000000005,
+     0.42000000000000026,
+     0.3800000000000002
+    ],
+    [
+     0.8099999999999999,
+     0.5849999999999997,
+     0.5,
+     0.4750000000000003,
+     0.5950000000000004,
+     0.6350000000000005,
+     0.7700000000000006,
+     0.3650000000000002,
+     0.4700000000000003,
+     0.3600000000000002,
+     0.4800000000000003,
+     0.7400000000000005,
+     0.8500000000000006,
+     0.6600000000000005,
+     0.5550000000000004,
+     0.6200000000000004,
+     0.7050000000000005,
+     0.5300000000000004,
+     0.5900000000000004
+    ],
+    [
+     0.7499999999999999,
+     0.7549999999999999,
+     0.5249999999999997,
+     0.5,
+     0.4800000000000003,
+     0.7000000000000005,
+     0.7450000000000006,
+     0.4700000000000003,
+     0.5700000000000004,
+     0.42500000000000027,
+     0.5850000000000004,
+     0.6400000000000005,
+     0.9200000000000007,
+     0.7050000000000005,
+     0.5400000000000004,
+     0.6200000000000004,
+     0.8000000000000006,
+     0.5950000000000004,
+     0.6550000000000005
+    ],
+    [
+     0.7599999999999999,
+     0.5999999999999998,
+     0.4049999999999996,
+     0.5199999999999997,
+     0.5,
+     0.5650000000000004,
+     0.7350000000000005,
+     0.43000000000000027,
+     0.40500000000000025,
+     0.3650000000000002,
+     0.5850000000000004,
+     0.7750000000000006,
+     0.7800000000000006,
+     0.6900000000000005,
+     0.5800000000000004,
+     0.6350000000000005,
+     0.7400000000000005,
+     0.3700000000000002,
+     0.6000000000000004
+    ],
+    [
+     0.6249999999999998,
+     0.5349999999999997,
+     0.36499999999999955,
+     0.2999999999999995,
+     0.4349999999999996,
+     0.5,
+     0.7100000000000005,
+     0.2150000000000001,
+     0.3300000000000002,
+     0.2200000000000001,
+     0.3350000000000002,
+     0.6350000000000005,
+     0.7750000000000006,
+     0.5550000000000004,
+     0.4650000000000003,
+     0.39000000000000024,
+     0.6400000000000005,
+     0.39000000000000024,
+     0.3600000000000002
+    ],
+    [
+     0.36999999999999955,
+     0.21999999999999942,
+     0.22999999999999943,
+     0.25499999999999945,
+     0.26499999999999946,
+     0.2899999999999995,
+     0.5,
+     0.11000000000000003,
+     0.15000000000000005,
+     0.11000000000000003,
+     0.12000000000000004,
+     0.40000000000000024,
+     0.4450000000000003,
+     0.27500000000000013,
+     0.2650000000000001,
+     0.2000000000000001,
+     0.3450000000000002,
+     0.2050000000000001,
+     0.12000000000000004
+    ],
+    [
+     0.9400000000000001,
+     0.5499999999999997,
+     0.6349999999999998,
+     0.5299999999999997,
+     0.5699999999999997,
+     0.7849999999999999,
+     0.89,
+     0.5,
+     0.5100000000000003,
+     0.43000000000000027,
+     0.6650000000000005,
+     0.8250000000000006,
+     0.8950000000000007,
+     0.7100000000000005,
+     0.6500000000000005,
+     0.7050000000000005,
+     0.7900000000000006,
+     0.5650000000000004,
+     0.6450000000000005
+    ],
+    [
+     0.835,
+     0.5699999999999997,
+     0.5299999999999997,
+     0.4299999999999996,
+     0.5949999999999998,
+     0.6699999999999998,
+     0.85,
+     0.48999999999999966,
+     0.5,
+     0.4550000000000003,
+     0.6150000000000004,
+     0.7300000000000005,
+     0.8850000000000007,
+     0.7300000000000005,
+     0.6550000000000005,
+     0.6250000000000004,
+     0.7600000000000006,
+     0.4450000000000003,
+     0.5450000000000004
+    ],
+    [
+     0.865,
+     0.6649999999999998,
+     0.6399999999999998,
+     0.5749999999999997,
+     0.6349999999999998,
+     0.7799999999999999,
+     0.89,
+     0.5699999999999997,
+     0.5449999999999997,
+     0.5,
+     0.6800000000000005,
+     0.8250000000000006,
+     0.9450000000000007,
+     0.7250000000000005,
+     0.7600000000000006,
+     0.7450000000000006,
+     0.8300000000000006,
+     0.6200000000000004,
+     0.5900000000000004
+    ],
+    [
+     0.7849999999999999,
+     0.5499999999999997,
+     0.5199999999999997,
+     0.4149999999999996,
+     0.4149999999999996,
+     0.6649999999999998,
+     0.88,
+     0.3349999999999995,
+     0.38499999999999956,
+     0.3199999999999995,
+     0.5,
+     0.7350000000000005,
+     0.8300000000000006,
+     0.5250000000000004,
+     0.5600000000000004,
+     0.5850000000000004,
+     0.8000000000000006,
+     0.4750000000000003,
+     0.5700000000000004
+    ],
+    [
+     0.4449999999999996,
+     0.3249999999999995,
+     0.25999999999999945,
+     0.35999999999999954,
+     0.22499999999999942,
+     0.36499999999999955,
+     0.5999999999999998,
+     0.17499999999999938,
+     0.26999999999999946,
+     0.17499999999999938,
+     0.26499999999999946,
+     0.5,
+     0.5200000000000004,
+     0.3400000000000002,
+     0.3400000000000002,
+     0.31000000000000016,
+     0.4550000000000003,
+     0.3300000000000002,
+     0.3600000000000002
+    ],
+    [
+     0.4499999999999996,
+     0.3399999999999995,
+     0.14999999999999936,
+     0.0799999999999993,
+     0.21999999999999942,
+     0.22499999999999942,
+     0.5549999999999997,
+     0.10499999999999932,
+     0.11499999999999932,
+     0.05499999999999927,
+     0.16999999999999937,
+     0.47999999999999965,
+     0.5,
+     0.3700000000000002,
+     0.2150000000000001,
+     0.22500000000000012,
+     0.4700000000000003,
+     0.12000000000000004,
+     0.24500000000000013
+    ],
+    [
+     0.6949999999999998,
+     0.4449999999999996,
+     0.3399999999999995,
+     0.2949999999999995,
+     0.3099999999999995,
+     0.4449999999999996,
+     0.7249999999999999,
+     0.2899999999999995,
+     0.26999999999999946,
+     0.27499999999999947,
+     0.47499999999999964,
+     0.6599999999999998,
+     0.6299999999999998,
+     0.5,
+     0.4750000000000003,
+     0.3800000000000002,
+     0.5850000000000004,
+     0.2500000000000001,
+     0.42500000000000027
+    ],
+    [
+     0.6149999999999998,
+     0.45999999999999963,
+     0.4449999999999996,
+     0.45999999999999963,
+     0.4199999999999996,
+     0.5349999999999997,
+     0.7349999999999999,
+     0.34999999999999953,
+     0.34499999999999953,
+     0.23999999999999944,
+     0.4399999999999996,
+     0.6599999999999998,
+     0.7849999999999999,
+     0.5249999999999997,
+     0.5,
+     0.3600000000000002,
+     0.6650000000000005,
+     0.39000000000000024,
+     0.4550000000000003
+    ],
+    [
+     0.7199999999999999,
+     0.5349999999999997,
+     0.37999999999999956,
+     0.37999999999999956,
+     0.36499999999999955,
+     0.6099999999999998,
+     0.7999999999999999,
+     0.2949999999999995,
+     0.37499999999999956,
+     0.25499999999999945,
+     0.4149999999999996,
+     0.6899999999999998,
+     0.7749999999999999,
+     0.6199999999999998,
+     0.6399999999999998,
+     0.5,
+     0.6700000000000005,
+     0.43000000000000027,
+     0.4900000000000003
+    ],
+    [
+     0.4299999999999996,
+     0.3249999999999995,
+     0.2949999999999995,
+     0.1999999999999994,
+     0.25999999999999945,
+     0.35999999999999954,
+     0.6549999999999998,
+     0.2099999999999994,
+     0.23999999999999944,
+     0.16999999999999937,
+     0.1999999999999994,
+     0.5449999999999997,
+     0.5299999999999997,
+     0.4149999999999996,
+     0.3349999999999995,
+     0.3299999999999995,
+     0.5,
+     0.3300000000000002,
+     0.2150000000000001
+    ],
+    [
+     0.7149999999999999,
+     0.5799999999999997,
+     0.46999999999999964,
+     0.4049999999999996,
+     0.6299999999999998,
+     0.6099999999999998,
+     0.7949999999999999,
+     0.4349999999999996,
+     0.5549999999999997,
+     0.37999999999999956,
+     0.5249999999999997,
+     0.6699999999999998,
+     0.88,
+     0.7499999999999999,
+     0.6099999999999998,
+     0.5699999999999997,
+     0.6699999999999998,
+     0.5,
+     0.5750000000000004
+    ],
+    [
+     0.7099999999999999,
+     0.6199999999999998,
+     0.4099999999999996,
+     0.34499999999999953,
+     0.3999999999999996,
+     0.6399999999999998,
+     0.88,
+     0.35499999999999954,
+     0.4549999999999996,
+     0.4099999999999996,
+     0.4299999999999996,
+     0.6399999999999998,
+     0.7549999999999999,
+     0.5749999999999997,
+     0.5449999999999997,
+     0.5099999999999997,
+     0.7849999999999999,
+     0.4249999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5,
+   "avg": [
+    0.31805555555555576,
+    0.5052777777777782,
+    0.5997222222222226,
+    0.6377777777777782,
+    0.5855555555555557,
+    0.4600000000000001,
+    0.2430555555555554,
+    0.6827777777777781,
+    0.6341666666666668,
+    0.7158333333333334,
+    0.575,
+    0.33999999999999975,
+    0.25499999999999967,
+    0.4427777777777776,
+    0.4936111111111109,
+    0.524722222222222,
+    0.33583333333333276,
+    0.6013888888888888,
+    0.5494444444444442
+   ]
+  },
+  {
+   "iter": 8,
+   "matrix": [
+    [
+     0.5,
+     0.23000000000000012,
+     0.2000000000000001,
+     0.23000000000000012,
+     0.2000000000000001,
+     0.3450000000000002,
+     0.49500000000000033,
+     0.05999999999999999,
+     0.13500000000000004,
+     0.14000000000000004,
+     0.22500000000000012,
+     0.49500000000000033,
+     0.6100000000000004,
+     0.31000000000000016,
+     0.3700000000000002,
+     0.22500000000000012,
+     0.5300000000000004,
+     0.2550000000000001,
+     0.2550000000000001
+    ],
+    [
+     0.7699999999999999,
+     0.5,
+     0.42500000000000027,
+     0.41000000000000025,
+     0.4350000000000003,
+     0.6000000000000004,
+     0.6650000000000005,
+     0.3650000000000002,
+     0.3700000000000002,
+     0.27500000000000013,
+     0.42500000000000027,
+     0.6000000000000004,
+     0.6600000000000005,
+     0.5950000000000004,
+     0.5250000000000004,
+     0.5200000000000004,
+     0.6950000000000005,
+     0.4600000000000003,
+     0.3750000000000002
+    ],
+    [
+     0.7999999999999999,
+     0.5749999999999997,
+     0.5,
+     0.49500000000000033,
+     0.5750000000000004,
+     0.5900000000000004,
+     0.6650000000000005,
+     0.30000000000000016,
+     0.4900000000000003,
+     0.38500000000000023,
+     0.4650000000000003,
+     0.7050000000000005,
+     0.8500000000000006,
+     0.7200000000000005,
+     0.5450000000000004,
+     0.6550000000000005,
+     0.6500000000000005,
+     0.4700000000000003,
+     0.5200000000000004
+    ],
+    [
+     0.7699999999999999,
+     0.5899999999999997,
+     0.5049999999999997,
+     0.5,
+     0.5450000000000004,
+     0.7050000000000005,
+     0.7200000000000005,
+     0.5750000000000004,
+     0.5200000000000004,
+     0.3800000000000002,
+     0.5550000000000004,
+     0.6700000000000005,
+     0.8300000000000006,
+     0.7850000000000006,
+     0.5050000000000003,
+     0.6650000000000005,
+     0.6650000000000005,
+     0.6000000000000004,
+     0.6300000000000004
+    ],
+    [
+     0.7999999999999999,
+     0.5649999999999997,
+     0.4249999999999996,
+     0.4549999999999996,
+     0.5,
+     0.5500000000000004,
+     0.6350000000000005,
+     0.3300000000000002,
+     0.42500000000000027,
+     0.31500000000000017,
+     0.6050000000000004,
+     0.6700000000000005,
+     0.7500000000000006,
+     0.6800000000000005,
+     0.6250000000000004,
+     0.5300000000000004,
+     0.8100000000000006,
+     0.40000000000000024,
+     0.5900000000000004
+    ],
+    [
+     0.6549999999999998,
+     0.3999999999999996,
+     0.4099999999999996,
+     0.2949999999999995,
+     0.4499999999999996,
+     0.5,
+     0.5050000000000003,
+     0.23500000000000013,
+     0.3450000000000002,
+     0.23500000000000013,
+     0.30500000000000016,
+     0.6300000000000004,
+     0.7350000000000005,
+     0.5800000000000004,
+     0.4400000000000003,
+     0.4550000000000003,
+     0.6150000000000004,
+     0.31500000000000017,
+     0.4450000000000003
+    ],
+    [
+     0.5049999999999997,
+     0.3349999999999995,
+     0.3349999999999995,
+     0.27999999999999947,
+     0.36499999999999955,
+     0.49499999999999966,
+     0.5,
+     0.28000000000000014,
+     0.2600000000000001,
+     0.16000000000000006,
+     0.2500000000000001,
+     0.4850000000000003,
+     0.6100000000000004,
+     0.41000000000000025,
+     0.40500000000000025,
+     0.3500000000000002,
+     0.4600000000000003,
+     0.2550000000000001,
+     0.22500000000000012
+    ],
+    [
+     0.9400000000000001,
+     0.6349999999999998,
+     0.6999999999999998,
+     0.4249999999999996,
+     0.6699999999999998,
+     0.7649999999999999,
+     0.7199999999999999,
+     0.5,
+     0.5050000000000003,
+     0.41500000000000026,
+     0.6350000000000005,
+     0.8050000000000006,
+     0.8750000000000007,
+     0.6600000000000005,
+     0.6900000000000005,
+     0.7350000000000005,
+     0.8400000000000006,
+     0.5800000000000004,
+     0.6300000000000004
+    ],
+    [
+     0.865,
+     0.6299999999999998,
+     0.5099999999999997,
+     0.47999999999999965,
+     0.5749999999999997,
+     0.6549999999999998,
+     0.7399999999999999,
+     0.49499999999999966,
+     0.5,
+     0.4900000000000003,
+     0.6500000000000005,
+     0.7200000000000005,
+     0.8150000000000006,
+     0.7650000000000006,
+     0.6700000000000005,
+     0.6650000000000005,
+     0.7300000000000005,
+     0.4800000000000003,
+     0.49500000000000033
+    ],
+    [
+     0.86,
+     0.7249999999999999,
+     0.6149999999999998,
+     0.6199999999999998,
+     0.6849999999999998,
+     0.7649999999999999,
+     0.84,
+     0.5849999999999997,
+     0.5099999999999997,
+     0.5,
+     0.6600000000000005,
+     0.8350000000000006,
+     0.9100000000000007,
+     0.7350000000000005,
+     0.7800000000000006,
+     0.8100000000000006,
+     0.8850000000000007,
+     0.6700000000000005,
+     0.6150000000000004
+    ],
+    [
+     0.7749999999999999,
+     0.5749999999999997,
+     0.5349999999999997,
+     0.4449999999999996,
+     0.3949999999999996,
+     0.6949999999999998,
+     0.7499999999999999,
+     0.36499999999999955,
+     0.34999999999999953,
+     0.3399999999999995,
+     0.5,
+     0.7850000000000006,
+     0.7000000000000005,
+     0.5800000000000004,
+     0.5850000000000004,
+     0.5200000000000004,
+     0.7900000000000006,
+     0.5350000000000004,
+     0.5850000000000004
+    ],
+    [
+     0.5049999999999997,
+     0.3999999999999996,
+     0.2949999999999995,
+     0.3299999999999995,
+     0.3299999999999995,
+     0.36999999999999955,
+     0.5149999999999997,
+     0.1949999999999994,
+     0.27999999999999947,
+     0.16499999999999937,
+     0.2149999999999994,
+     0.5,
+     0.5050000000000003,
+     0.31000000000000016,
+     0.3800000000000002,
+     0.2500000000000001,
+     0.4550000000000003,
+     0.28500000000000014,
+     0.3500000000000002
+    ],
+    [
+     0.38999999999999957,
+     0.3399999999999995,
+     0.14999999999999936,
+     0.16999999999999937,
+     0.24999999999999944,
+     0.26499999999999946,
+     0.38999999999999957,
+     0.12499999999999933,
+     0.1849999999999994,
+     0.0899999999999993,
+     0.2999999999999995,
+     0.49499999999999966,
+     0.5,
+     0.3550000000000002,
+     0.23500000000000013,
+     0.23000000000000012,
+     0.5500000000000004,
+     0.11500000000000003,
+     0.31500000000000017
+    ],
+    [
+     0.6899999999999998,
+     0.4049999999999996,
+     0.27999999999999947,
+     0.2149999999999994,
+     0.3199999999999995,
+     0.4199999999999996,
+     0.5899999999999997,
+     0.3399999999999995,
+     0.23499999999999943,
+     0.26499999999999946,
+     0.4199999999999996,
+     0.6899999999999998,
+     0.6449999999999998,
+     0.5,
+     0.3600000000000002,
+     0.40500000000000025,
+     0.6500000000000005,
+     0.24000000000000013,
+     0.38500000000000023
+    ],
+    [
+     0.6299999999999998,
+     0.47499999999999964,
+     0.4549999999999996,
+     0.49499999999999966,
+     0.37499999999999956,
+     0.5599999999999997,
+     0.5949999999999998,
+     0.3099999999999995,
+     0.3299999999999995,
+     0.21999999999999942,
+     0.4149999999999996,
+     0.6199999999999998,
+     0.7649999999999999,
+     0.6399999999999998,
+     0.5,
+     0.42000000000000026,
+     0.7150000000000005,
+     0.39000000000000024,
+     0.4700000000000003
+    ],
+    [
+     0.7749999999999999,
+     0.47999999999999965,
+     0.34499999999999953,
+     0.3349999999999995,
+     0.46999999999999964,
+     0.5449999999999997,
+     0.6499999999999998,
+     0.26499999999999946,
+     0.3349999999999995,
+     0.1899999999999994,
+     0.47999999999999965,
+     0.7499999999999999,
+     0.7699999999999999,
+     0.5949999999999998,
+     0.5799999999999997,
+     0.5,
+     0.6150000000000004,
+     0.4750000000000003,
+     0.5400000000000004
+    ],
+    [
+     0.46999999999999964,
+     0.3049999999999995,
+     0.34999999999999953,
+     0.3349999999999995,
+     0.1899999999999994,
+     0.38499999999999956,
+     0.5399999999999997,
+     0.15999999999999936,
+     0.26999999999999946,
+     0.11499999999999932,
+     0.2099999999999994,
+     0.5449999999999997,
+     0.4499999999999996,
+     0.34999999999999953,
+     0.2849999999999995,
+     0.38499999999999956,
+     0.5,
+     0.1950000000000001,
+     0.24500000000000013
+    ],
+    [
+     0.7449999999999999,
+     0.5399999999999997,
+     0.5299999999999997,
+     0.3999999999999996,
+     0.5999999999999998,
+     0.6849999999999998,
+     0.7449999999999999,
+     0.4199999999999996,
+     0.5199999999999997,
+     0.3299999999999995,
+     0.46499999999999964,
+     0.7149999999999999,
+     0.885,
+     0.7599999999999999,
+     0.6099999999999998,
+     0.5249999999999997,
+     0.8049999999999999,
+     0.5,
+     0.5550000000000004
+    ],
+    [
+     0.7449999999999999,
+     0.6249999999999998,
+     0.47999999999999965,
+     0.36999999999999955,
+     0.4099999999999996,
+     0.5549999999999997,
+     0.7749999999999999,
+     0.36999999999999955,
+     0.5049999999999997,
+     0.38499999999999956,
+     0.4149999999999996,
+     0.6499999999999998,
+     0.6849999999999998,
+     0.6149999999999998,
+     0.5299999999999997,
+     0.45999999999999963,
+     0.7549999999999999,
+     0.4449999999999996,
+     0.5
+    ]
+   ],
+   "nash": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "value": 0.5000000000000002,
+   "avg": [
+    0.29500000000000015,
+    0.5094444444444447,
+    0.5808333333333335,
+    0.6230555555555559,
+    0.5644444444444447,
+    0.44722222222222224,
+    0.35916666666666663,
+    0.6791666666666669,
+    0.6350000000000002,
+    0.7280555555555558,
+    0.5725,
+    0.3408333333333331,
+    0.27499999999999974,
+    0.419722222222222,
+    0.4933333333333332,
+    0.510833333333333,
+    0.3213888888888885,
+    0.6019444444444442,
+    0.5430555555555553
+   ]
+  }
+ ]
+}
