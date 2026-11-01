@@ -6,7 +6,8 @@
 //       (fully simulated, non-banned cards; a champion unit is required by the rules,
 //      so a legend whose champions are all unsimulated gets one anyway and is flagged);
 //   2. co-evolve: each legend in turn hill-climbs its deck (single-copy and playset swaps, champion, runes,
-//      battlefields) against the current decks of all legends, weighted 50/50 by the current Nash mix and uniform;
+//      battlefields) against the current decks of all legends, weighted 50/50 by the running average of the Nash
+//      mixes so far (fictitious play, which damps the cycling a single latest mix causes) and uniform;
 //   3. after each iteration, play the full matchup matrix and solve its Nash equilibrium (quant/analysis.py nash()).
 // The final Nash mix is the predicted meta. Every deck is piloted by the same generic AI: researched plans are
 // replaced by the mechanics flags a legend's ability needs (e.g. Seraphine's discount, Azir's Equipment).
@@ -153,7 +154,8 @@ async function main() {
   for (let it = hist.length; it < ITERS; it++) {
     const rounds = it === 0 ? R1 : R;
     for (let li = 0; li < L.length; li++) {
-      const wt = cur.map((_, i) => 0.5 * wN[i] + 0.5 / L.length);
+      const avgN = hist.length ? cur.map((_, i) => hist.reduce((s, h) => s + h.nash[i], 0) / hist.length) : wN;
+      const wt = cur.map((_, i) => 0.5 * avgN[i] + 0.5 / L.length);
       let stale = 0, acc = 0;
       for (let r = 0; r < rounds && stale < P; r++) {
         const cand = moves(cur[li], L[li]);
