@@ -1,6 +1,6 @@
 # Confirmatory results
 
-Run 2026-10-27T12:32Z · engine `e4157fd` (engine-freeze-v1, frozen 2026-10-27T11:59:47Z) · 1 snapshot(s), 0 in the holdout
+Run 2026-11-02T16:06Z · engine `e4157fd` (engine-freeze-v1, frozen 2026-10-27T11:59:47Z) · 2 snapshot(s), 0 in the holdout
 
 | Hypothesis | Status | Effect | p | Holm p | 95% CI | Pass |
 |---|---|---|---|---|---|---|

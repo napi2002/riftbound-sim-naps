@@ -1,14 +1,15 @@
 {
  "meta": {
   "mode": "exploratory",
-  "run_at": "2026-10-27T12:32Z",
+  "run_at": "2026-11-02T16:06Z",
   "engine": "e4157fd",
   "freeze_tag": "engine-freeze-v1",
   "freeze_date": "2026-10-27T11:59:47Z",
-  "snapshots_total": 1,
+  "snapshots_total": 2,
   "snapshots_holdout": 0,
   "snapshots_used": [
-   "2720"
+   "2720",
+   "3170"
   ]
  },
  "results": {
@@ -82,7 +83,7 @@
   },
   "H3": {
    "status": "insufficient data",
-   "why": "1 weekly snapshots (6 needed for the panel, 8+ for the walk-forward test)"
+   "why": "2 weekly snapshots (6 needed for the panel, 8+ for the walk-forward test)"
   },
   "H4": {
    "status": "insufficient data",
