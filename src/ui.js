@@ -221,6 +221,12 @@
   var themes = ['auto', 'light', 'dark'];
   function applyTheme(t) { if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); $('theme').textContent = 'Theme: ' + t; }
   applyTheme(store.get('theme') || 'auto');
+  // How long the AI pauses between its actions so you can follow them (ms): before its turn, per action, after.
+  var SPEEDS = { slow: [900, 1300, 450], normal: [600, 800, 300], fast: [150, 220, 80], instant: [0, 0, 0] }, speedOrder = ['normal', 'fast', 'instant', 'slow'];
+  function pace() { return SPEEDS[store.get('speed')] || SPEEDS.normal; }
+  function applySpeed() { $('speed').textContent = 'AI speed: ' + (SPEEDS[store.get('speed')] ? store.get('speed') : 'normal'); }
+  applySpeed();
+  $('speed').onclick = function () { var cur = SPEEDS[store.get('speed')] ? store.get('speed') : 'normal'; store.set('speed', speedOrder[(speedOrder.indexOf(cur) + 1) % speedOrder.length]); applySpeed(); };
   $('theme').onclick = function () { var cur = store.get('theme') || 'auto'; var nx = themes[(themes.indexOf(cur) + 1) % 3]; store.set('theme', nx); applyTheme(nx); };
 
   /* ---------- game flow ---------- */
@@ -299,10 +305,11 @@
   async function runAI() {
     var G = S.G;
     S.busy = true; render();
-    await sleep(600);
-    await RT.aiTurn(G, 1, function () { render(); return sleep(800); });
+    var pc = pace();
+    await sleep(pc[0]);
+    await RT.aiTurn(G, 1, function () { render(); return sleep(pace()[1]); });
     if (G !== S.G) return;
-    if (G.winner == null) { await RT.endTurn(G); await sleep(300); }
+    if (G.winner == null) { await RT.endTurn(G); await sleep(pc[2]); }
     S.busy = false; render();
   }
   function afterAction() {
@@ -414,10 +421,11 @@
     var h = '';
     h += stripHtml(ai, 1, G);
     h += '<div class="runes">' + runesHtml(ai, 'AI runes') + '</div>';
-    h += '<div class="zone"><div class="zl"><span>AI base</span></div><div class="row">' + RT.unitsAt(G, 'base', 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
+    h += '<div class="zone base ai"><div class="zl"><span>AI base</span></div><div class="row">' + RT.unitsAt(G, 'base', 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
     h += '<div class="bfs">' + G.bfs.map(function (b, i) {
-      var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : '');
-      return '<div class="' + cls + '" data-bf="' + i + '"><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
+      var cls = 'bf' + (b.ctrl === 0 ? ' c0' : b.ctrl === 1 ? ' c1' : '') + (dests.indexOf(i) >= 0 ? ' dest' : ''), bimg = imgOf(b.c);
+      // the battlefield's own card art fills its zone, like the card lying on the playmat
+      return '<div class="' + cls + (bimg ? ' hasart' : '') + '" data-bf="' + i + '"' + (bimg ? ' style="--bfimg:url(&quot;' + bimg + '&quot;)"' : '') + '><div class="bh"><span class="art">' + art(b.c, 22, 22) + '</span><span class="t">' + esc(b.c.name) + '</span>' +
         '<span class="own">' + (b.ctrl === 0 ? 'You' : b.ctrl === 1 ? 'AI' : 'Open') + '</span></div>' +
         '<div class="scored">' + [0, 1].filter(function (q) { return G.players[q].scored[i]; }).map(function (q) { return '<span class="sc p' + q + '">★ ' + (q === 0 ? 'You' : 'AI') + ' scored here</span>'; }).join('') +
         (b.ctrl != null && !G.players[b.ctrl].scored[i] ? '<span class="sc hint">' + (b.ctrl === 0 ? 'You' : 'AI') + ' score +1 if still held next turn</span>' : '') + '</div>' +
@@ -425,7 +433,7 @@
         '<div class="half">' + RT.unitsAt(G, i, 1).map(function (u) { return unitHtml(u, G); }).join('') + ai.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, false); }).join('') + ai.gear.filter(function (g) { return g.loc === i; }).map(gearHtml).join('') + '</div>' +
         '<div class="half mine">' + RT.unitsAt(G, i, 0).map(function (u) { return unitHtml(u, G); }).join('') + me.hidden.filter(function (h) { return h.loc === i; }).map(function (h) { return hiddenChip(h, true); }).join('') + me.gear.filter(function (g) { return g.loc === i; }).map(gearHtml).join('') + '</div></div>';
     }).join('') + '</div>';
-    h += '<div class="zone' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
+    h += '<div class="zone base me' + (dests.indexOf('base') >= 0 ? ' dest' : '') + '" data-base="1"><div class="zl"><span>Your base</span></div><div class="row">' + RT.unitsAt(G, 'base', 0).map(function (u) { return unitHtml(u, G); }).join('') + me.gear.filter(function (g) { return (g.loc || 'base') === 'base'; }).map(gearHtml).join('') + '</div></div>';
     h += '<div class="runes">' + runesHtml(me, 'Runes') + '</div>';
     var canLeg = RT.canUseLegend(G, 0).ok && !S.busy;
     var legState = [me.legend.exhausted ? 'exhausted' : '', me.legend.empowered ? '✦ EMPOWERED' : ''].filter(Boolean).join(' · ');
@@ -482,10 +490,12 @@
       var d = destOptions();
       h = '<div class="scroll">' + (d.length ? d.map(function (x) { return '<button class="btn me" data-move="' + x + '">Move → ' + esc(x === 'base' ? 'Base' : shortName(G.bfs[x].c.name)) + fightPreview(G, x) + '</button>'; }).join('') : '<span class="msg">No common destination</span>') + '</div>' +
         (S.sel.length === 1 && RT.canUseUnit(G, 0, S.sel[0]).ok ? '<button class="btn small primary" data-unitact="' + S.sel[0] + '">Ability</button>' : '') +
-        (S.sel.length === 1 ? '<button class="btn small" data-act="info">Info</button>' : '') + '<button class="btn small" data-act="clear">✕</button>';
+        (S.sel.length === 1 ? '<button class="btn small" data-act="info">Info</button>' : '') +
+        (readyMovable(G).length > S.sel.length ? '<button class="btn small" data-act="selall" title="Select every ready unit">All ' + readyMovable(G).length + '</button>' : '') +
+        '<button class="btn small" data-act="clear">✕' + (S.sel.length > 1 ? ' ' + S.sel.length : '') + '</button>';
     } else {
       var flowable = G.players[0].trash.some(function (x) { return RT.canFlow(G, 0, x.iid).ok; });
-      h = '<button class="btn" data-act="log">Log</button><button class="btn' + (flowable ? ' primary' : '') + '" data-act="trash">Trash ' + G.players[0].trash.length + '</button><button class="btn" data-act="guide">Guide</button><span class="msg" style="text-align:center;color:var(--muted);font-size:12px">Tap units or gear to act</span><button class="btn primary" data-act="end">End turn</button>';
+      h = '<button class="btn" data-act="log">Log</button><button class="btn' + (flowable ? ' primary' : '') + '" data-act="trash">Trash ' + G.players[0].trash.length + '</button><button class="btn" data-act="guide">Guide</button><span class="msg" style="text-align:center;color:var(--muted);font-size:12px">Tap several units to attack together</span><button class="btn primary" data-act="end">End turn</button>';
     }
     $('actions').innerHTML = h;
   }
@@ -702,6 +712,7 @@
   function movableUnit(G, u) {
     return u.ctrl === 0 && G.active === 0 && !S.busy && !S.prompt && !S.targeting && G.winner == null && !u.ex && ['base', 0, 1].some(function (d) { return RT.canMove(G, u, d); });
   }
+  function readyMovable(G) { return G.units.filter(function (u) { return movableUnit(G, u); }); }
   // Drag a unit: press, pull past a few pixels and it lifts off the board; drop it on a battlefield or your base.
   var DG = null;
   function dropTarget(x, y) {
@@ -727,7 +738,9 @@
       gh.className += ' ghost'; gh.style.width = r.width + 'px'; gh.style.height = r.height + 'px';
       DG.dx = DG.x0 - r.left; DG.dy = DG.y0 - r.top; DG.home = r; DG.ghost = gh; DG.on = true;
       document.body.appendChild(gh);
-      var uids = S.sel.indexOf(DG.uid) >= 0 ? S.sel.slice() : [DG.uid];
+      // dragging moves everything selected plus the dragged unit as ONE attack (group attacks on big defenders)
+      var uids = S.sel.indexOf(DG.uid) >= 0 ? S.sel.slice() : S.sel.concat([DG.uid]);
+      if (uids.length > 1) { var badge = document.createElement('span'); badge.className = 'gcount'; badge.textContent = '×' + uids.length; gh.appendChild(badge); }
       S.sel = uids; S.drag = { uids: uids }; render();
       if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) { /* ignore */ } }
     }
@@ -783,6 +796,7 @@
       else if (a === 'skipslot' && S.targeting) { S.targeting.picks.push(null); S.targeting.i++; advanceTargeting(); if (S.targeting) render(); }
       else if (a === 'reprompt' && S.prompt) promptSheet(S.prompt.req);
       else if (a === 'clear') { S.sel = []; render(); }
+      else if (a === 'selall') { S.sel = readyMovable(S.G).map(function (u) { return u.uid; }); render(); }
       else if (a === 'close') closeSheet();
       else if (a === 'info') { var su = G.units.filter(function (u) { return u.uid === S.sel[0]; })[0]; if (su) unitSheet(su); }
       else if (a === 'close' || a === 'legend') closeSheet();
