@@ -138,3 +138,5 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    have no `planId`, so their games are unchanged (same seeded fingerprint as amendment 3).
 5. **2026-11-02.** Post-game Pro Coach (`src/coach.js`, UI only). The engine now also records `mulligan` and `play`
    events and merges duplicate names in `reviewGame`; these are logging/text changes only (same 120-game fingerprint).
+6. **2026-11-02.** LeBlanc's legend now asks the player which card to discard (it used to pick the cheapest card
+   automatically). The AI's default choice is unchanged, so AI-vs-AI games are identical (same fingerprint).

@@ -60,6 +60,14 @@ async function fresh(opts) {
   check('Star Spring: a second unit played the same turn does not trigger it', sp.asks === 0 && RT.unitsAt(sp.G, 0, 0).length === 2, sp.G);
   sp = await spring(true);
   check('Star Spring: the first unit played next to another unit offers the move once', sp.asks === 1, sp.G);
+  // LeBlanc's legend: the player chooses which card to discard
+  G = await fresh(); let lbAsked = null;
+  G.ask = async (req) => { if (req.type === 'choice' && /discard/i.test(req.text || '')) { lbAsked = req.options.slice(); return req.options.indexOf('Ruined Rex'); } return req.type === 'confirm' ? true : pass(req); };
+  G.players[0].legend.c = card('LeBlanc - Deceiver'); G.players[0].legend.exhausted = false;
+  G.players[0].hand = [{ iid: ++iid, c: card('Soaring Scout') }, { iid: ++iid, c: card('Ruined Rex') }];
+  unit(G, 0, 'Scuttle Crab', 0); G.bfs[0].ctrl = 0;
+  await RT.leblancForTest(G, 0, { loc: 0 });
+  check("LeBlanc legend asks which card to discard", lbAsked && lbAsked.length === 2 && G.players[0].trash.some(x => x.c.name === 'Ruined Rex') && G.players[0].hand.some(x => x.c.name === 'Soaring Scout'), G);
   console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
   process.exit(fails ? 1 : 0);
 })();

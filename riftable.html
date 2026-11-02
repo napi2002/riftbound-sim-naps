@@ -1245,7 +1245,10 @@ var RT = (function () {
     if (!others.length) return;
     var worst = p.hand.slice().sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
     var best = others.slice().sort(function (a, b) { return unitValue(b) - unitValue(a); })[0];
-    if (!(await confirm(G, pi, L.c.name, 'Discard ' + worst.c.name + ' and exhaust LeBlanc to play a ready Reflection at ' + bfName(G, loc) + ' that copies a unit there (it has Temporary)?', true))) return;
+    if (!(await confirm(G, pi, L.c.name, 'Discard a card and exhaust LeBlanc to play a ready Reflection at ' + bfName(G, loc) + ' that copies a unit there (it has Temporary)?', true))) return;
+    // the player picks the discard (the AI defaults to its cheapest card)
+    G.cardsHint = p.hand; var di = await choose(G, pi, L.c.name, 'Choose a card to discard', p.hand.map(function (x) { return x.c.name; }), false, p.hand.indexOf(worst));
+    if (di != null && p.hand[di]) worst = p.hand[di];
     var pick = await ask(G, pi, { type: 'target', title: L.c.name, text: 'Choose a unit to copy', cands: others.map(function (u) { return u.uid; }), optional: false, auto: best.uid });
     var src = others.filter(function (u) { return u.uid === pick; })[0] || best;
     p.hand.splice(p.hand.indexOf(worst), 1); p.trash.push(worst);
@@ -4001,7 +4004,7 @@ var RT = (function () {
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
-    killUnitForTest: killUnit, drawForTest: drawOne,
+    killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
     empoweredList: function (G, pi) {
       var out = [], L = G.players[pi].legend;
