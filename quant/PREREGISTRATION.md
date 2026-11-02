@@ -140,3 +140,7 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    events and merges duplicate names in `reviewGame`; these are logging/text changes only (same 120-game fingerprint).
 6. **2026-11-02.** LeBlanc's legend now asks the player which card to discard (it used to pick the cheapest card
    automatically). The AI's default choice is unchanged, so AI-vs-AI games are identical (same fingerprint).
+7. **2026-11-02.** Mordekaiser's legend: the player chooses which trash card to banish (AI default unchanged), and
+   `canPlay` no longer leaves the "paying for a unit or gear" flag on. The leak let the legend's units/gear-only power
+   pay for other costs (hiding, equipping), so this is a rules fix that changes some simulated games involving
+   Mordekaiser. The frozen baseline stays the confirmatory reference.

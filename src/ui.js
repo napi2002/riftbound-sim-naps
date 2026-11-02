@@ -370,7 +370,11 @@
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
   function runesHtml(p, label) {
     return '<span class="lbl">' + label + '</span>' + p.runes.map(function (r) { return '<i class="' + (r.ex ? 'ex' : '') + '" style="--rc:' + DC[r.d] + '" title="' + r.d + '"></i>'; }).join('') +
-      '<span class="lbl" style="margin-left:4px">' + p.runes.filter(function (r) { return !r.ex; }).length + ' ready' + (p.pool ? ' · +' + p.pool + ' energy added' : '') + '</span>';
+      '<span class="lbl" style="margin-left:4px">' + p.runes.filter(function (r) { return !r.ex; }).length + ' ready' + (p.pool ? ' · +' + p.pool + ' energy added' : '') + '</span>' +
+      // power [Add]ed this turn (Mordekaiser's legend, Seals, ...) so it's visible until spent
+      (p.poolPower ? '<span class="addp">+' + p.poolPower + ' power</span>' : '') +
+      (p.poolPowerUG ? '<span class="addp">+' + p.poolPowerUG + ' power · units/gear only</span>' : '') +
+      Object.keys(p.poolDom || {}).filter(function (d) { return p.poolDom[d]; }).map(function (d) { return '<span class="addp" style="--rc:' + DC[d] + '">+' + p.poolDom[d] + ' ' + d + '</span>'; }).join('');
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +

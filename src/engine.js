@@ -2045,8 +2045,11 @@ var RT = (function () {
     acts: [{
       label: 'Banish a unit or gear from your trash, exhaust: add 1 power (any domain) for units or gear', energy: 0, exhaust: true, timing: 'reaction',
       req: function (G, pi) { return G.players[pi].trash.some(function (x) { return x.c.type === 'Unit' || x.c.type === 'Gear'; }) ? null : 'You need a unit or gear in your trash.'; },
-      effs: [], pay: function (G, pi) {
-        var p = G.players[pi], t = p.trash.filter(function (x) { return x.c.type === 'Unit' || x.c.type === 'Gear'; }).sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
+      effs: [], pay: async function (G, pi) {
+        var p = G.players[pi], opts = p.trash.filter(function (x) { return x.c.type === 'Unit' || x.c.type === 'Gear'; });
+        var t = opts.slice().sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];   // AI: cheapest
+        G.cardsHint = opts; var k = await choose(G, pi, 'Mordekaiser', 'Choose a unit or gear in your trash to banish', opts.map(function (x) { return x.c.name; }), false, opts.indexOf(t));
+        if (k != null && opts[k]) t = opts[k];
         p.trash.splice(p.trash.indexOf(t), 1); p.poolPowerUG = (p.poolPowerUG || 0) + 1;
         log(G, 'Mordekaiser banishes ' + t.c.name + ' from the trash: +1 power for units or gear this turn.', pi);
       }
@@ -2559,6 +2562,9 @@ var RT = (function () {
   }
   // opts.reaction: playing during the opponent's turn or a showdown (needs [Reaction], [Action] in a showdown, or a hidden card).
   function canPlay(G, pi, iid, accel, opts) {
+    var r = canPlayCheck(G, pi, iid, accel, opts); G.players[pi].payingUnitOrGear = false; return r;
+  }
+  function canPlayCheck(G, pi, iid, accel, opts) {
     opts = opts || {};
     if (G.winner != null) return { ok: false, why: 'The game is over.' };
     var p = G.players[pi], f = findInHand(p, iid);
@@ -2771,7 +2777,7 @@ var RT = (function () {
     payAnyPower(G, pi, a.power || 0, L.c.name);
     if (a.exhaust) { L.exhausted = true; L.used[idx] = true; }
     log(G, p.name + ' use' + (pi === 0 ? '' : 's') + ' ' + L.c.name + ': ' + a.label + '.', pi);
-    if (a.pay) a.pay(G, pi, L);
+    if (a.pay) await a.pay(G, pi, L);
     await resolveEffects(G, pi, effs, { src: null, loc: opts.showdown != null ? opts.showdown : null, targets: targets, srcName: L.c.name, showdown: opts.showdown });
     return { ok: true };
   }

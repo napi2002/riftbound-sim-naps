@@ -68,6 +68,21 @@ async function fresh(opts) {
   unit(G, 0, 'Scuttle Crab', 0); G.bfs[0].ctrl = 0;
   await RT.leblancForTest(G, 0, { loc: 0 });
   check("LeBlanc legend asks which card to discard", lbAsked && lbAsked.length === 2 && G.players[0].trash.some(x => x.c.name === 'Ruined Rex') && G.players[0].hand.some(x => x.c.name === 'Soaring Scout'), G);
+  // Mordekaiser's legend: the player picks the banished card; the power pays a unit's power cost (saving a rune)
+  // and can't be spent on anything else, even right after the UI checked which cards are playable
+  G = await fresh(); let mAsked = null; p = G.players[0];
+  G.ask = async (req) => { if (req.type === 'choice' && /banish/i.test(req.text || '')) { mAsked = req.options.slice(); return req.options.indexOf('Vanguard Captain'); } return pass(req); };
+  p.legend.c = card('Mordekaiser - Iron Revenant'); p.legend.exhausted = false;
+  p.trash = [{ iid: ++iid, c: card('Carrion Dredger') }, { iid: ++iid, c: card('Vanguard Captain') }];
+  p.runes = [0, 1, 2, 3, 4].map(() => ({ d: 'Order', ex: false }));
+  const sm = { iid: ++iid, c: card('Spectral Matron') }; p.hand = [sm, { iid: ++iid, c: card('Hidden Blade') }];
+  await RT.useLegend(G, 0, 0, []);
+  RT.canPlay(G, 0, sm.iid, false);   // a UI check on a unit must not leave the unit/gear-only power spendable elsewhere
+  G.bfs[0].ctrl = 0; RT.hideCard(G, 0, p.hand[1].iid, 0);
+  const keptPool = p.poolPowerUG === 1, runesBefore = p.runes.length;
+  await RT.playCard(G, 0, sm.iid, {});
+  check("Mordekaiser legend: you pick the banish, its power is for units/gear only and pays Spectral Matron",
+    mAsked && mAsked.length === 2 && !p.trash.some(x => x.c.name === 'Vanguard Captain') && keptPool && p.poolPowerUG === 0 && runesBefore - p.runes.length === 1, G);
   console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
   process.exit(fails ? 1 : 0);
 })();
