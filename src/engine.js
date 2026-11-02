@@ -158,6 +158,7 @@ var RT = (function () {
   function makeDeck(spec) {
     var d = { id: spec.id, name: spec.name || 'Custom deck', label: spec.label || 'Your deck', legend: spec.legend, champion: spec.champion,
       runes: Object.assign({}, spec.runes), bfs: (spec.bfs || []).slice(), list: (spec.list || []).map(function (e) { return [e[0], e[1]]; }), custom: true };
+    if (spec.planId) d.planId = spec.planId;   // play with another deck's researched plan (tester decks)
     resolveDeck(d);
     return d;
   }
@@ -3038,7 +3039,7 @@ var RT = (function () {
       if (h.reserveEnergy != null) A.reserve = h.reserveEnergy;
     });
   }
-  function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && PLANS[d.id]) || null; }
+  function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && (PLANS[d.planId] || PLANS[d.id])) || null; }
   function aiOf(G, pi) { var pl = planOf(G, pi); return (pl && pl.ai) || {}; }
 
   /* ---------------- AI ---------------- */

@@ -133,3 +133,6 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    second unit played there the same turn could wrongly send a unit home. This changes simulated games involving Star
    Spring. The frozen baseline (`e4157fd` summaries and ablation) is kept as is and remains what the confirmatory
    tests use; any later simulation is labelled with its own engine commit and is exploratory.
+4. **2026-11-02.** `makeDeck` keeps an optional `planId` and the AI looks up `PLANS[planId]` before `PLANS[id]`, so a
+   UI-only tester deck (outside `RT.DECKS`) can be played with an existing researched plan. Built-in and custom decks
+   have no `planId`, so their games are unchanged (same seeded fingerprint as amendment 3).

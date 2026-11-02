@@ -77,7 +77,16 @@
   }
   function saveCustom() { store.set('decks', JSON.stringify(CUSTOM.map(RT.specOf))); }
   loadCustom();
-  function deckById(id) { return CUSTOM.filter(function (d) { return d.id === id; })[0] || RT.DECKS.filter(function (d) { return d.id === id; })[0] || RT.DECKS[0]; }
+  // Tester decks: real tournament lists to try out, played by the AI with the matching researched plan (planId).
+  // Kept out of RT.DECKS so the quant tools, which loop over RT.DECKS, are unaffected.
+  var TESTERS = [
+    { id: 'test-leblanc-zack', planId: 'leblanc', name: 'LeBlanc (tester)', label: 'Zack · LDXP Sacramento 25k, 12th of 755 (8-2), Radiance',
+      legend: 'LeBlanc - Deceiver', champion: 'LeBlanc - Fragmented', runes: { Mind: 4, Order: 8 }, bfs: ['Trifarian War Camp', 'Windswept Hillock', 'Star Spring'],
+      list: [[1, 'LeBlanc - Fragmented'], [3, 'Honest Broker'], [3, 'Soaring Scout'], [2, 'Watchful Sentry'], [3, 'Black Rose Dignitary'], [3, 'Karthus - Eternal'],
+        [3, 'Glasc Mixologist'], [3, 'Vi - Peacekeeper'], [3, 'Ruined Rex'], [1, 'Thousand-Tailed Watcher'], [3, 'Harnessed Dragon'], [3, 'Rift Herald'],
+        [3, 'Sacrifice'], [1, 'Deathgrip'], [1, 'Hidden Blade'], [1, 'Mirror Image'], [3, 'Baited Hook']] }
+  ].map(function (sp) { var d = RT.makeDeck(sp); d.check = RT.validateDeck(sp); return d; });
+  function deckById(id) { return CUSTOM.filter(function (d) { return d.id === id; })[0] || TESTERS.filter(function (d) { return d.id === id; })[0] || RT.DECKS.filter(function (d) { return d.id === id; })[0] || RT.DECKS[0]; }
 
   /* ---------- menu ---------- */
   function renderMenu() {
@@ -94,7 +103,15 @@
           (side === 'mine' ? '<button class="btn small" data-bld="edit" data-id="' + d.id + '">Edit</button>' : '') + '</div>';
       }).join('');
       var tools = side === 'mine' ? '<div class="decktools"><button class="btn small primary" data-bld="new">+ Build a deck</button><button class="btn small" data-bld="import">Import text</button></div>' : '';
-      $('decks-' + side).innerHTML = tools + (mine ? '<div class="deckgroup">My decks</div>' + mine : '') + '<div class="deckgroup">Suggested tournament decks</div>' + RT.DECKS.map(function (d) {
+      var testers = TESTERS.map(function (d) {
+        return '<button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
+          '<span class="thumb">' + art(d.legendCard, 40, 40) + '</span>' +
+          '<span class="info"><span class="nm">' + esc(d.name) + '<span class="dots">' + Object.keys(d.runes).map(function (x) { return '<i style="background:' + DC[x] + '"></i>'; }).join('') + '</span></span>' +
+          '<span class="lb">' + esc(d.label) + '</span>' +
+          '<span class="real">' + (d.check.ok ? (d.check.unsimulated.length ? '⚠ ' + d.check.unsimulated.length + ' not fully simulated' : '✓ Legal · fully simulated') : '✗ ' + esc(d.check.errors[0])) + '</span></span>' +
+          '<span class="ct' + (d.check.ok ? ' ok' : '') + '">Tester</span></button>';
+      }).join('');
+      $('decks-' + side).innerHTML = tools + (mine ? '<div class="deckgroup">My decks</div>' + mine : '') + '<div class="deckgroup">Tester decks</div>' + testers + '<div class="deckgroup">Suggested tournament decks</div>' + RT.DECKS.map(function (d) {
         var doms = Object.keys(d.runes);
         return '<button class="deck" data-side="' + side + '" data-deck="' + d.id + '" aria-pressed="' + (S[side] === d.id) + '">' +
           '<span class="thumb">' + art(d.legendCard || { name: d.name, domain: doms, type: 'Legend' }, 40, 40) + '</span>' +
@@ -169,7 +186,8 @@
   }
   function guideSheet() {
     var G = S.G;
-    var me = G.players[0].deckDef.id, ai = G.players[1].deckDef.id;
+    var dd = function (pi) { var d = G.players[pi].deckDef; return d.planId || d.id; };   // tester decks show their plan's guide
+    var me = dd(0), ai = dd(1);
     openSheet('<h2>Game plans</h2>' + guideHtml(me, 'You', ai) + guideHtml(ai, 'AI', me, true), '<button class="btn" data-act="close">Close</button>');
   }
   // Real tournament stats (riftbound.gg snapshot) shown on each deck.
