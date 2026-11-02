@@ -80,6 +80,9 @@
   // Tester decks: real tournament lists to try out, played by the AI with the matching researched plan (planId).
   // Kept out of RT.DECKS so the quant tools, which loop over RT.DECKS, are unaffected.
   var TESTERS = [
+    { id: 'test-leblanc-custom', name: 'LeBlanc (sim custom)', label: 'Built from scratch by the simulator, big-bodies style, generic AI (no pro plan)',
+      legend: 'LeBlanc - Deceiver', champion: 'LeBlanc - Fragmented', runes: {Mind:  6,  Order:  6}, bfs: ['Star Spring',  'Seat of Power',  'Rockfall Path'],
+      list: [[1,  'LeBlanc - Fragmented'],  [3,  'Hunting Dog'],  [3,  'Raucous Anthem'],  [3,  'Sandshifter'],  [3,  'Noxian Drummer'],  [2,  'Trifarian Captain'],  [3,  'Daring Poro'],  [3,  'Vanguard Sergeant'],  [3,  'Cloud Drake'],  [3,  'Mega-Mech'],  [3,  'Corina Veraza'],  [3,  'Horns of the Dragon'],  [3,  'Harnessed Dragon'],  [1,  'Thousand-Tailed Watcher'],  [1,  'Soaring Scout'],  [1,  'Dredge Up'],  [1,  'Hidden Blade']] },
     { id: 'test-leblanc-zack', planId: 'leblanc', name: 'LeBlanc (tester)', label: 'Zack · LDXP Sacramento 25k, 12th of 755 (8-2), Radiance',
       legend: 'LeBlanc - Deceiver', champion: 'LeBlanc - Fragmented', runes: { Mind: 4, Order: 8 }, bfs: ['Trifarian War Camp', 'Windswept Hillock', 'Star Spring'],
       list: [[1, 'LeBlanc - Fragmented'], [3, 'Honest Broker'], [3, 'Soaring Scout'], [2, 'Watchful Sentry'], [3, 'Black Rose Dignitary'], [3, 'Karthus - Eternal'],
@@ -464,7 +467,7 @@
   }
   function renderActions() {
     var G = S.G, h = '';
-    if (G.winner != null) h = '<span class="msg">Game over</span><button class="btn" data-act="log">Log</button><button class="btn primary" data-act="menu">Menu</button>';
+    if (G.winner != null) h = '<span class="msg">Game over</span><button class="btn" data-act="log">Log</button><button class="btn" data-act="coach">Coach</button><button class="btn primary" data-act="menu">Menu</button>';
     else if (S.prompt && S.prompt.req.type === 'target') {
       var rq = S.prompt.req;
       h = '<span class="msg"><b>' + esc(rq.title) + '</b><br>' + esc(rq.text) + ' — tap a glowing unit</span>' + (rq.optional ? '<button class="btn" data-ans="skip">Skip</button>' : '');
@@ -656,17 +659,17 @@
     var b = document.querySelector('#sheet .body'); b.scrollTop = b.scrollHeight;
   }
   function showEnd() {
-    var G = S.G, won = G.winner === 0;
-    var rv = RT.reviewGame(G, 0), tips = RT.gameTips(G, 0);
-    // Key moments come from this game's events; add one general/legend tip if there's room.
-    var extra = tips.filter(function (t) { return !/attacks failed|ended with|sat idle|stayed in base/.test(t); }).slice(-1);
+    var G = S.G, won = G.winner === 0, rv = RT.reviewGame(G, 0);
+    var R = S.coach = Coach.analyse(RT, G, 0), L = Coach.letter;
+    var labels = { opening: 'Opening', plan: 'Game plan', board: 'Board', combat: 'Combat', efficiency: 'Efficiency' };
     $('end').innerHTML = '<div class="box"><h2>' + (G.winner === -1 ? 'Draw' : won ? 'Victory' : 'Defeat') + '</h2><p>' + G.players[0].points + ' – ' + G.players[1].points + ' after ' + G.turnNo + ' turns · ' + esc(rv.ending) + '</p>' +
-      (rv.moments.length || extra.length ? '<div class="tips"><b>Key moments</b><ul class="moments">' + rv.moments.map(function (m) {
-        return '<li class="' + m.kind + '" data-act="log"><span class="tn">T' + m.turn + '</span><span class="ic">' + (m.kind === 'good' ? '✓' : '✗') + '</span><span>' + esc(m.text) + '</span></li>';
-      }).join('') + extra.map(function (t) { return '<li class="tip"><span class="tn">Tip</span><span class="ic">→</span><span>' + esc(t) + '</span></li>'; }).join('') + '</ul></div>' : '') +
-      '<button class="btn primary" data-act="again">Play again</button><button class="btn" data-act="menu">Back to menu</button><button class="btn" data-act="log">View log</button></div>';
+      '<div class="tips"><b>Pro coach: <span class="grade g' + L(R.overall) + '">' + L(R.overall) + '</span></b><div class="gradebar">' +
+      Object.keys(labels).filter(function (k) { return R.grades[k] != null; }).map(function (k) { return '<div><span class="grade g' + L(R.grades[k]) + '">' + L(R.grades[k]) + '</span><small>' + labels[k] + '</small></div>'; }).join('') + '</div>' +
+      (R.drills[0] ? '<p class="drill"><b>Next game:</b> ' + esc(R.drills[0].text) + '</p>' : '') + '</div>' +
+      '<button class="btn primary" data-act="coach">Full coach review</button><button class="btn" data-act="again">Play again</button><button class="btn" data-act="menu">Back to menu</button><button class="btn" data-act="log">View log</button></div>';
     $('end').classList.remove('hidden');
   }
+  function coachSheet() { if (S.coach) openSheet(Coach.html(S.coach, esc), '<button class="btn" data-act="close">Close</button>'); }
 
   /* ---------- playing with targets ---------- */
   function beginPlay(iid, accel, loc, roost, seraphine) {
@@ -773,6 +776,7 @@
       var a = act.dataset.act;
       if (a === 'end') endMyTurn();
       else if (a === 'log') { $('end').classList.add('hidden'); logSheet(); }
+      else if (a === 'coach') { $('end').classList.add('hidden'); coachSheet(); }
       else if (a === 'cancel') { S.targeting = null; render(); }
       else if (a === 'trash') trashSheet();
       else if (a === 'guide') guideSheet();

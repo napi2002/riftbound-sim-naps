@@ -481,7 +481,7 @@ var RT = (function () {
 
   // Mulligan: set aside up to 2 cards from the opening hand, draw that many, then put the set-aside cards on the bottom of the deck.
   async function mulligan(G, pi) {
-    var p = G.players[pi], aside = [];
+    var p = G.players[pi], aside = [], opening = p.hand.map(function (c) { return c.c.name; });
     while (aside.length < 2) {
       var hand = p.hand.filter(function (c) { return aside.indexOf(c) < 0; });
       var k = await ask(G, pi, { type: 'choice', title: 'Mulligan', text: 'Pick a card to set aside and redraw (' + (2 - aside.length) + ' left). Set-aside cards go to the bottom of your deck.',
@@ -490,6 +490,7 @@ var RT = (function () {
       if (k == null || !hand[k]) break;
       aside.push(hand[k]);
     }
+    event(G, { t: 'mulligan', pi: pi, hand: opening, aside: aside.map(function (c) { return c.c.name; }) });   // for the post-game coach
     if (!aside.length) return;
     aside.forEach(function (c) { p.hand.splice(p.hand.indexOf(c), 1); });
     for (var i = 0; i < aside.length; i++) drawOne(G, pi, true);
@@ -2659,6 +2660,7 @@ var RT = (function () {
     else p.champion = null;
     G.playedThisTurn++; G.playedBy[pi]++;
     if (G.stats) G.stats[pi].played++;
+    event(G, { t: 'play', pi: pi, name: c.name, type: c.type, energy: cost.energy, from: f.from, showdown: G.showdownAt != null || opts.showdown != null, own: G.active === pi });
     if (G.playedBy[pi] === 1 && G.active === pi && G.units.some(function (u) { return u.ctrl === pi && u.loc !== 'base' && u.c.P.heronDiscount; })) {
       p.discountNext = { turn: G.turnNo, energy: 2, power: 2 };
       log(G, 'Astral Heron: your next card this turn costs 2 energy and 2 power less.', pi);
@@ -3373,7 +3375,11 @@ var RT = (function () {
   // Post-game review built from what actually happened (G.events): the few moments that mattered most, with turn numbers.
   function reviewGame(G, pi) {
     var ev = G.events || [], out = [], o = opp(pi), you = function (q) { return q === pi ? 'You' : 'The AI'; };
-    var names = function (arr) { return arr.slice(0, 2).join(' and ') + (arr.length > 2 ? ' +' + (arr.length - 2) : ''); };
+    var names = function (arr) {   // "Karthus ×2" when a unit and its Reflection both appear
+      var u = [], k = {}; arr.forEach(function (n) { if (!k[n]) { k[n] = 0; u.push(n); } k[n]++; });
+      u = u.map(function (n) { return n + (k[n] > 1 ? ' ×' + k[n] : ''); });
+      return u.slice(0, 2).join(' and ') + (u.length > 2 ? ' +' + (u.length - 2) : '');
+    };
     ev.forEach(function (e) {
       if (e.t === 'combat') {
         var mine = e.sides.filter(function (sd) { return sd.pi === pi; })[0], theirs = e.sides.filter(function (sd) { return sd.pi === o; })[0];

@@ -136,3 +136,5 @@ Written at the freeze, before any holdout data existed; they make the tests abov
 4. **2026-11-02.** `makeDeck` keeps an optional `planId` and the AI looks up `PLANS[planId]` before `PLANS[id]`, so a
    UI-only tester deck (outside `RT.DECKS`) can be played with an existing researched plan. Built-in and custom decks
    have no `planId`, so their games are unchanged (same seeded fingerprint as amendment 3).
+5. **2026-11-02.** Post-game Pro Coach (`src/coach.js`, UI only). The engine now also records `mulligan` and `play`
+   events and merges duplicate names in `reviewGame`; these are logging/text changes only (same 120-game fingerprint).
