@@ -345,7 +345,7 @@
   // Short labelled badges for a unit's keywords and temporary effects, most important first.
   function unitBadges(u, k) {
     var b = [], asl = (k.assault || 0) + (u.tempAssault || 0), sh = (k.shield || 0) + (u.combatShield || 0);
-    if (u.stun) b.push(['STUN', 'stun']);
+    if (u.stun) b.push(['STUN · this turn', 'stun']);
     if (k.tank) b.push(['TANK', 'tank']);
     if (asl) b.push(['ASLT+' + asl, 'asl']);
     if (sh) b.push(['SHLD+' + sh, 'sh']);
@@ -368,13 +368,27 @@
   };
   function gearHtml(g) { return '<button class="gear' + (g.ex ? ' ex' : '') + (S.G && S.G.players[0].gear.indexOf(g) >= 0 && g.c.P.gearActs && RT.canUseGear(S.G, 0, g.iid).ok ? ' can' : '') + '" data-gear="' + g.iid + '">' + esc(shortName(g.c.name)) + '</button>'; }
   function pips(n) { var s = ''; for (var i = 0; i < RT.WIN; i++) s += '<i class="' + (i < n ? 'on' : '') + '"></i>'; return '<span class="pips" aria-label="' + n + ' points">' + s + '</span>'; }
+  // Floating resources: everything you can pay with besides your runes. Added this turn (Mordekaiser's legend,
+  // Seals already used, energy [Add]ed) and ready sources that pay automatically (Seals, Gold tokens, Platewyrm Egg).
+  function floatHtml(p) {
+    var pills = [], any = '#c8aa6e';
+    if (p.pool) pills.push(['+' + p.pool + ' energy', '#f2c14e', 'Energy added this turn']);
+    if (p.poolPower) pills.push(['+' + p.poolPower + ' any', any, 'Power of any domain added this turn']);
+    if (p.poolPowerUG) pills.push(['+' + p.poolPowerUG + ' any · units/gear', any, 'Added this turn (e.g. Mordekaiser): spend only on units or gear']);
+    Object.keys(p.poolDom || {}).forEach(function (d) { if (p.poolDom[d]) pills.push(['+' + p.poolDom[d] + ' ' + d, DC[d], d + ' power added this turn']); });
+    var gold = p.gear.filter(function (g) { return !g.ex && g.c.P.addPower && g.c.P.consumed; }).length;
+    if (gold) pills.push(['Gold ×' + gold + ' (+' + gold + ' any)', '#e8c25a', 'Gold tokens: each pays 1 power of any domain (spent when used)']);
+    p.gear.filter(function (g) { return !g.ex && g.c.P.addPower && !g.c.P.consumed; }).forEach(function (g) {
+      var d = g.c.P.addPower; pills.push([shortName(g.c.name) + ' +1 ' + (d === 'any' ? 'any' : d), d === 'any' ? any : DC[d], g.c.name + ': ready, pays 1 ' + d + ' power automatically']);
+    });
+    p.gear.filter(function (g) { return !g.ex && g.c.P.addEnergy; }).forEach(function (g) { pills.push([shortName(g.c.name) + ' +' + (g.empowered ? 2 : 1) + ' energy', '#f2c14e', g.c.name + ': ready, pays energy automatically']); });
+    if (!pills.length) return '';
+    return '<span class="float" title="Floating resources: paid automatically before your runes"><span class="flbl">◇ Floating</span>' + pills.map(function (x) { return '<span class="addp" style="--rc:' + x[1] + '" title="' + esc(x[2]) + '">' + esc(x[0]) + '</span>'; }).join('') + '</span>';
+  }
   function runesHtml(p, label) {
     return '<span class="lbl">' + label + '</span>' + p.runes.map(function (r) { return '<i class="' + (r.ex ? 'ex' : '') + '" style="--rc:' + DC[r.d] + '" title="' + r.d + '"></i>'; }).join('') +
       '<span class="lbl" style="margin-left:4px">' + p.runes.filter(function (r) { return !r.ex; }).length + ' ready' + (p.pool ? ' · +' + p.pool + ' energy added' : '') + '</span>' +
-      // power [Add]ed this turn (Mordekaiser's legend, Seals, ...) so it's visible until spent
-      (p.poolPower ? '<span class="addp">+' + p.poolPower + ' power</span>' : '') +
-      (p.poolPowerUG ? '<span class="addp">+' + p.poolPowerUG + ' power · units/gear only</span>' : '') +
-      Object.keys(p.poolDom || {}).filter(function (d) { return p.poolDom[d]; }).map(function (d) { return '<span class="addp" style="--rc:' + DC[d] + '">+' + p.poolDom[d] + ' ' + d + '</span>'; }).join('');
+      floatHtml(p);
   }
   function stripHtml(p, pi, G) {
     return '<div class="strip ' + (pi === 0 ? 'me' : 'ai') + (G.active === pi ? ' active' : '') + '"><span class="who">' + esc(pi === 0 ? 'You · ' + shortName(p.legend.c.name) : 'AI · ' + p.legend.c.name) + '</span>' +
@@ -598,7 +612,7 @@
     var items = unitBadges(u, k).map(function (b) {
       var key = { asl: 'assault', sh: 'shield', tank: 'tank', back: 'backline', dfl: 'deflect', gank: 'ganking' }[b[1]];
       var txt = key ? KW_HELP[key].replace('N', b[0].split('+')[1] || '') :
-        b[1] === 'stun' ? 'Stunned: deals no combat damage until its controller\'s turn ends.' :
+        b[1] === 'stun' ? 'Stunned: deals no combat damage and can\'t move until the end of THIS turn (whoever\'s turn it is). To stop an attacker, stun it during the opponent\'s turn, in the showdown before damage.' :
         b[1] === 'buff' ? 'Buffed: +1 Might permanently.' : b[1] === 'gear' ? 'Equipment: +' + RT.equipBonus(u) + ' Might.' :
         b[1] === 'emp' ? 'Empowered.' : /TURN/.test(b[0]) ? (u.temp > 0 ? '+' : '') + u.temp + ' Might until end of turn.' : b[0] === 'TEMP' ? KW_HELP.temporary : '';
       return '<div class="kh"><span class="kb ' + b[1] + '">' + b[0] + '</span> ' + esc(txt) + '</div>';
