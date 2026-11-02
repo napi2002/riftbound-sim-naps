@@ -309,6 +309,22 @@ var RT = (function () {
       if (!t) return;
       var line = { text: t.replace(/\]\[>\]\s*/g, '] — '), sim: false };
       P.lines.push(line);
+      // Equipment: "+N Might <ability>" — the Might is mightBonus; the ability belongs to the unit it's attached to
+      // ("I"/"me" = the equipped unit), so parse it as unit text into hostTrig / grantKw.
+      var hm = type === 'Gear' && t.match(/^\+(\d+) Might\b\s*(.*)$/i);
+      if (hm) {
+        var ht = hm[2].trim();
+        if (!ht) { line.sim = true; return; }
+        var sub = parseCard({ name: c.name, type: 'Unit', rich: '<p>' + ht + '</p>', plain: ht, tags: [] });
+        if (sub.lines.length && sub.lines.every(function (l) { return l.sim; })) {
+          P.hostTrig = P.hostTrig || {};
+          Object.keys(sub.trig).forEach(function (ev) { P.hostTrig[ev] = (P.hostTrig[ev] || []).concat(sub.trig[ev]); });
+          var hk = Object.assign({}, sub.kw); delete hk.entersready;
+          if (Object.keys(hk).length) P.grantKw = Object.assign(P.grantKw || {}, hk);
+          line.sim = true;
+        }
+        return;
+      }
       var rest = t, m, kws = [];
       for (;;) {
         if ((m = rest.match(/^\[>\]\s*|^(?:—|-)\s+/))) { rest = rest.slice(m[0].length); continue; }
@@ -414,7 +430,16 @@ var RT = (function () {
     return G.players[pi].gear.some(function (g) { return (g.loc || 'base') === loc; }) ||
       G.units.some(function (v) { return v.ctrl === pi && v.loc === loc && (v.equips.length || v.animatedGear); });
   }
-  function equipBonus(u) { return u.equips.reduce(function (s, g) { return s + (g.c.P.equipBonus || 0); }, 0); }
+  function equipBonus(u) {
+    var G = u.G;
+    return u.equips.reduce(function (s, g) {
+      var P = g.c.P, b = P.equipBonus || 0;
+      if (P.freshBonus && G && g.attachTurn === G.turnNo) b += P.freshBonus;                       // Brutalizer
+      if (P.levelBonus && G && G.players[u.ctrl].xp >= P.levelBonus.level) b += P.levelBonus.n;   // Soul Sword
+      if (P.pairBonus && G && u.loc !== 'base' && unitsAt(G, u.loc, u.ctrl).length === 2) b += P.pairBonus;   // Hand Hammer
+      return s + b;
+    }, 0);
+  }
   function might(u, role) {
     var k = kwOf(u);
     var m = (u.mightOverride != null ? u.mightOverride : (u.c.might || 0)) + u.buff + u.temp + equipBonus(u) + (u.empowered && u.c.P.empoweredMight || 0) + (u.G ? auraMight(u.G, u) : 0);
@@ -986,14 +1011,16 @@ var RT = (function () {
       var units = p.trash.filter(function (x) {
         if (x.c.type !== 'Unit') return false;
         if (e.free) return (x.c.energy || 0) <= e.maxEnergy && (x.c.power || 0) <= e.maxPower;
+        if (e.full) { p.payingUnitOrGear = true; var ok = canPay(p, x.c.energy || 0, x.c.power || 0, cardDomains(x.c)); p.payingUnitOrGear = false; return ok; }
         return canPay(p, 0, x.c.power || 0, cardDomains(x.c));
       });
       if (!units.length) { log(G, (ctx.srcName || 'Effect') + ': no unit in your trash you can pay for.', pi); return; }
       var v = units.map(function (x) { return (x.c.energy || 0) + (x.c.might || 0); }); var auto = v.indexOf(Math.max.apply(null, v));
-      G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, e.free ? 'Play a unit from your trash to your base for free?' : 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), !!e.optional, auto);
+      G.cardsHint = units; var k = await choose(G, pi, ctx.srcName, e.free ? 'Play a unit from your trash to your base for free?' : e.full ? 'Play a unit from your trash? (you pay its full cost)' : 'Play a unit from your trash (you still pay its power):', units.map(function (x) { return x.c.name + ' (' + (x.c.might || 0) + ' Might)'; }), !!e.optional, auto);
       if (k == null) return;
       var card = units[k];
-      if (!e.free) pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
+      if (e.full) { p.payingUnitOrGear = true; pay(G, pi, card.c.energy || 0, card.c.power || 0, cardDomains(card.c)); p.payingUnitOrGear = false; }
+      else if (!e.free) pay(G, pi, 0, card.c.power || 0, cardDomains(card.c));
       p.trash.splice(p.trash.indexOf(card), 1);
       await playFree(G, pi, card, 'base', ctx.srcName);
     },
@@ -1149,6 +1176,11 @@ var RT = (function () {
     leblancfragmented: { sim: [1], deathknell: [{ op: 'draw', n: 1 }, { op: 'beginningDraw' }] },
     honestbroker: { sim: [0] },
     karthuseternal: { sim: [0], doubleDeathknell: true },
+    guardianangel: { sim: [1], hostSave: true },
+    brutalizer: { sim: [1], freshBonus: 2 },
+    soulsword: { sim: [1], levelBonus: { level: 3, n: 1 } },
+    handhammer: { sim: [1], pairBonus: 2 },
+    lastrites: { sim: [1], hostTrig: { conquer: [{ effs: [{ op: 'reanimate', full: true, optional: true }] }], hold: [{ effs: [{ op: 'reanimate', full: true, optional: true }] }] } },
     glascmixologist: { sim: [0], deathknell: [{ op: 'reanimate', maxEnergy: 3, maxPower: 1, free: true, optional: true }] },
     thousandtailedwatcher: { sim: [1], play: [{ op: 'shrinkAll', n: 3 }] },
     riftherald: { sim: [0, 1], moveBfFx: [{ op: 'lookUnit', n: 3 }], deathknell: [{ op: 'fromHand' }] },
@@ -1200,7 +1232,7 @@ var RT = (function () {
     if (sc.empoweredMight) c.P.empoweredMight = sc.empoweredMight;
     if (sc.combatEnd) c.P.combatEnd = sc.combatEnd;
     if (sc.play) (c.P.trig.play = c.P.trig.play || []).push({ effs: sc.play });
-    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
+    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere', 'hostSave', 'freshBonus', 'levelBonus', 'pairBonus', 'hostTrig'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
     if (sc.deathknell) c.P.trig.deathknell = [{ effs: sc.deathknell }];
     if (sc.conquerFx) (c.P.trig.conquer = c.P.trig.conquer || []).push({ effs: sc.conquerFx });
     if (sc.moveBfFx) (c.P.trig.moveBf = c.P.trig.moveBf || []).push({ effs: sc.moveBfFx });
@@ -1330,7 +1362,7 @@ var RT = (function () {
     }
     for (var i = 0; i < ec.recycleTrash; i++) p.deck.push(p.trash.shift());
     p.gear.splice(p.gear.indexOf(g), 1);
-    host.equips.push(g);
+    host.equips.push(g); g.attachTurn = G.turnNo;
     log(G, g.c.name + ' is equipped to ' + host.c.name + ' (+' + g.c.P.equipBonus + ' Might).', pi);
     return { ok: true };
   }
@@ -1518,7 +1550,7 @@ var RT = (function () {
     pay(G, pi, ec2.energy, d2.length, d2);
     payAnyPower(G, pi, rest.filter(function (d) { return d === 'any'; }).length, 'Weaponmaster');
     if (x.host) x.host.equips.splice(x.host.equips.indexOf(x.g), 1); else p.gear.splice(p.gear.indexOf(x.g), 1);
-    u.equips.push(x.g);
+    u.equips.push(x.g); x.g.attachTurn = G.turnNo;
     log(G, 'Weaponmaster: ' + x.g.c.name + ' is equipped to ' + u.c.name + '.', pi);
   }
   // Back-Alley Bar: a unit moving from here gets +1 Might this turn.
@@ -2278,6 +2310,14 @@ var RT = (function () {
   async function killUnit(G, u, reason) {
     if (G.units.indexOf(u) < 0) return;
     var owner = G.players[u.ctrl];
+    var ga = reason !== 'temporary' && (u.equips || []).filter(function (g) { return g.c.P.hostSave; })[0];
+    if (ga) {
+      u.equips.splice(u.equips.indexOf(ga), 1); G.players[ga.owner != null ? ga.owner : u.owner].trash.push({ iid: ga.iid, c: ga.c });
+      leaveBonus(G, u); u.loc = 'base'; u.ex = true; u.damage = 0; u.lethal = false;
+      log(G, ga.c.name + ' is killed instead: ' + u.c.name + ' is healed, exhausted and recalled to base.', u.ctrl);
+      updateControl(G);
+      return;
+    }
     var zh = reason !== 'temporary' && !u.token && owner.gear.filter(function (g) { return g.c.P.saveUnit; })[0];
     if (zh) {
       owner.gear.splice(owner.gear.indexOf(zh), 1); owner.trash.push(zh);
@@ -2286,7 +2326,7 @@ var RT = (function () {
       updateControl(G);
       return;
     }
-    var loc = u.loc;
+    var loc = u.loc, eqDK = (u.equips || []).filter(function (g) { return g.c.P.hostTrig && g.c.P.hostTrig.deathknell; });   // Sacred Shears
     removeUnit(G, u);
     if (!u.token) G.players[u.owner].trash.push({ iid: u.iid, c: u.c });
     u.dead = true;
@@ -2305,6 +2345,10 @@ var RT = (function () {
     for (var t = 0; t < times && u.c.P.trig.deathknell; t++) {
       if (t) log(G, 'Karthus: ' + u.c.name + "'s Deathknell triggers again.", u.ctrl);
       await fireTrig(G, u.ctrl, u.c, 'deathknell', { src: null, loc: loc, srcName: u.c.name, diedAlone: aloneDeath });
+    }
+    for (var q = 0; q < eqDK.length; q++) for (var t3 = 0; t3 < times; t3++) {
+      var dk = eqDK[q].c.P.hostTrig.deathknell;
+      for (var r = 0; r < dk.length; r++) await resolveEffects(G, u.ctrl, dk[r].effs, { src: null, loc: loc, srcName: eqDK[q].c.name + ' (' + u.c.name + ')' });
     }
     if (u.flourish && u.flourish.turn === G.turnNo) addGold(G, u.flourish.pi, 1, 'Deadly Flourish');
     // Pyke, Returned: once each turn, when an enemy unit dies while Pyke is at a battlefield, play a Gold token.
@@ -2353,6 +2397,12 @@ var RT = (function () {
   async function fireUnit(G, u, ev) {
     if (u.dead) return;
     await fireTrig(G, u.ctrl, u.c, ev, { src: u, loc: u.loc, srcName: u.c.name });
+    // abilities granted by attached Equipment ("When I conquer, ..." on the gear means the equipped unit)
+    var eq = (u.equips || []).filter(function (g) { return g.c.P.hostTrig && g.c.P.hostTrig[ev]; });
+    for (var i = 0; i < eq.length && !u.dead && G.winner == null; i++) {
+      var list = eq[i].c.P.hostTrig[ev];
+      for (var j = 0; j < list.length && G.winner == null; j++) await resolveEffects(G, u.ctrl, list[j].effs, { src: u, loc: u.loc, srcName: eq[i].c.name + ' (' + u.c.name + ')' });
+    }
   }
   async function fireLegend(G, pi, ev, ctx) {
     var L = G.players[pi].legend;
@@ -2728,7 +2778,7 @@ var RT = (function () {
         var qh = unitsOf(G, pi).sort(function (a, b) { return might(b) - might(a); });
         var qid = await ask(G, pi, { type: 'target', title: c.name, text: 'Quick-Draw: attach to which unit? (+' + c.P.equipBonus + ' Might)', cands: qh.map(function (u) { return u.uid; }), optional: false, auto: qh[0].uid });
         var qu = qh.filter(function (u) { return u.uid === qid; })[0] || qh[0];
-        p.gear.splice(p.gear.indexOf(gobj), 1); qu.equips.push(gobj); log(G, c.name + ' attaches to ' + qu.c.name + ' (Quick-Draw).', pi);
+        p.gear.splice(p.gear.indexOf(gobj), 1); qu.equips.push(gobj); gobj.attachTurn = G.turnNo; log(G, c.name + ' attaches to ' + qu.c.name + ' (Quick-Draw).', pi);
       }
       if (firstGear) { var invs = unitsOf(G, pi).filter(function (u) { return u.c.P.readyOnGear; }); for (var ivi = 0; ivi < invs.length; ivi++) await readySomething(G, pi, invs[ivi]); }
       if (f.from === 'hidden' && c.P.attachFromHidden) {
@@ -2736,7 +2786,7 @@ var RT = (function () {
         if (hostHere.length) {
           var ahid = await ask(G, pi, { type: 'target', title: c.name, text: 'Attach to a unit you control here', cands: hostHere.map(function (u) { return u.uid; }), optional: false, auto: hostHere[0].uid });
           var ah = hostHere.filter(function (u) { return u.uid === ahid; })[0] || hostHere[0];
-          p.gear.splice(p.gear.indexOf(gobj), 1); ah.equips.push(gobj); log(G, c.name + ' attaches to ' + ah.c.name + ' from face down.', pi);
+          p.gear.splice(p.gear.indexOf(gobj), 1); ah.equips.push(gobj); gobj.attachTurn = G.turnNo; log(G, c.name + ' attaches to ' + ah.c.name + ' from face down.', pi);
         }
       }
       if (c.P.equip && p.gear.indexOf(gobj) >= 0 && canEquip(G, pi, gobj).ok && (await confirm(G, pi, c.name, 'Pay the Equip cost (' + equipCostText(c) + ') to attach ' + c.name + ' now?', true))) await equipGear(G, pi, gobj);
@@ -2904,7 +2954,11 @@ var RT = (function () {
         .concat(def.filter(function (u) { return u.damage > 0 && (u.damage >= might(u, 'def') || u.lethal || G.decreeTurn === G.turnNo); }));
       // Combat cleanup heals every surviving unit (468.1.a.1)
       att.concat(def).forEach(function (u) { if (dead.indexOf(u) < 0) { u.damage = 0; u.lethal = false; } });
-      for (i = 0; i < dead.length; i++) { log(G, dead[i].c.name + ' dies.', dead[i].ctrl); await killUnit(G, dead[i]); }
+      for (i = 0; i < dead.length; i++) {
+        var saved = !dead[i].token && ((dead[i].equips || []).some(function (g) { return g.c.P.hostSave; }) || G.players[dead[i].ctrl].gear.some(function (g) { return g.c.P.saveUnit; }));
+        if (!saved) log(G, dead[i].c.name + ' dies.', dead[i].ctrl);
+        await killUnit(G, dead[i]);
+      }
       await checkDeaths(G);
     }
     if (G.winner != null) return;

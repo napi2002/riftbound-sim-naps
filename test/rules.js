@@ -83,6 +83,14 @@ async function fresh(opts) {
   await RT.playCard(G, 0, sm.iid, {});
   check("Mordekaiser legend: you pick the banish, its power is for units/gear only and pays Spectral Matron",
     mAsked && mAsked.length === 2 && !p.trash.some(x => x.c.name === 'Vanguard Captain') && keptPool && p.poolPowerUG === 0 && runesBefore - p.runes.length === 1, G);
-  console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
+
+  // Equipment abilities (text restored from riftbound.gg): Guardian Angel saves the unit, Brutalizer's fresh bonus
+  G = await fresh(); u = unit(G, 0, 'Lonely Poro', 'base'); const ga = { iid: ++iid, c: card('Guardian Angel'), owner: 0, ex: false }; u.equips.push(ga);
+  unit(G, 1, 'Mega-Mech', 0); G.bfs[0].ctrl = 1;
+  await RT.moveUnits(G, 0, [u.uid], 0);
+  check('Guardian Angel: the unit survives, healed, exhausted and recalled; the Angel is killed', !u.dead && u.loc === 'base' && u.ex && !u.damage && !u.equips.length && G.players[0].trash.some(x => x.c.name === 'Guardian Angel'), G);
+  G = await fresh(); u = unit(G, 0, 'Lonely Poro', 'base'); const br = { iid: ++iid, c: card('Brutalizer'), owner: 0, ex: false, attachTurn: G.turnNo }; u.equips.push(br);
+  const fresh3 = RT.might(u); br.attachTurn = G.turnNo - 1;
+  check('Brutalizer: +2 more Might on the turn it was attached', fresh3 - RT.might(u) === 2, G);  console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
   process.exit(fails ? 1 : 0);
 })();

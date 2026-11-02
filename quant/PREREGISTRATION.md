@@ -144,3 +144,9 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    `canPlay` no longer leaves the "paying for a unit or gear" flag on. The leak let the legend's units/gear-only power
    pay for other costs (hiding, equipping), so this is a rules fix that changes some simulated games involving
    Mordekaiser. The frozen baseline stays the confirmatory reference.
+8. **2026-11-02.** Card data fix: Riftcodex dropped the ability half of 25 Equipment cards (e.g. Guardian Angel,
+   Brutalizer, Eye of the Herald, Soul Sword, Pendulum Blade, Last Rites), which were wrongly counted as fully
+   simulated. `tools/fix_card_text.py` restores the text from riftbound.gg; 16 of the 25 are now simulated (abilities
+   granted to the equipped unit, Guardian Angel's death replacement, Brutalizer/Soul Sword/Hand Hammer Might), the
+   other 9 are honestly flagged as not simulated. Effect on a 1,680-games-per-deck run: Azir +2.3, Orianna +2.4,
+   Akali +1.9 points, others within noise. The frozen baseline stays the confirmatory reference.

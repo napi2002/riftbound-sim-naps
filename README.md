@@ -177,6 +177,7 @@ python3 quant/tidy.py                            # snapshots -> tidy CSVs
 │   ├── build.py             # assembles riftable.html
 │   ├── build_site.py        # builds docs/ for GitHub Pages
 │   ├── fetch_cards.py, fetch_dotgg.py, build_data.py   # card data pipeline
+│   ├── fix_card_text.py   # restores rules text Riftcodex drops (Equipment abilities) from riftbound.gg
 │   ├── fetch_images.py      # card art -> WebP
 │   └── merge_guides.py      # merges and validates researched deck guides
 ├── docs/                    # public site: index.html, report.html, play.html
@@ -218,7 +219,7 @@ Each deck layers a researched plan on top (`src/guides.json`): mulligan keep/tos
 <details>
 <summary><b>Data pipeline</b></summary>
 
-- **Card data:** Riftcodex and riftbound.gg, merged by `tools/build_data.py`.
+- **Card data:** Riftcodex and riftbound.gg, merged by `tools/build_data.py`; `tools/fix_card_text.py` then restores text Riftcodex drops (e.g. the ability half of 25 Equipment cards).
 - **Tournament statistics:** the riftbound.gg meta snapshot (30-day rolling window). `quant/snapshot.py` saves it unchanged with a SHA-256 manifest, and a GitHub workflow refreshes it weekly.
 - **Holdout:** confirmatory tests use only matches played after the engine-freeze tag.
 </details>
