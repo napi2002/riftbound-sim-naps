@@ -150,3 +150,8 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    granted to the equipped unit, Guardian Angel's death replacement, Brutalizer/Soul Sword/Hand Hammer Might), the
    other 9 are honestly flagged as not simulated. Effect on a 1,680-games-per-deck run: Azir +2.3, Orianna +2.4,
    Akali +1.9 points, others within noise. The frozen baseline stays the confirmatory reference.
+9. **2026-11-15.** Game content update, outside the pre-registered analysis: the Nov 23 2026 ban list
+   (`tools/update_bans.py`), new tournament decklists made legal under it (`quant/results/decklists_2026-11.md`), and
+   four new decks with their legends and cards simulated (Sett, Fiora, Volibear, Kai'Sa; 19 decks in `RT.DECKS`).
+   The confirmatory tests keep using the frozen 15-deck baseline (`e4157fd` summary and ablation) and the frozen
+   archetype mapping in `quant/tidy.py`; nothing here changes their inputs. New harness runs are exploratory.

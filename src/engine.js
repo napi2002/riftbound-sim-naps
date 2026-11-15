@@ -9,58 +9,72 @@ var RT = (function () {
   // Decklist names missing from Riftcodex, mapped to the closest real card. Currently none are needed.
   var FIXES = {};
   function L(s) { return s.split(';').map(function (x) { x = x.trim(); var i = x.indexOf(' '); return [+x.slice(0, i), x.slice(i + 1)]; }); }
+  // Tournament lists (riftbound.gg, Radiance, Oct-Nov 2026), made legal for the Nov 23 2026 bans ('post-ban':
+  // banned cards swapped for the most-played legal cards of that legend; see quant/results/decklists_2026-11.md).
   var DECKS = [
-    { id: 'kennen', name: 'Kennen', label: 'LA Regional 27th', legend: 'Heart of the Tempest', champion: 'Kennen, Storm of Shuriken', runes: { Chaos: 9, Order: 3 },
-      bfs: ['Zaun Warrens', 'Minefield', 'Shadow Temple'],
-      list: L("1 Kennen, Storm of Shuriken; 3 Lightning Rush; 3 Rhasa the Sunderer; 3 Seal of Discord; 3 Shadow Order Disciple; 3 Tail-Cloaked Matriarch; 3 Traveling Merchant; 2 Fizz - Trickster; 2 Last Rites; 2 Star-Crossed; 2 Switcheroo; 2 Tornado Warrior; 1 Baron Nashor; 1 Existential Dread; 1 Ezreal, Prodigy; 1 Flash; 1 Gust; 1 Ride The Wind; 1 Salvage; 1 Shadows of the Past; 1 The Harrowing; 1 Tideturner; 1 Treasure Hunter") },
-    { id: 'leblanc', name: 'LeBlanc', label: 'LA Regional 12th', legend: 'LeBlanc, Deceiver', champion: 'LeBlanc, Fragmented', runes: { Mind: 4, Order: 8 },
-      bfs: ['Dusk Rose Lab', 'Star Spring', 'Windswept Hillock'],
-      list: L('1 LeBlanc, Fragmented; 2 Honest Broker; 3 Soaring Scout; 2 Watchful Sentry; 3 Black Rose Dignitary; 3 Karthus, Eternal; 3 Glasc Mixologist; 3 Vi, Peacekeeper; 3 Ruined Rex; 1 Thousand-Tailed Watcher; 3 Harnessed Dragon; 3 Rift Herald; 3 Baited Hook; 3 Sacrifice; 1 Deathgrip; 1 Hidden Blade; 2 Mirror Image') },
-    { id: 'rengar', name: 'Rengar', label: 'LA Regional 1st', legend: 'Rengar, Pridestalker', champion: 'Rengar, Trophy Hunter', runes: { Fury: 4, Body: 8 },
-      bfs: ["Emperor's Dais", 'Seat of Power', 'Star Spring'],
-      list: L("1 Rengar, Trophy Hunter; 3 Inferna; 3 Irresistible Faefolk; 3 Pit Rookie; 2 First Mate; 3 Grim Apothecary; 3 Kinkou Initiate; 2 Nidalee, Cat Form; 1 Pakaa Cub; 1 Pyke, Dockside Butcher; 3 Kai'Sa, Survivor; 3 Noxus Hopeful; 1 Darius, Trifarian; 1 Ferrous Forerunner; 3 Punch First; 3 Sabotage; 2 Thrill of the Hunt; 2 Rampage") },
-    { id: 'irelia', name: 'Irelia', label: 'LA Regional 2nd', legend: 'Irelia, Blade Dancer', champion: 'Irelia, Fervent', runes: { Calm: 6, Chaos: 6 },
-      bfs: ['Abandoned Hall', 'Sunken Temple', "Targon's Peak"],
-      list: L("1 Irelia, Fervent; 3 Scuttle Crab; 3 Tideturner; 1 Pyke, Returned; 1 Akali, Silent; 3 Stellacorn Herder; 1 Vex, Apathetic; 1 Guardian Angel; 2 Zhonya's Hourglass; 2 Boots of Swiftness; 2 Charm; 3 Defiant Dance; 3 Defy; 2 En Garde; 1 Gust; 1 Twilight Shroud; 1 Abandon; 3 Discipline; 1 Flash; 1 Not So Fast; 2 Ride the Wind; 2 Star-Crossed") },
-    { id: 'akali', name: 'Akali', label: 'Rogue Assassin', legend: 'Akali, Rogue Assassin', champion: 'Akali, Silent', runes: { Calm: 6, Fury: 6 },
-      bfs: ['Back-Alley Bar', 'Star Spring', 'Void Gate'],
-      list: L("1 Akali, Silent; 2 Charm; 3 Defy; 3 Shuriken Flip; 2 Twilight Shroud; 3 Discipline; 3 Inferna; 3 Lonely Poro; 3 Mask of Foresight; 3 Mournful Witness; 2 Scuttle Crab; 3 Zhonya's Hourglass; 2 Back Off; 3 Pendulum Blade; 3 Stellacorn Herder; 1 Irelia, Fervent") },
-    { id: 'jayce', name: "Jayce", label: 'Singapore RQ 35th', legend: "Jayce - Defender of Tomorrow", champion: "Jayce, Brilliant Inventor", runes: { Mind: 5, Body: 7 },
-      bfs: ["Sigil of the Storm", "Forgotten Monument", "Dragon Roost"],
-      list: L("1 Jayce, Brilliant Inventor; 3 Bellows Breath; 3 Catalyst of Aeons; 3 Clairvoyance; 3 Dazzling Aurora; 3 Dredge Up; 3 Elder Dragon; 3 Mobilize; 3 Platewyrm Egg; 3 Promising Future; 2 Flurry of Blades; 2 Garbage Grabber; 2 Sabotage; 2 Sprite Burst; 1 Deadly Flourish; 1 Downstage Dramatics; 1 Gutter Palace; 1 Rocket Barrage") },
-    { id: 'masteryi', name: "Master Yi", label: 'Singapore RQ 3rd', legend: "Master Yi - Wuju Bladesman", champion: "Master Yi - Tempered", runes: { Calm: 5, Body: 7 },
-      bfs: ["Grove of the God-Willow", "Emperor's Dais", "Star Spring"],
-      list: L("1 Master Yi - Tempered; 3 Charm; 3 Defy; 3 Discipline; 3 First Mate; 3 Lonely Poro; 3 Pit Rookie; 3 Punch First; 3 Rengar, Trophy Hunter; 3 Scuttle Crab; 2 En Garde; 2 Rampage; 2 Ruin Runner; 2 Zhonya's Hourglass; 1 Alpha Strike; 1 Not So Fast; 1 Onslaught; 1 Sabotage") },
-    { id: 'azir', name: "Azir", label: 'TCGArena $2K Showdown 1st', legend: "Azir - Emperor of the Sands", champion: "Azir - Sovereign", runes: { Calm: 6, Order: 6 },
-      bfs: ["Trifarian War Camp", "Hall of Legends", "Ornn's Forge"],
-      list: L("1 Azir - Sovereign; 3 Arise!; 3 B.F. Sword; 3 Brutalizer; 3 Defy; 3 Discipline; 3 Doran's Shield; 3 Eye of the Herald; 3 Guards!; 3 Hidden Blade; 3 Soul Sword; 2 Desert's Call; 2 Guardian Angel; 2 Sacrifice; 1 Back Off; 1 Charm; 1 Deathgrip") },
-    { id: 'vex', name: "Vex", label: 'Shenyang Regional Open 5th', legend: "Vex - Gloomist", champion: "Vex - Apathetic", runes: { Calm: 5, Chaos: 7 },
+    { id: "kennen", name: "Kennen", label: "LA Regional 27th · post-ban", legend: "Heart of the Tempest", champion: "Kennen, Storm of Shuriken", runes: { Chaos: 9, Order: 3 },
+      bfs: ["Zaun Warrens", "Minefield", "Shadow Temple"],
+      list: L("1 Kennen, Storm of Shuriken; 3 Lightning Rush; 3 Seal of Discord; 3 Shadow Order Disciple; 3 Tail-Cloaked Matriarch; 3 Traveling Merchant; 2 Fizz - Trickster; 2 Last Rites; 2 Star-Crossed; 2 Switcheroo; 2 Tornado Warrior; 1 Baron Nashor; 1 Existential Dread; 1 Ezreal, Prodigy; 1 Flash; 1 Gust; 1 Ride The Wind; 1 Salvage; 1 Shadows of the Past; 1 The Harrowing; 1 Tideturner; 1 Treasure Hunter; 3 Trifarian Captain") },
+    { id: "leblanc", name: "LeBlanc", label: "LDXP Sacramento 12th of 755 · post-ban", legend: "LeBlanc - Deceiver", champion: "LeBlanc - Fragmented", runes: { Order: 8, Mind: 4 },
+      bfs: ["Trifarian War Camp", "Windswept Hillock", "Seat of Power"],
+      list: L("2 Watchful Sentry; 1 Thousand-Tailed Watcher; 1 Hidden Blade; 3 Soaring Scout; 3 Harnessed Dragon; 3 Karthus - Eternal; 3 Honest Broker; 1 Deathgrip; 3 Glasc Mixologist; 3 Ruined Rex; 3 Black Rose Dignitary; 1 LeBlanc - Fragmented; 3 Sacrifice; 3 Vi - Peacekeeper; 3 Rift Herald; 1 Mirror Image; 3 Stupefy") },
+    { id: "rengar", name: "Rengar", label: "LDXP Sacramento 8th of 755 · post-ban", legend: "Rengar - Pridestalker", champion: "Rengar - Trophy Hunter", runes: { Body: 8, Fury: 4 },
+      bfs: ["Rockfall Path", "Seat of Power", "Sigil of the Storm"],
+      list: L("3 Noxus Hopeful; 3 Kai'Sa - Survivor; 2 First Mate; 3 Pit Rookie; 2 Sabotage; 2 Elnuk Herd; 1 Ferrous Forerunner; 3 Punch First; 3 Inferna; 2 Grim Apothecary; 2 Pyke - Dockside Butcher; 3 Kinkou Initiate; 3 Irresistible Faefolk; 2 Nidalee - Cat Form; 3 Thrill of the Hunt; 2 Rampage; 1 Rengar - Trophy Hunter") },
+    { id: "irelia", name: "Irelia", label: "Convergence IV 2nd of 272 · post-ban", legend: "Irelia - Blade Dancer", champion: "Irelia - Fervent", runes: { Calm: 6, Chaos: 6 },
+      bfs: ["Targon's Peak", "Sunken Temple", "Abandoned Hall"],
+      list: L("2 Charm; 3 Defy; 1 En Garde; 3 Discipline; 1 Rebuke; 2 Ride The Wind; 3 Tideturner; 1 Battle Preparations; 1 Hunker Down; 3 Orianna - Exquisite; 1 Lonely Poro; 1 Not So Fast; 2 Guardian Angel; 1 Irelia - Fervent; 2 Boots of Swiftness; 2 Edge of Night; 3 Defiant Dance; 3 Scuttle Crab; 1 Star-Crossed; 2 Vex - Apathetic; 1 Twilight Shroud; 1 Gust Monk") },
+    { id: "akali", name: "Akali", label: "Earlier tournament list · post-ban", legend: "Akali - Rogue Assassin", champion: "Akali, Silent", runes: { Calm: 6, Fury: 6 },
+      bfs: ["Back-Alley Bar", "Sigil of the Storm", "Void Gate"],
+      list: L("1 Akali, Silent; 2 Charm; 3 Defy; 3 Shuriken Flip; 2 Twilight Shroud; 3 Discipline; 3 Inferna; 3 Lonely Poro; 3 Mask of Foresight; 3 Mournful Witness; 2 Scuttle Crab; 2 Back Off; 3 Pendulum Blade; 1 Irelia - Fervent; 3 Kai'Sa - Survivor; 3 Falling Star") },
+    { id: "jayce", name: "Jayce", label: "LDXP Sacramento 191st of 755 · post-ban", legend: "Jayce - Defender of Tomorrow", champion: "Jayce, Brilliant Inventor", runes: { Body: 7, Mind: 5 },
+      bfs: ["Sigil of the Storm", "Forgotten Monument", "The Papertree"],
+      list: L("3 Garbage Grabber; 1 Progress Day; 3 Promising Future; 2 Flurry of Blades; 3 Mobilize; 3 Catalyst of Aeons; 1 Sabotage; 1 Avalanche; 2 Rocket Barrage; 3 Bellows Breath; 2 Gutter Palace; 3 Elder Dragon; 3 Dredge Up; 3 Clairvoyance; 1 Jayce, Brilliant Inventor; 3 Platewyrm Egg; 3 Stupefy") },
+    { id: "masteryi", name: "Master Yi", label: "Convergence IV 24th of 272 · post-ban", legend: "Master Yi - Wuju Bladesman", champion: "Master Yi - Tempered", runes: { Calm: 5, Body: 7 },
+      bfs: ["Rockfall Path", "Seat of Power", "Sigil of the Storm"],
+      list: L("3 Charm; 3 Defy; 3 En Garde; 3 Discipline; 3 First Mate; 3 Pit Rookie; 2 Sabotage; 3 Lonely Poro; 2 Irelia - Fervent; 3 Punch First; 3 Scuttle Crab; 1 Master Yi - Tempered; 1 Alpha Strike; 1 Twilight Shroud; 3 Rampage; 3 Rengar - Trophy Hunter") },
+    { id: "azir", name: "Azir", label: "LDXP Sacramento 38th of 755", legend: "Azir - Emperor of the Sands", champion: "Azir - Sovereign", runes: { Calm: 7, Order: 5 },
+      bfs: ["Trifarian War Camp", "Hall of Legends", "Seat of Power"],
+      list: L("3 Defy; 3 Discipline; 3 Hidden Blade; 1 Battle Preparations; 3 Trifarian Captain; 3 Doran's Shield; 3 Brutalizer; 3 Eye of the Herald; 3 Guards!; 3 B.F. Sword; 1 Deathgrip; 1 Azir - Sovereign; 3 Arise!; 2 Back Off; 1 Vi - Peacekeeper; 3 Hand Hammer; 1 Kennen, Keeper of Balance") },
+    { id: "vex", name: "Vex", label: "Shenyang Regional Open 5th · post-ban", legend: "Vex - Gloomist", champion: "Vex - Apathetic", runes: { Calm: 5, Chaos: 7 },
       bfs: ["Fortified Position", "Targon's Peak", "Threshold of the Gray"],
-      list: L("2 Vex - Apathetic; 3 Astral Heron; 3 Defy; 3 Discipline; 3 Stacked Deck; 3 Steel Paws; 3 Switcheroo; 3 Tornado Warrior; 2 Boots of Swiftness; 2 Evelynn - Entrancing; 1 Back Off; 1 Charm; 1 Edge of Night; 1 Gust; 1 Gust Monk; 1 Irelia - Fervent; 1 Mutated Mouser; 1 Rebuke; 1 Ride The Wind; 1 Scuttle Crab; 1 Star-Crossed; 1 Tideturner; 1 Zhonya's Hourglass") },
-    { id: 'reksai', name: "Rek'Sai", label: 'Singapore RQ 30th', legend: "Rek'sai - Void Burrower", champion: "Rek'Sai - Breacher", runes: { Fury: 7, Order: 5 },
+      list: L("3 Vex - Apathetic; 3 Astral Heron; 3 Defy; 3 Discipline; 3 Steel Paws; 3 Switcheroo; 3 Tornado Warrior; 2 Boots of Swiftness; 2 Evelynn - Entrancing; 1 Back Off; 2 Charm; 1 Edge of Night; 1 Gust; 1 Gust Monk; 1 Irelia - Fervent; 1 Mutated Mouser; 1 Rebuke; 1 Ride The Wind; 3 Scuttle Crab; 1 Star-Crossed; 1 Tideturner") },
+    { id: "reksai", name: "Rek'Sai", label: "Singapore RQ 30th", legend: "Rek'sai - Void Burrower", champion: "Rek'Sai - Breacher", runes: { Fury: 7, Order: 5 },
       bfs: ["The Candlelit Sanctum", "Forbidding Waste", "Mystic Vortex"],
       list: L("1 Rek'Sai - Breacher; 3 Blood Rush; 3 Carrion Dredger; 3 Cull the Weak; 3 Faithful Manufactor; 3 Falling Star; 3 Honest Broker; 3 Imperial Decree; 3 Inferna; 3 Noxus Hopeful; 2 Cleave; 2 Escaped Grayback; 2 Legion Rearguard; 2 Noxian Emissary; 2 Void Rush; 1 Forge of the Future; 1 Salvage") },
-    { id: 'riven', name: "Riven", label: "Sacramento Showdown 25k 1st", legend: "Riven - The Exile", champion: "Riven - Broken Blade", runes: { Calm: 5, Chaos: 7 },
-      bfs: ["Rakelstake", "Emperor's Dais", "Star Spring"],
-      list: L("1 Riven - Broken Blade; 3 Astral Heron; 3 Blade of the Exile; 3 Defy; 3 Discipline; 3 Scuttle Crab; 3 Stellacorn Herder; 3 Tideturner; 3 Zhonya's Hourglass; 2 Battle Preparations; 2 Bedeviling Stranger; 2 Blitzcrank - Impassive; 2 Gust; 2 Reckless Innovator; 2 Switcheroo; 1 Not So Fast; 1 Rebuke; 1 Star-Crossed") },
-    { id: 'evelynn', name: "Evelynn", label: "Sacramento Showdown 25k 21st", legend: "Evelynn - Agony's Embrace", champion: "Evelynn - Entrancing", runes: { Body: 4, Chaos: 8 },
+    { id: "riven", name: "Riven", label: "LDXP Sacramento 1st of 755 · post-ban", legend: "Riven - The Exile", champion: "Riven - Deserter", runes: { Calm: 5, Chaos: 7 },
+      bfs: ["Rakelstake", "Seat of Power", "Rockfall Path"],
+      list: L("3 Defy; 3 Discipline; 2 Blitzcrank - Impassive; 3 Gust; 1 Rebuke; 3 Tideturner; 3 Battle Preparations; 1 Riven - Deserter; 2 Reckless Innovator; 3 Bedeviling Stranger; 3 Blade of the Exile; 1 Not So Fast; 2 Switcheroo; 3 Scuttle Crab; 1 Star-Crossed; 3 Astral Heron; 3 Vex - Apathetic") },
+    { id: "evelynn", name: "Evelynn", label: "LDXP Sacramento 21st of 755", legend: "Evelynn - Agony's Embrace", champion: "Evelynn - Entrancing", runes: { Body: 4, Chaos: 8 },
       bfs: ["Startipped Peak", "Bandle Scouts' Academy", "Rakelstake"],
-      list: L("1 Evelynn - Entrancing; 3 Gutter Guardian; 3 Kinkou Initiate; 3 Pyke - Returned; 3 Tail-Cloaked Matriarch; 3 Tornado Warrior; 2 Boots of Swiftness; 2 Edge of Night; 2 Ezreal - Prodigy; 2 Fizz - Trickster; 2 Hold 'Em; 2 K'Sante - Courageous; 2 Rampage; 2 Rengar - Trophy Hunter; 2 Star-Crossed; 2 Vex - Apathetic; 1 Baron Nashor; 1 Kharox; 1 Onslaught; 1 Switcheroo") },
-    { id: 'mordekaiser', name: "Mordekaiser", label: "Sacramento Challenge 7th", legend: "Mordekaiser - Iron Revenant", champion: "Mordekaiser - Dominating", runes: { Order: 6, Fury: 6 },
+      list: L("2 Hold 'Em; 2 K'Sante - Courageous; 3 Gutter Guardian; 2 Boots of Swiftness; 2 Edge of Night; 2 Fizz - Trickster; 1 Switcheroo; 2 Ezreal, Prodigy; 3 Kinkou Initiate; 2 Star-Crossed; 1 Evelynn - Entrancing; 3 Pyke - Returned; 1 Baron Nashor; 2 Vex - Apathetic; 1 Onslaught; 2 Rampage; 3 Tornado Warrior; 3 Tail-Cloaked Matriarch; 1 Kharox; 2 Rengar - Trophy Hunter") },
+    { id: "mordekaiser", name: "Mordekaiser", label: "LDXP Sacramento 89th of 755", legend: "Mordekaiser - Iron Revenant", champion: "Mordekaiser - Dominating", runes: { Order: 6, Fury: 6 },
       bfs: ["Zaun Warrens", "Ruined Monastery", "Minefield"],
-      list: L("1 Mordekaiser - Dominating; 3 Carrion Dredger; 3 Kai'Sa - Survivor; 3 Realm of Death; 3 Trifarian Captain; 3 Vi - Peacekeeper; 2 Bilgewater Tracker; 2 Blast Corps Cadet; 2 Escaped Grayback; 2 Hidden Blade; 2 LeBlanc - Fragmented; 2 Long Sword; 2 Seal of Unity; 2 Spectral Matron; 2 Xin Zhao - Vigilant; 1 Brynhir Thundersong; 1 Darius - Trifarian; 1 Falling Star; 1 Ferrous Forerunner; 1 Honest Broker; 1 Vanguard Captain") },
-    { id: 'orianna', name: "Orianna", label: "Sacramento Nexus Night 12th", legend: "Orianna - Lady of Clockwork", champion: "Orianna - Exquisite", runes: { Calm: 8, Mind: 4 },
-      bfs: ["Ornn's Forge", "Rockfall Path", "Veiled Temple"],
-      list: L("1 Orianna - Exquisite; 3 Defy; 3 Discipline; 3 Frigid Jewel; 3 Mask of Foresight; 3 Stupefy; 3 The Ball; 2 Akali - Silent; 2 Brutalizer; 2 Cloth Armor; 2 Command: Attack; 2 Consult the Past; 2 Hunting Blind; 2 Patched Porobot; 2 Plundering Poro; 2 Zhonya's Hourglass; 1 Resplendent Rostrum; 1 Thousand-Tailed Watcher; 1 Twilight Shroud") },
-    { id: 'seraphine', name: "Seraphine", label: "Sacramento Nexus Night 25th", legend: "Seraphine - Starry-Eyed Songstress", champion: "Seraphine - Inspiring", runes: { Order: 6, Mind: 6 },
-      bfs: ["Void Gate", "Black Rose Sanctum", "Forgotten Monument"],
-      list: L("1 Seraphine - Inspiring; 3 Bellows Breath; 3 Carrion Dredger; 3 Concert Poster; 3 Encore; 3 Imperial Decree; 3 Trifarian Captain; 3 Vanguard Captain; 2 Eclipse; 2 Faithful Manufactor; 2 Hidden Blade; 2 Mordekaiser - Dominating; 2 Raucous Anthem; 2 Seal of Unity; 2 Shadow's Call; 2 Stupefy; 2 Thousand-Tailed Watcher") }
+      list: L("3 Noxus Hopeful; 3 Kai'Sa - Survivor; 2 Hidden Blade; 3 Vanguard Captain; 2 Imperial Decree; 3 Spectral Matron; 2 Shen - Kinkou; 2 Bilgewater Tracker; 3 Trifarian Captain; 1 Mordekaiser - Dominating; 3 Realm of Death; 3 Long Sword; 3 Honest Broker; 2 Xin Zhao - Vigilant; 3 Carrion Dredger; 2 Vi - Peacekeeper") },
+    { id: "orianna", name: "Orianna", label: "LDXP Sacramento 132nd of 755 · post-ban", legend: "Orianna - Lady of Clockwork", champion: "Orianna - Exquisite", runes: { Calm: 5, Mind: 7 },
+      bfs: ["Targon's Peak", "Veiled Temple", "Abandoned Hall"],
+      list: L("3 Defy; 3 Discipline; 2 Blitzcrank - Impassive; 3 Stupefy; 3 Ravenbloom Student; 3 Thousand-Tailed Watcher; 3 Battle Preparations; 1 Orianna - Exquisite; 3 The Ball; 1 Not So Fast; 3 Cloth Armor; 1 Back Off; 3 Scuttle Crab; 2 Vilemaw; 3 Eclipse; 3 Astral Heron") },
+    { id: "seraphine", name: "Seraphine", label: "LDXP Sacramento 106th of 755", legend: "Seraphine - Starry-Eyed Songstress", champion: "Seraphine - Inspiring", runes: { Order: 7, Mind: 5 },
+      bfs: ["Vilemaw's Lair", "Void Gate", "Forbidding Waste"],
+      list: L("3 Stupefy; 2 Thousand-Tailed Watcher; 3 Cull the Weak; 2 Faithful Manufactor; 2 Hidden Blade; 3 Vanguard Captain; 2 Imperial Decree; 2 Seal of Unity; 1 Seraphine - Inspiring; 3 Concert Poster; 3 Trifarian Captain; 1 Mordekaiser - Dominating; 3 Encore; 3 Bellows Breath; 2 Carrion Dredger; 2 Shadow's Call; 2 Vi - Peacekeeper; 1 Kennen, Keeper of Balance") },
+    { id: "sett", name: "Sett", label: "Convergence IV 42nd of 272", legend: "Sett - The Boss", champion: "Sett - Brawler", runes: { Body: 8, Order: 4 },
+      bfs: ["Grove of the God-Willow", "Monastery of Hirana", "Sunken Temple"],
+      list: L("3 First Mate; 3 Pit Rookie; 1 Sett - Brawler; 3 Call to Glory; 1 Hidden Blade; 3 Fiora - Victorious; 3 Showstopper; 3 Pillaged Armory; 3 Graves - Blasting Through; 2 One-Two Punch; 3 Trifarian Captain; 3 Punch First; 2 Repulse; 3 Irresistible Faefolk; 3 Rampage; 1 Kennen, Keeper of Balance") },
+    { id: "fiora", name: "Fiora", label: "Convergence IV 115th of 272", legend: "Fiora - Grand Duelist", champion: "Fiora - Worthy", runes: { Body: 7, Order: 5 },
+      bfs: ["Packed Amphitheater", "Sunken Temple", "Risen Altar"],
+      list: L("3 Pit Rookie; 2 Sett - Brawler; 1 Skystrike Squadron; 2 Portable Portal; 3 Trifarian Captain; 2 Mordekaiser - Dominating; 3 Punch First; 1 Fiora - Worthy; 3 Riposte; 3 Kinkou Initiate; 1 Repulse; 2 Poppy - Paragon; 3 Shepherd's Heirloom; 2 Sacrifice; 3 Rampage; 3 Kayle, Justified; 3 Rengar - Trophy Hunter") },
+    { id: "volibear", name: "Volibear", label: "Convergence IV 116th of 272 · post-ban", legend: "Volibear - Relentless Storm", champion: "Volibear - Furious", runes: { Body: 7, Fury: 5 },
+      bfs: ["Sigil of the Storm", "Sunken Temple", "The Papertree"],
+      list: L("3 Sky Splitter; 2 Kadregrin the Infernal; 1 Volibear - Furious; 3 Mobilize; 2 Deadbloom Predator; 3 Stormbringer; 1 Avalanche; 1 Portable Portal; 2 Seraphic Wyvern; 3 Minotaur Reckoner; 1 Ferrous Forerunner; 3 Punch First; 1 Trinity Force; 3 Elder Dragon; 3 Platewyrm Egg; 3 Jayce, Hammer in Hand; 3 Rengar - Trophy Hunter; 2 Noxus Hopeful") },
+    { id: "kaisa", name: "Kai'Sa", label: "Convergence IV 3rd of 272 · post-ban", legend: "Kai'Sa - Daughter of the Void", champion: "Kai'Sa - Survivor", runes: { Fury: 7, Mind: 5 },
+      bfs: ["Void Gate", "Rockfall Path", "Frozen Fortress"],
+      list: L("3 Hextech Ray; 3 Noxus Hopeful; 2 Void Seeker; 3 Falling Star; 3 Kai'Sa - Survivor; 1 Lecturing Yordle; 2 Smoke Screen; 3 Stupefy; 3 Watchful Sentry; 2 Singularity; 3 Thousand-Tailed Watcher; 3 Bilgewater Tracker; 2 The Empyrean; 3 Plundering Poro; 1 Perfect Execution; 3 Temporal Breach") }
   ];
 
-  // Real tournament results from riftbound.gg's meta snapshot (2026-10-27, 45836 matches over 30 days):
+  // Real tournament results from riftbound.gg's meta snapshot (2026-11-15, 18526 matches over 14 days of Radiance):
   // win rate, sample size, tier, top-8 rate, and the head-to-head matchups the free data includes.
-  var REAL = {"kennen":{"wr":0.58,"n":6289,"tier":"S","top8":0.154,"mu":{"jayce":[0.82,441]}},"leblanc":{"wr":0.53,"n":6216,"tier":"A","top8":0.116,"mu":{"reksai":[0.67,263],"vex":[0.32,328]}},"rengar":{"wr":0.55,"n":5600,"tier":"S","top8":0.18,"mu":{"reksai":[0.64,232],"jayce":[0.38,340]}},"irelia":{"wr":0.56,"n":7224,"tier":"S","top8":0.163,"mu":{"reksai":[0.38,304]}},"akali":{"wr":0.48,"n":4108,"tier":"C","top8":0.098,"mu":{"reksai":[0.57,164],"jayce":[0.23,262]}},"jayce":{"wr":0.52,"n":4984,"tier":"B","top8":0.084,"mu":{"akali":[0.77,262],"kennen":[0.18,441]}},"masteryi":{"wr":0.53,"n":4571,"tier":"B","top8":0.138,"mu":{"jayce":[0.36,320]}},"azir":{"wr":0.51,"n":3831,"tier":"B","top8":0.129,"mu":{"jayce":[0.42,266]}},"vex":{"wr":0.53,"n":4011,"tier":"A","top8":0.17,"mu":{"kennen":[0.4,335]}},"reksai":{"wr":0.52,"n":3239,"tier":"C","top8":0.125,"mu":{"jayce":[0.71,215],"leblanc":[0.33,263]}},"riven":{"wr":0.62,"n":709,"tier":"S","top8":0.089,"mu":{"kennen":[0.45,102]}},"evelynn":{"wr":0.45,"n":219,"tier":null,"top8":0,"mu":{"seraphine":[0.6,10]}},"mordekaiser":{"wr":0.45,"n":185,"tier":null,"top8":0.062,"mu":{"akali":[0.64,11],"riven":[0.28,25]}},"orianna":{"wr":0.42,"n":170,"tier":null,"top8":0.031,"mu":{"evelynn":[0.42,12],"kennen":[0.11,10]}},"seraphine":{"wr":0.36,"n":143,"tier":null,"top8":0,"mu":{"evelynn":[0.4,10],"riven":[0.21,15]}}};
-  var REAL_DATE = '2026-10-27', REAL_MATCHES = 45836;
+  var REAL = {"kennen":{"wr":0.55,"n":3704,"tier":"S","top8":0.0318,"mu":{"jayce":[0.7,126],"masteryi":[0.45,160]}},"leblanc":{"wr":0.46,"n":707,"tier":"D","top8":0.018,"mu":{"akali":[0.86,22],"riven":[0.26,179]}},"rengar":{"wr":0.49,"n":1390,"tier":"C","top8":0.0192,"mu":{"jayce":[0.29,57]}},"irelia":{"wr":0.45,"n":827,"tier":"D","top8":0.0306,"mu":{"evelynn":[0.73,12],"azir":[0.29,14]}},"akali":{"wr":0.41,"n":733,"tier":"D","top8":0.0054,"mu":{"leblanc":[0.14,22]}},"jayce":{"wr":0.56,"n":986,"tier":"S","top8":0.0182,"mu":{"masteryi":[0.8,51],"vex":[0.27,24]}},"masteryi":{"wr":0.51,"n":1135,"tier":"B","top8":0.0356,"mu":{"akali":[0.76,19],"jayce":[0.2,51]}},"azir":{"wr":0.45,"n":493,"tier":"D","top8":0.0276,"mu":{"vex":[0.21,16]}},"vex":{"wr":0.5,"n":864,"tier":"C","top8":0.0333,"mu":{"azir":[0.79,16],"reksai":[0.19,22]}},"reksai":{"wr":0.53,"n":1002,"tier":"A","top8":0.0281,"mu":{"vex":[0.81,22]}},"riven":{"wr":0.58,"n":6437,"tier":"S","top8":0.0348,"mu":{"leblanc":[0.74,179],"reksai":[0.44,286]}},"evelynn":{"wr":0.38,"n":394,"tier":"D","top8":0.0157,"mu":{"akali":[0.58,13],"masteryi":[0.18,12]}},"mordekaiser":{"wr":0.34,"n":262,"tier":null,"top8":0.0101,"mu":{"evelynn":[0.57,14],"kaisa":[0.18,30]}},"orianna":{"wr":0.36,"n":268,"tier":null,"top8":0.0244,"mu":{"kaisa":[0.37,40],"riven":[0.25,57]}},"seraphine":{"wr":0.37,"n":137,"tier":null,"top8":0,"mu":{"kennen":[0.46,13],"riven":[0,16]}},"sett":{"wr":0.52,"n":309,"tier":"A","top8":0.0513,"mu":{"rengar":[0.6,10],"jayce":[0.36,11]}},"fiora":{"wr":0.45,"n":159,"tier":null,"top8":0,"mu":{"kaisa":[0.43,23],"riven":[0.37,46]}},"volibear":{"wr":0.36,"n":151,"tier":null,"top8":0,"mu":{"kaisa":[0.56,28],"kennen":[0.2,23]}},"kaisa":{"wr":0.52,"n":4914,"tier":"B","top8":0.0295,"mu":{"azir":[0.36,93]}}};
+  var REAL_DATE = '2026-11-15', REAL_MATCHES = 18526;
 
   /* ---------------- card data + parser ---------------- */
   var CARDS = [], BYNORM = {};
@@ -79,6 +93,22 @@ var RT = (function () {
       }
     });
     DECKS.forEach(resolveDeck);
+    pruneBannedFromPlans();
+  }
+  // Ban lists change: keep the researched plans' key cards, AI priorities and tips to legal cards, and say what was banned.
+  function pruneBannedFromPlans() {
+    var banned = CARDS.filter(function (c) { return c.banned; }).map(function (c) { return c.name; });
+    var hits = function (txt) { return banned.filter(function (b) { return norm(txt).indexOf(norm(b)) >= 0; }); };
+    Object.keys(PLANS).forEach(function (id) {
+      var pl = PLANS[id], gone = {};
+      pl.keys = (pl.keys || []).filter(function (k) { var h = hits(k); h.forEach(function (b) { gone[b] = 1; }); return !h.length; });
+      pl.tips = (pl.tips || []).filter(function (t) { var h = hits(t); h.forEach(function (b) { gone[b] = 1; }); return !h.length; });
+      if (pl.ai && pl.ai.key) Object.keys(pl.ai.key).forEach(function (k) { if (hits(k).length) { gone[k] = 1; delete pl.ai.key[k]; } });
+      if (pl.ai) pl.ai.keyN = null;
+      hits(pl.plan || '').forEach(function (b) { gone[b] = 1; });
+      var g = Object.keys(gone);
+      if (g.length && pl.plan.indexOf('Banned from') < 0) pl.plan += ' (Banned from Nov 23 2026: ' + g.join(', ') + '; the list replaces ' + (g.length > 1 ? 'them' : 'it') + '.)';
+    });
   }
   function findCard(name) {
     var c = BYNORM[norm(name)];
@@ -418,11 +448,23 @@ var RT = (function () {
     var lv = u.c.P && u.c.P.levelKw;
     if (lv && u.G && u.G.players[u.ctrl].xp >= lv.level) k = Object.assign({}, k, lv.kw);
     if (u.equips && u.equips.some(function (g) { return g.c.P.grantKw; })) { k = Object.assign({}, k); u.equips.forEach(function (g) { if (g.c.P.grantKw) Object.assign(k, g.c.P.grantKw); }); }
+    // Nov 2026 decks: keywords while Mighty (Fiora, Victorious), chosen on becoming ready (Jayce, Hammer in Hand),
+    // at three Empowers (Kayle, Justified), and Ganking from friendly gear here (Portable Portal)
+    if (u.c.P.mightyKw && baseMight(u) >= 5) k = Object.assign({}, k, u.c.P.mightyKw);
+    if (u.turnKw && u.G && u.turnKw.turn === u.G.turnNo) k = Object.assign({}, k, u.turnKw.kw);
+    if (u.c.P.empKw && (u.empCount || 0) >= 3) k = Object.assign({}, k, u.c.P.empKw);
+    if (u.G && u.loc !== 'base' && u.G.players[u.ctrl].gear.some(function (g) { return g.loc === u.loc && g.c.P.gankHere; })) k = Object.assign({}, k, { ganking: true });
     return u.kwx ? Object.assign({}, k, u.kwx) : k;
+  }
+  // Might without keyword-based parts (used to decide Mighty-only keywords without recursion)
+  function baseMight(u) {
+    return (u.mightOverride != null ? u.mightOverride : (u.c.might || 0)) + u.buff + u.temp + equipBonus(u) + (u.empowered && u.c.P.empoweredMight || 0) +
+      (u.c.P.bonusMight && u.G ? u.c.P.bonusMight(u.G, u) : 0);
   }
   // Does this unit deal combat damage? (stunned units don't; Orianna, Exquisite needs a friendly gear at her location)
   function dealsDamage(u) {
     if (u.stun) return false;
+    if (u.c.P.noCombatDamage) return false;   // Graves, Blasting Through deals his damage on attack/defend instead
     if (u.c.P.needsGearHere && u.G && !gearAtLoc(u.G, u.ctrl, u.loc)) return false;
     return true;
   }
@@ -442,13 +484,15 @@ var RT = (function () {
   }
   function might(u, role) {
     var k = kwOf(u);
-    var m = (u.mightOverride != null ? u.mightOverride : (u.c.might || 0)) + u.buff + u.temp + equipBonus(u) + (u.empowered && u.c.P.empoweredMight || 0) + (u.G ? auraMight(u.G, u) : 0);
+    var m = (u.mightOverride != null ? u.mightOverride : (u.c.might || 0)) + u.buff + u.temp + equipBonus(u) + (u.empowered && u.c.P.empoweredMight || 0) + (u.G ? auraMight(u.G, u) : 0) +
+      (u.c.P.bonusMight && u.G ? u.c.P.bonusMight(u.G, u) : 0);
     if (role === 'att') m += (k.assault || 0) + (u.tempAssault || 0);
     if (role === 'def') m += (k.shield || 0) + (u.combatShield || 0) + (u.G && u.loc !== 'base' ? u.G.players[u.ctrl].gear.reduce(function (s3, g) { return s3 + (g.loc === u.loc && g.c.P.shieldHere ? g.c.P.shieldHere : 0); }, 0) : 0);
     var G0 = u.G;
     if (G0 && u.loc !== 'base') {
       var bn = norm(G0.bfs[u.loc].c.name);
       if (bn === 'trifarianwarcamp') m += 1;
+      if (bn === 'packedamphitheater' && u.c.supertype === 'Champion') m += 1;
       if (role === 'def' && unitsAt(G0, u.loc, u.ctrl).length === 1) {
         if (bn === 'forbiddingwaste') m -= 2;
         var lg = G0.players[u.ctrl].legend.c;
@@ -556,6 +600,8 @@ var RT = (function () {
   function channel(G, pi, n, exhausted) {
     var p = G.players[pi], got = 0;
     for (var i = 0; i < n && p.runeDeck.length; i++) { p.runes.push({ d: p.runeDeck.shift(), ex: !!exhausted }); got++; }
+    // Seraphic Wyvern: channel that many runes plus 1 exhausted rune instead
+    if (got && G.units.some(function (v) { return v.ctrl === pi && v.c.P.extraChannel && !v.dead; }) && p.runeDeck.length) { p.runes.push({ d: p.runeDeck.shift(), ex: true }); got++; log(G, 'Seraphic Wyvern: +1 rune channelled exhausted.', pi); }
     return got;
   }
   function recycleRune(p, r) { p.runes.splice(p.runes.indexOf(r), 1); p.runeDeck.push(r.d); }
@@ -567,7 +613,7 @@ var RT = (function () {
     return p.runes.filter(function (r) { return !r.ex; }).length + (p.pool || 0) +
       energyGear(p).reduce(function (s2, g) { return s2 + (g.empowered ? 2 : 1); }, 0);
   }
-  function poolPowerFor(p) { return (p.poolPower || 0) + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0); }
+  function poolPowerFor(p) { return (p.poolPower || 0) + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + (p.payingSpell ? (p.poolPowerSpell || 0) : 0); }
   function canPay(p, energy, power, domains) {
     var ready = energyAvail(p);
     var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length + poolPowerFor(p) +
@@ -578,6 +624,7 @@ var RT = (function () {
     var p = G.players[pi];
     var isMatch = function (r) { return domains.indexOf(r.d) >= 0; };
     while (power > 0 && p.payingUnitOrGear && p.poolPowerUG > 0) { p.poolPowerUG--; power--; }
+    while (power > 0 && p.payingSpell && p.poolPowerSpell > 0) { p.poolPowerSpell--; power--; }
     while (power > 0 && p.poolPower > 0) { p.poolPower--; power--; }
     domains.forEach(function (d) { while (power > 0 && p.poolDom && p.poolDom[d] > 0) { p.poolDom[d]--; power--; } });
     var seals = powerGear(p, domains);
@@ -675,12 +722,13 @@ var RT = (function () {
   // Power of any domain ("rainbow"): added power first, then Seal/Gold gear, then recycle runes.
   function anyPowerAvail(p) {
     var dom = Object.keys(p.poolDom || {}).reduce(function (s2, k) { return s2 + p.poolDom[k]; }, 0);
-    return p.runes.length + (p.poolPower || 0) + dom + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + p.gear.filter(function (g) { return !g.ex && g.c.P.addPower; }).length;
+    return p.runes.length + (p.poolPower || 0) + dom + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + (p.payingSpell ? (p.poolPowerSpell || 0) : 0) + p.gear.filter(function (g) { return !g.ex && g.c.P.addPower; }).length;
   }
   function payAnyPower(G, pi, n, why) {
     var p = G.players[pi];
     for (var i = 0; i < n; i++) {
       if (p.payingUnitOrGear && p.poolPowerUG > 0) { p.poolPowerUG--; continue; }
+      if (p.payingSpell && p.poolPowerSpell > 0) { p.poolPowerSpell--; continue; }
       if (p.poolPower > 0) { p.poolPower--; continue; }
       var dk = Object.keys(p.poolDom || {}).filter(function (k) { return p.poolDom[k] > 0; })[0];
       if (dk) { p.poolDom[dk]--; continue; }
@@ -1210,7 +1258,7 @@ var RT = (function () {
   function applyCardScript(c) {
     // [Flow] N energy (+ rainbow runes): cast again from your trash, then banish. [Repeat] N energy: pay again to repeat.
     c.P.lines.forEach(function (l) {
-      var m = l.text.match(/^\[Flow\] (\d+) energy((?: rainbow rune)*)$/);
+      var m = l.text.match(/^\[Flow\] (\d+) energy((?: (?:rainbow|fury|calm|mind|body|chaos|order) rune)*)$/);
       if (m && c.type === 'Spell') { c.P.flow = { energy: +m[1], power: (m[2].match(/rune/g) || []).length }; l.sim = true; }
       var r = l.text.match(/^\[Repeat\] (\d+) energy(?: (\w+) rune)?$/);
       if (r && c.type === 'Spell') { c.P.repeat = { energy: +r[1], power: r[2] ? 1 : 0, domain: r[2] ? r[2][0].toUpperCase() + r[2].slice(1) : null }; l.sim = true; }
@@ -1232,7 +1280,9 @@ var RT = (function () {
     if (sc.empoweredMight) c.P.empoweredMight = sc.empoweredMight;
     if (sc.combatEnd) c.P.combatEnd = sc.combatEnd;
     if (sc.play) (c.P.trig.play = c.P.trig.play || []).push({ effs: sc.play });
-    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere', 'hostSave', 'freshBonus', 'levelBonus', 'pairBonus', 'hostTrig'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
+    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere', 'hostSave', 'freshBonus', 'levelBonus', 'pairBonus', 'hostTrig', 'mightyKw', 'empKw', 'bonusMight', 'noCombatDamage', 'gankHere', 'readyMighty', 'extraChannel', 'noMoveToBase', 'onBecomeReady', 'friendExhaustMight'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
+    if (sc.defendFx) (c.P.trig.defend = c.P.trig.defend || []).push({ effs: sc.defendFx });
+    if (sc.bfhold) (c.P.trig.bfhold = c.P.trig.bfhold || []).push({ effs: sc.bfhold });
     if (sc.deathknell) c.P.trig.deathknell = [{ effs: sc.deathknell }];
     if (sc.conquerFx) (c.P.trig.conquer = c.P.trig.conquer || []).push({ effs: sc.conquerFx });
     if (sc.moveBfFx) (c.P.trig.moveBf = c.P.trig.moveBf || []).push({ effs: sc.moveBfFx });
@@ -1269,6 +1319,11 @@ var RT = (function () {
       log(G, p.name + ' counter' + (pi === 0 ? '' : 's') + ' ' + what + ' with ' + card.c.name + '.', pi);
       if (card.c.P.counter.toHand && spell) { ctx.countered = 'hand'; log(G, spell.c.name + ' returns to its owner\'s hand.', pi); }
       if (card.c.P.counter.predict) await OPS.predict(G, pi, {}, [], { srcName: card.c.name });
+      if (card.c.P.counter.mightToFriendly && spell && unitsOf(G, pi).length) {
+        var mine2 = unitsOf(G, pi), best2 = mine2.slice().sort(function (a, b) { return might(b) - might(a); })[0];
+        var rid = await ask(G, pi, { type: 'target', title: card.c.name, text: 'Give a friendly unit +' + (spell.c.energy || 0) + ' Might this turn', cands: mine2.map(function (x) { return x.uid; }), optional: false, auto: best2.uid });
+        var ru = mine2.filter(function (x) { return x.uid === rid; })[0] || best2; ru.temp += spell.c.energy || 0; log(G, card.c.name + ' gives ' + ru.c.name + ' +' + (spell.c.energy || 0) + ' Might this turn.', pi);
+      }
       return true;
     }
     return false;
@@ -1503,6 +1558,12 @@ var RT = (function () {
       u.stun = 1; u.noMove = true;
       log(G, v.c.name + ' stuns ' + u.c.name + '; it can\'t move this turn.', v.ctrl);
     });
+    // Volibear: when you play a Mighty unit, you may exhaust the legend to channel 1 rune exhausted
+    var VL = pp.legend;
+    if (!u.token && VL.c && VL.c.P.legendPlayMighty && !VL.exhausted && might(u) >= 5 && pp.runeDeck.length &&
+        (await confirm(G, pi, VL.c.name, u.c.name + ' is Mighty: exhaust ' + shortLegend(VL.c) + ' to channel 1 rune exhausted?', true))) {
+      VL.exhausted = true; channel(G, pi, 1, true); log(G, VL.c.name + ': channel 1 rune exhausted.', pi);
+    }
     // Only the first non-token unit a player plays here each turn triggers it, even if nothing else is here to move.
     if (u.loc !== 'base' && bfNorm(G, u.loc) === 'starspring' && !u.token && !(G.starSpringUsed || {})[pi]) {
       G.starSpringUsed = G.starSpringUsed || {}; G.starSpringUsed[pi] = true;
@@ -1872,6 +1933,11 @@ var RT = (function () {
   async function exhaustUnits(G, pi, units) {
     units.forEach(function (u) { u.ex = true; });
     for (var i = 0; i < units.length; i++) if (!units[i].dead && units[i].c.P.onExhausted) await units[i].c.P.onExhausted(G, units[i].ctrl, units[i]);
+    // Riven, Deserter: when another friendly unit becomes exhausted, +1 Might this turn
+    G.units.filter(function (v) { return v.c.P.friendExhaustMight && !v.dead; }).forEach(function (v) {
+      var n = units.filter(function (x) { return x !== v && x.ctrl === v.ctrl; }).length;
+      if (n) { v.temp += n; log(G, v.c.name + ' gets +' + n + ' Might this turn.', v.ctrl); }
+    });
     if (units.length >= 3) {
       var ins = G.units.filter(function (u) { return u.ctrl === pi && u.c.P.drawOnTripleExhaust && u.inspTurn !== G.turnNo; })[0];
       if (ins && (await confirm(G, pi, ins.c.name, 'You exhausted ' + units.length + ' units at once. Draw 1?', true))) { ins.inspTurn = G.turnNo; drawOne(G, pi); log(G, ins.c.name + ': draw 1.', pi); }
@@ -2149,15 +2215,22 @@ var RT = (function () {
     if (G.winner != null || G.active !== pi) return { ok: false, why: "It's not your turn." };
     if (a.exhaust && u.ex) return { ok: false, why: 'It is exhausted.' };
     if (a.req) { var w = a.req(G, u); if (w) return { ok: false, why: w }; }
-    if (!canPay(p, a.energy, a.power, [a.domain])) return { ok: false, why: 'Needs ' + a.energy + ' energy' + (a.power ? ' and ' + a.power + ' ' + a.domain + ' power' : '') + '.' };
+    var aE = unitActEnergy(G, u, a);
+    if (!canPay(p, aE, a.power, [a.domain])) return { ok: false, why: 'Needs ' + aE + ' energy' + (a.power ? ' and ' + a.power + ' ' + a.domain + ' power' : '') + '.' };
     if (a.killFriendly && unitsOf(G, pi).length < 2) return { ok: false, why: 'Needs another friendly unit to kill.' };
     return { ok: true };
   }
+  function unitActEnergy(G, u, a) { return Math.max(0, a.energy - (a.empower && u.loc !== 'base' && bfNorm(G, u.loc) === 'risenaltar' ? 1 : 0)); }
   async function useUnit(G, pi, uid) {
     var chk = canUseUnit(G, pi, uid);
     if (!chk.ok) return chk;
     var u = G.units.filter(function (x) { return x.uid === uid; })[0], a = u.c.P.unitAct;
-    pay(G, pi, a.energy, a.power, [a.domain]); if (a.exhaust) await exhaustUnits(G, pi, [u]);
+    pay(G, pi, unitActEnergy(G, u, a), a.power, [a.domain]); if (a.exhaust) await exhaustUnits(G, pi, [u]);
+    if (a.exhaustFriendly) {   // Riven, Deserter: exhaust a friendly unit as the cost
+      var rdy = unitsOf(G, pi).filter(function (x) { return !x.ex; }), cheap = rdy.slice().sort(function (x, y) { return unitValue(x) - unitValue(y); })[0];
+      var eid = await ask(G, pi, { type: 'target', title: u.c.name, text: 'Exhaust a friendly unit to pay the cost', cands: rdy.map(function (x) { return x.uid; }), optional: false, auto: cheap.uid });
+      await exhaustUnits(G, pi, [rdy.filter(function (x) { return x.uid === eid; })[0] || cheap]); u.actTurn = G.turnNo;
+    }
     if (a.killFriendly) {
       var others = unitsOf(G, pi).filter(function (x) { return x !== u; });
       var w = others.slice().sort(function (x, y) { return unitValue(x) - unitValue(y); })[0];
@@ -2204,6 +2277,7 @@ var RT = (function () {
     G.players.forEach(function (pl) { pl.scored = {}; pl.drawsTurn = 0; });
     G.playedThisTurn = 0; G.playedBy = [0, 0];
     log(G, '— Turn ' + G.turnNo + ': ' + p.name + ' —', pi);
+    var readied = G.units.filter(function (u) { return u.ctrl === pi && u.ex; });
     G.units.forEach(function (u) { if (u.ctrl === pi) u.ex = false; });
     p.runes.forEach(function (r) { r.ex = false; });
     p.gear.forEach(function (g) { g.ex = false; });
@@ -2221,6 +2295,13 @@ var RT = (function () {
       var kv = mineHere.filter(function (x) { return x.uid === kp; })[0];
       if (kv) { log(G, 'Dusk Rose Lab: ' + p.name + ' kill' + (pi === 0 ? '' : 's') + ' ' + kv.c.name + ' to draw 1.', pi); await killUnit(G, kv); drawOne(G, pi); }
     }
+    // Frozen Fortress: at the start of each player's Beginning Phase, deal 1 to each unit here
+    for (var ff = 0; ff < G.bfs.length; ff++) {
+      if (bfNorm(G, ff) !== 'frozenfortress') continue;
+      var here = unitsAt(G, ff);
+      if (here.length) { here.forEach(function (u) { u.damage += 1; }); log(G, 'Frozen Fortress deals 1 to each unit there.', pi); await checkDeaths(G); }
+    }
+    for (var rd = 0; rd < readied.length; rd++) await becameReady(G, readied[rd]);
     var temps = unitsOf(G, pi).filter(function (u) { return kwOf(u).temporary; });
     for (var t = 0; t < temps.length; t++) { log(G, temps[t].c.name + ' (Temporary) dies.', pi); await killUnit(G, temps[t], 'temporary'); }
     await checkDeaths(G);
@@ -2272,7 +2353,7 @@ var RT = (function () {
       u.damage = 0; u.temp = 0; u.tempAssault = 0; u.shrouded = false; u.noMove = false; u.stun = 0;
       if (u.tempEmpowered) { u.empowered = false; u.tempEmpowered = false; }
     });
-    G.players.forEach(function (pl) { pl.pool = 0; pl.poolPower = 0; pl.poolPowerUG = 0; pl.poolDom = {}; });
+    G.players.forEach(function (pl) { pl.pool = 0; pl.poolPower = 0; pl.poolPowerUG = 0; pl.poolPowerSpell = 0; pl.poolDom = {}; });
     G.units.forEach(function (u) { u.lethal = false; u.damage = 0; });
     if (ap.readyRunesEOT) {
       var rr = ap.runes.filter(function (r) { return r.ex; }).slice(0, ap.readyRunesEOT);
@@ -2309,7 +2390,15 @@ var RT = (function () {
   }
   async function killUnit(G, u, reason) {
     if (G.units.indexOf(u) < 0) return;
-    var owner = G.players[u.ctrl];
+    var owner = G.players[u.ctrl], SL = owner.legend;
+    if (reason !== 'temporary' && !u.token && u.buff && SL.c && SL.c.P.settSave && !SL.exhausted && anyPowerAvail(owner) &&
+        (await confirm(G, u.ctrl, SL.c.name, u.c.name + ' would die: pay 1 power and exhaust ' + shortLegend(SL.c) + ' to spend its buff and recall it exhausted instead?', true))) {
+      payAnyPower(G, u.ctrl, 1, SL.c.name); SL.exhausted = true; u.buff = 0;
+      leaveBonus(G, u); u.loc = 'base'; u.ex = true; u.damage = 0; u.lethal = false;
+      log(G, SL.c.name + ': ' + u.c.name + ' spends its buff and is recalled exhausted instead of dying.', u.ctrl);
+      updateControl(G);
+      return;
+    }
     var ga = reason !== 'temporary' && (u.equips || []).filter(function (g) { return g.c.P.hostSave; })[0];
     if (ga) {
       u.equips.splice(u.equips.indexOf(ga), 1); G.players[ga.owner != null ? ga.owner : u.owner].trash.push({ iid: ga.iid, c: ga.c });
@@ -2518,6 +2607,10 @@ var RT = (function () {
 
   // Resolve a list of effects. ctx.targets is an optional queue of pre-chosen uids (null = skip) for single-target effects.
   async function resolveEffects(G, pi, effs, ctx) {
+    await resolveEffectsInner(G, pi, effs, ctx);
+    await checkMighty(G);
+  }
+  async function resolveEffectsInner(G, pi, effs, ctx) {
     ctx = ctx || {};
     var p = G.players[pi], it = null, queue = ctx.targets ? ctx.targets.slice() : null, src = ctx.srcName || 'Effect';
     for (var i = 0; i < effs.length && G.winner == null && !ctx.countered && !ctx.stop; i++) {
@@ -2574,7 +2667,11 @@ var RT = (function () {
       case 'buff': tg.forEach(function (u) { if (!u.buff) u.buff = 1; }); log(G, src + ' buffs ' + names + '.', pi); break;
       case 'might': tg.forEach(function (u) { u.temp += e.n; }); log(G, src + ' gives ' + names + ' ' + (e.n > 0 ? '+' : '') + e.n + ' Might this turn.', pi); break;
       case 'assault': tg.forEach(function (u) { u.tempAssault = (u.tempAssault || 0) + e.n; }); log(G, src + ' gives ' + names + ' Assault ' + e.n + ' this turn.', pi); break;
-      case 'ready': tg.forEach(function (u) { u.ex = false; if (u.c.P.onChosenOrReady) { u.temp += 1; log(G, u.c.name + ' gets +1 Might this turn.', u.ctrl); } }); log(G, src + ' readies ' + names + '.', pi); break;
+      case 'ready':
+        var wasEx = tg.filter(function (u) { return u.ex; });
+        tg.forEach(function (u) { u.ex = false; if (u.c.P.onChosenOrReady) { u.temp += 1; log(G, u.c.name + ' gets +1 Might this turn.', u.ctrl); } }); log(G, src + ' readies ' + names + '.', pi);
+        for (var wr = 0; wr < wasEx.length; wr++) await becameReady(G, wasEx[wr]);
+        break;
       case 'tobase': tg.forEach(function (u) { u.loc = 'base'; }); updateControl(G); log(G, src + ' sends ' + names + ' to base.', pi); break;
       case 'tohand':
         tg.forEach(function (u) { removeUnit(G, u); if (!u.token) G.players[u.owner].hand.push({ iid: u.iid, c: u.c }); u.dead = true; });
@@ -2612,7 +2709,7 @@ var RT = (function () {
   }
   // opts.reaction: playing during the opponent's turn or a showdown (needs [Reaction], [Action] in a showdown, or a hidden card).
   function canPlay(G, pi, iid, accel, opts) {
-    var r = canPlayCheck(G, pi, iid, accel, opts); G.players[pi].payingUnitOrGear = false; return r;
+    var r = canPlayCheck(G, pi, iid, accel, opts); G.players[pi].payingUnitOrGear = false; G.players[pi].payingSpell = false; return r;
   }
   function canPlayCheck(G, pi, iid, accel, opts) {
     opts = opts || {};
@@ -2636,7 +2733,7 @@ var RT = (function () {
       return { ok: false, why: 'Units are played to your base or to a battlefield you control.' };
     if (c.P.kw.deploy && !deploySpots(G, pi).length) return { ok: false, why: 'Deploy: play this only to a battlefield (you need one to play it to).' };
     if (opts.seraphine && !seraphineReady(G, pi)) return { ok: false, why: 'Seraphine needs to be ready and you need three ready friendly units.' };
-    p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear';
+    p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear'; p.payingSpell = c.type === 'Spell';
     var cost = cardCost(c, accel, G, pi, f.from);
     if (opts.seraphine) cost.energy = Math.max(0, cost.energy - 2);
     var ready = energyAvail(p);
@@ -2702,11 +2799,11 @@ var RT = (function () {
       log(G, 'Seraphine: exhaust the legend and ' + three.map(function (u) { return u.c.name; }).join(', ') + ' to make ' + c.name + ' cost 2 less.', pi);
       await exhaustUnits(G, pi, three);
     }
-    p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear';
+    p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear'; p.payingSpell = c.type === 'Spell';
     pay(G, pi, cost.energy, cost.power, cost.domains);
     p.payingUnitOrGear = false;
     var extraAny = extraAnyPower(G, pi, c, opts);
-    payAnyPower(G, pi, extraAny, 'extra cost');
+    payAnyPower(G, pi, extraAny, 'extra cost'); p.payingSpell = false;
     if (p.discountNext && p.discountNext.turn === G.turnNo) { p.discountNext = null; log(G, 'Astral Heron discount used on ' + c.name + '.', pi); }
     if (f.from === 'hand') p.hand.splice(p.hand.indexOf(card), 1);
     else if (f.from === 'hidden') {
@@ -2835,6 +2932,7 @@ var RT = (function () {
   /* ---------------- movement & combat ---------------- */
   function canMove(G, u, dest) {
     if (G.winner != null || u.ctrl !== G.active || u.ex || u.dead || dest === u.loc || u.noMove) return false;
+    if (dest === 'base' && G.units.some(function (v) { return v.c.P.noMoveToBase && !v.dead; })) return false;   // Minotaur Reckoner
     if (u.loc === 'base' || dest === 'base') return true;
     return !!kwOf(u).ganking || bfNorm(G, u.loc) === 'windswepthillock';
   }
@@ -2955,7 +3053,9 @@ var RT = (function () {
       // Combat cleanup heals every surviving unit (468.1.a.1)
       att.concat(def).forEach(function (u) { if (dead.indexOf(u) < 0) { u.damage = 0; u.lethal = false; } });
       for (i = 0; i < dead.length; i++) {
-        var saved = !dead[i].token && ((dead[i].equips || []).some(function (g) { return g.c.P.hostSave; }) || G.players[dead[i].ctrl].gear.some(function (g) { return g.c.P.saveUnit; }));
+        var SLd = G.players[dead[i].ctrl].legend;
+        var saved = !dead[i].token && ((dead[i].equips || []).some(function (g) { return g.c.P.hostSave; }) || G.players[dead[i].ctrl].gear.some(function (g) { return g.c.P.saveUnit; }) ||
+          (dead[i].buff && SLd.c && SLd.c.P.settSave && !SLd.exhausted));
         if (!saved) log(G, dead[i].c.name + ' dies.', dead[i].ctrl);
         await killUnit(G, dead[i]);
       }
@@ -3000,6 +3100,173 @@ var RT = (function () {
   }
 
   /* ---------------- deck game plans (guide text + AI behaviour) ---------------- */
+  /* ---------------- Nov 2026 decks: Sett, Fiora, Volibear, Kai'Sa ---------------- */
+  function shortLegend(c) { return c.name.split(/ - |, /)[0]; }
+  // A unit "becomes Mighty" when it reaches 5+ Might (entering play with 5+ counts). Fiora's legend and Fiora, Worthy react.
+  async function checkMighty(G) {
+    if (G.mightyBusy || G.winner != null) return;
+    G.mightyBusy = true;
+    try {
+      var fresh = G.units.filter(function (u) { var m = !u.dead && might(u) >= 5, was = u.wasMighty; u.wasMighty = m; return m && !was; });
+      for (var i = 0; i < fresh.length && G.winner == null; i++) {
+        var u = fresh[i], pi = u.ctrl, p = G.players[pi], L = p.legend;
+        if (L.c && L.c.P.legendMighty && !L.exhausted && p.runeDeck.length &&
+            (await confirm(G, pi, L.c.name, u.c.name + ' became Mighty: exhaust ' + shortLegend(L.c) + ' to channel 1 rune exhausted?', true))) {
+          L.exhausted = true; channel(G, pi, 1, true); log(G, L.c.name + ': ' + u.c.name + ' became Mighty, channel 1 rune exhausted.', pi);
+        }
+        var worthy = G.units.filter(function (v) { return v.ctrl === pi && v.c.P.readyMighty && !v.dead; })[0];
+        if (worthy && u.ex && !u.dead && canPay(p, 0, 1, ['Order']) && (await confirm(G, pi, worthy.c.name, u.c.name + ' became Mighty: pay 1 Order power to ready it?', true))) {
+          pay(G, pi, 0, 1, ['Order']); u.ex = false; log(G, worthy.c.name + ': ' + u.c.name + ' readies.', pi);
+        }
+      }
+    } finally { G.mightyBusy = false; }
+  }
+  // Jayce, Hammer in Hand: when I become ready, choose Assault 2, Deflect 2 or Ganking this turn.
+  async function becameReady(G, u) {
+    if (u.dead || !u.c.P.onBecomeReady) return;
+    var modes = [['Assault 2', { assault: 2 }], ['Deflect 2', { deflect: true }], ['Ganking', { ganking: true }]];
+    var auto = u.loc === 'base' ? 0 : 2;
+    var k = await choose(G, u.ctrl, u.c.name, 'I became ready: choose one for this turn', modes.map(function (m) { return m[0]; }), false, auto);
+    var m = modes[k == null ? auto : k];
+    u.turnKw = { turn: G.turnNo, kw: m[1] }; log(G, u.c.name + ' gets ' + m[0] + ' this turn.', u.ctrl);
+  }
+  Object.assign(OPS, {
+    spendBuffMight: async function (G, pi, e, tg, ctx) { var u = ctx.src; if (!u || !u.buff) return; u.buff = 0; u.temp += e.n; log(G, u.c.name + ' spends its buff: +' + e.n + ' Might this turn.', pi); },
+    spendBuffCost: async function (G, pi, e, tg, ctx) {   // Call to Glory: its cost was waived by spending a buff
+      var b = unitsOf(G, pi).filter(function (u) { return u.buff; }).sort(function (a, b2) { return might(a) - might(b2); });
+      if (!b.length) return;
+      var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Spend a buff to play this for free', cands: b.map(function (u) { return u.uid; }), optional: false, auto: b[0].uid });
+      var u = b.filter(function (x) { return x.uid === id; })[0] || b[0]; u.buff = 0; log(G, ctx.srcName + ': ' + u.c.name + "'s buff is spent instead of the cost.", pi);
+    },
+    blastMight: async function (G, pi, e, tg, ctx) {   // Graves: deal my Might to all enemy units here
+      var u = ctx.src; if (!u || u.dead || u.loc === 'base') return;
+      var n = might(u), foes = unitsAt(G, u.loc, opp(pi)); if (!foes.length) return;
+      foes.forEach(function (f) { f.damage += n; }); log(G, u.c.name + ' deals ' + n + ' to all enemy units here.', pi); await checkDeaths(G);
+    },
+    payStun: async function (G, pi, e, tg, ctx) {   // Kennen, Keeper of Balance: may pay 2 energy to stun a unit
+      var p = G.players[pi], foes = G.units.filter(function (u) { return u.ctrl !== pi && !u.dead; });
+      if (!foes.length || energyAvail(p) < 2) return;
+      var best = foes.slice().sort(function (a, b) { return might(b) - might(a); })[0];
+      var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Pay 2 energy to stun a unit?', cands: G.units.filter(function (u) { return !u.dead; }).map(function (u) { return u.uid; }), optional: true, auto: might(best) >= 3 ? best.uid : null });
+      var t = G.units.filter(function (u) { return u.uid === id; })[0]; if (!t) return;
+      pay(G, pi, 2, 0, []); t.stun = 1; log(G, ctx.srcName + ' stuns ' + t.c.name + '.', pi);
+    },
+    spendBuffDraw: async function (G, pi, e, tg, ctx) {   // Monastery of Hirana
+      var b = unitsOf(G, pi).filter(function (u) { return u.buff; }); if (!b.length) return;
+      if (!(await confirm(G, pi, ctx.srcName, 'Spend a buff to draw 1?', true))) return;
+      var w = b.sort(function (a, b2) { return might(a) - might(b2); })[0]; w.buff = 0; drawOne(G, pi); log(G, ctx.srcName + ': ' + w.c.name + ' spends its buff, draw 1.', pi);
+    },
+    returnGearCost: async function (G, pi, e, tg, ctx) {   // Skystrike Squadron: the gear returned for its discount
+      var p = G.players[pi], gs = p.gear.filter(function (g) { return g.c.supertype !== 'Token'; }); if (!gs.length) return;
+      G.cardsHint = gs; var k = await choose(G, pi, ctx.srcName, 'Return a friendly gear to your hand (Skystrike Squadron cost 2 less)', gs.map(function (g) { return g.c.name; }), false, 0);
+      var g = gs[k || 0]; p.gear.splice(p.gear.indexOf(g), 1); p.hand.push({ iid: g.iid, c: g.c }); log(G, g.c.name + ' returns to ' + p.name + "'s hand.", pi);
+    },
+    payReadyHere: async function (G, pi, e, tg, ctx) {   // Portable Portal
+      var p = G.players[pi], loc = ctx.gearLoc != null ? ctx.gearLoc : ctx.loc; if (loc == null || loc === 'base') return;
+      var ex = unitsAt(G, loc, pi).filter(function (u) { return u.ex; }); if (!ex.length || !canPay(p, 0, 1, [e.domain])) return;
+      var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Pay 1 ' + e.domain + ' power to ready a unit here?', cands: ex.map(function (u) { return u.uid; }), optional: true, auto: ex[0].uid });
+      var u = ex.filter(function (x) { return x.uid === id; })[0]; if (!u) return;
+      pay(G, pi, 0, 1, [e.domain]); u.ex = false; log(G, ctx.srcName + ' readies ' + u.c.name + '.', pi); await becameReady(G, u);
+    },
+    poppy: async function (G, pi, e, tg, ctx) {   // Poppy, Paragon
+      var u = ctx.src; if (!u || u.dead) return;
+      if (G.players[opp(pi)].points >= WIN - 3) { u.ex = false; gainXp(G, pi, 3, u.c.name); log(G, u.c.name + ' readies (opponent within 3 points of winning).', pi); }
+    },
+    kayleEmpower: async function (G, pi, e, tg, ctx) { var u = ctx.src; u.empCount = Math.min(3, (u.empCount || 0) + 1); u.empowered = true; log(G, '✦ ' + u.c.name + ' is empowered (' + u.empCount + '/3): +' + 2 * u.empCount + ' Might' + (u.empCount === 3 ? ', Deflect and Ganking' : '') + '.', pi); },
+    drawPerMighty: async function (G, pi, e, tg, ctx) { var n = unitsOf(G, pi).filter(function (u) { return might(u) >= 5; }).length; for (var i = 0; i < n; i++) drawOne(G, pi); if (n) log(G, ctx.srcName + ': draw ' + n + ' (Mighty units).', pi); },
+    splitDamage: async function (G, pi, e, tg, ctx) {   // Volibear, Furious: deal N split among enemy units here
+      var u = ctx.src; if (!u || u.loc === 'base') return;
+      for (var left = e.n; left > 0;) {
+        var foes = unitsAt(G, u.loc, opp(pi)).filter(function (f) { return !f.dead && f.damage < might(f, 'def'); }); if (!foes.length) break;
+        var kill = foes.filter(function (f) { return might(f, 'def') - f.damage <= left; }).sort(function (a, b) { return unitValue(b) - unitValue(a); })[0] || foes.sort(function (a, b) { return might(b) - might(a); })[0];
+        var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: left + ' damage left to split: choose an enemy unit here', cands: foes.map(function (f) { return f.uid; }), optional: false, auto: kill.uid });
+        var t = foes.filter(function (f) { return f.uid === id; })[0] || kill, need = Math.max(1, might(t, 'def') - t.damage);
+        var amt = Math.min(left, need); t.damage += amt; left -= amt; log(G, ctx.srcName + ' deals ' + amt + ' to ' + t.c.name + '.', pi);
+      }
+      await checkDeaths(G);
+    },
+    stormbringer: async function (G, pi, e, tg, ctx) {
+      var mine = unitsAt(G, 'base', pi); if (!mine.length) return;
+      var big = mine.slice().sort(function (a, b) { return might(b) - might(a); })[0];
+      var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Choose a friendly unit in your base', cands: mine.map(function (u) { return u.uid; }), optional: false, auto: big.uid });
+      var u = mine.filter(function (x) { return x.uid === id; })[0] || big, n = might(u);
+      var bfs = G.bfs.map(function (b, i) { return i; }), score = bfs.map(function (i) { return unitsAt(G, i, opp(pi)).length; });
+      var k = await choose(G, pi, ctx.srcName, 'Deal ' + n + ' to all enemy units at which battlefield (then ' + u.c.name + ' moves there)?', bfs.map(function (i) { return bfName(G, i) + ' (' + score[i] + ' enemy)'; }), false, score.indexOf(Math.max.apply(null, score)));
+      var bi = bfs[k || 0]; unitsAt(G, bi, opp(pi)).forEach(function (f) { f.damage += n; });
+      log(G, ctx.srcName + ' deals ' + n + ' to all enemy units at ' + bfName(G, bi) + '.', pi); await checkDeaths(G);
+      if (!u.dead && G.winner == null) await effectMove(G, u, bi);
+    },
+    avalanche: async function (G, pi, e, tg, ctx) { var hit = unitsAt(G, 'base'); hit.forEach(function (u) { u.damage += e.n; }); log(G, ctx.srcName + ' deals ' + e.n + ' to every unit in a base.', pi); await checkDeaths(G); },
+    channelBoth: async function (G, pi, e, tg, ctx) { [pi, opp(pi)].forEach(function (q) { channel(G, q, 1, true); }); log(G, ctx.srcName + ': each player channels 1 rune exhausted.', pi); },
+    shrinkOne: async function (G, pi, e, tg, ctx) { tg.forEach(function (u) { var m = might(u), d = Math.min(e.n, Math.max(0, m - 1)); u.temp -= d; log(G, ctx.srcName + ' gives ' + u.c.name + ' -' + d + ' Might this turn (minimum 1).', pi); }); },
+    empyrean: async function (G, pi, e, tg, ctx) {   // The Empyrean: show off a card, predict, draw 2
+      var p = G.players[pi]; if (!p.hand.length) return;
+      var hi = p.hand.slice().sort(function (a, b) { return (b.c.power || 0) - (a.c.power || 0); })[0];
+      log(G, ctx.srcName + ': ' + p.name + ' show' + (pi === 0 ? '' : 's') + ' off ' + hi.c.name + '.', pi);
+      if ((hi.c.power || 0) > 0) await OPS.predict(G, pi, {}, [], ctx);
+      drawOne(G, pi); drawOne(G, pi); log(G, ctx.srcName + ': draw 2.', pi);
+    },
+    blink: async function (G, pi, e, tg, ctx) {   // Temporal Breach: banish a unit, its owner plays it again there for free
+      var u = tg[0]; if (!u) return;
+      var loc = u.loc, owner = u.owner; removeUnit(G, u); u.dead = true; updateControl(G);
+      log(G, ctx.srcName + ' banishes ' + u.c.name + '.', pi);
+      if (!u.token) await playFree(G, owner, { iid: u.iid, c: u.c }, loc, ctx.srcName);
+    }
+  });
+  Object.assign(CARD_SCRIPTS, {
+    // Sett
+    settbrawler: { sim: 'all', play: [{ op: 'buff', t: { sel: 'self' } }], conquerFx: [{ op: 'buff', t: { sel: 'self' } }],
+      unitAct: { label: 'Spend my buff: +4 Might this turn', energy: 0, power: 0, domain: 'Body', exhaust: false, req: function (G, u) { return u.buff ? null : 'Needs a buff to spend.'; }, effs: [{ op: 'spendBuffMight', n: 4 }] } },
+    calltoglory: { sim: 'all', costMod: function (G, pi) { return G.units.some(function (u) { return u.ctrl === pi && u.buff; }) ? -99 : 0; }, effs: [{ op: 'spendBuffCost' }, { op: 'might', n: 3, t: T('any') }] },
+    fioravictorious: { sim: 'all', mightyKw: { deflect: true, ganking: true, shield: 1 } },
+    showstopper: { sim: 'all', effs: [{ op: 'buff', t: T('friendly', 'inbase') }, { op: 'moveUnit', t: { sel: 'it' } }] },
+    pillagedarmory: { sim: 'all', gearPlayFx: [{ op: 'buff', t: T('friendly') }], gearConquerFx: [{ op: 'buff', t: T('friendly') }] },
+    gravesblastingthrough: { sim: 'all', noCombatDamage: true, attackFx: [{ op: 'blastMight' }], defendFx: [{ op: 'blastMight' }] },
+    repulse: { sim: 'all', counter: { targetsFriendly: true } },
+    kennenkeeperofbalance: { sim: 'all', play: [{ op: 'payStun' }], attackFx: [{ op: 'payStun' }],
+      bonusMight: function (G, u) { return u.loc !== 'base' && unitsAt(G, u.loc, opp(u.ctrl)).some(function (v) { return v.stun; }) ? 2 : 0; } },
+    monasteryofhirana: { sim: 'all', bfconquer: [{ op: 'spendBuffDraw' }] },
+    // Fiora
+    skystrikesquadron: { sim: 'all', costMod: function (G, pi) { return G.players[pi].gear.some(function (g) { return g.c.supertype !== 'Token'; }) ? -2 : 0; }, play: [{ op: 'returnGearCost' }] },
+    portableportal: { sim: 'all', gearPlayFx: [{ op: 'payReadyHere', domain: 'Body' }], gankHere: true },
+    fioraworthy: { sim: 'all', readyMighty: true },
+    riposte: { sim: 'all', counter: { mightToFriendly: true } },
+    rivendeserter: { sim: 'all', friendExhaustMight: true,
+      unitAct: { label: 'Exhaust a friendly unit: ready a unit (once each turn)', energy: 0, power: 0, domain: 'Calm', exhaust: false, exhaustFriendly: true,
+        req: function (G, u) { return u.actTurn === G.turnNo ? 'Already used this turn.' : !unitsOf(G, u.ctrl).some(function (x) { return !x.ex; }) ? 'No ready friendly unit to exhaust.' : !G.units.some(function (x) { return x.ex; }) ? 'No exhausted unit to ready.' : null; },
+        effs: [{ op: 'ready', t: T('any') }] } },
+    poppyparagon: { sim: 'all', play: [{ op: 'poppy' }] },
+    kaylejustified: { sim: 'all', bonusMight: function (G, u) { return 2 * (u.empCount || 0); }, empKw: { deflect: true, ganking: true },
+      unitAct: { label: 'Empower (3 energy; up to three times)', energy: 3, power: 0, domain: 'Order', exhaust: false, empower: true,
+        req: function (G, u) { return (u.empCount || 0) >= 3 ? 'Already empowered three times.' : null; }, effs: [{ op: 'kayleEmpower' }] } },
+    packedamphitheater: { sim: 'all' },
+    risenaltar: { sim: 'all' },
+    // Volibear
+    skysplitter: { sim: 'all', costMod: function (G, pi) { return -unitsOf(G, pi).reduce(function (m, u) { return Math.max(m, might(u)); }, 0); } },
+    kadregrintheinfernal: { sim: 'all', play: [{ op: 'drawPerMighty' }] },
+    volibearfurious: { sim: 'all', attackFx: [{ op: 'splitDamage', n: 5 }] },
+    stormbringer: { sim: 'all', effs: [{ op: 'stormbringer' }] },
+    avalanche: { sim: 'all', effs: [{ op: 'avalanche', n: 3 }] },
+    seraphicwyvern: { sim: 'all', extraChannel: true },
+    minotaurreckoner: { sim: 'all', noMoveToBase: true },
+    jaycehammerinhand: { sim: 'all', onBecomeReady: true },
+    thepapertree: { sim: 'all', bfhold: [{ op: 'channelBoth' }] },
+    // Kai'Sa
+    smokescreen: { sim: 'all', effs: [{ op: 'shrinkOne', n: 4, t: T('any') }] },
+    singularity: { sim: 'all', effs: [{ op: 'deal', n: 6, t: T('any'), opt: true }, { op: 'deal', n: 6, t: T('any', null, { notIt: true }), opt: true }] },
+    theempyrean: { sim: 'all', play: [{ op: 'empyrean' }] },
+    perfectexecution: { sim: [0], effs: [{ op: 'ready', t: T('any') }, { op: 'assault', n: 3, t: { sel: 'it' } }] },
+    temporalbreach: { sim: 'all', effs: [{ op: 'blink', t: T('any') }] },
+    frozenfortress: { sim: 'all' }
+  });
+  Object.assign(LEGEND_SCRIPTS, {
+    setttheboss: { flags: { settSave: true }, on: { conquer: async function (G, pi) { var L = G.players[pi].legend; if (L.exhausted) { L.exhausted = false; log(G, L.c.name + ' readies (conquer).', pi); } } } },
+    fioragrandduelist: { flags: { legendMighty: true } },
+    volibearrelentlessstorm: { flags: { legendPlayMighty: true } },
+    kaisadaughterofthevoid: { acts: [{ label: 'Exhaust: add 1 power (any domain) for spells only', energy: 0, exhaust: true, timing: 'reaction', effs: [],
+      pay: function (G, pi) { var p = G.players[pi]; p.poolPowerSpell = (p.poolPowerSpell || 0) + 1; log(G, "Kai'Sa adds 1 power for spells this turn.", pi); } }] }
+  });
+
   // Researched from riftbound.gg legend guides and tier lists (Oct 2026). `ai` tunes how the computer plays the deck:
   // key: play-priority bonus per card; attack: 'aggro' | 'normal' | 'safe'; reserve: energy kept open for reactions;
   // holdLone: defend a battlefield with exactly one unit; reinforce: send spare units to defend held battlefields;
@@ -3010,12 +3277,12 @@ var RT = (function () {
       plan: 'Keep the opponent at bay early while filling your trash, then drop cheap threats. Rhasa the Sunderer costs 1 less per card in your trash, Lightning Rush and Traveling Merchant dig and discard, and Last Rites, Fizz and Tail-Cloaked Matriarch replay cards from the trash. Kennen\'s legend gives a unit Assault 2 once you\'ve played something from outside your hand.',
       keys: ['Rhasa the Sunderer', 'Lightning Rush', 'Tail-Cloaked Matriarch', 'Switcheroo', 'Star-Crossed', 'Ride The Wind'],
       tips: ['Play cheap digging cards first; Rhasa gets cheaper with every card in your trash.', 'Play your champion from the champion zone or a face-down card to empower Kennen, then give an attacker Assault 2 in the showdown.', 'Save Switcheroo and Star-Crossed for the opponent\'s biggest unit.'],
-      ai: { key: { 'Rhasa the Sunderer': 3, 'Lightning Rush': 2, 'Traveling Merchant': 1.5, 'Tail-Cloaked Matriarch': 1.5 }, attack: 'normal', reserve: 2, hideEager: true, reinforce: true } },
+      ai: { key: { 'Lightning Rush': 2, 'Traveling Merchant': 1.5, 'Tail-Cloaked Matriarch': 1.5 }, attack: 'normal', reserve: 2, hideEager: true, reinforce: true } },
     leblanc: { style: 'Deathknell synergy', source: 'riftbound.gg/leblanc-deceiver-guide',
       plan: 'Build around Deathknell: units that give value when they die. LeBlanc - Fragmented and Karthus (Deathknells trigger twice) are the engine; Baited Hook kills your own unit to pull a bigger one from the deck. Snowball the mid-game or out-value the opponent.',
       keys: ['Karthus - Eternal', 'LeBlanc - Fragmented', 'Baited Hook', 'Mirror Image', 'Ruined Rex', 'Glasc Mixologist'],
       tips: ['Get Karthus on the board before your big Deathknell units die.', 'Use Baited Hook on a unit whose Deathknell you want anyway.', 'Mirror Image can copy an enemy unit to fight the original.'],
-      ai: { key: { 'Karthus - Eternal': 3, 'Baited Hook': 2, 'Ruined Rex': 1, 'Glasc Mixologist': 1 }, attack: 'aggro', reserve: 0, reinforce: true } },
+      ai: { key: { 'Karthus - Eternal': 3, 'Ruined Rex': 1, 'Glasc Mixologist': 1 }, attack: 'aggro', reserve: 0, reinforce: true } },
     rengar: { style: 'Aggro', source: 'riftbound.gg/rengar-pridestalker-guide',
       plan: 'Seize the lead early and never give it back. Win the first showdowns with cheap units like Inferna (3 Might when attacking) and Irresistible Faefolk (drags a defender in), use Ambush to hide how much Might you really have, and keep drawing with Kai\'Sa, Kinkou Initiate and Nidalee.',
       keys: ['Inferna', 'Irresistible Faefolk', 'Pit Rookie', 'Kai\'Sa, Survivor', 'Punch First', 'Rengar, Trophy Hunter'],
@@ -3025,17 +3292,17 @@ var RT = (function () {
       plan: 'Control the pace while Irelia, Fervent dominates the board and Stellacorn Herder draws cards whenever it moves. Some lists add Astral Heron to hold battlefields late. Protect key units with Zhonya\'s Hourglass, Discipline, Defiant Dance and Defy; move them with Tideturner, Ride The Wind and Boots of Swiftness.',
       keys: ['Irelia, Fervent', 'Stellacorn Herder', 'Tideturner', 'Discipline', 'Defy', 'Zhonya\'s Hourglass'],
       tips: ['Keep 1–2 runes open for Defy or Discipline once your key units are out.', 'Move Stellacorn Herder back and forth to keep drawing.', 'Target your own exhausted units with spells to ready them through the legend.'],
-      ai: { key: { 'Irelia, Fervent': 3, 'Stellacorn Herder': 2.5, 'Tideturner': 1, 'Zhonya\'s Hourglass': 1 }, attack: 'safe', reserve: 2, moveDraw: true, reinforce: true } },
+      ai: { key: { 'Irelia, Fervent': 3, 'Tideturner': 1 }, attack: 'safe', reserve: 2, moveDraw: true, reinforce: true } },
     akali: { style: 'Value / protect', source: 'riftbound.gg/akali-rogue-assassin-guide',
       plan: 'Draw cards and keep key units alive. Use Shuriken Flip early so you don\'t fall behind, then land Stellacorn Herder and Irelia, Fervent when they\'re safe (bigger lists add Astral Heron to hold a battlefield). Defy, Discipline and Zhonya\'s Hourglass protect them; every removal they eat puts you further ahead.',
       keys: ['Stellacorn Herder', 'Irelia, Fervent', 'Shuriken Flip', 'Discipline', 'Defy', 'Zhonya\'s Hourglass'],
       tips: ['Don\'t fall behind on board early — Shuriken Flip is your catch-up tool.', 'Keep runes up to protect your must-remove units.', 'Akali\'s legend can pull a unit out of a losing showdown.'],
-      ai: { key: { 'Stellacorn Herder': 2.5, 'Irelia, Fervent': 2, 'Shuriken Flip': 1.5, 'Zhonya\'s Hourglass': 1 }, attack: 'normal', reserve: 2, moveDraw: true, reinforce: true } },
+      ai: { key: { 'Irelia, Fervent': 2, 'Shuriken Flip': 1.5 }, attack: 'normal', reserve: 2, moveDraw: true, reinforce: true } },
     jayce: { style: 'Ramp / big threats', source: 'riftbound.gg/jayce-defender-of-tomorrow-guide',
       plan: 'Ramp and draw, then cheat big units into play. Dazzling Aurora (end of turn: play the top unit of your deck for free) and Promising Future put Elder Dragon on the board early to take a battlefield. Gutter Palace is a backup win condition in long games.',
       keys: ['Dazzling Aurora', 'Promising Future', 'Elder Dragon', 'Catalyst of Aeons', 'Mobilize', 'Platewyrm Egg'],
       tips: ['Ramp with Mobilize and Catalyst of Aeons early.', 'Land Dazzling Aurora as soon as you can — it wins long games.', 'Elder Dragon\'s damage kills anything it touches; aim it at their best units.'],
-      ai: { key: { 'Dazzling Aurora': 4, 'Promising Future': 3, 'Elder Dragon': 3, 'Catalyst of Aeons': 2, 'Mobilize': 1.5, 'Platewyrm Egg': 1.5 }, attack: 'normal', reserve: 0, reinforce: true } },
+      ai: { key: { 'Promising Future': 3, 'Elder Dragon': 3, 'Catalyst of Aeons': 2, 'Mobilize': 1.5, 'Platewyrm Egg': 1.5 }, attack: 'normal', reserve: 0, reinforce: true } },
     masteryi: { style: 'Hold with a lone defender', source: 'riftbound.gg/master-yi-wuju-bladesman-guide',
       plan: 'Seize a battlefield early and hold it with a single unit: Master Yi gives a lone defender +2 Might, so cheap units like Lonely Poro and Scuttle Crab beat early attackers. The opponent either lets you score, or spends cards to break through. Then develop bigger threats like Ruin Runner and retake battlefields.',
       keys: ['Master Yi - Tempered', 'Lonely Poro', 'Scuttle Crab', 'Ruin Runner', 'Charm', 'Punch First'],
@@ -3060,7 +3327,7 @@ var RT = (function () {
       plan: 'Units you play to battlefields you control enter ready, and Riven\'s cards reward exhausting your own units (Riven, Broken Blade buffs, stuns or readies itself; Reckless Innovator makes Gold or draws). Settle on one battlefield, stun attackers, and use Blade of the Exile (Ganking) or Charm to threaten the other.',
       keys: ['Riven - Broken Blade', 'Blade of the Exile', 'Reckless Innovator', 'Astral Heron', 'Stellacorn Herder', 'Blitzcrank - Impassive'],
       tips: ['Hold one battlefield and stun whatever attacks it.', 'Equip Blade of the Exile to Riven for +3 Might and Ganking.', 'Moving Stellacorn Herder draws a card each time.'],
-      ai: { key: { 'Riven - Broken Blade': 2.5, 'Blade of the Exile': 2, 'Astral Heron': 2, 'Reckless Innovator': 1 }, attack: 'normal', reserve: 1, moveDraw: true, reinforce: true } },
+      ai: { key: { 'Blade of the Exile': 2, 'Astral Heron': 2, 'Reckless Innovator': 1 }, attack: 'normal', reserve: 1, moveDraw: true, reinforce: true } },
     evelynn: { style: 'Hidden cards', source: 'riftbound.gg/evelynn-agonys-embrace-guide',
       plan: 'Hide cards on battlefields you hold and reveal them on your own turn: Evelynn\'s legend draws a card the first time each turn you play from face down. The opponent either attacks into a battlefield full of surprises or lets you hold and grow. Gold tokens (Pyke, Treasure Hunter, Gutter Guardian) pay for hiding.',
       keys: ['Evelynn - Entrancing', 'Pyke - Returned', 'Switcheroo', 'Gutter Guardian', 'Hold \'Em', 'Edge of Night'],
@@ -3070,7 +3337,7 @@ var RT = (function () {
       plan: 'Win through big units. Mordekaiser\'s legend banishes units or gear from your trash to pay power for more units, so trade early units freely. Trifarian Captain and Spectral Matron dig and recur; Mordekaiser, Dominating and Brynhir Thundersong are the finishers.',
       keys: ['Mordekaiser - Dominating', 'Brynhir Thundersong', 'Trifarian Captain', 'Spectral Matron', 'Realm of Death', 'Vanguard Captain'],
       tips: ['Trade early units — they fuel the legend\'s power later.', 'Play Brynhir Thundersong before a big attack so they can\'t respond.', 'Mordekaiser, Dominating can discard to kill their best unit.'],
-      ai: { key: { 'Mordekaiser - Dominating': 3, 'Brynhir Thundersong': 2, 'Trifarian Captain': 1.5, 'Spectral Matron': 1.5 }, attack: 'aggro', reserve: 0 } },
+      ai: { key: { 'Mordekaiser - Dominating': 3, 'Trifarian Captain': 1.5, 'Spectral Matron': 1.5 }, attack: 'aggro', reserve: 0 } },
     orianna: { style: 'Gear into units', source: 'riftbound.gg/orianna-lady-of-clockwork-guide',
       plan: 'Play strong gear and turn the biggest one into a unit each turn with Orianna\'s legend (Might = its Energy cost). Orianna, Exquisite only deals damage with a gear nearby, so keep gear on her battlefield. Protect your gear from removal and hold a battlefield.',
       keys: ['The Ball', 'Hunting Blind', 'Resplendent Rostrum', 'Orianna - Exquisite', 'Command: Attack', 'Frigid Jewel'],
@@ -3080,7 +3347,27 @@ var RT = (function () {
       plan: 'Flood the board with Recruit tokens and exhaust three units at once to trigger Seraphine: her legend makes a spell cost 2 less, and Seraphine, Inspiring draws when you exhaust three. Raucous Anthem is the finisher; Encore and Concert Poster keep the tokens coming.',
       keys: ['Seraphine - Inspiring', 'Encore', 'Concert Poster', 'Raucous Anthem', 'Vanguard Captain', 'Eclipse'],
       tips: ['Make tokens early; exhausting three at once is your engine.', 'Use the legend discount on your expensive spells.', 'Raucous Anthem with a wide board usually wins the game.'],
-      ai: { key: { 'Seraphine - Inspiring': 2, 'Encore': 2, 'Raucous Anthem': 2, 'Concert Poster': 1 }, attack: 'normal', reserve: 0, seraphine: true } }
+      ai: { key: { 'Seraphine - Inspiring': 2, 'Encore': 2, 'Raucous Anthem': 2, 'Concert Poster': 1 }, attack: 'normal', reserve: 0, seraphine: true } },
+    sett: { style: "Aggro / Battlefield control (buffs)", source: "riftbound.gg/sett-the-boss-guide/",
+      plan: "Body/Order buff aggro that scores at all costs: put +1 buffs on cheap units, make Fiora - Victorious Mighty early, then spend buffs for free pump (Call to Glory, Sett - Brawler) to win every showdown. The legend recalls a buffed unit that would die, and readies itself whenever you conquer, so trades always favour you.",
+      keys: ["Fiora - Victorious", "Pit Rookie", "Pillaged Armory", "Showstopper", "Trifarian Captain", "Irresistible Faefolk"],
+      tips: ["Turn 1: Trifarian Captain (dig for Pit Rookie / First Mate / Pillaged Armory) or Irresistible Faefolk.", "Turn 2: Pit Rookie buffing your turn-1 unit; or Pillaged Armory deployed at the battlefield you want plus Showstopper to buff a base unit and move it there.", "Turn 3: Fiora - Victorious, then buff her (Pit Rookie / Showstopper / Pillaged Armory) to 5 Might: Mighty gives Deflect, Ganking and Shield."],
+      ai: { key: {"Fiora - Victorious": 4, "Pit Rookie": 3, "Pillaged Armory": 3, "Showstopper": 3, "Trifarian Captain": 2, "Irresistible Faefolk": 2}, attack: "aggro", reserve: 1 } },
+    fiora: { style: "Midrange / Ramp (Mighty)", source: "riftbound.gg/fiora-grand-duelist-guide/",
+      plan: "Body/Order Mighty midrange: every time a unit becomes Mighty (5+ Might) the legend channels a rune, so Pit Rookie buffs, Kayle - Justified empowers, Shepherd's Heirloom and Punch First double as ramp. Fiora - Worthy readies the newly Mighty unit to attack again; big Deflect bodies (Poppy, Rengar, Mordekaiser) close.",
+      keys: ["Kayle - Justified", "Fiora - Worthy", "Pit Rookie", "Shepherd's Heirloom", "Rengar - Trophy Hunter", "Mordekaiser - Dominating"],
+      tips: ["Turn 1: Trifarian Captain (find Pit Rookie, Kayle - Justified, Shepherd's Heirloom or Portable Portal) or Shepherd's Heirloom (gain 1 XP).", "Turn 2: Kayle - Justified or Kinkou Initiate; or Pit Rookie buffing a unit.", "Empower Kayle - Justified (3 energy, 2 at Risen Altar): +2 each, first empower makes her Mighty and channels a rune."],
+      ai: { key: {"Kayle - Justified": 4, "Fiora - Worthy": 3, "Pit Rookie": 3, "Shepherd's Heirloom": 3, "Rengar - Trophy Hunter": 3, "Mordekaiser - Dominating": 3}, attack: "normal", reserve: 1, reinforce: true } },
+    volibear: { style: "Ramp / Big units", source: "riftbound.gg/volibear-relentless-storm-guide/",
+      plan: "Fury/Body ramp: every Mighty unit you play lets the legend channel an extra rune, so Jayce - Hammer in Hand (5 Might for 4) and Minotaur Reckoner snowball into Kadregrin, Volibear - Furious and Elder Dragon. Post-ban Dazzling Aurora is gone, so the deck wins by hard-casting fatties and clearing blockers with Stormbringer and Sky Splitter.",
+      keys: ["Jayce - Hammer in Hand", "Elder Dragon", "Volibear - Furious", "Platewyrm Egg", "Mobilize", "Minotaur Reckoner"],
+      tips: ["Turn 1: Mobilize (channel 1 rune exhausted) or Platewyrm Egg (empower it next turn for +2 energy per use).", "Turn 2: Jayce - Hammer in Hand (5 Might, Mighty) -> exhaust legend to channel a rune. Choose Ganking or Assault 2 when he readies.", "Minotaur Reckoner or Rengar - Trophy Hunter (each Mighty -> legend rune). Reckoner stops units moving back to base."],
+      ai: { key: {"Jayce - Hammer in Hand": 4, "Elder Dragon": 4, "Volibear - Furious": 4, "Platewyrm Egg": 3, "Mobilize": 3, "Minotaur Reckoner": 3}, attack: "safe", reserve: 0 } },
+    kaisa: { style: "Control / Removal", source: "riftbound.gg/?p=4894",
+      plan: "Fury/Mind spell control, the top Riven counter in Radiance: kill every unit that reaches a battlefield with cheap damage (Hextech Ray, Falling Star, Void Seeker, Singularity), using the legend's free rune for spells. Then land Thousand-Tailed Watcher or The Empyrean to win the resource war. Brynhir Thundersong is banned from Nov 23.",
+      keys: ["Thousand-Tailed Watcher", "Singularity", "Void Seeker", "Falling Star", "Hextech Ray", "The Empyrean"],
+      tips: ["Turn 1: Watchful Sentry or Plundering Poro to take an empty battlefield; or hold Hextech Ray.", "Use Kai'Sa's legend every turn: it adds 1 any rune for a spell.", "Singularity: 6 damage to two units (two-for-one)."],
+      ai: { key: {"Thousand-Tailed Watcher": 4, "Singularity": 3, "Void Seeker": 3, "Falling Star": 3, "Hextech Ray": 3, "The Empyrean": 3}, attack: "safe", reserve: 2, reinforce: true } }
   };
   function keyBonus(A, name) {
     if (!A.key) return 0;

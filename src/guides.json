@@ -1,7 +1,7 @@
 {
  "akali": {
   "id": "akali",
-  "summary": "Calm/Fury value midrange: keep the board even early with Shuriken Flip and cheap units, then land Akali, Silent, Stellacorn Herder or Irelia, Fervent when they're safe. The legend pulls a unit out of a showdown on your turn, so you win fights or leave after the opponent has spent cards.",
+  "summary": "Calm/Fury value midrange: keep the board even early with Shuriken Flip and cheap units, then land Akali, Silent, Stellacorn Herder or Irelia, Fervent when they're safe. The legend pulls a unit out of a showdown on your turn, so you win fights or leave after the opponent has spent cards. Note: from Nov 23 2026 Baited Hook, Stellacorn Herder, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Midrange (value / showdown control)",
   "mulligan": {
    "keep": [
@@ -98,7 +98,6 @@
   "holdFor": [
    "Defy - counter removal aimed at Akali, Silent, Herder or Irelia, Fervent",
    "Discipline - win a defence or a showdown and draw",
-   "Zhonya's Hourglass - hidden; saves the unit they kill",
    "Back Off - hidden; stun their biggest attacker",
    "Inferna - Ambush as a surprise attacker/defender body"
   ],
@@ -141,11 +140,9 @@
    "reserveEnergy": 2,
    "priority": {
     "Akali, Silent": 3,
-    "Stellacorn Herder": 3,
     "Shuriken Flip": 2,
     "Mournful Witness": 1,
     "Irelia, Fervent": 2,
-    "Zhonya's Hourglass": 1,
     "Lonely Poro": 1
    },
    "holdForShowdown": [
@@ -630,20 +627,18 @@
  },
  "irelia": {
   "id": "irelia",
-  "summary": "Calm/Chaos tempo-value: land Irelia, Fervent or Stellacorn Herder, then choose them with cheap tricks so the legend readies them for extra moves, draws and conquers. Cheap reactions and counters protect the one or two key units while you out-card the opponent.",
+  "summary": "Calm/Chaos tempo-value: land Irelia, Fervent or Stellacorn Herder, then choose them with cheap tricks so the legend readies them for extra moves, draws and conquers. Cheap reactions and counters protect the one or two key units while you out-card the opponent. Note: from Nov 23 2026 Stellacorn Herder, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Tempo / Midrange (value)",
   "mulligan": {
    "keep": [
     "Scuttle Crab",
     "Tideturner",
-    "Stellacorn Herder",
     "Discipline",
     "Defy",
     "Defiant Dance"
    ],
    "toss": [
     "Boots of Swiftness",
-    "Zhonya's Hourglass",
     "Star-Crossed",
     "Guardian Angel",
     "Abandon",
@@ -737,7 +732,6 @@
    "Defiant Dance - flip a combat on their attack",
    "Star-Crossed - save your unit and bounce their attacker",
    "Tideturner - hidden at your battlefield to swap in a big defender",
-   "Zhonya's Hourglass - hidden to save the unit they try to kill",
    "Abandon - counter any big spell when Defy can't"
   ],
   "matchups": [
@@ -779,12 +773,10 @@
    "reserveEnergy": 2,
    "priority": {
     "Irelia, Fervent": 4,
-    "Stellacorn Herder": 3,
     "Tideturner": 2,
     "Discipline": 2,
     "Defiant Dance": 1,
     "Scuttle Crab": 1,
-    "Zhonya's Hourglass": 1,
     "Boots of Swiftness": 1
    },
    "holdForShowdown": [
@@ -801,7 +793,6 @@
    "mulliganKeep": [
     "Scuttle Crab",
     "Tideturner",
-    "Stellacorn Herder",
     "Discipline",
     "Defy"
    ],
@@ -869,14 +860,13 @@
  },
  "jayce": {
   "id": "jayce",
-  "summary": "Ramp with Platewyrm Egg, Mobilize and Catalyst, then land Dazzling Aurora. Elder Dragon is the only unit in the deck, so Aurora drops one every turn and 1-damage spells wipe boards.",
+  "summary": "Ramp with Platewyrm Egg, Mobilize and Catalyst, then land Dazzling Aurora. Elder Dragon is the only unit in the deck, so Aurora drops one every turn and 1-damage spells wipe boards. Note: from Nov 23 2026 Dazzling Aurora, Stacked Deck are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Ramp / Combo (Aurora control)",
   "mulligan": {
    "keep": [
     "Platewyrm Egg",
     "Mobilize",
     "Catalyst of Aeons",
-    "Dazzling Aurora",
     "Promising Future",
     "Dredge Up",
     "Bellows Breath"
@@ -997,7 +987,6 @@
    "attack": "safe",
    "reserveEnergy": 1,
    "priority": {
-    "Dazzling Aurora": 4,
     "Platewyrm Egg": 3,
     "Promising Future": 3,
     "Mobilize": 2,
@@ -1015,7 +1004,6 @@
     "Platewyrm Egg",
     "Mobilize",
     "Catalyst of Aeons",
-    "Dazzling Aurora",
     "Promising Future"
    ],
    "notes": [
@@ -1078,7 +1066,7 @@
  },
  "kennen": {
   "id": "kennen",
-  "summary": "Chaos/Order combo-value: slow the opponent's scoring early while filling the trash, then swing with cheap Rhasa the Sunderer and units replayed from the trash. Playing cards from outside your hand empowers the legend, which gives a unit Assault 2 to conquer.",
+  "summary": "Chaos/Order combo-value: slow the opponent's scoring early while filling the trash, then swing with cheap Rhasa the Sunderer and units replayed from the trash. Playing cards from outside your hand empowers the legend, which gives a unit Assault 2 to conquer. Note: from Nov 23 2026 Rhasa the Sunderer is banned; the suggested list replaces it with the most-played legal cards.",
   "archetype": "Combo / Off-tempo value",
   "mulligan": {
    "keep": [
@@ -1092,7 +1080,6 @@
    "toss": [
     "Baron Nashor",
     "The Harrowing",
-    "Rhasa the Sunderer",
     "Shadows of the Past",
     "Last Rites"
    ],
@@ -1212,7 +1199,6 @@
    "attack": "normal",
    "reserveEnergy": 1,
    "priority": {
-    "Rhasa the Sunderer": 3,
     "Tail-Cloaked Matriarch": 2,
     "Lightning Rush": 2,
     "Traveling Merchant": 1,
@@ -1278,7 +1264,7 @@
  },
  "leblanc": {
   "id": "leblanc",
-  "summary": "Mind/Order Deathknell synergy: cheap Deathknell units and Reflections die for cards, runes and free units, doubled by Karthus, Eternal. Baited Hook turns small bodies into bigger ones and snowballs the board.",
+  "summary": "Mind/Order Deathknell synergy: cheap Deathknell units and Reflections die for cards, runes and free units, doubled by Karthus, Eternal. Baited Hook turns small bodies into bigger ones and snowballs the board. Note: from Nov 23 2026 Baited Hook is banned; the suggested list replaces it with the most-played legal cards.",
   "archetype": "Synergy midrange (tempo snowball)",
   "mulligan": {
    "keep": [
@@ -1286,7 +1272,6 @@
     "Watchful Sentry",
     "Honest Broker",
     "Karthus, Eternal",
-    "Baited Hook",
     "Black Rose Dignitary"
    ],
    "toss": [
@@ -1407,7 +1392,6 @@
    "reserveEnergy": 1,
    "priority": {
     "Karthus, Eternal": 3,
-    "Baited Hook": 3,
     "Soaring Scout": 1,
     "Glasc Mixologist": 1,
     "Ruined Rex": 1,
@@ -1423,8 +1407,7 @@
     "Soaring Scout",
     "Watchful Sentry",
     "Honest Broker",
-    "Karthus, Eternal",
-    "Baited Hook"
+    "Karthus, Eternal"
    ],
    "notes": [
     "Play Karthus before triggering Deathknells when possible.",
@@ -1465,7 +1448,7 @@
  },
  "masteryi": {
   "id": "masteryi",
-  "summary": "Take a battlefield early and defend it with one unit: Yi's legend gives a lone defender +2 Might. Cheap reactions win showdowns; Rengar and Ruin Runner retake ground.",
+  "summary": "Take a battlefield early and defend it with one unit: Yi's legend gives a lone defender +2 Might. Cheap reactions win showdowns; Rengar and Ruin Runner retake ground. Note: from Nov 23 2026 Emperor's Dais, Star Spring, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Midrange (hold)",
   "mulligan": {
    "keep": [
@@ -1481,8 +1464,7 @@
     "Ruin Runner",
     "Onslaught",
     "Rampage",
-    "Alpha Strike",
-    "Zhonya's Hourglass"
+    "Alpha Strike"
    ],
    "note": "Keep a 2-cost unit for turn 1-2 (Poro or Crab) plus a cheap reaction. Six-drops and main-phase removal go back."
   },
@@ -1556,8 +1538,7 @@
    "Defy",
    "Not So Fast",
    "Punch First",
-   "Rengar, Trophy Hunter",
-   "Zhonya's Hourglass"
+   "Rengar, Trophy Hunter"
   ],
   "matchups": [
    {
@@ -1669,7 +1650,7 @@
  },
  "mordekaiser": {
   "id": "mordekaiser",
-  "summary": "Fury/Order midrange: trade cheap units that leave value when they die, fill the trash, and banish it with the legend for extra power. Big removal units (Vi, Kai'Sa, Mordekaiser - Dominating) then win the board by force.",
+  "summary": "Fury/Order midrange: trade cheap units that leave value when they die, fill the trash, and banish it with the legend for extra power. Big removal units (Vi, Kai'Sa, Mordekaiser - Dominating) then win the board by force. Note: from Nov 23 2026 Brynhir Thundersong is banned; the suggested list replaces it with the most-played legal cards.",
   "archetype": "Midrange (sacrifice / value)",
   "mulligan": {
    "keep": [
@@ -1684,7 +1665,6 @@
    "toss": [
     "Mordekaiser - Dominating",
     "Ferrous Forerunner",
-    "Brynhir Thundersong",
     "Darius - Trifarian"
    ],
    "note": "Keep 2-3 cheap units and a 4-drop; Trifarian Captain finds missing pieces. Expensive finishers go back (inferred from curve)."
@@ -1791,8 +1771,7 @@
     "Vi - Peacekeeper": 2,
     "Realm of Death": 2,
     "Spectral Matron": 1,
-    "Mordekaiser - Dominating": 3,
-    "Brynhir Thundersong": 1
+    "Mordekaiser - Dominating": 3
    },
    "holdForShowdown": [
     "Vi - Peacekeeper",
@@ -1839,7 +1818,7 @@
  },
  "orianna": {
   "id": "orianna",
-  "summary": "Calm/Mind gear control: Orianna's legend turns one gear into a unit with Might equal to its cost, so The Ball becomes a 5 Might ganker that draws or deals 2 on each move. Calm reactions protect the key gear while it holds battlefields.",
+  "summary": "Calm/Mind gear control: Orianna's legend turns one gear into a unit with Might equal to its cost, so The Ball becomes a 5 Might ganker that draws or deals 2 on each move. Calm reactions protect the key gear while it holds battlefields. Note: from Nov 23 2026 Zhonya's Hourglass is banned; the suggested list replaces it with the most-played legal cards.",
   "archetype": "Control / Midrange (gear)",
   "mulligan": {
    "keep": [
@@ -1926,7 +1905,6 @@
    "Stupefy",
    "Consult the Past",
    "Cloth Armor",
-   "Zhonya's Hourglass",
    "Twilight Shroud"
   ],
   "matchups": [
@@ -2010,7 +1988,7 @@
  },
  "reksai": {
   "id": "reksai",
-  "summary": "Flood the board with 2-cost units that leave tokens behind, conquer cheaply every turn and let the legend play cards off the top. Order removal clears blockers; it wins from ahead, not behind.",
+  "summary": "Flood the board with 2-cost units that leave tokens behind, conquer cheaply every turn and let the legend play cards off the top. Order removal clears blockers; it wins from ahead, not behind. Note: from Nov 23 2026 Zhonya's Hourglass is banned; the suggested list replaces it with the most-played legal cards.",
   "archetype": "Aggro / Tempo (off-tempo tokens)",
   "mulligan": {
    "keep": [
@@ -2417,18 +2395,15 @@
  },
  "riven": {
   "id": "riven",
-  "summary": "Tempo-hold deck: take a battlefield early, then every unit you play there enters ready (legend). Ready units draw, stun, equip or pull enemies the same turn while Calm/Chaos reactions protect the board. Won Sacramento Showdown and Hartford $10K.",
+  "summary": "Tempo-hold deck: take a battlefield early, then every unit you play there enters ready (legend). Ready units draw, stun, equip or pull enemies the same turn while Calm/Chaos reactions protect the board. Won Sacramento Showdown and Hartford $10K. Note: from Nov 23 2026 Riven - Broken Blade, Stellacorn Herder, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Tempo / Midrange (hold-oriented)",
   "mulligan": {
    "keep": [
     "Scuttle Crab",
     "Tideturner",
     "Bedeviling Stranger",
-    "Stellacorn Herder",
     "Reckless Innovator",
-    "Zhonya's Hourglass",
-    "Defy",
-    "Riven - Broken Blade"
+    "Defy"
    ],
    "toss": [
     "Astral Heron",
@@ -2513,8 +2488,7 @@
    "Battle Preparations",
    "Gust",
    "Star-Crossed",
-   "Tideturner",
-   "Zhonya's Hourglass"
+   "Tideturner"
   ],
   "matchups": [
    {
@@ -2550,11 +2524,8 @@
    "reserveEnergy": 2,
    "priority": {
     "Blade of the Exile": 3,
-    "Stellacorn Herder": 2,
     "Reckless Innovator": 2,
     "Astral Heron": 2,
-    "Riven - Broken Blade": 3,
-    "Zhonya's Hourglass": 2,
     "Tideturner": 1,
     "Scuttle Crab": 1,
     "Blitzcrank - Impassive": 1
@@ -2572,9 +2543,7 @@
     "Scuttle Crab",
     "Tideturner",
     "Bedeviling Stranger",
-    "Stellacorn Herder",
-    "Reckless Innovator",
-    "Zhonya's Hourglass"
+    "Reckless Innovator"
    ],
    "notes": [
     "If you control a battlefield, play units to that battlefield, not base (they enter ready).",
@@ -2808,7 +2777,7 @@
  },
  "vex": {
   "id": "vex",
-  "summary": "Settle Vex - Apathetic on a battlefield and hold it: units the opponent plays are stunned, hidden cards ambush attackers, and each hold draws a card. Win by out-holding, not out-fighting.",
+  "summary": "Settle Vex - Apathetic on a battlefield and hold it: units the opponent plays are stunned, hidden cards ambush attackers, and each hold draws a card. Win by out-holding, not out-fighting. Note: from Nov 23 2026 Stacked Deck, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
   "archetype": "Control (hold)",
   "mulligan": {
    "keep": [
@@ -2903,8 +2872,7 @@
    "Back Off",
    "Tornado Warrior",
    "Evelynn - Entrancing",
-   "Tideturner",
-   "Zhonya's Hourglass"
+   "Tideturner"
   ],
   "matchups": [
    {
@@ -3014,5 +2982,790 @@
    }
   ],
   "confidence": "medium: hold plan and matchups are well sourced, but guides use other lists; Steel Paws/Tornado combos are from card text."
+ },
+ "fiora": {
+  "id": "fiora",
+  "summary": "Body/Order Mighty midrange: every time a unit becomes Mighty (5+ Might) the legend channels a rune, so Pit Rookie buffs, Kayle - Justified empowers, Shepherd's Heirloom and Punch First double as ramp. Fiora - Worthy readies the newly Mighty unit to attack again; big Deflect bodies (Poppy, Rengar, Mordekaiser) close. Note: from Nov 23 2026 Dazzling Aurora is banned; the suggested list replaces it with the most-played legal cards.",
+  "archetype": "Midrange / Ramp (Mighty)",
+  "mulligan": {
+   "keep": [
+    "Pit Rookie",
+    "Trifarian Captain",
+    "Kayle - Justified",
+    "Shepherd's Heirloom",
+    "Fiora - Worthy",
+    "Kinkou Initiate",
+    "Punch First"
+   ],
+   "toss": [
+    "Mordekaiser - Dominating",
+    "Sett - Brawler",
+    "Skystrike Squadron",
+    "Sacrifice",
+    "Rampage",
+    "Poppy - Paragon"
+   ],
+   "note": "Want a 2-drop (Pit Rookie / Trifarian Captain / Shepherd's Heirloom) and a 3-drop that can become Mighty (Kayle - Justified, Kinkou Initiate). Keep one Rengar - Trophy Hunter if the rest is cheap."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-2",
+    "goal": "Set up the first Mighty trigger for a free rune.",
+    "steps": [
+     "Turn 1: Trifarian Captain (find Pit Rookie, Kayle - Justified, Shepherd's Heirloom or Portable Portal) or Shepherd's Heirloom (gain 1 XP).",
+     "Turn 2: Kayle - Justified or Kinkou Initiate; or Pit Rookie buffing a unit.",
+     "Equip Shepherd's Heirloom (+2 Might, spend 1 XP) onto a 3-Might unit to reach 5: legend channels a rune.",
+     "Send the first unit to the open battlefield early; Fiora is slow, so don't give up the first point for free."
+    ]
+   },
+   {
+    "name": "Turns 3-5",
+    "goal": "Chain Mighty triggers into ramp and readies; take a battlefield.",
+    "steps": [
+     "Empower Kayle - Justified (3 energy, 2 at Risen Altar): +2 each, first empower makes her Mighty and channels a rune.",
+     "Fiora - Worthy: when a unit becomes Mighty, pay Order to ready it and attack again.",
+     "Rengar - Trophy Hunter ambushes into a battlefield with enemy units as a 6-Might body (Mighty on arrival).",
+     "Poppy - Paragon when the opponent is within 3 points: she enters ready with 3 XP for Heirloom.",
+     "Champions get +1 at Packed Amphitheater; conquer Sunken Temple with a Mighty unit and pay 1 to draw."
+    ]
+   },
+   {
+    "name": "Turns 6+",
+    "goal": "Land the top end and protect it.",
+    "steps": [
+     "Mordekaiser - Dominating (9): discard 1 to kill their best unit or gear on play and on each attack.",
+     "Skystrike Squadron for 3 by returning Shepherd's Heirloom or Portable Portal, then replay the gear.",
+     "Portable Portal at a held battlefield gives Ganking to swing to the second battlefield.",
+     "Kayle at 3 empowers (9 Might, Deflect 3, Ganking) wins most late games."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is the opponent casting a spell on your key unit?",
+   "yes": {
+    "q": "Is the unit Mighty and the spell removal?",
+    "yes": "Sacrifice in response (draw 2, channel a rune) or Riposte to counter and pump",
+    "no": "Riposte or Repulse to counter the spell"
+   },
+   "no": {
+    "q": "Can you make a unit Mighty this turn (buff, Heirloom, Kayle empower, Punch First)?",
+    "yes": {
+     "q": "Is Fiora - Worthy on board with Order power?",
+     "yes": "Make it Mighty after it attacks, ready it with Fiora - Worthy and attack again",
+     "no": "Make it Mighty and exhaust the legend for a rune"
+    },
+    "no": {
+     "q": "Do you have 9+ energy?",
+     "yes": "Mordekaiser - Dominating, killing their best unit",
+     "no": "Develop Kayle - Justified / Kinkou Initiate / Rengar - Trophy Hunter and hold Riposte"
+    }
+   }
+  },
+  "combat": [
+   "Punch First at the right time is a Mighty trigger too: +5 can channel a rune and ready the unit via Fiora - Worthy.",
+   "Riposte counters a spell and gives your unit +Might equal to its cost: best against Kai'Sa's removal and Rengar's tricks.",
+   "Sacrifice in response to removal on a Mighty unit: you lose it anyway, so draw 2 and ramp.",
+   "Rengar - Trophy Hunter can be played straight into a contested battlefield as a surprise 6-Might defender or attacker.",
+   "Rampage with Body paid: +2 and a mutual fight to kill a key unit outside combat.",
+   "Poppy and Skystrike Squadron have Deflect: removal costs them an extra rune."
+  ],
+  "holdFor": [
+   "Riposte - counter a removal or pump spell and grow your unit",
+   "Punch First - +5 in a showdown, also triggers Mighty",
+   "Repulse - counter targeted removal on a battlefield unit",
+   "Sacrifice - answer removal on a Mighty unit with draw 2 + rune",
+   "Rengar - Trophy Hunter - ambush into a contested battlefield"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Hard. Riven floods ready units at her battlefield; contest it early with Kayle/Rengar and use Mordekaiser to kill her best unit. Hold Riposte for her Calm/Chaos protection."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Her removal hits for 3-4: get units above 5 Might fast (Kayle empowers, Heirloom). Riposte and Repulse protect, Sacrifice when removal lands. Deflect units tax her spells."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Pressure before his big turn; Mordekaiser kills his replayed threats. Don't overcommit gear."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Your units are bigger mid-game. Survive the first turns with Pit Rookie/Kayle on defense, then out-size him."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Rampage and Mordekaiser trade up; hold one battlefield with an empowered Kayle."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Race before Elder Dragon; Mordekaiser can kill gear (Platewyrm Egg). Post-ban Jayce loses Dazzling Aurora and is much slower."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Yi's lone defender gets +2; Punch First and Kayle at 7-9 Might beat it. Ambush Rengar in to break the lone-defender bonus."
+   },
+   {
+    "vs": "sett",
+    "plan": "Buff mirror: kill Fiora - Victorious before she goes Mighty; Riposte his Call to Glory."
+   }
+  ],
+  "mistakes": [
+   "Exhausting the legend before the unit you most need to ramp becomes Mighty.",
+   "Empowering Kayle away from Risen Altar when you could move first.",
+   "Playing too slowly early and conceding the first battlefield points.",
+   "Tapping out with no Riposte/Repulse up when your Mighty unit is the only threat.",
+   "Casting Mordekaiser - Dominating with no card to discard."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Kayle - Justified": 4,
+    "Fiora - Worthy": 3,
+    "Pit Rookie": 3,
+    "Shepherd's Heirloom": 3,
+    "Trifarian Captain": 2,
+    "Rengar - Trophy Hunter": 3,
+    "Kinkou Initiate": 2,
+    "Poppy - Paragon": 2,
+    "Mordekaiser - Dominating": 3,
+    "Sett - Brawler": 2,
+    "Skystrike Squadron": 1,
+    "Portable Portal": 1
+   },
+   "holdForShowdown": [
+    "Riposte",
+    "Punch First",
+    "Repulse",
+    "Sacrifice"
+   ],
+   "mulliganKeep": [
+    "Pit Rookie",
+    "Trifarian Captain",
+    "Kayle - Justified",
+    "Shepherd's Heirloom",
+    "Fiora - Worthy"
+   ],
+   "notes": [
+    "Whenever a unit becomes Mighty, exhaust the legend to channel a rune.",
+    "Empower Kayle - Justified whenever 3 energy is spare, preferably at Risen Altar.",
+    "Play Poppy - Paragon when an opponent is within 3 points of winning.",
+    "Use Sacrifice only in response to removal on a Mighty unit.",
+    "Card names in cards.json use commas (e.g. 'Kayle, Justified')."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Fiora, Grand Duelist Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/fiora-grand-duelist-guide/",
+    "date": "2026-09-11"
+   },
+   {
+    "title": "Fiora, Grand Duelist - LA Regional Qualifier (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/fiora-grand-duelist-los-angeles-regional-qualifier-best-of-vves",
+    "date": "2026"
+   },
+   {
+    "title": "Fiora, Grand Duelist - Europe Regional Championship list (riftdecks)",
+    "url": "https://riftdecks.com/riftbound-metagame/deck-fiora-grand-duelist-347414",
+    "date": "2026-11"
+   },
+   {
+    "title": "Convergence IV: results and decklists (RiftAtlas)",
+    "url": "https://riftatlas.com/events/convergence-4",
+    "date": "2026-10-31"
+   },
+   {
+    "title": "Riftbound Meta Tier List - Best Decks for Radiance - Week 2 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-radiance-week-2/",
+    "date": "2026-11-06"
+   }
+  ],
+  "confidence": "low"
+ },
+ "kaisa": {
+  "id": "kaisa",
+  "summary": "Fury/Mind spell control, the top Riven counter in Radiance: kill every unit that reaches a battlefield with cheap damage (Hextech Ray, Falling Star, Void Seeker, Singularity), using the legend's free rune for spells. Then land Thousand-Tailed Watcher or The Empyrean to win the resource war. Brynhir Thundersong is banned from Nov 23. Note: from Nov 23 2026 Brynhir Thundersong, Dazzling Aurora, Riven - Broken Blade are banned; the suggested list replaces them with the most-played legal cards.",
+  "archetype": "Control / Removal",
+  "mulligan": {
+   "keep": [
+    "Hextech Ray",
+    "Falling Star",
+    "Stupefy",
+    "Void Seeker",
+    "Watchful Sentry",
+    "Bilgewater Tracker",
+    "Noxus Hopeful",
+    "Plundering Poro"
+   ],
+   "toss": [
+    "The Empyrean",
+    "Singularity",
+    "Thousand-Tailed Watcher",
+    "Perfect Execution"
+   ],
+   "note": "Keep 2+ cheap removal spells and one early unit. Seven-drops are mulligans unless the rest is cheap interaction."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Remove everything that lands on a battlefield; trade 1-for-1 with cheap spells.",
+    "steps": [
+     "Turn 1: Watchful Sentry or Plundering Poro to take an empty battlefield; or hold Hextech Ray.",
+     "Use Kai'Sa's legend every turn: it adds 1 any rune for a spell.",
+     "Hextech Ray (3) / Falling Star (3+3) kill their first units at a battlefield; Void Seeker (4 + draw).",
+     "Turn 2-3: Bilgewater Tracker pings two 1-Might units; Noxus Hopeful for 2 after a cheap spell (Legion).",
+     "Fight on Void Gate: every spell gets +1 damage there."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Stabilise and start converting card advantage into points.",
+    "steps": [
+     "Singularity: 6 damage to two units (two-for-one).",
+     "Thousand-Tailed Watcher (Accelerate to enter ready): enemies -3 Might, then attack.",
+     "Hide Temporal Breach: replay your Watcher/Tracker for another ETB, or reset an enemy's buffs/gear.",
+     "Lecturing Yordle (Tank) defends and draws; Kai'Sa - Survivor (Accelerate) conquers and draws."
+    ]
+   },
+   {
+    "name": "Turns 7+",
+    "goal": "Close with big units while keeping removal up.",
+    "steps": [
+     "The Empyrean: show off a high-Power card, predict and draw 2.",
+     "Perfect Execution readies a unit with Assault 3 for a second attack; Flow it again from trash.",
+     "Keep one removal and Smoke Screen for their final attack."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Does the opponent have a unit at a battlefield that can score?",
+   "yes": {
+    "q": "Can you kill it with one cheap spell (Hextech Ray / Falling Star / Void Seeker)?",
+    "yes": "Kill it, using the legend's rune",
+    "no": {
+     "q": "Two or more threats?",
+     "yes": "Singularity or Thousand-Tailed Watcher to swing the board",
+     "no": "Smoke Screen it in the showdown and block"
+    }
+   },
+   "no": {
+    "q": "Do you have 7+ energy?",
+    "yes": "Thousand-Tailed Watcher (Accelerate) or The Empyrean",
+    "no": "Develop a cheap unit and keep 1-2 energy + legend rune for instant removal"
+   }
+  },
+  "combat": [
+   "Smoke Screen (-4) and Stupefy (-1, draw) are reactions: use them after blockers are set.",
+   "Thousand-Tailed Watcher's -3 makes attackers/defenders tiny for your other units.",
+   "Temporal Breach on an enemy resets buffs/gear and Kayle empowers; on your Watcher re-triggers its -3.",
+   "Void Gate makes Falling Star deal 4+4.",
+   "Frozen Fortress pings 1 to every unit there each turn: kills tokens and 1-Might units."
+  ],
+  "holdFor": [
+   "Hextech Ray - 3 damage removal at a battlefield",
+   "Smoke Screen - -4 in a showdown",
+   "Stupefy - -1 and cantrip",
+   "Temporal Breach - hidden reset of an enemy buff/gear",
+   "Void Seeker - 4 damage + draw"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Best Riven counter in Radiance, though week-2 data still shows Riven slightly ahead (53-47). Kill units on battlefields early to shut off Riven's value; save Singularity for two ready units. Post-ban she loses Riven - Broken Blade."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Unfavoured: Kennen replays threats from the trash. Save removal for the big ones; don't fire spells at small units."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Favoured: kill every early unit. Watch ambush; keep Smoke Screen up."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Favoured: Bilgewater Tracker and Frozen Fortress kill tokens; Singularity her bigger units."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Favoured, but kill the Elder Dragon when it hits a battlefield. Post-ban Jayce loses Dazzling Aurora."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Favoured: one lone defender is easy to remove."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Mirror: card advantage wins. Value Void Seeker, Stupefy and The Empyrean draw."
+   }
+  ],
+  "mistakes": [
+   "Not using the legend's free rune every turn.",
+   "Using removal on low-value units and running out for real threats.",
+   "Tapping out on your turn and letting them score at will.",
+   "Planning around Brynhir Thundersong: banned from Nov 23, 2026."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "Thousand-Tailed Watcher": 4,
+    "Singularity": 3,
+    "Void Seeker": 3,
+    "Falling Star": 3,
+    "Hextech Ray": 3,
+    "The Empyrean": 3,
+    "Bilgewater Tracker": 2,
+    "Noxus Hopeful": 2,
+    "Watchful Sentry": 1,
+    "Plundering Poro": 1,
+    "Lecturing Yordle": 2,
+    "Kai'Sa - Survivor": 2
+   },
+   "holdForShowdown": [
+    "Smoke Screen",
+    "Stupefy",
+    "Hextech Ray",
+    "Temporal Breach",
+    "Void Seeker"
+   ],
+   "mulliganKeep": [
+    "Hextech Ray",
+    "Falling Star",
+    "Stupefy",
+    "Watchful Sentry",
+    "Bilgewater Tracker"
+   ],
+   "notes": [
+    "Exhaust the legend for a free rune every turn you cast a spell.",
+    "Kill units that reach a battlefield, prefer Void Gate for +1 damage.",
+    "Brynhir Thundersong banned Nov 23 2026: deprioritise it."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Radiance Day 1 Best Decks & Meta Report (riftbound.gg)",
+    "url": "https://riftbound.gg/?p=4894",
+    "date": "2026-10-22"
+   },
+   {
+    "title": "Riftbound Meta Tier List - Best Decks for Radiance - Week 2 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-radiance-week-2/",
+    "date": "2026-11-06"
+   },
+   {
+    "title": "Convergence IV: results and decklists (RiftAtlas)",
+    "url": "https://riftatlas.com/events/convergence-4",
+    "date": "2026-10-31"
+   },
+   {
+    "title": "Kai'Sa, Daughter of the Void Deck Guide (Anime Alley)",
+    "url": "https://animealley.ca/blogs/the-synergy-lab/kaisa-daughter-of-the-void-riftbound-deck-guide",
+    "date": "2026-02-25"
+   },
+   {
+    "title": "Kai'Sa, Daughter of the Void Deck Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/kaisa-daughter-of-the-void-deck-guide/",
+    "date": "2026-02-10"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "sett": {
+  "id": "sett",
+  "summary": "Body/Order buff aggro that scores at all costs: put +1 buffs on cheap units, make Fiora - Victorious Mighty early, then spend buffs for free pump (Call to Glory, Sett - Brawler) to win every showdown. The legend recalls a buffed unit that would die, and readies itself whenever you conquer, so trades always favour you. Note: from Nov 23 2026 Riven - Broken Blade is banned; the suggested list replaces it with the most-played legal cards.",
+  "archetype": "Aggro / Battlefield control (buffs)",
+  "mulligan": {
+   "keep": [
+    "Pit Rookie",
+    "Irresistible Faefolk",
+    "Trifarian Captain",
+    "Pillaged Armory",
+    "Showstopper",
+    "Fiora - Victorious",
+    "First Mate",
+    "Punch First"
+   ],
+   "toss": [
+    "Graves - Blasting Through",
+    "Sett - Brawler",
+    "Rampage",
+    "One-Two Punch",
+    "Repulse",
+    "Hidden Blade"
+   ],
+   "note": "Keep two cheap bodies (Pit Rookie, Faefolk, Trifarian Captain) plus a buff source; Fiora - Victorious is the best card to see by turn 3. Five-drops and reactive cards are mulligans in game 1; keep Repulse only vs Kai'Sa removal."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-2",
+    "goal": "Get two bodies on board and the first buff, then contest a battlefield immediately.",
+    "steps": [
+     "Turn 1: Trifarian Captain (dig for Pit Rookie / First Mate / Pillaged Armory) or Irresistible Faefolk.",
+     "Turn 2: Pit Rookie buffing your turn-1 unit; or Pillaged Armory deployed at the battlefield you want plus Showstopper to buff a base unit and move it there.",
+     "Move to the open battlefield; Faefolk moving in can drag their lone defender to the battlefield you are winning.",
+     "Keep the legend's power (1 any rune) up once a buffed unit is on a battlefield to recall it from removal."
+    ]
+   },
+   {
+    "name": "Turns 3-5",
+    "goal": "Make Fiora - Victorious Mighty and hold two battlefields.",
+    "steps": [
+     "Turn 3: Fiora - Victorious, then buff her (Pit Rookie / Showstopper / Pillaged Armory) to 5 Might: Mighty gives Deflect, Ganking and Shield.",
+     "First Mate readies a unit that already moved: attack a second battlefield the same turn.",
+     "Conquer Monastery of Hirana while buffed to spend the buff and draw; conquer Sunken Temple with Fiora Mighty and pay 1 to draw.",
+     "Turn 5: Sett - Brawler (enters buffed) or Graves - Blasting Through to sweep small blockers on attack/defense.",
+     "Every conquer readies the legend, so the recall is available again on their turn."
+    ]
+   },
+   {
+    "name": "Turns 6+",
+    "goal": "Close fast: you have little card draw and fall behind in long games.",
+    "steps": [
+     "Spend Sett - Brawler's buff for +4, or the buff into Call to Glory (free +3), to force the last conquers.",
+     "Punch First (+5) or Rampage on the final showdown; Rampage paying Body as a removal on their best defender.",
+     "Hold Grove of the God-Willow to keep drawing while you push the other battlefield.",
+     "Hide Kennen - Keeper of Balance; reveal it at a contested battlefield to stun their biggest unit."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is a buffed unit of yours about to die (removal or lost combat)?",
+   "yes": {
+    "q": "Is the legend ready and 1 rune of power available?",
+    "yes": "Recall it with Sett - The Boss (spends the buff); replay the buff later with Showstopper to send it back in",
+    "no": "Respond with Repulse (single-target spell) or Call to Glory (spend buff, +3) to win the fight"
+   },
+   "no": {
+    "q": "Is there an empty or weakly held battlefield you can conquer this turn?",
+    "yes": {
+     "q": "Do you have a buffed unit to spend into Call to Glory or Sett - Brawler's +4?",
+     "yes": "Attack; spend buffs only if needed to win the showdown, keep the rest for the next fight",
+     "no": "Develop Pit Rookie / Pillaged Armory / Showstopper first, then attack"
+    },
+    "no": {
+     "q": "Is Fiora - Victorious on board and not Mighty?",
+     "yes": "Buff her to 5 (Pit Rookie, Showstopper, Pillaged Armory) and gank into their weakest battlefield",
+     "no": "Play your best unit (Graves - Blasting Through vs wide boards, Sett - Brawler otherwise) and hold Punch First"
+    }
+   }
+  },
+  "combat": [
+   "Call to Glory costs 0 if you spend a buff: it is a free +3 reaction, so a buffed unit is never really out-pumped.",
+   "Sett - Brawler: spend his own buff for +4 this turn; he re-buffs when he conquers.",
+   "Fiora - Victorious at 5+ Might has Shield and Deflect: removal costs them an extra rune.",
+   "Graves - Blasting Through deals his Might to every enemy unit at that battlefield when attacking or defending; pump him first to sweep.",
+   "Irresistible Faefolk pulls an enemy unit into a battlefield you are winning, splitting their defenders.",
+   "One-Two Punch buffs your unit and stuns their best blocker; play it in the showdown after they commit.",
+   "Hidden Blade kills a unit at a battlefield but they draw 2: save it for a key holder (Kayle, Riven's carry, Thousand-Tailed Watcher)."
+  ],
+  "holdFor": [
+   "Call to Glory - spend a buff for a free +3 in any showdown",
+   "Punch First - +5 to steal a showdown or finish a conquer",
+   "Repulse - counter a single-target removal on your key unit",
+   "Hidden Blade - hidden kill on their best holder",
+   "Kennen - Keeper of Balance - hidden; reveal to stun their biggest attacker or defender",
+   "One-Two Punch - buff plus stun once blockers are committed"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Very poor (~17% in Radiance data). Riven units enter ready at her battlefield and out-tempo you. Contest her battlefield on turn 2, Hidden Blade/Rampage her carry, use Faefolk to drag defenders. Post-ban (Riven - Broken Blade gone) she should be weaker."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Her deck is cheap damage spells: keep the legend's power up to recall buffed units, play Repulse, and go wide with cheap units so one spell never stops a conquer. Avoid Frozen Fortress with 1-Might units."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Race. Kennen wants nobody to score early; go wide on two battlefields so his bounce can't stop both conquers."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Mirror of aggro: Rengar out-sizes you with Ambush. Keep Call to Glory/Punch First for his ambush showdowns; Graves - Blasting Through on defense punishes his small units."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Board-flood deck: Graves - Blasting Through sweeps tokens; hold one battlefield with a Mighty Fiora - Victorious."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Favoured: race before Elder Dragon lands; you should be near 6+ points by turn 5. Hidden Blade/Rampage the Dragon only if it is at a battlefield."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Yi defends with one unit at +2: Faefolk pulls a second enemy unit in to switch off his lone-defender bonus; Call to Glory and Punch First win the showdown."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Pressure early before Irelia sets up; save Repulse for the tricks on your Mighty Fiora."
+   },
+   {
+    "vs": "fiora",
+    "plan": "Similar buff-to-Mighty plan; kill Fiora - Worthy and Kayle early with Rampage before they ramp."
+   }
+  ],
+  "mistakes": [
+   "Playing a value game: Sett has little draw and loses long games.",
+   "Spending buffs on Call to Glory when the fight was already won; buffs also fuel the legend recall.",
+   "Forgetting the legend only saves buffed units, and needs 1 rune of power free.",
+   "Running out of runes from recycling then failing to score fast.",
+   "Firing Hidden Blade at a small unit: the opponent draws 2."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 1,
+   "priority": {
+    "Fiora - Victorious": 4,
+    "Pit Rookie": 3,
+    "Pillaged Armory": 3,
+    "Showstopper": 3,
+    "Trifarian Captain": 2,
+    "Irresistible Faefolk": 2,
+    "First Mate": 2,
+    "Sett - Brawler": 2,
+    "Graves - Blasting Through": 2,
+    "Rampage": 1,
+    "Kennen - Keeper of Balance": 1
+   },
+   "holdForShowdown": [
+    "Call to Glory",
+    "Punch First",
+    "Repulse",
+    "Hidden Blade",
+    "One-Two Punch"
+   ],
+   "mulliganKeep": [
+    "Pit Rookie",
+    "Irresistible Faefolk",
+    "Trifarian Captain",
+    "Fiora - Victorious",
+    "Pillaged Armory",
+    "Showstopper"
+   ],
+   "notes": [
+    "Always buff Fiora - Victorious to 5 Might as soon as possible (Mighty).",
+    "Use the legend to recall any buffed unit that would die if 1 rune of power is free.",
+    "Prefer Call to Glory with its buff alternative cost (free).",
+    "Attack every turn; score at all costs, contest two battlefields.",
+    "Deploy Pillaged Armory only at a battlefield you already hold or are about to conquer.",
+    "Card names in cards.json use commas (e.g. 'Kennen, Keeper of Balance')."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Sett, The Boss Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/sett-the-boss-guide/",
+    "date": "2026-07-07"
+   },
+   {
+    "title": "Deck Guide - Sett The Boss Body & Order (Cardsrealm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-guide-sett-the-boss-body-order",
+    "date": "2025-12-06"
+   },
+   {
+    "title": "Riftbound Meta Tier List - Best Decks for Radiance - Week 2 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-radiance-week-2/",
+    "date": "2026-11-06"
+   },
+   {
+    "title": "Convergence IV: results and decklists (RiftAtlas)",
+    "url": "https://riftatlas.com/events/convergence-4",
+    "date": "2026-10-31"
+   },
+   {
+    "title": "Sett, The Boss - Sydney Regional Qualifier (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/sett-the-boss-sydney-regional-qualifier-best-of-ctcg-collin-k",
+    "date": "2026-06"
+   }
+  ],
+  "confidence": "medium"
+ },
+ "volibear": {
+  "id": "volibear",
+  "summary": "Fury/Body ramp: every Mighty unit you play lets the legend channel an extra rune, so Jayce - Hammer in Hand (5 Might for 4) and Minotaur Reckoner snowball into Kadregrin, Volibear - Furious and Elder Dragon. Post-ban Dazzling Aurora is gone, so the deck wins by hard-casting fatties and clearing blockers with Stormbringer and Sky Splitter. Note: from Nov 23 2026 Dazzling Aurora is banned; the suggested list replaces it with the most-played legal cards.",
+  "archetype": "Ramp / Big units",
+  "mulligan": {
+   "keep": [
+    "Mobilize",
+    "Platewyrm Egg",
+    "Jayce - Hammer in Hand",
+    "Minotaur Reckoner",
+    "Rengar - Trophy Hunter",
+    "Punch First"
+   ],
+   "toss": [
+    "Elder Dragon",
+    "Volibear - Furious",
+    "Kadregrin the Infernal",
+    "Deadbloom Predator",
+    "Avalanche",
+    "Trinity Force"
+   ],
+   "note": "Need ramp (Mobilize / Platewyrm Egg) plus a 4-5 cost Mighty unit. Hands of only top end lose to early pressure."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-2",
+    "goal": "Ramp and land the first Mighty unit by turn 2-3.",
+    "steps": [
+     "Turn 1: Mobilize (channel 1 rune exhausted) or Platewyrm Egg (empower it next turn for +2 energy per use).",
+     "Turn 2: Jayce - Hammer in Hand (5 Might, Mighty) -> exhaust legend to channel a rune. Choose Ganking or Assault 2 when he readies.",
+     "Contest one battlefield with Jayce; don't leave the opponent free early points."
+    ]
+   },
+   {
+    "name": "Turns 3-5",
+    "goal": "Snowball runes into 5-7 cost Mighty units, keep their score low.",
+    "steps": [
+     "Minotaur Reckoner or Rengar - Trophy Hunter (each Mighty -> legend rune). Reckoner stops units moving back to base.",
+     "Rengar - Trophy Hunter ambushes into an enemy-held battlefield to break a hold.",
+     "Seraphic Wyvern makes every channel give +1 extra rune (Mobilize, legend, The Papertree).",
+     "Ferrous Forerunner: dies into two 3-Might Mechs, good vs removal decks.",
+     "Stormbringer from base: your biggest base unit deals its Might to every enemy unit at a battlefield, then moves in."
+    ]
+   },
+   {
+    "name": "Turns 6+",
+    "goal": "Overload with fatties the opponent can't remove.",
+    "steps": [
+     "Kadregrin the Infernal: draw 1 per Mighty unit you control.",
+     "Volibear - Furious (Deflect 2): 5 split damage on attack clears chump blockers.",
+     "Elder Dragon: any damage kills; pings each location on play.",
+     "Deadbloom Predator straight to an occupied enemy battlefield.",
+     "Sky Splitter costs 8 minus your highest Might: usually 1-2 energy for 5 damage.",
+     "Trinity Force on a holder scores an extra point each hold."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is the opponent ahead by 2+ points with units on battlefields?",
+   "yes": {
+    "q": "Do you have a big unit in base and Stormbringer?",
+    "yes": "Stormbringer the most crowded battlefield and move in",
+    "no": {
+     "q": "Is Sky Splitter cheap (highest Might 6+)?",
+     "yes": "Sky Splitter their best holder, then attack",
+     "no": "Rengar - Trophy Hunter or Deadbloom Predator into their battlefield"
+    }
+   },
+   "no": {
+    "q": "Can you play a Mighty unit this turn?",
+    "yes": "Play the biggest Mighty unit you can and exhaust the legend to channel a rune",
+    "no": "Play Mobilize / Platewyrm Egg (empower it) and contest with Jayce - Hammer in Hand"
+   }
+  },
+  "combat": [
+   "Punch First (+5) can win the early showdown for Jayce or Reckoner.",
+   "Jayce - Hammer in Hand picks Assault 2 to attack, Deflect 2 vs removal decks, Ganking to switch battlefields.",
+   "Minotaur Reckoner shuts off Flash/recall-to-base escapes.",
+   "Volibear - Furious attack damage resolves before combat: kill small defenders first.",
+   "Avalanche deals 3 to all units in bases: only when your units are on battlefields and theirs are home.",
+   "Elder Dragon's 1 damage kills anything, so its play trigger is a one-sided wipe."
+  ],
+  "holdFor": [
+   "Punch First - win an early showdown",
+   "Sky Splitter - cheap 5-damage removal on their battlefield holder",
+   "Stormbringer - board wipe at one battlefield from base",
+   "Rengar - Trophy Hunter - ambush into a battlefield they hold"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Hard: Riven scores before your fatties arrive. Contest early with Jayce, Stormbringer her battlefield, keep score close."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Bad: cheap 3-4 damage removal, Thousand-Tailed Watcher shrinks you. Lean on Deflect units (Volibear - Furious, Deadbloom Predator), Ferrous Forerunner, and Jayce's Deflect 2."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Bounce sets you back; get Mighty units out each turn to keep ramping and don't overcommit a single threat."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Aggro race: Jayce and Reckoner must block early; Stormbringer and Elder Dragon wipe his small units."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Flood deck: Elder Dragon's ping and Stormbringer clear tokens; Avalanche hits bases."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Ramp mirror (both lost Dazzling Aurora): win the battlefield race with your mid-curve, Sky Splitter the Dragon."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "His lone defender with +2 struggles against 6+ Might; Volibear - Furious damage kills it before combat."
+   }
+  ],
+  "mistakes": [
+   "Keeping hands of only 8+ cost units.",
+   "Forgetting to exhaust the legend when a Mighty unit is played.",
+   "Letting the opponent score freely early while ramping.",
+   "Overcommitting into open runes (bounce/counters) on a single big threat.",
+   "Building the plan around Dazzling Aurora: it is banned from Nov 23, 2026."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 0,
+   "priority": {
+    "Jayce - Hammer in Hand": 4,
+    "Platewyrm Egg": 3,
+    "Mobilize": 3,
+    "Minotaur Reckoner": 3,
+    "Rengar - Trophy Hunter": 3,
+    "Seraphic Wyvern": 3,
+    "Elder Dragon": 4,
+    "Volibear - Furious": 4,
+    "Kadregrin the Infernal": 3,
+    "Deadbloom Predator": 3,
+    "Ferrous Forerunner": 2,
+    "Stormbringer": 2,
+    "Sky Splitter": 2,
+    "Trinity Force": 1
+   },
+   "holdForShowdown": [
+    "Punch First",
+    "Sky Splitter"
+   ],
+   "mulliganKeep": [
+    "Mobilize",
+    "Platewyrm Egg",
+    "Jayce - Hammer in Hand",
+    "Minotaur Reckoner"
+   ],
+   "notes": [
+    "Always exhaust the legend when playing a Mighty unit.",
+    "Empower Platewyrm Egg early; use it for energy on big turns.",
+    "Dazzling Aurora banned Nov 23 2026: deprioritise/replace it.",
+    "Use Stormbringer from base at the battlefield with the most enemy units.",
+    "Card names in cards.json use commas (e.g. 'Jayce, Hammer in Hand')."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Volibear, Relentless Storm Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/volibear-relentless-storm-guide/",
+    "date": "2026-03-19"
+   },
+   {
+    "title": "Deck Tech - Volibear Relentless Storm (Cardsrealm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-volibear-relentless-storm-fury-body",
+    "date": "2025-11-12"
+   },
+   {
+    "title": "Volibear - Atlanta Regional Qualifier (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/volibear-relentless-storm-atlanta-regional-qualifier-best-of-ctcg-villionaire",
+    "date": "2026"
+   },
+   {
+    "title": "Convergence IV: results and decklists (RiftAtlas)",
+    "url": "https://riftatlas.com/events/convergence-4",
+    "date": "2026-10-31"
+   }
+  ],
+  "confidence": "low"
  }
 }

@@ -160,7 +160,7 @@ python3 quant/tidy.py                            # snapshots -> tidy CSVs
 │   ├── style.css            # Riftbound-inspired theme (light and dark)
 │   ├── template.html        # page shell and in-game rules summary
 │   ├── cards.json           # all 1,099 cards (Riftcodex + riftbound.gg, incl. Radiance; banned flags)
-│   ├── guides.json          # researched pro game plans and decision trees for 15 decks
+│   ├── guides.json          # researched pro game plans and decision trees for 19 decks
 │   └── img/                 # card art for the built-in decks (WebP)
 ├── quant/
 │   ├── harness.js           # seeded, mirrored round robin across worker processes
