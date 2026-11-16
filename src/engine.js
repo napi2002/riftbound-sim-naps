@@ -525,7 +525,8 @@ var RT = (function () {
   async function newGame(deckA, deckB, opts) {
     opts = opts || {};
     var rnd = opts.rnd || Math.random;
-    var G = { players: [], units: [], bfs: [], active: 0, playedThisTurn: 0, playedBy: [0, 0], turnNo: 0, log: [], winner: null, rnd: rnd, onLog: opts.onLog || null, maxTurns: opts.maxTurns || 0 };
+    var G = { players: [], units: [], bfs: [], active: 0, playedThisTurn: 0, playedBy: [0, 0], turnNo: 0, log: [], winner: null, rnd: rnd, onLog: opts.onLog || null, maxTurns: opts.maxTurns || 0,
+      aiLevel: opts.aiLevel || [AI_LEVEL, AI_LEVEL] };
     [deckA, deckB].forEach(function (d, pi) {
       var main = d.cards.slice();
       var ci = d.championCard ? main.indexOf(d.championCard) : -1;
@@ -1173,6 +1174,10 @@ var RT = (function () {
     beginningDraw: async function (G, pi) { if (G.phase === 'beginning' && G.active === pi) { drawOne(G, pi); log(G, 'It is the Beginning Phase: draw 1 more.', pi); } },
     drawIf: async function (G, pi, e) { for (var i = 0; i < e.n; i++) drawOne(G, pi); log(G, G.players[pi].name + ' draw' + (pi === 0 ? '' : 's') + ' ' + e.n + '.', pi); }
   };
+  // AI strength: 0 = greedy card-by-card (frozen baseline), 1 = also scores gear/unit abilities and combo enablers,
+  // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules).
+  var AI_LEVEL = 2;
+  function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
     recur: function (G, pi, e) { return Math.min(e.n, G.players[pi].trash.filter(function (x) { return x.c.type === 'Unit'; }).length) * 1.6; },
@@ -1180,7 +1185,39 @@ var RT = (function () {
     sabotage: function (G, pi) { return G.players[opp(pi)].hand.some(function (x) { return x.c.type !== 'Unit'; }) ? 1.5 : 0; },
     killGear: function (G, pi) { return G.players[opp(pi)].gear.length || G.units.some(function (u) { return u.ctrl !== pi && u.equips.length; }) ? 1.5 : 0; },
     drawIf: function (G, pi, e) { return 1.6 * e.n; },
-    ctrlDraw: function (G, pi, e) { return -1.2 * e.n; }
+    ctrlDraw: function (G, pi, e) { return -1.2 * e.n; },
+    empowerSelf: function () { return 2; },
+    kayleEmpower: function () { return 2.2; },
+    spendBuffMight: function () { return 0; },   // keep the buff (Sett's legend saves buffed units); the AI spends it only as a last resort
+    bounceOwn: function () { return 0; },
+    forgeRecycle: function () { return 0.3; },
+    listShrink: function (G, pi) { return G.units.some(function (u) { return u.ctrl !== pi && u.loc !== 'base'; }) ? 1.2 : 0; },
+    // custom effects of the Nov 2026 cards (without these the AI scored their spells at 0 and never cast them)
+    offer: function (G, pi) { return G.players[opp(pi)].gear.some(function (g) { return g.c.supertype !== 'Token'; }) || G.units.some(function (u) { return u.ctrl !== pi && u.equips.length; }) ? 2 : 0; },
+    playerDiscard: function (G, pi) { return G.players[opp(pi)].hand.length ? 1.2 : 0; },
+    nameTag: function () { return 0.5; },
+    blink: function () { return 0.6; },
+    empyrean: function () { return 3.2; },
+    drawPerMighty: function (G, pi) { return 1.6 * unitsOf(G, pi).filter(function (u) { return might(u) >= 5; }).length; },
+    splitDamage: function (G, pi, e) { return e.n / 2; },
+    poppy: function (G, pi) { return G.players[opp(pi)].points >= WIN - 3 ? 2 : 0; },
+    payStun: function (G, pi) { return energyAvail(G.players[pi]) >= 2 && G.units.some(function (u) { return u.ctrl !== pi; }) ? 1 : 0; },
+    returnGearCost: function () { return -0.5; },
+    payReadyHere: function () { return 0.4; },
+    channelBoth: function () { return 0.5; },
+    blastMight: function () { return 1; },
+    shrinkOne: function (G) { return G.showdownAt != null ? 2 : 0.2; },
+    spendBuffCost: function () { return 0; },
+    spendBuffDraw: function () { return 0.8; },
+    stormbringer: function (G, pi) {   // the best battlefield: enemy Might it would kill there
+      var base = unitsAt(G, 'base', pi); if (!base.length) return 0;
+      var n = Math.max.apply(null, base.map(function (u) { return might(u); }));
+      return Math.max.apply(null, G.bfs.map(function (b, i) { return unitsAt(G, i, opp(pi)).reduce(function (s2, u) { return s2 + (might(u, 'def') - u.damage <= n ? unitValue(u) + 1 : 0); }, 0); })) + 1;
+    },
+    avalanche: function (G, pi, e) {
+      var v = 0; unitsAt(G, 'base').forEach(function (u) { if (might(u, 'def') - u.damage <= e.n) v += (u.ctrl === pi ? -1 : 1) * (unitValue(u) + 1); });
+      return v;
+    }
   };
   function T(sel, where, extra) { var t = { sel: sel, where: where || null }; if (extra) Object.keys(extra).forEach(function (k) { t[k] = extra[k]; }); return t; }
   // Hand-written effects for cards whose text the generic parser can't read. sim: indexes of rules lines now simulated.
@@ -3487,6 +3524,7 @@ var RT = (function () {
       A.tossN = {}; ((g.mulligan && g.mulligan.toss) || []).forEach(function (k) { A.tossN[norm(k)] = 1; });
       if (h.attack) A.attack = h.attack;
       if (h.reserveEnergy != null) A.reserve = h.reserveEnergy;
+      A.rules = h.rules || [];
     });
   }
   function planOf(G, pi) { var d = G.players[pi].deckDef; return (d && (PLANS[d.planId] || PLANS[d.id])) || null; }
@@ -3572,6 +3610,8 @@ var RT = (function () {
     if (A.conquerReserve && G.aiPreAttack && !p.legend.exhausted && G.units.some(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex; }) &&
         energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.conquerReserve && bonus < 2.5) return null;
     var ctx = { src: null, loc: hid ? hid.loc : c.type === 'Unit' ? 'base' : null, fromHidden: !!hid, reserveRunes: c.power || 0 };
+    if (aiLvl(G, pi) >= 1) bonus += aiSynergy(G, pi, c);
+    if (aiLvl(G, pi) >= 2) { var rr = aiRules(G, pi, c); if (rr === null) return null; bonus += rr; }
     if (c.type === 'Unit') {
       var ev = evalEffects(G, pi, playEffects(c), ctx);
       var v = (c.energy || 0) + (c.might || 0) + (c.power || 0) * 0.5 + (ev.good ? Math.max(0, ev.value) : 0) + bonus;
@@ -3593,6 +3633,89 @@ var RT = (function () {
     }
     return null;
   }
+  // Level 1+: equipping, gear abilities and unit abilities scored like cards so they compete for energy every step.
+  function aiAbilityChoices(G, pi) {
+    var p = G.players[pi], out = [], A = aiOf(G, pi);
+    p.gear.filter(function (g) { return g.c.P.equip && canEquip(G, pi, g).ok; }).forEach(function (g) {
+      out.push({ value: 2 + (g.c.P.equipBonus || 0) + (A.equipAlways ? 1 : 0) + keyBonus(A, g.c.name) * 0.5, run: function () { return equipGear(G, pi, g); }, what: 'equip ' + g.c.name });
+    });
+    p.gear.forEach(function (g) {
+      (g.c.P.gearActs || []).forEach(function (a, idx) {
+        if (!canUseGear(G, pi, g.iid, idx).ok || g.c.P.addPower) return;   // Seals pay automatically when needed
+        if (a.selfOk || (a.effs || []).some(function (e) { return e.selfOk; })) return;
+        var v;
+        if (a.aiValue) v = a.aiValue(G, pi, g);
+        else if (a.effs && a.effs.length) { var ev = evalEffects(G, pi, a.effs, { src: null, loc: g.loc != null ? g.loc : null, gear: g }); if (!ev.good) return; v = ev.value; }
+        else v = 1.2;
+        v -= 0.6 * (a.energy || 0) + 0.8 * (a.power || 0);
+        if (a.discard) { if (p.hand.length < 4) return; v -= 1.2; }
+        if (a.killSelf) v -= 0.5;
+        out.push({ value: v, run: function () { return useGear(G, pi, g.iid, idx); }, what: g.c.name });
+      });
+    });
+    G.units.forEach(function (u) {
+      if (u.ctrl !== pi || !u.c.P.unitAct || !canUseUnit(G, pi, u.uid).ok) return;
+      var a = u.c.P.unitAct;
+      if (a.killFriendly && !unitsOf(G, pi).some(function (x) { return x !== u && x.token; })) return;
+      var ev = evalEffects(G, pi, a.effs || [], { src: u, loc: u.loc });
+      if (!ev.good) return;
+      var v = ev.value - 0.6 * unitActEnergy(G, u, a) - 0.8 * (a.power || 0) - (a.killFriendly ? 1 : 0) - (a.exhaustFriendly ? 0.6 : 0);
+      out.push({ value: v, run: function () { return useUnit(G, pi, u.uid); }, what: u.c.name });
+    });
+    return out;
+  }
+  // Level 2: sequencing rules from the deck guide (guides.json ai.rules):
+  //   { type: 'hold', card, until: cond }        don't play card until cond holds
+  //   { type: 'before', first: [..], then: [..] } play a 'first' card before any 'then' card while one is in hand
+  //   { type: 'prefer', card, when: cond, bonus } extra priority when cond holds
+  // cond keys (all must hold): units, gear, equipment, turn (your turn number), enemyUnits, enemyMight (biggest enemy
+  // unit's Might), hand, trash, onBoard (card name), points, oppPoints, runes
+  function aiCond(G, pi, w) {
+    var p = G.players[pi], mine = unitsOf(G, pi), foes = G.units.filter(function (u) { return u.ctrl !== pi && !u.dead; });
+    var myTurn = pi === G.first ? Math.ceil(G.turnNo / 2) : Math.floor(G.turnNo / 2);
+    var eq = mine.reduce(function (s2, u) { return s2 + u.equips.length; }, 0) + p.gear.filter(function (g) { return g.c.P.equip; }).length;
+    var chk = {
+      units: function (n) { return mine.length >= n; }, gear: function (n) { return p.gear.filter(function (g) { return !g.token; }).length + eq - p.gear.filter(function (g) { return g.c.P.equip; }).length >= n; },
+      equipment: function (n) { return eq >= n; }, turn: function (n) { return myTurn >= n; }, enemyUnits: function (n) { return foes.length >= n; },
+      enemyMight: function (n) { return foes.some(function (u) { return might(u) >= n; }); }, hand: function (n) { return p.hand.length >= n; },
+      trash: function (n) { return p.trash.length >= n; }, runes: function (n) { return p.runes.length >= n; },
+      points: function (n) { return p.points >= n; }, oppPoints: function (n) { return G.players[opp(pi)].points >= n; },
+      onBoard: function (nm) { return mine.some(function (u) { return norm(u.c.name) === norm(nm); }) || p.gear.some(function (g) { return norm(g.c.name) === norm(nm); }); }
+    };
+    return Object.keys(w || {}).every(function (k) { return !chk[k] || chk[k](w[k]); });
+  }
+  function aiRules(G, pi, c) {
+    var rules = aiOf(G, pi).rules || [], p = G.players[pi], v = 0, n = norm(c.name);
+    for (var i = 0; i < rules.length; i++) {
+      var r = rules[i];
+      if (r.type === 'hold' && norm(r.card) === n && !aiCond(G, pi, r.until)) return null;
+      if (r.type === 'prefer' && norm(r.card) === n && aiCond(G, pi, r.when)) v += r.bonus || 2;
+      if (r.type === 'before' && (r.then || []).some(function (x) { return norm(x) === n; })) {
+        var first = p.hand.filter(function (x) { return (r.first || []).some(function (f) { return norm(f) === norm(x.c.name); }); })[0];
+        if (first && !aiCond(G, pi, { onBoard: first.c.name })) v -= canPlay(G, pi, first.iid, false).ok ? 4 : 1;
+      }
+    }
+    return v;
+  }
+  // Level 1+: combo enablers and engines are worth more than their immediate effect.
+  function aiSynergy(G, pi, c) {
+    var p = G.players[pi], v = 0, hand = p.hand.map(function (x) { return x.c; }), mine = unitsOf(G, pi);
+    var isDK = function (x) { return x.P && x.P.trig && x.P.trig.deathknell; };
+    if (c.P.doubleDeathknell) v += 0.8 * Math.min(4, hand.filter(isDK).length + mine.filter(function (u) { return isDK(u.c); }).length);
+    if (isDK(c) && !c.P.doubleDeathknell && !mine.some(function (u) { return u.c.P.doubleDeathknell; })) {
+      var k = p.hand.filter(function (x) { return x.c.P.doubleDeathknell; })[0];
+      // wait for Karthus only when both fit this turn; otherwise play the better card now
+      if (k && canPlay(G, pi, k.iid, false).ok && energyAvail(p) >= cardCost(k.c, false, G, pi, 'hand').energy + cardCost(c, false, G, pi, 'hand').energy) v -= 2.5;
+    }
+    if (c.P.equip) {
+      if (p.legend.c && p.legend.c.P.sandWeaponmaster) v += 1;
+      v += 0.5 * mine.filter(function (u) { return u.c.P.kw.weaponmaster; }).length;
+    }
+    var early = G.turnNo <= 8;
+    if (c.type === 'Gear' && !c.P.equip && !c.P.kw.deploy && ((c.P.gearActs && !c.P.addPower) || c.P.addEnergy || c.P.onLeave)) v += early ? 1 : 0.4;
+    if (c.type === 'Unit' && (c.might || 0) >= 5 && p.legend.c && (p.legend.c.P.legendMighty || p.legend.c.P.legendPlayMighty) && !p.legend.exhausted) v += 1;
+    return v;
+  }
   async function aiPlayLoop(G, pi, wait) {
     for (var guard = 0; guard < 30 && G.winner == null; guard++) {
       var p = G.players[pi], best = null;
@@ -3600,6 +3723,14 @@ var RT = (function () {
         var ch = aiCardChoice(G, pi, card);
         if (ch && (!best || ch.value > best.value)) best = { value: ch.value, card: card, opts: ch.opts };
       });
+      if (aiLvl(G, pi) >= 1) {
+        var ab = aiAbilityChoices(G, pi).sort(function (a, b) { return b.value - a.value; })[0];
+        if (ab && ab.value >= (best ? Math.max(1, best.value) : 0.5)) {
+          var before = G.log.length; await ab.run(); await wait();
+          if (G.log.length === before) return;   // nothing happened: stop rather than loop
+          continue;
+        }
+      }
       // Legend abilities compete with cards for energy (e.g. Azir's Sand Soldier needs 1 energy after the Equipment).
       legendActs(G, pi).forEach(function (a, idx) {
         if (!canUseLegend(G, pi, idx).ok) return;

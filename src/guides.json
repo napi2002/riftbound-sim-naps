@@ -390,6 +390,36 @@
     "Arise! only with 3+ Equipment in play; it readies two Soldiers to conquer that turn.",
     "Sacrifice only a Mighty (5+) unit that is about to die or has done its job.",
     "In this game Eye of the Herald gives +0 Might; it is a 1-cost legend trigger only."
+   ],
+   "rules": [
+    {
+     "type": "hold",
+     "card": "Arise!",
+     "until": {
+      "equipment": 3
+     }
+    },
+    {
+     "type": "before",
+     "first": [
+      "Doran's Shield",
+      "Eye of the Herald",
+      "Brutalizer",
+      "Hand Hammer",
+      "B.F. Sword"
+     ],
+     "then": [
+      "Guards!"
+     ]
+    },
+    {
+     "type": "prefer",
+     "card": "Brutalizer",
+     "when": {
+      "units": 1
+     },
+     "bonus": 1.5
+    }
    ]
   },
   "sources": [
@@ -1415,6 +1445,23 @@
     "Use legend on conquer/hold to copy the best Deathknell unit there; discard the worst card.",
     "Never count a Reflection as a holder.",
     "If a Mighty unit is targeted by bounce/removal, respond with Sacrifice."
+   ],
+   "rules": [
+    {
+     "type": "hold",
+     "card": "Mirror Image",
+     "until": {
+      "enemyMight": 5
+     }
+    },
+    {
+     "type": "prefer",
+     "card": "Harnessed Dragon",
+     "when": {
+      "enemyMight": 5
+     },
+     "bonus": 2
+    }
    ]
   },
   "sources": [
@@ -1962,6 +2009,24 @@
     "Only deploy The Ball or Hunting Blind to a battlefield you expect to hold.",
     "Keep a friendly gear at Orianna - Exquisite's location or she deals no damage.",
     "Rockfall Path: units can't be played there, but Deploy gear can (inferred)."
+   ],
+   "rules": [
+    {
+     "type": "prefer",
+     "card": "The Ball",
+     "when": {
+      "turn": 2
+     },
+     "bonus": 2
+    },
+    {
+     "type": "prefer",
+     "card": "Cloth Armor",
+     "when": {
+      "units": 1
+     },
+     "bonus": 1
+    }
    ]
   },
   "sources": [
@@ -2744,6 +2809,23 @@
     "Use the legend discount with units that will not move this turn.",
     "Play a cheap card before Vanguard Captain so Legion makes two Recruits.",
     "Keep Recruits in base as legend fuel rather than attacking into bigger units."
+   ],
+   "rules": [
+    {
+     "type": "prefer",
+     "card": "Concert Poster",
+     "when": {
+      "turn": 1
+     },
+     "bonus": 2
+    },
+    {
+     "type": "hold",
+     "card": "Imperial Decree",
+     "until": {
+      "enemyUnits": 2
+     }
+    }
    ]
   },
   "sources": [
@@ -3153,6 +3235,21 @@
     "Play Poppy - Paragon when an opponent is within 3 points of winning.",
     "Use Sacrifice only in response to removal on a Mighty unit.",
     "Card names in cards.json use commas (e.g. 'Kayle, Justified')."
+   ],
+   "rules": [
+    {
+     "type": "before",
+     "first": [
+      "Fiora - Worthy"
+     ],
+     "then": [
+      "Rengar - Trophy Hunter",
+      "Mordekaiser - Dominating",
+      "Poppy - Paragon",
+      "Sett - Brawler",
+      "Skystrike Squadron"
+     ]
+    }
    ]
   },
   "sources": [
@@ -3341,6 +3438,22 @@
     "Exhaust the legend for a free rune every turn you cast a spell.",
     "Kill units that reach a battlefield, prefer Void Gate for +1 damage.",
     "Brynhir Thundersong banned Nov 23 2026: deprioritise it."
+   ],
+   "rules": [
+    {
+     "type": "hold",
+     "card": "Singularity",
+     "until": {
+      "enemyUnits": 2
+     }
+    },
+    {
+     "type": "hold",
+     "card": "Temporal Breach",
+     "until": {
+      "onBoard": "The Empyrean"
+     }
+    }
    ]
   },
   "sources": [
@@ -3964,6 +4077,23 @@
     "Play Thousand-Tailed Watcher with Accelerate and attack the same turn.",
     "Use Bellows Breath on the battlefield with the most enemy units; prefer Void Gate for damage spells.",
     "Card names in cards.json may use commas (e.g. 'Ezreal, Prodigy')."
+   ],
+   "rules": [
+    {
+     "type": "hold",
+     "card": "Singularity",
+     "until": {
+      "enemyUnits": 2
+     }
+    },
+    {
+     "type": "prefer",
+     "card": "The List",
+     "when": {
+      "turn": 1
+     },
+     "bonus": 1
+    }
    ]
   },
   "sources": [
@@ -4184,6 +4314,15 @@
     "Use the legend to recall any buffed unit that would die if 1 rune of power is free.",
     "Play Rengar, Trophy Hunter to a battlefield with enemy units; pay 1 at Valley of Idols to buff him.",
     "Card names in cards.json use hyphens (e.g. 'Sett - Kingpin', 'Fiora - Victorious')."
+   ],
+   "rules": [
+    {
+     "type": "hold",
+     "card": "Sett - Kingpin",
+     "until": {
+      "units": 1
+     }
+    }
    ]
   },
   "sources": [

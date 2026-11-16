@@ -155,3 +155,7 @@ Written at the freeze, before any holdout data existed; they make the tests abov
    four new decks with their legends and cards simulated (Sett, Fiora, Volibear, Kai'Sa; 19 decks in `RT.DECKS`).
    The confirmatory tests keep using the frozen 15-deck baseline (`e4157fd` summary and ablation) and the frozen
    archetype mapping in `quant/tidy.py`; nothing here changes their inputs. New harness runs are exploratory.
+10. **2026-11-16.** AI upgrade (levels: `aiLevel` option of `newGame`; default is now 2). Level 1 scores gear/unit
+    abilities and combo enablers; level 2 adds per-deck sequencing rules (`guides.json` `ai.rules`). AI values were added
+    for the custom effects of the Nov 2026 cards (affects all levels). `quant/harness.js --ai-level 0` reproduces the
+    original AI. Evaluation: `quant/results/ai_eval_2026-11.md`. Exploratory only; the frozen baseline is unchanged.

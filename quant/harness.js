@@ -3,7 +3,7 @@
 // (seat 0 / seat 1 swapped). The seed feeds mulberry32, passed to newGame as opts.rnd, which is
 // the engine's only randomness source. Seeds are shared across pairs (common random numbers).
 //
-// Usage: node quant/harness.js --pairs-per-matchup N [--decks a,b,c] [--workers W] [--seed-base S]
+// Usage: node quant/harness.js --pairs-per-matchup N [--decks a,b,c] [--workers W] [--seed-base S] [--ai-level 0-2]
 //                              [--max-turns T] [--out path.csv] [--check-determinism K]
 // Writes quant/data/sim/<engine short sha>_<N>.csv, one row per game:
 //   commit,seed,first,second,winner_deck,turns,seat0,seat1
@@ -33,7 +33,8 @@ function engine() {
 async function playOne(idA, idB, seed, maxTurns, wantLog) {
   const R = engine();
   const dA = R.DECKS.find(d => d.id === idA), dB = R.DECKS.find(d => d.id === idB);
-  const G = await R.newGame(dA, dB, { maxTurns, rnd: mulberry32(seed) });
+  const lv = process.env.RT_AI_LEVEL != null ? +process.env.RT_AI_LEVEL : null;   // --ai-level (default: the engine's current AI)
+  const G = await R.newGame(dA, dB, Object.assign({ maxTurns, rnd: mulberry32(seed) }, lv != null ? { aiLevel: [lv, lv] } : {}));
   while (G.winner == null) { await R.aiTurn(G, G.active); await R.endTurn(G); }
   const ids = [idA, idB];
   const res = { seed, seat0: idA, seat1: idB, first: ids[G.first], second: ids[1 - G.first],
@@ -98,6 +99,7 @@ async function checkDeterminism(K, ids, base, maxTurns) {
 
 (async () => {
   const N = parseInt(arg('--pairs-per-matchup', '0'), 10);
+  if (arg('--ai-level', null) != null) process.env.RT_AI_LEVEL = arg('--ai-level');   // inherited by the worker processes
   const R = engine();
   const ids = (arg('--decks', '') || R.DECKS.map(d => d.id).join(',')).split(',').map(s => s.trim()).filter(Boolean);
   for (const id of ids) if (!R.DECKS.find(d => d.id === id)) { console.error('unknown deck ' + id + '; known: ' + R.DECKS.map(d => d.id).join(',')); process.exit(1); }
