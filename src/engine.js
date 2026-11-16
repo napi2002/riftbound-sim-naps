@@ -3455,7 +3455,17 @@ var RT = (function () {
       plan: "Fury/Mind spell control, the top Riven counter in Radiance: kill every unit that reaches a battlefield with cheap damage (Hextech Ray, Falling Star, Void Seeker, Singularity), using the legend's free rune for spells. Then land Thousand-Tailed Watcher or The Empyrean to win the resource war. Brynhir Thundersong is banned from Nov 23.",
       keys: ["Thousand-Tailed Watcher", "Singularity", "Void Seeker", "Falling Star", "Hextech Ray", "The Empyrean"],
       tips: ["Turn 1: Watchful Sentry or Plundering Poro to take an empty battlefield; or hold Hextech Ray.", "Use Kai'Sa's legend every turn: it adds 1 any rune for a spell.", "Singularity: 6 damage to two units (two-for-one)."],
-      ai: { key: {"Thousand-Tailed Watcher": 4, "Singularity": 3, "Void Seeker": 3, "Falling Star": 3, "Hextech Ray": 3, "The Empyrean": 3}, attack: "safe", reserve: 2, reinforce: true } }
+      ai: { key: {"Thousand-Tailed Watcher": 4, "Singularity": 3, "Void Seeker": 3, "Falling Star": 3, "Hextech Ray": 3, "The Empyrean": 3}, attack: "safe", reserve: 2, reinforce: true } },
+    ezreal: { style: 'Gear / control', source: 'riftbound.gg (Convergence IV 6th of 272)',
+      plan: 'Chaos/Mind control: answer threats with Stupefy, Gust, Star-Crossed, Singularity and An Offer You Can\'t Refuse, grind value with Treasure Trove and Pack of Wonders, and use Ezreal\'s legend to draw once you have chosen enemy units or gear twice in a turn. Vex, Apathetic and Thousand-Tailed Watcher hold the battlefields.',
+      keys: ['Vex - Apathetic', 'Thousand-Tailed Watcher', 'The List', 'Treasure Trove', 'Pack of Wonders', 'Singularity'],
+      tips: ['Target two enemy units or gear with spells in one turn, then exhaust Ezreal to draw.', 'Name the opponent\'s champion tag with The List.', 'Kill Treasure Trove yourself when you need the card and the rune.'],
+      ai: { key: { 'Vex - Apathetic': 3, 'Thousand-Tailed Watcher': 3, 'The List': 2, 'Treasure Trove': 2, 'Fizz - Trickster': 1 }, attack: 'safe', reserve: 2, reinforce: true } },
+    settkingpin: { style: 'Buff aggro (Kingpin)', source: 'riftwatch.gg (Stuttgart Regional 23rd of 315)',
+      plan: 'Body/Order buff aggro built around Sett, Kingpin: every buffed friendly unit at his battlefield gives him +1 Might, and he has Tank. Buff cheap units with Pit Rookie, Pillaged Armory, Showstopper and Valley of Idols, push with Fiora, Victorious and Rengar, and let the legend save buffed units that would die.',
+      keys: ['Sett - Kingpin', 'Fiora - Victorious', 'Pit Rookie', 'Pillaged Armory', 'Showstopper', 'Call to Glory'],
+      tips: ['Stack buffed units on Sett, Kingpin\'s battlefield.', 'Pay 1 at Valley of Idols to buff units you play there.', 'Spend a buff to cast Call to Glory for free.'],
+      ai: { key: { 'Sett - Kingpin': 3, 'Fiora - Victorious': 3, 'Pit Rookie': 2, 'Pillaged Armory': 2, 'Showstopper': 2 }, attack: 'aggro', reserve: 1 } }
   };
   function keyBonus(A, name) {
     if (!A.key) return 0;
