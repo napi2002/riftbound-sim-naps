@@ -1175,8 +1175,10 @@ var RT = (function () {
     drawIf: async function (G, pi, e) { for (var i = 0; i < e.n; i++) drawOne(G, pi); log(G, G.players[pi].name + ' draw' + (pi === 0 ? '' : 's') + ' ' + e.n + '.', pi); }
   };
   // AI strength: 0 = greedy card-by-card (frozen baseline), 1 = also scores gear/unit abilities and combo enablers,
-  // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules).
-  var AI_LEVEL = 2;
+  // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
+  // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
+  // reply with the level-2 AI, and picks the play whose line ends best.
+  var AI_LEVEL = 3;
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -3637,7 +3639,8 @@ var RT = (function () {
   function aiAbilityChoices(G, pi) {
     var p = G.players[pi], out = [], A = aiOf(G, pi);
     p.gear.filter(function (g) { return g.c.P.equip && canEquip(G, pi, g).ok; }).forEach(function (g) {
-      out.push({ value: 2 + (g.c.P.equipBonus || 0) + (A.equipAlways ? 1 : 0) + keyBonus(A, g.c.name) * 0.5, run: function () { return equipGear(G, pi, g); }, what: 'equip ' + g.c.name });
+      out.push({ value: 2 + (g.c.P.equipBonus || 0) + (A.equipAlways ? 1 : 0) + keyBonus(A, g.c.name) * 0.5, run: function () { return equipGear(G, pi, g); }, what: 'equip ' + g.c.name, kind: 'ability',
+        apply: function (H) { var hg = H.players[pi].gear.filter(function (x) { return x.iid === g.iid; })[0]; return hg ? equipGear(H, pi, hg) : { ok: false }; } });
     });
     p.gear.forEach(function (g) {
       (g.c.P.gearActs || []).forEach(function (a, idx) {
@@ -3650,7 +3653,7 @@ var RT = (function () {
         v -= 0.6 * (a.energy || 0) + 0.8 * (a.power || 0);
         if (a.discard) { if (p.hand.length < 4) return; v -= 1.2; }
         if (a.killSelf) v -= 0.5;
-        out.push({ value: v, run: function () { return useGear(G, pi, g.iid, idx); }, what: g.c.name });
+        out.push({ value: v, run: function () { return useGear(G, pi, g.iid, idx); }, what: g.c.name, kind: 'ability', apply: function (H) { return useGear(H, pi, g.iid, idx); } });
       });
     });
     G.units.forEach(function (u) {
@@ -3660,7 +3663,7 @@ var RT = (function () {
       var ev = evalEffects(G, pi, a.effs || [], { src: u, loc: u.loc });
       if (!ev.good) return;
       var v = ev.value - 0.6 * unitActEnergy(G, u, a) - 0.8 * (a.power || 0) - (a.killFriendly ? 1 : 0) - (a.exhaustFriendly ? 0.6 : 0);
-      out.push({ value: v, run: function () { return useUnit(G, pi, u.uid); }, what: u.c.name });
+      out.push({ value: v, run: function () { return useUnit(G, pi, u.uid); }, what: u.c.name, kind: 'ability', apply: function (H) { return useUnit(H, pi, u.uid); } });
     });
     return out;
   }
@@ -3716,9 +3719,118 @@ var RT = (function () {
     if (c.type === 'Unit' && (c.might || 0) >= 5 && p.legend.c && (p.legend.c.P.legendMighty || p.legend.c.P.legendPlayMighty) && !p.legend.exhausted) v += 1;
     return v;
   }
+  /* ---------- level 3: turn lookahead ---------- */
+  // Copy the game for a what-if line: card definitions are shared (immutable), everything else is copied; every decision
+  // in the copy is answered automatically and it has its own random generator, so the real game is untouched.
+  function cloneGame(G, seed) {
+    var seen = new Map();
+    var cp = function (v, key) {
+      if (v === null || typeof v !== 'object') return v;
+      if (key === 'c' || key === 'deckDef' || key === 'legendCard' || key === 'championCard' || key === 'bfCards') return v;
+      if (seen.has(v)) return seen.get(v);
+      var o = Array.isArray(v) ? [] : {};
+      seen.set(v, o);
+      if (Array.isArray(v)) { for (var i = 0; i < v.length; i++) o[i] = cp(v[i]); }
+      else for (var k in v) {
+        if (v === G && (k === 'log' || k === 'events' || k === 'onLog' || k === 'ask' || k === 'rnd')) continue;
+        o[k] = cp(v[k], k);
+      }
+      return o;
+    };
+    var NG = cp(G);
+    NG.log = []; NG.events = []; NG.onLog = null; NG.ask = null; NG.human = -1; NG.isClone = true; NG.mightyBusy = false;
+    NG.rnd = (function (a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; })(seed);
+    NG.aiLevel = [2, 2];
+    return NG;
+  }
+  // How good is this position for pi (after the opponent's reply)?
+  function evalState(G, pi) {
+    var o = opp(pi);
+    if (G.winner === pi) return 1e4;
+    if (G.winner === o) return -1e4;
+    var me = G.players[pi], op = G.players[o], v = 12 * (me.points - op.points);
+    G.bfs.forEach(function (b) { if (b.ctrl === pi) v += 3; else if (b.ctrl === o) v -= 3; });
+    G.units.forEach(function (u) { if (u.dead) return; var w = unitValue(u) + (u.loc !== 'base' ? 0.5 : 0); v += u.ctrl === pi ? w : -w; });
+    var eg = function (pl) { return pl.gear.filter(function (g) { return g.c.P.addEnergy; }).reduce(function (s2, g) { return s2 + (g.empowered ? 2 : 1); }, 0); };
+    v += 1.0 * (me.hand.length - op.hand.length) + 0.8 * (me.runes.length - op.runes.length) + 0.8 * (eg(me) - eg(op)) +
+      0.4 * (me.gear.filter(function (g) { return !g.token; }).length - op.gear.filter(function (g) { return !g.token; }).length);
+    return v;
+  }
+  // Candidate first moves: the heuristic's best few cards and abilities, the legend, and "stop playing now".
+  function aiCandidates(G, pi) {
+    var p = G.players[pi], out = [];
+    p.hand.concat(p.champion ? [p.champion] : [], p.hidden.map(function (h) { return h.card; })).forEach(function (card) {
+      var ch = aiCardChoice(G, pi, card);
+      if (ch) out.push({ value: ch.value, kind: 'card', iid: card.iid, opts: ch.opts, name: card.c.name });
+    });
+    out.sort(function (a, b) { return b.value - a.value; });
+    out = out.slice(0, 4);
+    aiAbilityChoices(G, pi).filter(function (a) { return a.value >= 0.5; }).sort(function (a, b) { return b.value - a.value; }).slice(0, 2).forEach(function (a) { out.push(a); });
+    legendActs(G, pi).forEach(function (a, idx) {
+      if (!canUseLegend(G, pi, idx).ok) return;
+      var le = actEffects(G, pi, a);
+      if (!le.length || le.some(function (e) { return e.op === 'assault' || e.op === 'tobase'; })) return;
+      var ev = evalEffects(G, pi, le, { src: null, loc: null });
+      if (ev.good && ev.value >= 1) out.push({ value: ev.value, kind: 'legend', idx: idx, targets: ev.targets, name: 'legend' });
+    });
+    out.push({ value: 0, kind: 'stop', name: 'stop' });
+    return out;
+  }
+  async function applyCandidate(G, pi, c) {
+    if (c.kind === 'card') return playCard(G, pi, c.iid, c.opts);
+    if (c.kind === 'legend') return useLegend(G, pi, c.idx, c.targets);
+    if (c.kind === 'ability') return c.apply(G);
+    return { ok: true };
+  }
+  // Play the candidate on a copy, finish the turn and the opponent's reply with the level-2 AI, and score the result.
+  async function rollout(G, pi, c, seed) {
+    var H = cloneGame(G, seed), pre = !!G.aiPreAttack, noop = function () { return Promise.resolve(); };
+    // Fair play: the AI can't see the opponent's hand or either deck order, so each line uses a random guess for them
+    // (the opponent's hand is redealt from their unseen cards, both decks are shuffled).
+    var oh = H.players[opp(pi)], unseen = oh.hand.concat(oh.deck);
+    shuffle(unseen, H.rnd);
+    oh.hand = unseen.slice(0, oh.hand.length); oh.deck = unseen.slice(oh.hand.length);
+    shuffle(H.players[pi].deck, H.rnd);
+    var r = await applyCandidate(H, pi, c);
+    if (r && r.ok === false) return -Infinity;
+    if (H.winner == null && c.kind !== 'stop') await aiPlayLoop(H, pi, noop);
+    if (pre) {
+      H.aiPreAttack = false;
+      if (H.winner == null) await aiLegend(H, pi, noop);
+      if (H.winner == null) await aiLoneDefenders(H, pi, noop);
+      if (H.winner == null) await aiAttack(H, pi, noop);
+      if (H.winner == null) await aiPlayLoop(H, pi, noop);
+    }
+    if (H.winner == null) await aiLegend(H, pi, noop, true);
+    if (H.winner == null) await aiPosition(H, pi, noop);
+    if (H.winner == null) await aiHide(H, pi, noop);
+    if (H.winner == null) await endTurn(H);
+    for (var guard = 0; guard < 3 && H.winner == null && H.active !== pi; guard++) { await aiTurn(H, H.active); if (H.winner == null) await endTurn(H); }
+    return evalState(H, pi);
+  }
+  var LOOK_SAMPLES = (typeof process !== 'undefined' && process.env && +process.env.RT_LOOK_SAMPLES) || 2;
+  async function aiLookahead(G, pi) {
+    var cands = aiCandidates(G, pi);
+    if (cands.length <= 1) return cands[0];
+    var best = null, bv = -Infinity;
+    for (var i = 0; i < cands.length; i++) {
+      var v = 0;   // average over LOOK_SAMPLES guesses of the hidden cards
+      for (var sm = 0; sm < LOOK_SAMPLES; sm++) v += await rollout(G, pi, cands[i], (G.turnNo * 7919 + i * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0);
+      v /= LOOK_SAMPLES;
+      if (v > bv + 0.25 || (best && best.kind === 'stop' && v > bv)) { bv = v; best = cands[i]; }
+    }
+    return best;
+  }
   async function aiPlayLoop(G, pi, wait) {
     for (var guard = 0; guard < 30 && G.winner == null; guard++) {
       var p = G.players[pi], best = null;
+      if (aiLvl(G, pi) >= 3 && !G.isClone && G.showdownAt == null && G.active === pi) {
+        var pick = await aiLookahead(G, pi);
+        if (!pick || pick.kind === 'stop') return;
+        var before3 = G.log.length, r3 = await applyCandidate(G, pi, pick);
+        if ((r3 && r3.ok === false) || G.log.length === before3) return;
+        await wait(); continue;
+      }
       p.hand.concat(p.champion ? [p.champion] : [], p.hidden.map(function (h) { return h.card; })).forEach(function (card) {
         var ch = aiCardChoice(G, pi, card);
         if (ch && (!best || ch.value > best.value)) best = { value: ch.value, card: card, opts: ch.opts };
@@ -4060,7 +4172,7 @@ var RT = (function () {
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
-    killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger,
+    killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger, lookaheadForTest: aiLookahead, cloneForTest: cloneGame,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
     empoweredList: function (G, pi) {
       var out = [], L = G.players[pi].legend;

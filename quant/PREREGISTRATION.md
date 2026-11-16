@@ -159,3 +159,5 @@ Written at the freeze, before any holdout data existed; they make the tests abov
     abilities and combo enablers; level 2 adds per-deck sequencing rules (`guides.json` `ai.rules`). AI values were added
     for the custom effects of the Nov 2026 cards (affects all levels). `quant/harness.js --ai-level 0` reproduces the
     original AI. Evaluation: `quant/results/ai_eval_2026-11.md`. Exploratory only; the frozen baseline is unchanged.
+11. **2026-11-16.** AI level 3 (turn lookahead with hidden-information guesses) is now the default AI; evaluation in
+    `quant/results/ai_eval_2026-11.md`. New simulations default to it (about 4x slower than level 2); exploratory only.
