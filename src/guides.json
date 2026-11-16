@@ -3767,5 +3767,452 @@
    }
   ],
   "confidence": "low"
+ },
+ "ezreal": {
+  "id": "ezreal",
+  "summary": "Chaos/Mind gear-and-removal control: answer every early threat with cheap targeted spells (Stupefy, Gust, Bellows Breath, Wages of Pain, Deadly Flourish), and target enemies twice a turn so the legend draws an extra card. Pack of Wonders re-buys Treasure Trove, Bewitching Spirit, Fizz - Trickster and Ezreal - Prodigy for repeat value, Gold tokens ramp into Thousand-Tailed Watcher and Singularity, and Vex - Apathetic locks a battlefield. Win late once the opponent is out of cards. None of the Nov 23 2026 bans touch this list.",
+  "archetype": "Control / Value (gear + removal)",
+  "mulligan": {
+   "keep": [
+    "Stupefy",
+    "Gust",
+    "Bellows Breath",
+    "Wages of Pain",
+    "Treasure Trove",
+    "Pack of Wonders",
+    "Ezreal - Prodigy",
+    "Fizz - Trickster",
+    "Bewitching Spirit",
+    "Vex - Apathetic"
+   ],
+   "toss": [
+    "Singularity",
+    "Thousand-Tailed Watcher",
+    "Hard Bargain",
+    "An Offer You Can't Refuse",
+    "The List",
+    "Star-Crossed"
+   ],
+   "note": "Keep two cheap interaction spells (Stupefy, Gust, Bellows Breath, Wages of Pain) plus one value piece (Treasure Trove, Pack of Wonders or a 3-drop unit). Seven-cost cards and situational answers go back in game 1. Against Kennen, Jayce or other gear decks, keep An Offer You Can't Refuse. Against aggro (Rengar, Rek'Sai, Sett), keep Bellows Breath first."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Survive early pressure cheaply and set up your value gear.",
+    "steps": [
+     "Turn 1-2: Treasure Trove or Pack of Wonders if nothing needs answering; otherwise hold Stupefy/Gust/Bellows Breath energy for their turn.",
+     "Answer the first attacker at a battlefield with Gust (3 Might or less) or Wages of Pain; fight on Void Gate, where every damage spell deals 1 extra.",
+     "Bellows Breath (repeat with Mind) clears 1-Might tokens and Sett/Rengar 2-drops at one location.",
+     "Turn 3: Bewitching Spirit (they discard) or Ezreal - Prodigy (discard 1, draw 2) when the board is quiet; Fizz - Trickster once the trash holds a Wages of Pain or Gust.",
+     "Count targets: two enemy choices in one turn (e.g. Stupefy then Gust) lets you exhaust the legend to draw 1."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Take over with repeat value and land Vex - Apathetic on a battlefield.",
+    "steps": [
+     "Vex - Apathetic at a battlefield: every unit they play there is stunned and cannot move, so they cannot contest it cheaply.",
+     "Pack of Wonders each turn: return Treasure Trove (it draws 1 and channels a rune as it leaves), Bewitching Spirit (another discard), Fizz - Trickster (recast a spell from trash) or Ezreal - Prodigy (draw 2).",
+     "Use An Offer You Can't Refuse or Deadly Flourish on their key gear/unit; the Gold tokens they give you ramp toward Thousand-Tailed Watcher and Singularity.",
+     "Name their legend's champion tag with The List and spend it in showdowns for -2 Might.",
+     "Hide Wages of Pain when you have spare power to react for 0 energy later."
+    ]
+   },
+   {
+    "name": "Turns 7+",
+    "goal": "Close the game once they are out of cards.",
+    "steps": [
+     "Thousand-Tailed Watcher with Accelerate (pay 1 + Mind) enters ready and gives every enemy unit -3 Might this turn: attack with everything that turn.",
+     "Singularity kills their two biggest units (6 damage each, 7 at Void Gate).",
+     "Star-Crossed your tapped-out Watcher back to hand with their best unit, then replay it next turn for another -3 swing.",
+     "Hard Bargain their last big spell or trick; keep 2 energy up so they must pay.",
+     "Score by holding Vex - Apathetic's battlefield and conquering the second one on the Watcher turn."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is an enemy unit threatening to conquer or hold a battlefield this turn cycle?",
+   "yes": {
+    "q": "Is it 3 Might or less (after Stupefy)?",
+    "yes": "Gust it back to hand (Stupefy first if needed: two enemy choices, so the legend draws)",
+    "no": {
+     "q": "Can Wages of Pain / Deadly Flourish (3 damage, 4 at Void Gate) kill it?",
+     "yes": "Kill it, take the Gold token, and use the legend if this was your second enemy target",
+     "no": "Star-Crossed it with a used friendly unit, or Singularity if two big threats are present"
+    }
+   },
+   "no": {
+    "q": "Do you have Pack of Wonders ready with a value target on board?",
+    "yes": "Return Treasure Trove / Bewitching Spirit / Fizz - Trickster / Ezreal - Prodigy and replay it",
+    "no": {
+     "q": "Do you have 7+ resources (Gold tokens count) and Thousand-Tailed Watcher?",
+     "yes": "Accelerate Watcher and attack the weakened board; keep Gust or Stupefy up if possible",
+     "no": "Develop Vex - Apathetic or a 3-drop at a battlefield and hold reaction spells"
+    }
+   }
+  },
+  "combat": [
+   "The legend only draws after you choose enemy units/gear twice in a turn with spells or unit abilities: Stupefy, Gust, Wages of Pain, Bellows Breath, Deadly Flourish, Star-Crossed and An Offer You Can't Refuse all count; plan two cheap targets.",
+   "The List is a gear ability, so it probably does not count toward the legend's two choices; Stupefy is the cheapest enabler.",
+   "Void Gate: each damage spell instance there deals +1 (Bellows Breath kills 2-Might units, Wages of Pain deals 4).",
+   "Frozen Fortress deals 1 to each unit there each Beginning Phase: park big units, never 1-Might ones.",
+   "Thousand-Tailed Watcher's -3 Might stops at 1, so follow up with Bellows Breath to finish 1-Might units.",
+   "Stupefy can't drop a unit below 1 Might; use it to flip a showdown or set up Gust (3 Might or less).",
+   "Vex - Apathetic has Deflect: removal on her costs the opponent an extra rune.",
+   "Fizz - Trickster replays a spell from trash for free energy (you still pay power) and recycles it: best on Wages of Pain or Gust."
+  ],
+  "holdFor": [
+   "Gust - bounce a 3-Might-or-less attacker or defender at a battlefield",
+   "Stupefy - cheap reaction to win a showdown and enable the legend draw",
+   "Wages of Pain - hidden 3 damage for 0 energy at a battlefield",
+   "Star-Crossed - answer a big unit while saving your own",
+   "Hard Bargain - counter their key spell or combat trick",
+   "Deadly Flourish - kill a 3-health threat and gain a Gold token"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Riven floods ready units at her battlefield: Bellows Breath (repeated) and Thousand-Tailed Watcher punish wide boards. Vex - Apathetic stuns units she plays at your battlefield. Post-ban (Riven - Broken Blade gone) the matchup should improve."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Favoured in guides: cheap removal handles her. Keep Hard Bargain for her big spells, and don't overextend units into her damage; win with card advantage from the legend and Pack of Wonders."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Grindy mirror of bounce and gear. Keep An Offer You Can't Refuse for their key gear, Bewitching Spirit + Pack of Wonders for repeated discard, and Hard Bargain for their Rhasa-style finishers. Don't overcommit units into their bounce."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Aggro with Ambush: hold Gust/Stupefy for the ambush showdown, Bellows Breath his small units early, and stabilise with Vex - Apathetic. Frozen Fortress chips his 1-2 Might units."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Token flood: Bellows Breath with repeat at Void Gate wipes three units; Watcher plus Bellows clears the rest. Prioritise early interaction over gear."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Slower deck: race card advantage, kill or bounce gear with An Offer You Can't Refuse, and save Singularity / Star-Crossed for the Elder Dragon. Hard Bargain his big turn."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Yi defends alone with a big buff: Stupefy and The List shrink him, Wages of Pain/Deadly Flourish then finish; Star-Crossed is the clean answer. Don't let him hold a battlefield for free."
+   },
+   {
+    "vs": "sett",
+    "plan": "Buff aggro: kill buffed units when the Sett legend is exhausted (it recalls buffed units otherwise). Bellows Breath early, Gust on Pit Rookie targets, Singularity for Mighty Fiora."
+   },
+   {
+    "vs": "settkingpin",
+    "plan": "Kingpin grows with every buffed unit at his battlefield: remove the small buffed units first, then Gust/Star-Crossed Kingpin. Watch for Vi and Rengar ambushes; keep Gust up on their turn."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Green tricks are a hard matchup per guides: bait tricks with cheap spells before using Deadly Flourish, and keep Hard Bargain."
+   },
+   {
+    "vs": "vex",
+    "plan": "Slow holding mirror: An Offer You Can't Refuse their gear, Star-Crossed their Vex off the battlefield, and outdraw them with the legend."
+   }
+  ],
+  "mistakes": [
+   "Using one removal spell per turn and never triggering the legend: pair two enemy targets in the same turn.",
+   "Tapping out on your turn for gear when the opponent is about to conquer.",
+   "Playing Thousand-Tailed Watcher without Accelerate when you could attack into the -3 Might turn.",
+   "Firing Singularity at one unit when a second target is likely next turn.",
+   "Forgetting Treasure Trove draws and ramps when it leaves the board: bounce it with Pack of Wonders or kill it with its own Chaos ability.",
+   "Playing small units on Frozen Fortress."
+  ],
+  "ai": {
+   "attack": "safe",
+   "reserveEnergy": 2,
+   "priority": {
+    "Vex - Apathetic": 4,
+    "Treasure Trove": 3,
+    "Pack of Wonders": 3,
+    "Ezreal - Prodigy": 3,
+    "Thousand-Tailed Watcher": 3,
+    "Bewitching Spirit": 2,
+    "Fizz - Trickster": 2,
+    "The List": 2,
+    "Deadly Flourish": 2,
+    "Singularity": 2,
+    "Bellows Breath": 2,
+    "An Offer You Can't Refuse": 1
+   },
+   "holdForShowdown": [
+    "Gust",
+    "Stupefy",
+    "Wages of Pain",
+    "Star-Crossed",
+    "Hard Bargain",
+    "Deadly Flourish"
+   ],
+   "mulliganKeep": [
+    "Stupefy",
+    "Gust",
+    "Bellows Breath",
+    "Wages of Pain",
+    "Treasure Trove",
+    "Pack of Wonders",
+    "Ezreal - Prodigy"
+   ],
+   "notes": [
+    "Try to choose enemy units/gear twice per turn with spells, then exhaust the legend to draw 1.",
+    "Keep 2 energy open on the opponent's turn for Gust/Stupefy unless deploying a key permanent.",
+    "Use Pack of Wonders every turn on Treasure Trove, Bewitching Spirit, Fizz - Trickster or Ezreal - Prodigy.",
+    "Play Thousand-Tailed Watcher with Accelerate and attack the same turn.",
+    "Use Bellows Breath on the battlefield with the most enemy units; prefer Void Gate for damage spells.",
+    "Card names in cards.json may use commas (e.g. 'Ezreal, Prodigy')."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Ezreal Best Decks and Cards (riftbound.gg)",
+    "url": "https://riftbound.gg/ezreal-best-decks-cards/",
+    "date": "2026-09-14"
+   },
+   {
+    "title": "Riftbound: Deck Tech - Watcher Ezreal - Mind & Chaos (Cardsrealm)",
+    "url": "https://riftbound.cardsrealm.com/en-tt/articles/riftbound-deck-tech-watcher-ezreal-mind-chaos",
+    "date": "2026-01-13"
+   },
+   {
+    "title": "Ezreal, Prodigal Explorer - Atlanta Regional Qualifier Top 4 (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/ezreal-prodigal-explorer-atlanta-regional-qualifier-top-4-ctg-alanzq",
+    "date": "2026"
+   },
+   {
+    "title": "Ezreal, Prodigal Explorer - S3 Regional Open Suzhou Top 8 (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/ezreal-prodigal-explorer-s3-regional-open-suzhou-top-8-txg-gaoyuan",
+    "date": "2026"
+   },
+   {
+    "title": "Convergence IV: results and decklists (RiftAtlas)",
+    "url": "https://riftatlas.com/events/convergence-4",
+    "date": "2026-10-31"
+   }
+  ],
+  "confidence": "low-medium: guides confirm the control plan and the Kai'Sa/green matchups, but none cover this exact gear list (Pack of Wonders, Treasure Trove, The List); legend timing and gear loops are inferred from card text."
+ },
+ "settkingpin": {
+  "id": "settkingpin",
+  "summary": "Body/Order buff aggro built around Sett, Kingpin: buff cheap units (Pit Rookie, Pillaged Armory, Showstopper, Valley of Idols), then put Kingpin on the battlefield with them; he gets +1 Might per buffed friendly unit there and has Tank, so he soaks combat damage while the team wins showdowns. Fiora, Victorious goes Mighty at 5, and Rengar, Trophy Hunter and Vi, Peacekeeper land straight onto contested battlefields. The Sett, The Boss legend recalls a buffed unit that would die and readies itself when you conquer. None of the Nov 23 2026 bans touch this list.",
+  "archetype": "Aggro / Battlefield control (buffs + Kingpin)",
+  "mulligan": {
+   "keep": [
+    "Pit Rookie",
+    "Irresistible Faefolk",
+    "Trifarian Captain",
+    "Pillaged Armory",
+    "Showstopper",
+    "Fiora, Victorious",
+    "First Mate",
+    "Kinkou Initiate"
+   ],
+   "toss": [
+    "Ruin Runner",
+    "Rengar, Trophy Hunter",
+    "Vi, Peacekeeper",
+    "Rampage",
+    "Call to Glory",
+    "Punch First"
+   ],
+   "note": "Sett, Kingpin starts in the champion zone, so you don't need to find him. Keep two cheap bodies plus a buff source (Pit Rookie, Pillaged Armory, Showstopper). Fiora, Victorious is the best 4-drop to see. Five- and six-drops and pure tricks go back in game 1; keep one Punch First with a strong curve."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Get buffed bodies onto a battlefield and score early.",
+    "steps": [
+     "Turn 1-2: Trifarian Captain (dig for Pit Rookie / Pillaged Armory / First Mate) or Irresistible Faefolk.",
+     "Pit Rookie buffs your earlier unit; Pillaged Armory deployed at the battlefield you are taking buffs a unit again each time you conquer there.",
+     "Showstopper buffs a base unit and moves it to a battlefield: a late attacker the opponent didn't see coming.",
+     "Kinkou Initiate draws when your other units total 5+ Might: play it after buffing.",
+     "Conquer Monastery of Hirana and spend a buff to draw only when that unit is safe; buffs also power the legend and Kingpin."
+    ]
+   },
+   {
+    "name": "Turns 4-5",
+    "goal": "Land Sett, Kingpin among buffed units, or make Fiora, Victorious Mighty.",
+    "steps": [
+     "Turn 4: Sett, Kingpin from the champion zone; he counts himself plus every buffed friendly unit at his battlefield (3 buffed allies = 8 Might, 9 at Packed Amphitheater).",
+     "Turn 5: Kingpin + Showstopper (buffs and moves him to the battlefield with your team), or First Mate to ready a unit that already moved.",
+     "Fiora, Victorious: buff her to 5 Might for Deflect, Ganking and Shield, then gank the weakest battlefield.",
+     "Packed Amphitheater gives champions (Kingpin, Fiora, Rengar, Vi) +1 Might there: fight on it when you can.",
+     "Kingpin has Tank: he takes combat damage first and protects your small buffed units."
+    ]
+   },
+   {
+    "name": "Turns 6+",
+    "goal": "Close before the opponent stabilises.",
+    "steps": [
+     "Rengar, Trophy Hunter: play him directly to a battlefield with enemy units; at Valley of Idols pay 1 to buff him (and grow Kingpin).",
+     "Vi, Peacekeeper: ambush into a battlefield you hold during their attack, or attack with her to stun their best blocker.",
+     "Ruin Runner can't be chosen by enemy spells: a safe 5-Might holder vs removal decks.",
+     "Call to Glory for free by spending a buff, Punch First (+5) and Rampage to win the final showdowns.",
+     "Every conquer readies the legend, so the recall is up again on their turn."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Is a buffed unit of yours about to die (removal or lost combat)?",
+   "yes": {
+    "q": "Is the legend ready and 1 rune of power free?",
+    "yes": "Recall it with Sett, The Boss (spends the buff); rebuff with Showstopper later to send it back in",
+    "no": "Call to Glory (spend the buff, free +3) or Punch First to win the fight instead"
+   },
+   "no": {
+    "q": "Is Sett, Kingpin on board?",
+    "yes": {
+     "q": "Is he at a battlefield with 2+ buffed friendly units?",
+     "yes": "Attack or hold there: he is huge and Tank absorbs damage; keep Call to Glory/Punch First for the showdown",
+     "no": "Move or Showstopper him to the battlefield with your buffed units, or buff more units there first"
+    },
+    "no": {
+     "q": "Do you have 4+ energy and at least one buffed unit on a battlefield?",
+     "yes": "Play Sett, Kingpin (champion zone), then move him in next turn or with Showstopper",
+     "no": "Develop Pit Rookie / Pillaged Armory / Trifarian Captain and contest the open battlefield"
+    }
+   }
+  },
+  "combat": [
+   "Sett, Kingpin: +1 Might for each buffed friendly unit at his battlefield (including himself when buffed) and Tank, so damage hits him first.",
+   "Call to Glory costs 0 if you spend a buff: a free +3 reaction, but spending the buff also shrinks Kingpin by 1 and removes the legend recall on that unit.",
+   "Fiora, Victorious at 5+ Might has Shield and Deflect: removal costs them an extra rune.",
+   "Vi, Peacekeeper stuns an enemy unit when she attacks; stun their biggest defender so it deals no combat damage.",
+   "Rampage (pay Body for +2) is removal: your pumped unit and theirs deal their Might to each other.",
+   "Irresistible Faefolk drags an enemy unit to the battlefield it moves to, splitting their defenders.",
+   "Valley of Idols only buffs units played onto it (Rengar, Trophy Hunter and Vi, Peacekeeper's Ambush); opponents can use it too."
+  ],
+  "holdFor": [
+   "Call to Glory - spend a buff for a free +3 in any showdown",
+   "Punch First - +5 to steal a showdown or finish a conquer",
+   "Vi, Peacekeeper - Ambush into a battlefield you hold when they attack",
+   "Rampage - remove their best defender with a pumped unit",
+   "Rengar, Trophy Hunter - drop onto a contested battlefield (buff him at Valley of Idols)"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Poor for buff aggro. Riven's units enter ready at her battlefield. Contest early, Rampage her carry, and let Kingpin's Tank absorb her attackers. Post-ban (Riven - Broken Blade gone) she should be weaker."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Cheap damage spells: keep 1 rune for the legend recall, go wide so one spell can't stop a conquer, and use Ruin Runner as an untargetable holder. Fiora's Deflect taxes her removal."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Race: go wide on two battlefields so bounce can't stop both conquers. Bounce removes buffs, so don't stack everything on Kingpin."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Aggro mirror with Ambush: Kingpin with Tank at your battlefield blunts his ambushes; hold Call to Glory/Punch First for his showdowns and answer back with your own Rengar, Trophy Hunter."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Board flood: Kingpin among buffed units outsizes their tokens; Vi stuns their biggest unit. Hold one battlefield with a Mighty Fiora, Victorious."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Favoured: race before Elder Dragon lands, aim for 6+ points by turn 5. Rampage the Dragon only if it is on a battlefield."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Yi wants a lone defender: Irresistible Faefolk pulls a second enemy unit in to switch off his bonus; Vi stun plus Punch First wins the showdown."
+   },
+   {
+    "vs": "ezreal",
+    "plan": "Control with lots of cheap removal and Gust: spread buffs over several units instead of one big Kingpin, keep the legend recall up, and use Ruin Runner (untargetable). Avoid playing 1-Might units on Frozen Fortress; pressure before Thousand-Tailed Watcher."
+   },
+   {
+    "vs": "sett",
+    "plan": "Buff mirror vs the Brawler build: Kingpin with Tank outsizes their units at your battlefield; save Rampage for their Mighty Fiora."
+   },
+   {
+    "vs": "vex",
+    "plan": "Units played at Vex's battlefield get stunned: develop at base and move in with Showstopper/First Mate, or attack her other battlefield."
+   },
+   {
+    "vs": "irelia",
+    "plan": "Pressure early before she sets up; play around tricks by keeping Call to Glory free (buff ready)."
+   }
+  ],
+  "mistakes": [
+   "Spending buffs for Call to Glory or Monastery draws when they were needed to grow Kingpin or save units with the legend.",
+   "Leaving Sett, Kingpin alone at a battlefield without buffed allies: he's only 5 Might there.",
+   "Playing a slow value game: the deck has little draw and loses long games.",
+   "Forgetting the legend recall needs 1 rune of power and only saves buffed units.",
+   "Playing Rengar, Trophy Hunter to base when he could land at a contested battlefield (and get buffed at Valley of Idols)."
+  ],
+  "ai": {
+   "attack": "aggro",
+   "reserveEnergy": 1,
+   "priority": {
+    "Sett, Kingpin": 4,
+    "Fiora, Victorious": 4,
+    "Pit Rookie": 3,
+    "Pillaged Armory": 3,
+    "Showstopper": 3,
+    "Trifarian Captain": 2,
+    "Irresistible Faefolk": 2,
+    "First Mate": 2,
+    "Kinkou Initiate": 2,
+    "Rengar, Trophy Hunter": 2,
+    "Ruin Runner": 1,
+    "Rampage": 1
+   },
+   "holdForShowdown": [
+    "Call to Glory",
+    "Punch First",
+    "Vi, Peacekeeper",
+    "Rampage"
+   ],
+   "mulliganKeep": [
+    "Pit Rookie",
+    "Irresistible Faefolk",
+    "Trifarian Captain",
+    "Pillaged Armory",
+    "Showstopper",
+    "Fiora, Victorious",
+    "First Mate"
+   ],
+   "notes": [
+    "Play Sett, Kingpin on turn 4-5 and move him to the battlefield with the most buffed friendly units.",
+    "Buff units at Kingpin's battlefield before spending buffs on Call to Glory.",
+    "Always buff Fiora, Victorious to 5 Might as soon as possible (Mighty).",
+    "Use the legend to recall any buffed unit that would die if 1 rune of power is free.",
+    "Play Rengar, Trophy Hunter to a battlefield with enemy units; pay 1 at Valley of Idols to buff him.",
+    "Card names in cards.json use hyphens (e.g. 'Sett - Kingpin', 'Fiora - Victorious')."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Sett, The Boss Guide (riftbound.gg)",
+    "url": "https://riftbound.gg/sett-the-boss-guide/",
+    "date": "2026-07-07"
+   },
+   {
+    "title": "Deck Guide - Sett The Boss Body & Order (Cardsrealm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-guide-sett-the-boss-body-order",
+    "date": "2025-12-06"
+   },
+   {
+    "title": "Sett, The Boss - Utrecht Regional Qualifier Top 4 (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/sett-the-boss-utrecht-regional-qualifier-top-4-ctcg-collin-k",
+    "date": "2026-06-13"
+   },
+   {
+    "title": "Riftbound Regional Championship: Europe (Stuttgart) - Final Standings (RiftDecks)",
+    "url": "https://riftdecks.com/riftbound-tournaments/riftbound-regional-championship-europe-final-standings-tournament-decks-18668/breakdown",
+    "date": "2026-11-08"
+   },
+   {
+    "title": "Riftbound's first European Regional Championship takes place in Stuttgart (GamesMarket)",
+    "url": "https://www.gamesmarket.global/riftbounds-first-european-regional-championship-takes-place-in-stuttgart/",
+    "date": "2026"
+   }
+  ],
+  "confidence": "low-medium: the Sett buff-aggro plan is well sourced and Kingpin/Valley of Idols appear in recent lists, but no pilot write-up of this Stuttgart list exists; Kingpin sequencing and matchups are inferred from card text and the Brawler guide."
  }
 }
