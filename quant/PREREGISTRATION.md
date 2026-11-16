@@ -161,3 +161,5 @@ Written at the freeze, before any holdout data existed; they make the tests abov
     original AI. Evaluation: `quant/results/ai_eval_2026-11.md`. Exploratory only; the frozen baseline is unchanged.
 11. **2026-11-16.** AI level 3 (turn lookahead with hidden-information guesses) is now the default AI; evaluation in
     `quant/results/ai_eval_2026-11.md`. New simulations default to it (about 4x slower than level 2); exploratory only.
+12. **2026-11-16.** AI level 4 (lookahead scored by a logistic evaluation learned from self-play, `quant/train_eval.js`
+    + `quant/fit_eval.py`) is now the default AI: +3.7 points per deck over level 3. Exploratory only.

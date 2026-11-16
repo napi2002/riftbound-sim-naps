@@ -15,10 +15,10 @@ NAMES = ['ptsDiff', 'myPts2', 'oppPts2', 'bfDiff', 'boardValDiff', 'bfMightDiff'
 
 def load(paths):
     X, y, g = [], [], []
-    for p in paths:
-        for k, line in enumerate(open(p)):
+    for fi, p in enumerate(paths):
+        for line in open(p):
             r = json.loads(line)
-            X.append(r['x']); y.append(r['y']); g.append(hash((p, r['g'])) if len(paths) > 1 else r['g'])
+            X.append(r['x']); y.append(r['y']); g.append(fi * 10_000_000 + r['g'])   # deterministic game id per file
     return np.array(X, float), np.array(y, float), np.array(g)
 
 def fit(X, y, lam=1.0, iters=30):

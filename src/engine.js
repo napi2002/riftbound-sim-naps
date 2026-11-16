@@ -1179,7 +1179,7 @@ var RT = (function () {
   // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
-  var AI_LEVEL = 3;
+  var AI_LEVEL = 4;
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -3769,7 +3769,7 @@ var RT = (function () {
   }
   // Learned by self-play (quant/train_eval.js + quant/fit_eval.py): logistic win probability from evalFeatures.
   // EVAL_MODEL_START
-  var EVAL_MODEL = {"names":["ptsDiff","myPts2","oppPts2","bfDiff","boardValDiff","bfMightDiff","unitDiff","handDiff","runeDiff","energyGearDiff","gearDiff","goldDiff","buffDiff","xpDiff","hiddenDiff","deckDiff","champDiff"],"b":-0.0,"w":[0.1786,0.40128,-0.40128,-0.25092,0.1124,-0.01361,-0.01289,0.11952,0.19959,0.13398,0.1464,0.21446,0.20154,0.00911,0.41816,0.02828,0.35351]};
+  var EVAL_MODEL = {"names":["ptsDiff","myPts2","oppPts2","bfDiff","boardValDiff","bfMightDiff","unitDiff","handDiff","runeDiff","energyGearDiff","gearDiff","goldDiff","buffDiff","xpDiff","hiddenDiff","deckDiff","champDiff"],"b":-0.0,"w":[0.148,0.40674,-0.40674,-0.20618,0.10561,-0.01006,0.00325,0.1234,0.20567,0.12502,0.14283,0.15678,0.1798,0.00347,0.41925,0.01747,0.34399]};
   // EVAL_MODEL_END
   // How good is this position for pi (after the opponent's reply)? learned: use the self-play model (level 4).
   function evalState(G, pi, learned) {
