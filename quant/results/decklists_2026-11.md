@@ -668,3 +668,67 @@ Runes:
 7 Fury Rune [OGN-007]
 5 Mind Rune [OGN-089]
 ```
+
+## Ezreal: Convergence IV 6th of 272
+
+```
+Legend:
+1 Ezreal - Prodigal Explorer [SFD-199]
+Champion:
+1 Ezreal, Prodigy [SFD-149]
+Main Deck:
+2 Thousand-Tailed Watcher [OGN-116]
+3 Fizz - Trickster [SFD-140]
+2 Bewitching Spirit [UNL-121]
+3 Vex - Apathetic [UNL-150]
+3 Stupefy [OGN-095]
+1 Singularity [OGN-105]
+3 Gust [OGN-169]
+2 An Offer You Can't Refuse [RAD-101]
+3 Wages of Pain [SFD-070]
+3 Bellows Breath [SFD-080]
+1 Hard Bargain [SFD-136]
+3 Deadly Flourish [UNL-073]
+2 Star-Crossed [UNL-128]
+3 Pack of Wonders [OGN-181]
+2 Treasure Trove [OGN-186]
+3 The List [UNL-138]
+Battlefields:
+1 Sigil of the Storm [OGN-287]
+1 Void Gate [OGN-296]
+1 Frozen Fortress [UNL-212]
+Runes:
+6 Chaos Rune [OGN-166]
+6 Mind Rune [OGN-089]
+```
+
+## Sett (Kingpin): Stuttgart Regional 23rd of 315
+
+```
+Legend:
+1 Sett - The Boss [OGN-269]
+Champion:
+1 Sett - Kingpin [OGN-240]
+Main Deck:
+3 Irresistible Faefolk [UNL-112]
+3 Pit Rookie [OGN-136]
+3 Trifarian Captain [RAD-129]
+3 First Mate [OGN-132]
+3 Kinkou Initiate [UNL-097]
+3 Fiora - Victorious [OGN-232]
+3 Rengar - Trophy Hunter [UNL-120]
+1 Vi - Peacekeeper [UNL-176]
+2 Ruin Runner [SFD-105]
+3 Punch First [SFD-097]
+3 Showstopper [OGN-270]
+3 Call to Glory [OGN-207]
+3 Rampage [VEN-083]
+3 Pillaged Armory [RAD-073]
+Battlefields:
+1 Monastery of Hirana [OGN-282]
+1 Packed Amphitheater [RAD-164]
+1 Valley of Idols [UNL-218]
+Runes:
+7 Body Rune [OGN-126]
+5 Order Rune [OGN-214]
+```
