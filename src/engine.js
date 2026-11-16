@@ -1174,7 +1174,8 @@ var RT = (function () {
     beginningDraw: async function (G, pi) { if (G.phase === 'beginning' && G.active === pi) { drawOne(G, pi); log(G, 'It is the Beginning Phase: draw 1 more.', pi); } },
     drawIf: async function (G, pi, e) { for (var i = 0; i < e.n; i++) drawOne(G, pi); log(G, G.players[pi].name + ' draw' + (pi === 0 ? '' : 's') + ' ' + e.n + '.', pi); }
   };
-  // AI strength: 0 = greedy card-by-card (frozen baseline), 1 = also scores gear/unit abilities and combo enablers,
+  // AI strength (4 = level 3 scored by the self-play model EVAL_MODEL instead of hand-set weights):
+  // 0 = greedy card-by-card (frozen baseline), 1 = also scores gear/unit abilities and combo enablers,
   // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
@@ -3743,11 +3744,43 @@ var RT = (function () {
     NG.aiLevel = [2, 2];
     return NG;
   }
-  // How good is this position for pi (after the opponent's reply)?
-  function evalState(G, pi) {
+  // Position features (mine minus the opponent's unless named otherwise), used by the learned evaluation (level 4).
+  var EVAL_FEATURES = ['ptsDiff', 'myPts2', 'oppPts2', 'bfDiff', 'boardValDiff', 'bfMightDiff', 'unitDiff', 'handDiff', 'runeDiff',
+    'energyGearDiff', 'gearDiff', 'goldDiff', 'buffDiff', 'xpDiff', 'hiddenDiff', 'deckDiff', 'champDiff'];
+  function evalFeatures(G, pi) {
+    var o = opp(pi), me = G.players[pi], op = G.players[o];
+    var side = function (q) {
+      var pl = G.players[q], us = G.units.filter(function (u) { return u.ctrl === q && !u.dead; });
+      return {
+        bf: G.bfs.filter(function (b) { return b.ctrl === q; }).length,
+        val: us.reduce(function (s2, u) { return s2 + unitValue(u); }, 0),
+        bfm: us.filter(function (u) { return u.loc !== 'base'; }).reduce(function (s2, u) { return s2 + might(u); }, 0),
+        units: us.length, hand: pl.hand.length, runes: pl.runes.length,
+        eg: pl.gear.filter(function (g) { return g.c.P.addEnergy; }).reduce(function (s2, g) { return s2 + (g.empowered ? 2 : 1); }, 0),
+        gear: pl.gear.filter(function (g) { return !g.token && g.c.supertype !== 'Token'; }).length + us.reduce(function (s2, u) { return s2 + u.equips.length; }, 0),
+        gold: pl.gear.filter(function (g) { return g.c.P.consumed; }).length, buffs: us.filter(function (u) { return u.buff; }).length,
+        xp: pl.xp || 0, hidden: pl.hidden.length, deck: pl.deck.length, champ: pl.champion ? 1 : 0
+      };
+    };
+    var a = side(pi), b = side(o);
+    return [me.points - op.points, me.points * me.points / 8, op.points * op.points / 8, a.bf - b.bf, a.val - b.val, a.bfm - b.bfm, a.units - b.units,
+      a.hand - b.hand, a.runes - b.runes, a.eg - b.eg, a.gear - b.gear, a.gold - b.gold, a.buffs - b.buffs, a.xp - b.xp, a.hidden - b.hidden,
+      Math.max(-10, Math.min(10, a.deck - b.deck)), a.champ - b.champ];
+  }
+  // Learned by self-play (quant/train_eval.js + quant/fit_eval.py): logistic win probability from evalFeatures.
+  // EVAL_MODEL_START
+  var EVAL_MODEL = {"names":["ptsDiff","myPts2","oppPts2","bfDiff","boardValDiff","bfMightDiff","unitDiff","handDiff","runeDiff","energyGearDiff","gearDiff","goldDiff","buffDiff","xpDiff","hiddenDiff","deckDiff","champDiff"],"b":-0.0,"w":[0.1786,0.40128,-0.40128,-0.25092,0.1124,-0.01361,-0.01289,0.11952,0.19959,0.13398,0.1464,0.21446,0.20154,0.00911,0.41816,0.02828,0.35351]};
+  // EVAL_MODEL_END
+  // How good is this position for pi (after the opponent's reply)? learned: use the self-play model (level 4).
+  function evalState(G, pi, learned) {
     var o = opp(pi);
     if (G.winner === pi) return 1e4;
     if (G.winner === o) return -1e4;
+    if (learned && EVAL_MODEL) {
+      var f = evalFeatures(G, pi), z = EVAL_MODEL.b;
+      for (var fi = 0; fi < f.length; fi++) z += EVAL_MODEL.w[fi] * f[fi];
+      return 10 * z;   // logit scaled to the hand-tuned score's range
+    }
     var me = G.players[pi], op = G.players[o], v = 12 * (me.points - op.points);
     G.bfs.forEach(function (b) { if (b.ctrl === pi) v += 3; else if (b.ctrl === o) v -= 3; });
     G.units.forEach(function (u) { if (u.dead) return; var w = unitValue(u) + (u.loc !== 'base' ? 0.5 : 0); v += u.ctrl === pi ? w : -w; });
@@ -3783,7 +3816,7 @@ var RT = (function () {
     return { ok: true };
   }
   // Play the candidate on a copy, finish the turn and the opponent's reply with the level-2 AI, and score the result.
-  async function rollout(G, pi, c, seed) {
+  async function rollout(G, pi, c, seed, learned) {
     var H = cloneGame(G, seed), pre = !!G.aiPreAttack, noop = function () { return Promise.resolve(); };
     // Fair play: the AI can't see the opponent's hand or either deck order, so each line uses a random guess for them
     // (the opponent's hand is redealt from their unseen cards, both decks are shuffled).
@@ -3806,7 +3839,7 @@ var RT = (function () {
     if (H.winner == null) await aiHide(H, pi, noop);
     if (H.winner == null) await endTurn(H);
     for (var guard = 0; guard < 3 && H.winner == null && H.active !== pi; guard++) { await aiTurn(H, H.active); if (H.winner == null) await endTurn(H); }
-    return evalState(H, pi);
+    return evalState(H, pi, learned);
   }
   var LOOK_SAMPLES = (typeof process !== 'undefined' && process.env && +process.env.RT_LOOK_SAMPLES) || 2;
   async function aiLookahead(G, pi) {
@@ -3815,7 +3848,7 @@ var RT = (function () {
     var best = null, bv = -Infinity;
     for (var i = 0; i < cands.length; i++) {
       var v = 0;   // average over LOOK_SAMPLES guesses of the hidden cards
-      for (var sm = 0; sm < LOOK_SAMPLES; sm++) v += await rollout(G, pi, cands[i], (G.turnNo * 7919 + i * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0);
+      for (var sm = 0; sm < LOOK_SAMPLES; sm++) v += await rollout(G, pi, cands[i], (G.turnNo * 7919 + i * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0, aiLvl(G, pi) >= 4);
       v /= LOOK_SAMPLES;
       if (v > bv + 0.25 || (best && best.kind === 'stop' && v > bv)) { bv = v; best = cands[i]; }
     }
@@ -4172,7 +4205,7 @@ var RT = (function () {
     gameTips: gameTips,
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
-    killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger, lookaheadForTest: aiLookahead, cloneForTest: cloneGame,
+    evalFeatures: evalFeatures, EVAL_FEATURES: EVAL_FEATURES, killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger, lookaheadForTest: aiLookahead, cloneForTest: cloneGame,
     newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
     empoweredList: function (G, pi) {
       var out = [], L = G.players[pi].legend;

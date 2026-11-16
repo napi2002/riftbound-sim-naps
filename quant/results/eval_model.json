@@ -1,0 +1,58 @@
+{
+ "positions": 217806,
+ "train": 174042,
+ "test": 43764,
+ "lambda": 1.0,
+ "test_logloss": {
+  "learned": 0.5211741871479617,
+  "hand_set_level3": 0.5740954353965173,
+  "no_information": 0.6931471805599453
+ },
+ "test_auc": {
+  "learned": 0.8116712132838763,
+  "hand_set_level3": 0.7587112677822998
+ },
+ "test_accuracy": {
+  "learned": 0.7246138378575998,
+  "hand_set_level3": 0.6848094324102002
+ },
+ "coefficients_standardised": {
+  "ptsDiff": 0.355,
+  "myPts2": 0.7275,
+  "oppPts2": -0.7275,
+  "bfDiff": -0.2717,
+  "boardValDiff": 1.6901,
+  "bfMightDiff": -0.0802,
+  "unitDiff": -0.0242,
+  "handDiff": 0.2573,
+  "runeDiff": 0.5095,
+  "energyGearDiff": 0.0533,
+  "gearDiff": 0.1665,
+  "goldDiff": 0.0867,
+  "buffDiff": 0.0996,
+  "xpDiff": 0.0108,
+  "hiddenDiff": 0.1685,
+  "deckDiff": 0.0735,
+  "champDiff": 0.1762
+ },
+ "coefficients_raw": {
+  "ptsDiff": 0.1786,
+  "myPts2": 0.40128,
+  "oppPts2": -0.40128,
+  "bfDiff": -0.25092,
+  "boardValDiff": 0.1124,
+  "bfMightDiff": -0.01361,
+  "unitDiff": -0.01289,
+  "handDiff": 0.11952,
+  "runeDiff": 0.19959,
+  "energyGearDiff": 0.13398,
+  "gearDiff": 0.1464,
+  "goldDiff": 0.21446,
+  "buffDiff": 0.20154,
+  "xpDiff": 0.00911,
+  "hiddenDiff": 0.41816,
+  "deckDiff": 0.02828,
+  "champDiff": 0.35351
+ },
+ "intercept_raw": -0.0
+}
