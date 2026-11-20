@@ -23,7 +23,8 @@ const LEGENDS = ['Akali - Rogue Assassin', 'Azir - Emperor of the Sands', 'Drave
   'Heart of the Tempest', 'Irelia - Blade Dancer', 'Jayce - Defender of Tomorrow', 'LeBlanc - Deceiver', 'Lee Sin - Blind Monk',
   'Master Yi - Wuju Bladesman', 'Mordekaiser - Iron Revenant', 'Orianna - Lady of Clockwork', 'Pyke - Bloodharbor Ripper',
   "Rek'sai - Void Burrower", 'Rengar - Pridestalker', 'Riven - The Exile', 'Seraphine - Starry-Eyed Songstress', 'Vex - Gloomist',
-  'Viktor - Herald of the Arcane'];
+  'Viktor - Herald of the Arcane', 'Sett - The Boss', 'Fiora - Grand Duelist', 'Volibear - Relentless Storm', "Kai'Sa - Daughter of the Void",
+  'Ezreal - Prodigal Explorer', 'Ornn - Fire Below the Mountain'];
 // Only what a legend's own ability needs to be used at all; no card priorities, attack style or reserve.
 const MECH = { seraphine: { seraphine: true }, azir: { equipAlways: true }, kennen: { hideEager: true }, evelynn: { hideEager: true },
   irelia: { moveDraw: true }, masteryi: { holdLone: true }, reksai: { conquerReserve: 3 } };
@@ -41,12 +42,12 @@ const keyOf = s => JSON.stringify([s.champion, s.runes, s.bfs, s.list.slice().so
 function worker() {
   const RT = loadRT(), cache = new Map();
   const deckFor = s => { const k = s.id + keyOf(s); if (!cache.has(k)) { if (cache.size > 600) cache.clear(); cache.set(k, RT.makeDeck(s)); } return cache.get(k); };
-  process.on('message', async ({ id, specs, jobs }) => {
+  process.on('message', async ({ id, specs, jobs, level }) => {
     const out = [];
     for (const j of jobs) {
       const me = deckFor(specs[j.a]), op = deckFor(specs[j.b]);
       const A = j.seat === 0 ? me : op, B = j.seat === 0 ? op : me;
-      const G = await RT.newGame(A, B, { maxTurns: 200, rnd: mulberry32(j.seed) });
+      const G = await RT.newGame(A, B, Object.assign({ maxTurns: 200, rnd: mulberry32(j.seed) }, level != null ? { aiLevel: [level, level] } : {}));
       while (G.winner == null) { await RT.aiTurn(G, G.active); await RT.endTurn(G); }
       out.push(G.winner === j.seat ? 1 : G.winner === 0 || G.winner === 1 ? 0 : 0.5);
     }
@@ -79,10 +80,11 @@ async function main() {
   const ws = Array.from({ length: W }, () => cp.fork(__filename, ['--worker']));
   let nextId = 0, games = 0; const pending = new Map();
   ws.forEach(w => w.on('message', m => { const p = pending.get(m.id); pending.delete(m.id); p(m.out); }));
+  let LEVEL = +arg('--ai-level', '2');   // fast AI while building decks; --final-level for the final matrix
   const run = (specs, jobs) => {
     const ch = Array.from({ length: W }, () => []); jobs.forEach((j, i) => { j.ix = i; ch[i % W].push(j); });
     games += jobs.length;
-    return Promise.all(ch.map((c, wi) => c.length ? new Promise(res => { const id = nextId++; pending.set(id, res); ws[wi].send({ id, specs, jobs: c }); }) : []))
+    return Promise.all(ch.map((c, wi) => c.length ? new Promise(res => { const id = nextId++; pending.set(id, res); ws[wi].send({ id, specs, jobs: c, level: LEVEL }); }) : []))
       .then(parts => { const r = new Array(jobs.length); ch.forEach((c, wi) => c.forEach((j, k) => { r[j.ix] = parts[wi][k]; })); return r; });
   };
 
@@ -177,11 +179,13 @@ async function main() {
     console.log(`iter ${it + 1}: Nash ${L.map((l, i) => [l.id, x[i]]).filter(p => p[1] > 0.005).sort((a, b) => b[1] - a[1]).map(p => `${p[0]} ${(100 * p[1]).toFixed(1)}%`).join(', ')}  [${el()}]`);
   }
   // final: fresh, larger matrix on the final decks
+  LEVEL = +arg('--final-level', '4');
+  console.log(`final matrix at AI level ${LEVEL} (${NF * 2} games per pairing)...`);
   const Mf = await matrix(cur, NF, 99000000), [xf, vf] = nash(Mf), avgF = Mf.map(r => (r.reduce((s, y) => s + y, 0) - 0.5) / (r.length - 1));
   const rows = L.map((l, i) => ({ id: l.id, legend: l.leg.name, champion_simulated: l.champSim, nash: xf[i], avg_wr: avgF[i], vs_nash: Mf[i].reduce((s, y, j) => s + y * xf[j], 0), deck: cur[i], text: RT.deckToText(cur[i]) }))
     .sort((a, b) => b.nash - a.nash || b.vs_nash - a.vs_nash);
   let commit = 'unknown'; try { commit = cp.execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim(); } catch (e) { /* */ }
-  const res = { commit, created: new Date().toISOString(), params: { ITERS, R1, R, M, P, N1, N2, NM, NF }, games, seconds: (Date.now() - t0) / 1000, ids: L.map(l => l.id), final_matrix: Mf, nash_value: vf, rows, history: hist };
+  const res = { commit, created: new Date().toISOString(), params: { ITERS, R1, R, M, P, N1, N2, NM, NF, searchLevel: +arg('--ai-level', '2'), finalLevel: LEVEL }, games, seconds: (Date.now() - t0) / 1000, ids: L.map(l => l.id), final_matrix: Mf, nash_value: vf, rows, history: hist };
   fs.mkdirSync(path.join(__dirname, 'predictions'), { recursive: true });
   const pf = path.join(__dirname, 'predictions', `meta_${res.created.slice(0, 10)}.json`);
   fs.writeFileSync(pf, JSON.stringify(res, null, 1) + '\n');
