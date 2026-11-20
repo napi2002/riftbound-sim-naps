@@ -2859,60 +2859,65 @@
  },
  "vex": {
   "id": "vex",
-  "summary": "Settle Vex - Apathetic on a battlefield and hold it: units the opponent plays are stunned, hidden cards ambush attackers, and each hold draws a card. Win by out-holding, not out-fighting. Note: from Nov 23 2026 Stacked Deck, Zhonya's Hourglass are banned; the suggested list replaces them with the most-played legal cards.",
-  "archetype": "Control (hold)",
+  "summary": "Calm/Chaos hidden-card hold control. Settle a battlefield, then make the opponent's new units useless with Vex - Apathetic (stunned and can't move the turn they're played). Answer attackers with 0-cost hidden reactions, and draw a card with the legend each time you hold. This list adds a hidden package: Ember Monk (+2 when you play from hidden), Gutter Guardian, Bedeviling Stranger, Evelynn, and Kha'Zix - Mutating Horror (Ambush). Bandle Tree, Bandle Scouts' Academy and Startipped Peak pay you for hiding and holding. List: Convergence IV 9th of 272, with 2 Zhonya's Hourglass replaced by Defy + Discipline for the Nov 23 2026 ban.",
+  "archetype": "Control (hold / hidden)",
   "mulligan": {
    "keep": [
+    "Clockwork Keeper",
     "Mutated Mouser",
-    "Scuttle Crab",
-    "Tideturner",
     "Evelynn - Entrancing",
+    "Bedeviling Stranger",
     "Gust Monk",
-    "Switcheroo",
+    "Gutter Guardian",
     "Tornado Warrior",
-    "Steel Paws"
+    "Vex - Apathetic",
+    "Seal of Discord",
+    "Switcheroo"
    ],
    "toss": [
     "Astral Heron",
     "Boots of Swiftness",
-    "Irelia - Fervent",
-    "Star-Crossed",
-    "Edge of Night"
+    "Hunting Blind",
+    "Edge of Night",
+    "Blitzcrank - Impassive",
+    "Sterak's Gage"
    ],
-   "note": "Mulligan for a 2-cost unit; if you have one, then look for a Hidden card. Seven-drops and Boots go back."
+   "note": "Mulligan for a 2-cost unit, then a hidden card or Vex - Apathetic. Seven-drops, Boots and other Equipment go back."
   },
   "phases": [
    {
     "name": "Turns 1-3",
-    "goal": "Plant a cheap holder on a battlefield, then Vex - Apathetic beside it.",
+    "goal": "Take a battlefield with a cheap unit, start hiding cards there, and land Vex - Apathetic.",
     "steps": [
-     "Turn 1: a 2-cost unit (Mutated Mouser, Scuttle Crab, Tideturner); move it to an open battlefield turn 2.",
-     "Turn 2-3: play Vex - Apathetic to that battlefield; any unit they play is stunned and can't move that turn.",
-     "Hide a card there (Switcheroo, Back Off, Tornado Warrior) for 1 power to react next turn for 0 energy.",
-     "Going first, favour Fortified Position (defender gains Shield 2); Targon's Peak readies 2 runes on conquer.",
-     "Keep Defy or Discipline open on their turn once you have a holder worth protecting."
+     "Turn 1: Seal of Discord (free Chaos power) and a 2-drop: Clockwork Keeper (pay Calm to draw), Mutated Mouser (Shield 2 defender) or Gust Monk.",
+     "Move it to an open battlefield, ideally Bandle Tree (hide 2 cards) or Bandle Scouts' Academy (each hide makes a Gold token = 1 extra power).",
+     "Hide a card there for 1 power (Switcheroo, Back Off, Tornado Warrior, Evelynn - Entrancing, Bedeviling Stranger) to use as a 0-energy reaction later.",
+     "Gutter Guardian: show off a hidden card to get the power back; it's a free 3-Might body.",
+     "Turn 3-4: Vex - Apathetic to the battlefield you hold. From then on, every unit they play is stunned and can't move that turn."
     ]
    },
    {
     "name": "Turns 4-6",
-    "goal": "Hold, draw with the legend each turn, and deny their comeback.",
+    "goal": "Hold, draw a card with the legend every hold, and ambush each attack.",
     "steps": [
-     "Each hold: exhaust the legend to draw 1. Keep at least one unit there through their turn.",
-     "Steel Paws + hidden Tornado Warrior: reveal Warrior there to empower Paws to 7 Might for the fight.",
-     "Switcheroo swaps Might: give their big attacker your 0-Might Steel Paws' stats.",
-     "Bounce or stun big threats: Star-Crossed, Rebuke, Gust (3 Might or less), Back Off.",
-     "Hidden Evelynn on your turn pulls an enemy unit from elsewhere into your defended battlefield."
+     "Each hold: exhaust Vex - Gloomist to draw 1; Startipped Peak also channels a rune when you hold there.",
+     "Ember Monk next to hidden cards: each reveal gives it +2, so a reveal in a showdown makes it a 6-Might defender.",
+     "Kha'Zix - Mutating Horror ambushes into a battlefield where you have units; against a lone attacker it's 6 Might.",
+     "Tornado Warrior revealed next to Steel Paws empowers it to 7 Might for the turn: much cheaper than paying 7.",
+     "Life from Stone: exhaust a unit that's done for the turn to draw 1 and ramp a rune.",
+     "Blitzcrank - Impassive played to your battlefield pulls their unit in; on hold he returns to hand to do it again."
     ]
    },
    {
     "name": "Closing (6+ points)",
-    "goal": "Take the second battlefield once they've spent their answers.",
+    "goal": "Take the second battlefield once their answers are spent.",
     "steps": [
      "Astral Heron at a battlefield makes your second card each turn 2 energy + 2 power cheaper.",
-     "Ride The Wind moves and readies a unit to steal the other battlefield late in your turn.",
-     "Boots of Swiftness (+2) or Edge of Night (+2, from hidden) turn a holder into a winning attacker.",
-     "The 8th point by conquest needs both fields scored that turn; otherwise hold and score at turn start.",
-     "Zhonya's Hourglass hidden at your battlefield saves the unit that would die to their last push."
+     "Boots of Swiftness (+2) or hidden Edge of Night (+2) turns a holder into an attacker.",
+     "Gust Monk with the extra 1 energy gives Assault 2 to the unit taking the second battlefield.",
+     "Evelynn - Entrancing revealed on your turn pulls their holder into your defended battlefield and leaves theirs empty.",
+     "Hunting Blind deploys to a battlefield, drags an enemy in and gives your units there Shield 2.",
+     "Keep Defy or Discipline up through their last turn; don't over-commit hidden cards to a battlefield you might lose."
     ]
    }
   ],
@@ -2922,148 +2927,166 @@
     "q": "Is Vex - Apathetic at a battlefield?",
     "yes": {
      "q": "Is the other battlefield empty or weakly held?",
-     "yes": "Ride The Wind/Boots a unit there to take it; keep Defy up",
-     "no": "Hide Switcheroo/Back Off/Tornado Warrior; pass with energy up"
+     "yes": "Boots/Gust Monk a unit there (or Evelynn pulls their holder); keep Defy up",
+     "no": "Hide Switcheroo/Back Off/Tornado Warrior at your field; pass with Kha'Zix or Defy up"
     },
-    "no": "Play or move Vex - Apathetic to the battlefield you hold"
+    "no": {
+     "q": "Can you afford Vex - Apathetic this turn?",
+     "yes": "Play Vex - Apathetic to the battlefield you hold",
+     "no": "Hide a card there (Gutter Guardian/Ember Monk next turn) and draw with Clockwork Keeper"
+    }
    },
    "no": {
     "q": "Is a battlefield empty?",
-    "yes": "Move a 2-cost unit (Mutated Mouser, Scuttle Crab) there",
+    "yes": "Move a 2-cost unit there; hide a card behind it",
     "no": {
-     "q": "Is the enemy holder 3 Might or less?",
-     "yes": "Gust or Rebuke it, then move a unit in",
-     "no": "Charm or Star-Crossed it away, then contest"
+     "q": "Is the enemy holder alone?",
+     "yes": "Rebuke or Blitzcrank/Hunting Blind it out, or attack it with Kha'Zix (+2 vs a lone unit)",
+     "no": "Hold up Back Off/Switcheroo and defend; take the field when they over-extend"
     }
    }
   },
   "combat": [
-   "Hidden cards cost 0 to play as reactions but only affect that battlefield; set them a turn early.",
-   "Switcheroo swaps Might of two units there: pair their biggest attacker with Steel Paws (0).",
-   "Tornado Warrior from hidden empowers Steel Paws (+7) until end of turn.",
-   "Back Off stuns the biggest attacker so it deals no damage; from hand it also draws.",
-   "Defy their pump or removal spell (4 energy or less); Discipline is +2 and a card.",
-   "Vex - Apathetic does nothing to units already on board; answer those with tricks."
+   "Hidden cards cost 0 energy to play as reactions but only work at their battlefield; hide them a turn early.",
+   "Every hidden reveal counts for Ember Monk (+2 this turn) at that battlefield.",
+   "Switcheroo swaps Might: pair their biggest attacker with Steel Paws (0) or Scuttle-sized units.",
+   "Kha'Zix - Mutating Horror is an Ambush reaction: drop it into a fight where an enemy is alone for 6 Might.",
+   "Back Off stuns the biggest attacker so it deals no combat damage.",
+   "Vex - Apathetic does nothing to units already in play; answer those with Rebuke, Back Off or Switcheroo.",
+   "Defy their removal or pump (4 energy or less); Discipline is +2 and a card."
   ],
   "holdFor": [
-   "Defy",
-   "Discipline",
-   "Gust",
-   "Star-Crossed",
-   "Switcheroo",
-   "Back Off",
-   "Tornado Warrior",
-   "Evelynn - Entrancing",
-   "Tideturner"
+   "Defy - counter their removal/pump on your holder",
+   "Discipline - +2 in a showdown and replace itself",
+   "Kha'Zix - Mutating Horror - Ambush into a fight vs a lone attacker",
+   "Switcheroo - hidden; swap Might with Steel Paws to flip a fight",
+   "Back Off - hidden; stun their biggest attacker",
+   "Tornado Warrior - hidden 3-Might defender; empowers Steel Paws",
+   "Rebuke - bounce the unit that breaks your hold",
+   "Life from Stone - at end of their turn on an exhausted-anyway unit"
   ],
   "matchups": [
    {
-    "vs": "leblanc",
-    "plan": "Favourable: bounce wrecks her synergy. Hide Evelynn and pull her key unit into your field."
+    "vs": "riven",
+    "plan": "Unfavoured (Riven is S tier and most top matchups are bad for Vex). Her units already in play ignore Apathetic: keep Back Off/Switcheroo hidden for her equipped attacker and Defy her pump. Riven - Broken Blade is banned, which helps."
    },
    {
-    "vs": "masteryi",
-    "plan": "Unfavourable (45% at best). He out-holds you; save Switcheroo/Back Off for Punch First turns."
-   },
-   {
-    "vs": "azir",
-    "plan": "Unfavourable. Too many Soldiers to stun; Gust/Rebuke the equipped one and hold one field."
+    "vs": "kaisa",
+    "plan": "Unfavoured: removal gets through Deflect. Spread hidden cards over two units, keep Defy for removal on Vex - Apathetic, and grind with legend draws."
    },
    {
     "vs": "kennen",
-    "plan": "Unfavourable. Keep Defy for his big spell and hold early before his value turns."
+    "plan": "Was about 28% before the ban, now better with Rhasa the Sunderer gone. Apathetic stuns his replays from the trash; Defy his key spell and hold early."
    },
    {
-    "vs": "irelia",
-    "plan": "Unfavourable. Star-Crossed or Back Off her one big threat; don't trade units into her tricks."
+    "vs": "rengar",
+    "plan": "Unfavoured: fast attackers already in play. Mutated Mouser and Kha'Zix ambush blunt early swings; get Vex - Apathetic down before his reload turns."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Worst matchup (about 17-83). Her burrow/removal ignores holds. Mulligan aggressively for early board, race with Kha'Zix/Ember Monk, and Defy her key spell."
    },
    {
     "vs": "jayce",
-    "plan": "Bounce Elder Dragon with Star-Crossed or Rebuke; pressure before Aurora lands."
+    "plan": "Favoured (was about 80%; Dazzling Aurora is now banned too). Bounce or stun his big cheated-in units, and Apathetic stuns them as they land."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Unfavoured: he out-holds you. Save Switcheroo/Back Off for his Punch First turn and Rebuke Yi off the battlefield."
+   },
+   {
+    "vs": "ornn",
+    "plan": "Favoured (reasoned from card text): Apathetic stuns Sprites and new units so they can't move that turn. Rebuke his equipped unit; Equipment goes to the trash."
+   },
+   {
+    "vs": "leblanc",
+    "plan": "Favourable: bounce wrecks her synergy. Hide Evelynn and pull her key unit into your field."
    }
   ],
   "mistakes": [
-   "Holding a hand full of answers with nothing on a battlefield to earn points.",
+   "Holding a hand of answers with nothing on a battlefield to earn points.",
    "Moving Vex - Apathetic off the battlefield; her stun only works while she is at one.",
-   "Assuming Apathetic stops units already on board.",
-   "Hiding cards at a battlefield you are about to lose: they go to the trash.",
-   "Empowering Steel Paws for 7 energy instead of using a hidden Tornado Warrior.",
-   "Spending Gust/Rebuke on small units instead of the attacker that breaks your hold."
+   "Assuming Apathetic stops units already in play.",
+   "Hiding cards at a battlefield you are about to lose (they go to the trash).",
+   "Paying 7 to empower Steel Paws instead of revealing Tornado Warrior.",
+   "Using Life from Stone on a unit you still need to move or attack with this turn.",
+   "Spending Rebuke on small units instead of the attacker that breaks your hold."
   ],
   "ai": {
    "attack": "safe",
    "reserveEnergy": 2,
    "priority": {
-    "Vex - Apathetic": 3,
-    "Mutated Mouser": 1,
-    "Scuttle Crab": 1,
-    "Tornado Warrior": 1,
+    "Vex - Apathetic": 4,
+    "Seal of Discord": 2,
+    "Gutter Guardian": 2,
+    "Ember Monk": 2,
     "Astral Heron": 2,
-    "Steel Paws": 1
+    "Clockwork Keeper": 1,
+    "Mutated Mouser": 1,
+    "Gust Monk": 1,
+    "Steel Paws": 1,
+    "Blitzcrank - Impassive": 1
    },
    "holdForShowdown": [
     "Defy",
     "Discipline",
-    "Gust",
-    "Star-Crossed",
+    "Kha'Zix - Mutating Horror",
     "Switcheroo",
-    "Back Off"
+    "Back Off",
+    "Rebuke",
+    "Life from Stone"
    ],
    "mulliganKeep": [
+    "Clockwork Keeper",
     "Mutated Mouser",
-    "Scuttle Crab",
-    "Tideturner",
     "Evelynn - Entrancing",
-    "Switcheroo",
-    "Tornado Warrior"
+    "Gust Monk",
+    "Vex - Apathetic",
+    "Seal of Discord"
    ],
    "notes": [
     "Get Vex - Apathetic to a battlefield you hold early and keep her there.",
     "On each hold, exhaust the legend to draw.",
-    "Hide Switcheroo, Back Off or Tornado Warrior at your held battlefield whenever you have a spare power.",
-    "Tornado Warrior from hidden: empower Steel Paws if it is at that battlefield.",
-    "Only attack the second battlefield when it is empty or clearly weaker; never leave the held field empty.",
-    "Stacked Deck was banned in tournament play (Sept 2026); in-game it is just card selection."
+    "Hide Switcheroo, Back Off, Tornado Warrior or Evelynn at your held battlefield when a power is spare; prefer Bandle Tree / Bandle Scouts' Academy.",
+    "Play Ember Monk where you have hidden cards; reveal them during combat for +2 each.",
+    "Tornado Warrior from hidden: empower Steel Paws if it's at that battlefield.",
+    "Only attack the second battlefield when it's empty or clearly weaker; never leave the held field empty.",
+    "List note: post-ban list (2 Zhonya's Hourglass replaced by Defy + Discipline)."
    ]
   },
   "sources": [
    {
-    "title": "Vex – Gloomist Guide – Best Decks & Cards (riftbound.gg)",
+    "title": "Vex - Gloomist Guide - Best Decks & Cards (riftbound.gg)",
     "url": "https://riftbound.gg/vex-gloomist-guide/",
-    "date": "2026-09-14"
+    "date": "2026-11-18"
    },
    {
-    "title": "Vex legend guide (HextechAnalytics)",
-    "url": "https://hextechanalytics.com/legends/vex",
+    "title": "Riftbound Meta Tier List - Radiance Week 2 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-radiance-week-2",
+    "date": "2026-11-06"
+   },
+   {
+    "title": "Convergence IV tournament decks - stats (RiftDecks)",
+    "url": "https://riftdecks.com/riftbound-tournaments/convergence-iv-tournament-decks-18621/stats",
+    "date": "2026-10-31"
+   },
+   {
+    "title": "Riftbound Regional Championship Europe (Stuttgart) - stats (RiftDecks)",
+    "url": "https://riftdecks.com/riftbound-tournaments/riftbound-regional-championship-europe-final-standings-tournament-decks-18668/stats",
+    "date": "2026-11-08"
+   },
+   {
+    "title": "Vex, Gloomist - Sydney Regional Qualifier Top 4 (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/vex-gloomist-sydney-regional-qualifier-top-4-eep-bonk-repeat",
     "date": ""
-   },
-   {
-    "title": "Riftbound: Deck Tech - Vex (Skirmish Champion) (Cards Realm)",
-    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-vex-skirmish-champion",
-    "date": "2026-06-09"
    },
    {
     "title": "Best Cards in Each Domain to Deal With Vex - Apathetic (Cards Realm)",
     "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-best-cards-in-each-domain-to-deal-with-vex-apathetic",
     "date": "2026-05-24"
-   },
-   {
-    "title": "Riftbound Meta Tier List – Vendetta, Heading to Radiance (riftbound.gg)",
-    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-heading-to-radiance/",
-    "date": "2026-10-09"
-   },
-   {
-    "title": "Riftbound Meta Tier List – Post-Ban Week 3 (riftbound.gg)",
-    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-vendetta-post-ban-metagame-week-3/",
-    "date": "2026-10-03"
-   },
-   {
-    "title": "Vex, Gloomist deck stats & guide (Riftbound France)",
-    "url": "https://riftboundfrance.fr/en/legendes/vex-gloomist",
-    "date": "2026-10-17"
    }
   ],
-  "confidence": "medium: hold plan and matchups are well sourced, but guides use other lists; Steel Paws/Tornado combos are from card text."
+  "confidence": "medium: hold plan, tier (2, 53%) and key matchups (Rek'Sai worst, Jayce good) come from riftbound.gg in Nov 2026. How to use Ember Monk, Kha'Zix, Life from Stone, Blitzcrank and the Bandle battlefields is reasoned from card text, since no guide covers this exact list."
  },
  "fiora": {
   "id": "fiora",
@@ -4353,5 +4376,223 @@
    }
   ],
   "confidence": "low-medium: the Sett buff-aggro plan is well sourced and Kingpin/Valley of Idols appear in recent lists, but no pilot write-up of this Stuttgart list exists; Kingpin sequencing and matchups are inferred from card text and the Brawler guide."
+ },
+ "ornn": {
+  "id": "ornn",
+  "summary": "Calm/Mind gear ramp. The legend exhausts as a Reaction to add 1 power of any domain, but only for gear, so Seal of Focus, Poro Snax and Sprite Fountain come down early and cheap. Ornn - Blacksmith digs more gear, Pit Crew readies whenever you play a gear, Plaza Guardian gets cheaper per gear, and Sprite Fountain makes 3-Might Sprites to conquer with. Win by flooding the board with gear-fuelled bodies and Equipment, not with one big threat. List: LDXP Sacramento 88th of 755 (no cards from the Nov 23 2026 ban list).",
+  "archetype": "Midrange / Gear ramp",
+  "mulligan": {
+   "keep": [
+    "Seal of Focus",
+    "Poro Snax",
+    "Clockwork Keeper",
+    "Scuttle Crab",
+    "Patched Porobot",
+    "Pit Crew",
+    "Sprite Fountain",
+    "Ornn - Blacksmith"
+   ],
+   "toss": [
+    "Plaza Guardian",
+    "Temporal Breach",
+    "Guardian Angel",
+    "Mask of Foresight",
+    "Brutalizer"
+   ],
+   "note": "Keep a cheap gear (Seal of Focus or Poro Snax) plus a 2-3 cost unit. Plaza Guardian is dead until you have 4+ gear, and Equipment needs a body first. Keep Ornn - Blacksmith if the rest of the hand is cheap."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Put 2-3 gear on the board with the legend's free power and develop cheap units.",
+    "steps": [
+     "Turn 1: Seal of Focus costs 0 energy + 1 power; pay the power with the legend so it's free. Add Poro Snax (draw 1) if you have the energy.",
+     "Use the legend every turn: hold it as a Reaction so it can pay for a Quick-Draw gear (Cloth Armor, Sterak's Gage) on their turn, but don't let it go unused.",
+     "Clockwork Keeper with the extra Calm draws a card; Scuttle Crab draws and can hold a battlefield at 0 Might.",
+     "Pit Crew turn 3: move or attack with it, then play a gear to ready it again so it can still defend.",
+     "Sprite Fountain makes a ready 3-Might Sprite: move it in the same turn to take an empty or weakly held battlefield.",
+     "Ornn's Forge makes the first gear each turn 1 cheaper; a good choice when you go first."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Turn the gear count into card advantage and large bodies; hold one battlefield and score.",
+    "steps": [
+     "Ornn - Blacksmith (5 Might) digs the top 4 for a gear on play and again each time he holds; play him onto the battlefield you control.",
+     "Patched Porobot draws once you control 3 other gear; play it after the turn's gear, not before.",
+     "Plaza Guardian costs 1 less per gear: with 5-6 gear it's an 8-Might Deflect body for 4-5 energy.",
+     "Brutalizer gives +3 on the turn it's attached: equip during your attack, not ahead of time.",
+     "Guardian Angel on Ornn - Blacksmith or Plaza Guardian stops removal and lost fights from killing them.",
+     "When Sprite Fountain dies at your Beginning Phase, its Deathknell makes another Sprite: one Fountain is two attackers over two turns.",
+     "Aspiring Engineer returns a gear from your trash: take Sprite Fountain back for more Sprites, or Guardian Angel."
+    ]
+   },
+   {
+    "name": "Closing (6+ points)",
+    "goal": "Overload one turn: Sprites, Pit Crew readies and Equipment to take the second battlefield.",
+    "steps": [
+     "Sprites are Temporary and die before you score, so use them to conquer on your turn, never to hold.",
+     "Seat of Power draws a card for each other battlefield you control when you conquer it; Veiled Temple readies a gear (Seal of Focus for more power, or Poro Snax to draw again).",
+     "Sterak's Gage (+3, Quick-Draw) is your best trick: hold it plus legend power for their last attack.",
+     "Charm an enemy holder away so a Sprite or Pit Crew can walk in for the 8th point.",
+     "Keep Defy up for their last removal or pump spell (4 energy or less)."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Do you control fewer than 3 gear?",
+   "yes": {
+    "q": "Is Seal of Focus or Poro Snax in hand?",
+    "yes": "Play it using the legend's power, then a cheap unit",
+    "no": {
+     "q": "Is Sprite Fountain in hand and a battlefield open or weak?",
+     "yes": "Play Sprite Fountain and move the Sprite in to conquer",
+     "no": "Play Clockwork Keeper / Scuttle Crab / Pit Crew to draw toward gear"
+    }
+   },
+   "no": {
+    "q": "Is the opponent threatening to score 2 points this turn cycle?",
+    "yes": {
+     "q": "Do you have Sterak's Gage or Defy plus power free?",
+     "yes": "Develop lightly; keep the legend and Gage/Defy up for their attack",
+     "no": "Charm their attacker away or put Ornn - Blacksmith / Plaza Guardian on the battlefield they want"
+    },
+    "no": {
+     "q": "Is Plaza Guardian or Ornn - Blacksmith castable?",
+     "yes": "Play it to the battlefield you hold; the Blacksmith digs a gear",
+     "no": "Play gear first, then Patched Porobot/Pit Crew; attack with Sprites and Brutalizer"
+    }
+   }
+  },
+  "combat": [
+   "The legend's power only pays for gear or gear abilities (including Equip costs); spend it on Brutalizer/Guardian Angel equips if nothing else.",
+   "Sterak's Gage and Cloth Armor are Quick-Draw: as Reactions they attach right away, so they work as surprise pump in a showdown.",
+   "Each gear played readies Pit Crew: a Quick-Draw gear on their turn turns an exhausted Pit Crew back into a defender.",
+   "Brutalizer is +3 only on the turn it is attached; move it to the attacker before combat.",
+   "Mask of Foresight gives +1 to a unit that attacks or defends alone: spread out rather than stacking.",
+   "Temporal Breach (hidden) banishes and replays a unit: save your unit from removal, re-trigger Ornn - Blacksmith's dig, or knock Equipment and buffs off an enemy.",
+   "Sprites are ready when made: they can move and attack the turn Sprite Fountain is played."
+  ],
+  "holdFor": [
+   "Sterak's Gage - Quick-Draw +3 to win a fight on their turn",
+   "Cloth Armor - 1-cost Quick-Draw to ready Pit Crew or add a gear in a showdown",
+   "Defy - counter their removal or pump spell (4 energy or less)",
+   "Temporal Breach - hidden; save a unit from removal or strip an enemy's Equipment",
+   "Guardian Angel - equip on your best unit before they swing at it"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Unfavoured: Riven is the top deck and races with gear-backed attackers. Trade Sprites into her early attackers, keep Defy for her pump, and save Sterak's Gage for the turn she goes for 2 points. Riven - Broken Blade is banned, so her late game is weaker."
+   },
+   {
+    "vs": "kaisa",
+    "plan": "Unfavoured: removal and Deflect taxes pick off your few big units. Go wide with Sprites and cheap units instead of building one carrier, and put Guardian Angel on anything worth 4+ energy."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Favoured: TheManland went 6-0 vs Kennen at RQ Barcelona and credited Ornn - Blacksmith. Kennen's bounce can't stop gear already in play; keep developing, and Defy his key spells."
+   },
+   {
+    "vs": "rengar",
+    "plan": "Unfavoured early: he punishes slow gear turns. Keep cheap blockers (Clockwork Keeper, Scuttle Crab), use Sprites to defend, and hold Sterak's Gage as a reaction."
+   },
+   {
+    "vs": "reksai",
+    "plan": "Unfavoured: yellow removal pays Deflect and kills Plaza Guardian. Spread threats out, keep Guardian Angel and Temporal Breach for her removal, and race with Sprites."
+   },
+   {
+    "vs": "jayce",
+    "plan": "Gear mirror: Jayce readies gear and you make power for it. Race the card advantage: Seat of Power and Patched Porobot, and Defy his key spell. Dazzling Aurora is banned, so his top end is weaker."
+   },
+   {
+    "vs": "masteryi",
+    "plan": "Even to slightly unfavoured: he holds one battlefield with a big unit. Charm Yi away or go around him with Sprites to the other battlefield; Brutalizer + Sterak's Gage on Ornn - Blacksmith out-sizes him."
+   },
+   {
+    "vs": "vex",
+    "plan": "Unfavoured: Vex - Apathetic stuns Sprites and new units so they can't move that turn. Use Charm or Temporal Breach on Vex - Apathetic, and grow through gear and Equipment on units already in play."
+   }
+  ],
+  "mistakes": [
+   "Forgetting the legend each turn; it's a Reaction, so missing its window wastes a free power.",
+   "Using Sprites to hold: they're Temporary and die before you score.",
+   "Playing Patched Porobot before reaching 3 other gear.",
+   "Activating Poro Snax for a card too early: it lowers your gear count for Plaza Guardian and Porobot.",
+   "Equipping Brutalizer on a turn you won't fight (the +2 bonus is lost).",
+   "Putting all Equipment on one unit into a removal-heavy deck."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 1,
+   "priority": {
+    "Seal of Focus": 3,
+    "Poro Snax": 2,
+    "Sprite Fountain": 2,
+    "Ornn - Blacksmith": 3,
+    "Plaza Guardian": 2,
+    "Pit Crew": 2,
+    "Clockwork Keeper": 1,
+    "Scuttle Crab": 1,
+    "Patched Porobot": 1,
+    "Aspiring Engineer": 1
+   },
+   "holdForShowdown": [
+    "Sterak's Gage",
+    "Cloth Armor",
+    "Defy",
+    "Temporal Breach"
+   ],
+   "mulliganKeep": [
+    "Seal of Focus",
+    "Poro Snax",
+    "Clockwork Keeper",
+    "Scuttle Crab",
+    "Pit Crew",
+    "Sprite Fountain"
+   ],
+   "notes": [
+    "Use the legend's power for a gear every turn; Seal of Focus turn 1 is free.",
+    "Play gear before Patched Porobot (needs 3 other gear) and before Plaza Guardian (cheaper per gear).",
+    "After Pit Crew attacks or moves, play a gear to ready it.",
+    "Move Sprites to conquer on the turn they're made; never count on them to hold.",
+    "Equip Brutalizer on the attacking unit the turn it attacks.",
+    "Pay the Calm extra cost on Clockwork Keeper when power is free.",
+    "Aspiring Engineer: return Sprite Fountain first, then Guardian Angel or Sterak's Gage."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Riftbound Ornn Champion Deck Guide - RQ Barcelona (RiftBound Guide)",
+    "url": "https://riftboundguide.com/2026/08/29/riftbound-ornn-champion-deck-guide/",
+    "date": "2026-08-29"
+   },
+   {
+    "title": "Ornn, Fire Below the Mountain - Barcelona RQ 1st, Mice TheManland (Mobalytics)",
+    "url": "https://mobalytics.gg/riftbound/decks/ornn-fire-below-the-mountain-barcelona-regional-qualifier-1st-mice-themanland",
+    "date": "2026-08-23"
+   },
+   {
+    "title": "Riftbound Showdown 25k LDXP Sacramento - final standings breakdown (RiftDecks)",
+    "url": "https://riftdecks.com/riftbound-tournaments/riftbound-showdown-25k-ldxp-sacramento-final-standings-tournament-decks-18559/breakdown",
+    "date": "2026-10-24"
+   },
+   {
+    "title": "Ornn, Fire Below the Mountain average deck (RiftDecks)",
+    "url": "https://riftdecks.com/legends/ornn-fire-below-the-mountain/average-deck",
+    "date": ""
+   },
+   {
+    "title": "Riftbound: Deck Tech - Voltron Blue Ornn (Cards Realm)",
+    "url": "https://riftbound.cardsrealm.com/en-us/articles/riftbound-deck-tech-voltron-blue-ornn",
+    "date": "2026-01-28"
+   },
+   {
+    "title": "Riftbound Meta Tier List - Radiance Week 2 (riftbound.gg)",
+    "url": "https://riftbound.gg/riftbound-meta-tier-list-best-decks-for-radiance-week-2",
+    "date": "2026-11-06"
+   }
+  ],
+  "confidence": "low-medium: under 1% of the field at LDXP Sacramento and no current written guide. The plan comes from card text plus the Barcelona RQ win (Ornn - Blacksmith vs Kennen) and an older Voltron article; matchups other than Kennen are reasoned from the meta, not measured."
  }
 }
