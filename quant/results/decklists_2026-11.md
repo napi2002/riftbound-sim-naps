@@ -289,9 +289,9 @@ Runes:
 5 Order Rune [OGN-214]
 ```
 
-## Vex: Shenyang Regional Open 5th · post-ban
+## Vex: Convergence IV 9th of 272 · post-ban
 
-Post-ban changes: -3 Stacked Deck → +2 Scuttle Crab, +1 Charm; -1 Zhonya's Hourglass → +1 Vex - Apathetic.
+Post-ban changes: -2 Zhonya's Hourglass → +1 Defy, +1 Discipline.
 
 ```
 Legend:
@@ -299,34 +299,36 @@ Legend:
 Champion:
 1 Vex - Apathetic [UNL-150]
 Main Deck:
-2 Vex - Apathetic [UNL-150]
-3 Astral Heron [VEN-044]
-3 Steel Paws [VEN-043]
-3 Tornado Warrior [VEN-099]
-2 Evelynn - Entrancing [UNL-141]
-1 Gust Monk [VEN-101]
-1 Irelia - Fervent [SFD-057]
+1 Clockwork Keeper [OGN-044]
+1 Blitzcrank - Impassive [OGN-067]
+1 Ember Monk [OGN-167]
+2 Gutter Guardian [RAD-103]
+1 Bedeviling Stranger [RAD-107]
 1 Mutated Mouser [UNL-036]
-3 Scuttle Crab [UNL-053]
-1 Tideturner [OGN-199]
+2 Evelynn - Entrancing [UNL-141]
+1 Kha'Zix - Mutating Horror [UNL-143]
+3 Steel Paws [VEN-043]
+3 Astral Heron [VEN-044]
+3 Tornado Warrior [VEN-099]
+1 Gust Monk [VEN-101]
 3 Defy [OGN-045]
 3 Discipline [OGN-058]
+1 Rebuke [OGN-172]
+1 Life from Stone [RAD-029]
 3 Switcheroo [SFD-145]
 1 Back Off [UNL-042]
-2 Charm [OGN-043]
-1 Gust [OGN-169]
-1 Rebuke [OGN-172]
-1 Ride The Wind [OGN-173]
-1 Star-Crossed [UNL-128]
-2 Boots of Swiftness [SFD-133]
+1 Seal of Discord [OGN-204]
+1 Hunting Blind [RAD-044]
+1 Sterak's Gage [SFD-056]
+3 Boots of Swiftness [SFD-133]
 1 Edge of Night [SFD-139]
 Battlefields:
-1 Fortified Position [OGN-279]
-1 Targon's Peak [OGN-289]
-1 Threshold of the Gray [VEN-166]
+1 Bandle Tree [OGN-278]
+1 Startipped Peak [OGN-288]
+1 Bandle Scouts' Academy [RAD-157]
 Runes:
-5 Calm Rune [OGN-042]
-7 Chaos Rune [OGN-166]
+6 Calm Rune [OGN-042]
+6 Chaos Rune [OGN-166]
 ```
 
 ## Rek'Sai: Singapore RQ 30th
@@ -731,4 +733,38 @@ Battlefields:
 Runes:
 7 Body Rune [OGN-126]
 5 Order Rune [OGN-214]
+```
+
+## Ornn: LDXP Sacramento 88th of 755
+
+```
+Legend:
+1 Ornn - Fire Below the Mountain [SFD-189]
+Champion:
+1 Ornn - Blacksmith [SFD-058]
+Main Deck:
+3 Clockwork Keeper [OGN-044]
+3 Pit Crew [OGN-091]
+1 Aspiring Engineer [SFD-061]
+3 Scuttle Crab [UNL-053]
+3 Patched Porobot [VEN-058]
+1 Plaza Guardian [VEN-064]
+2 Charm [OGN-043]
+3 Defy [OGN-045]
+1 Temporal Breach [VEN-066]
+1 Mask of Foresight [OGN-060]
+3 Seal of Focus [OGN-081]
+3 Brutalizer [SFD-042]
+3 Poro Snax [SFD-046]
+1 Guardian Angel [SFD-051]
+3 Sterak's Gage [SFD-056]
+2 Cloth Armor [SFD-064]
+3 Sprite Fountain [UNL-078]
+Battlefields:
+1 Ornn's Forge [SFD-213]
+1 Seat of Power [SFD-217]
+1 Veiled Temple [SFD-221]
+Runes:
+9 Calm Rune [OGN-042]
+3 Mind Rune [OGN-089]
 ```
