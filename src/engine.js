@@ -1184,7 +1184,7 @@ var RT = (function () {
   // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
-  var AI_LEVEL = 4;
+  var AI_LEVEL = 5;
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -1568,9 +1568,9 @@ var RT = (function () {
   // Showdown: the player who contested the battlefield acts first, then players alternate until both pass in a row (rules 345-348).
   // Each may play Reaction or Action spells, Ambush units, face-down cards or legend abilities here.
   // nonCombat: units moved to (or played at) a battlefield with no enemy units; the opponent may still respond before it is conquered.
-  async function showdown(G, attacker, bi, nonCombat) {
+  async function showdown(G, attacker, bi, nonCombat, resume) {
     G.showdownAt = bi;
-    var passes = 0, side = attacker;
+    var passes = resume ? resume.passes : 0, side = resume ? resume.side : attacker;
     for (var round = 0; round < 50 && passes < 2 && G.winner == null; round++) {
       if (!unitsAt(G, bi, attacker).length || (!nonCombat && !unitsAt(G, bi, opp(attacker)).length)) break;
       if (nonCombat && unitsAt(G, bi, opp(attacker)).length) break;
@@ -1579,8 +1579,10 @@ var RT = (function () {
         var out = nonCombat ? { attackerWins: true, defenderHolds: false } : fightOutcome(G, attacker, bi), winning = side === attacker ? out.attackerWins : out.defenderHolds;
         var labels = opts.map(function (o) { return o.kind === 'legend' ? 'Legend: ' + o.label : (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
         G.cardsHint = opts.map(function (o) { return o.card; });
+        var aiPick = nonCombat && side === attacker ? null : aiShowdownPick(G, side, bi, opts, winning);
+        if (aiLvl(G, side) >= 5 && !G.isClone && G.human !== side && !(nonCombat && side === attacker)) aiPick = await aiShowdownLookahead(G, side, attacker, bi, nonCombat, opts, passes, aiPick);
         pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), nonCombat ? (side === attacker ? 'You moved in here. Play something before you take it?' : 'The opponent moved onto ' + bfName(G, bi) + '. Respond before they take it?')
-          : (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, nonCombat && side === attacker ? null : aiShowdownPick(G, side, bi, opts, winning));
+          : (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, aiPick);
       }
       if (pick == null) passes++;
       else {
@@ -3103,6 +3105,11 @@ var RT = (function () {
     });
     if (G.winner != null) return;
     await showdown(G, pi, bi);
+    await combatResolve(G, pi, bi, report);
+  }
+  // Damage, deaths and the conquer after a combat's showdown (split out so the showdown lookahead can resume a copied fight).
+  async function combatResolve(G, pi, bi, report) {
+    var A = G.players[pi], D = G.players[opp(pi)], i;
     var att = unitsAt(G, bi, pi), def = unitsAt(G, bi, opp(pi));
     if (G.winner != null) return;
     if (att.length && def.length) {
@@ -3925,6 +3932,61 @@ var RT = (function () {
       if (v > bv + 0.25 || (best && best.kind === 'stop' && v > bv)) { bv = v; best = cands[i]; }
     }
     return best;
+  }
+  // Level 5: showdown lookahead. Reactive play (tricks, stuns, removal and Ambush in a fight) is where spell and combo decks
+  // win games, and the level-2 heuristic plays it greedily. For each response (and passing), play it on a copy, let the rest of
+  // the showdown, the fight, the rest of the turn and the next turn play out (level 2), and keep the best average result.
+  var SD_SAMPLES = 2;
+  function determinize(H, pi) {
+    var oh = H.players[opp(pi)], unseen = oh.hand.concat(oh.deck);
+    shuffle(unseen, H.rnd);
+    oh.hand = unseen.slice(0, oh.hand.length); oh.deck = unseen.slice(oh.hand.length);
+    shuffle(H.players[pi].deck, H.rnd);
+  }
+  async function finishTurnAndNext(H) {
+    var noop = function () { return Promise.resolve(); }, a = H.active;
+    if (H.winner == null) await aiPlayLoop(H, a, noop);
+    if (H.winner == null) await aiLegend(H, a, noop, true);
+    if (H.winner == null) await aiPosition(H, a, noop);
+    if (H.winner == null) await aiHide(H, a, noop);
+    if (H.winner == null) await endTurn(H);
+    if (H.winner == null) { await aiTurn(H, H.active); if (H.winner == null) await endTurn(H); }
+  }
+  async function showdownRollout(G, side, attacker, bi, nonCombat, o, passes, seed) {
+    var H = cloneGame(G, seed);
+    determinize(H, side);
+    if (o) {
+      var r = o.kind === 'legend' ? await useLegend(H, side, o.idx, null, { showdown: bi })
+        : await playCard(H, side, o.card.iid, { reaction: true, showdown: bi, loc: o.kind === 'ambush' ? bi : undefined });
+      if (r && r.ok === false) return -Infinity;
+    }
+    if (H.winner == null) await showdown(H, attacker, bi, nonCombat, { side: opp(side), passes: o ? 0 : passes + 1 });
+    if (H.winner == null) {
+      if (nonCombat) {
+        var mine = unitsAt(H, bi, attacker), foes = unitsAt(H, bi, opp(attacker));
+        if (mine.length && foes.length) await combat(H, attacker, bi, mine, foes);
+        else if (mine.length && H.bfs[bi].ctrl !== attacker) await conquer(H, attacker, bi, mine);
+      } else await combatResolve(H, attacker, bi, H.combatReport || { played: [[], []] });
+    }
+    H.combatReport = null;
+    await finishTurnAndNext(H);
+    return evalState(H, side, true);
+  }
+  async function aiShowdownLookahead(G, side, attacker, bi, nonCombat, opts, passes, heur) {
+    var idx = opts.map(function (_, i) { return i; });
+    if (idx.length > 5) idx = (heur != null ? [heur] : []).concat(idx.filter(function (i) { return i !== heur; })).slice(0, 5);
+    var cands = [null].concat(idx), vals = [];
+    var saved = G.showdownAt;
+    for (var k = 0; k < cands.length; k++) {
+      var v = 0, o = cands[k] == null ? null : opts[cands[k]];
+      for (var sm = 0; sm < SD_SAMPLES; sm++) v += await showdownRollout(G, side, attacker, bi, nonCombat, o, passes, (G.turnNo * 7919 + k * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0);
+      vals.push(v / SD_SAMPLES);
+    }
+    G.showdownAt = saved;
+    // keep the heuristic's choice unless another line is clearly better
+    var hk = cands.indexOf(heur == null ? null : heur), best = hk, bv = vals[hk];
+    for (var j = 0; j < cands.length; j++) if (vals[j] > bv + 0.25) { bv = vals[j]; best = j; }
+    return cands[best];
   }
   async function aiPlayLoop(G, pi, wait) {
     for (var guard = 0; guard < 30 && G.winner == null; guard++) {
