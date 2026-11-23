@@ -4594,5 +4594,146 @@
    }
   ],
   "confidence": "low-medium: under 1% of the field at LDXP Sacramento and no current written guide. The plan comes from card text plus the Barcelona RQ win (Ornn - Blacksmith vs Kennen) and an older Voltron article; matchups other than Kennen are reasoned from the meta, not measured."
+ },
+ "nasus": {
+  "id": "nasus",
+  "summary": "Calm/Mind control-ramp. Trade early with cheap units (Lonely Poro, Scuttle Crab, Ravenbloom Student) and cheap interaction (Bellows Breath, Stupefy, Defy, Hush), ramp with Find Your Center and Life from Stone, then land The Empyrean: the legend readies 2 runes whenever you play a unit or gear costing 7+ energy, so the 8-cost Empyrean leaves mana for a counter. Close with Time Warp (extra turn) or a reset from Unchecked Power. List: LDXP Sacramento 41st of 755 (no cards from the Nov 23 2026 ban list).",
+  "archetype": "Control / Ramp",
+  "mulligan": {
+   "keep": [
+    "Lonely Poro",
+    "Scuttle Crab",
+    "Ravenbloom Student",
+    "Bellows Breath",
+    "Find Your Center",
+    "Life from Stone",
+    "Stupefy",
+    "Defy"
+   ],
+   "toss": [
+    "The Empyrean",
+    "Time Warp",
+    "Unchecked Power",
+    "Sprite Burst",
+    "Tomb-Raider Barbara"
+   ],
+   "note": "Keep two cheap plays plus one ramp or interaction spell. The Empyrean is a keep only with Find Your Center or Life from Stone to get there."
+  },
+  "phases": [
+   {
+    "name": "Turns 1-3",
+    "goal": "Don't fall behind on the board; set up ramp.",
+    "steps": [
+     "Lonely Poro and Scuttle Crab trade or hold an empty battlefield and replace themselves.",
+     "Ravenbloom Student gets +1 Might per spell: cast Bellows Breath or Stupefy before it fights.",
+     "Life from Stone at end of their turn (exhaust a unit that already acted): draw and ramp.",
+     "Keep Defy or Hush up when they have a key spell; Hush counters anything with 2+ power."
+    ]
+   },
+   {
+    "name": "Turns 4-6",
+    "goal": "Ramp into The Empyrean and stabilise.",
+    "steps": [
+     "Find Your Center costs 2 less once they reach 5 points: hold it for then if you can.",
+     "The Empyrean (8 energy): use the legend to ready 2 runes afterwards and keep Defy/Hush mana up. Show off a high-power card so the Predict digs deep, then draw 2.",
+     "Nasus, Guardian of Knowledge on the battlefield you defend: every enemy that dies there ramps you once per turn.",
+     "Bellows Breath with Repeat clears tokens and small units at one battlefield."
+    ]
+   },
+   {
+    "name": "Turns 7+",
+    "goal": "Finish.",
+    "steps": [
+     "Time Warp: take two turns in a row to conquer twice; cast it when you can score on both turns.",
+     "Unchecked Power exhausts your own units then deals 12 to everything at battlefields: cast it from behind, with your units at base.",
+     "Temporal Breach (hidden) saves your Empyrean from removal or resets an enemy's buffs and Equipment."
+    ]
+   }
+  ],
+  "tree": {
+   "q": "Are they ahead on board at battlefields?",
+   "yes": {
+    "q": "Do you have Unchecked Power and 9 energy?",
+    "yes": "Keep your units at base and cast Unchecked Power",
+    "no": "Trade with cheap units, use Bellows Breath/Stupefy, ramp"
+   },
+   "no": {
+    "q": "Can you cast The Empyrean?",
+    "yes": "Play it and ready 2 runes with the legend; keep Defy up",
+    "no": "Develop a cheap unit and hold interaction"
+   }
+  },
+  "combat": [
+   "Ravenbloom Student gets +1 Might for every spell you cast this turn, including in a showdown.",
+   "Frozen Fortress deals 1 to every unit there at the start of each turn: good with Nasus defending, bad for 1-Might tokens.",
+   "Stupefy and Bellows Breath are cheap showdown tricks."
+  ],
+  "holdFor": [
+   "Defy - counter their removal or pump (4 energy or less)",
+   "Hush - counter a spell with 2+ power (their finishers)",
+   "Temporal Breach - hidden; save The Empyrean",
+   "Life from Stone - Reaction ramp at the end of their turn"
+  ],
+  "matchups": [
+   {
+    "vs": "riven",
+    "plan": "Unfavoured early: Riven's cheap attackers pressure you before The Empyrean. Trade early units, Stupefy her pump, save Unchecked Power for her wide board."
+   },
+   {
+    "vs": "kennen",
+    "plan": "Even: counter Kennen's big spells with Hush, and don't overextend into his bounce."
+   },
+   {
+    "vs": "volibear",
+    "plan": "Favoured if you survive the early turns: Hush and Defy his removal, Unchecked Power answers his Mighty units."
+   }
+  ],
+  "mistakes": [
+   "Casting The Empyrean without using the legend to ready 2 runes.",
+   "Casting Unchecked Power with your own units at battlefields.",
+   "Tapping out on your turn when Defy or Hush would stop their finisher.",
+   "Using Find Your Center early when it gets 2 cheaper once they reach 5 points."
+  ],
+  "ai": {
+   "attack": "normal",
+   "reserveEnergy": 2,
+   "priority": {
+    "The Empyrean": 3,
+    "Nasus, Guardian of Knowledge": 2,
+    "Find Your Center": 2,
+    "Life from Stone": 1,
+    "Ravenbloom Student": 1,
+    "Lonely Poro": 1,
+    "Scuttle Crab": 1,
+    "Time Warp": 2
+   },
+   "holdForShowdown": [
+    "Defy",
+    "Hush",
+    "Temporal Breach",
+    "Stupefy",
+    "Bellows Breath"
+   ],
+   "mulliganKeep": [
+    "Lonely Poro",
+    "Scuttle Crab",
+    "Ravenbloom Student",
+    "Bellows Breath",
+    "Find Your Center",
+    "Life from Stone"
+   ],
+   "notes": [
+    "Ramp first, then The Empyrean.",
+    "Unchecked Power only when the enemy loses more than you."
+   ]
+  },
+  "sources": [
+   {
+    "title": "Riftbound Showdown 25k LDXP Sacramento - final standings (RiftDecks)",
+    "url": "https://riftdecks.com/riftbound-tournaments/riftbound-showdown-25k-ldxp-sacramento-final-standings-tournament-decks-18559/breakdown",
+    "date": "2026-10-24"
+   }
+  ],
+  "confidence": "low: Nasus is under 1% of the field (195 matches, 42% win rate over 14 days); the plan comes from card text and the 41st-place LDXP Sacramento list, not a written pro guide."
  }
 }

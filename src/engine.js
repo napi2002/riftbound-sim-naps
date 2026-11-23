@@ -77,12 +77,15 @@ var RT = (function () {
       list: L("1 Sett, Kingpin; 3 Irresistible Faefolk; 3 Pit Rookie; 3 Trifarian Captain; 3 First Mate; 3 Kinkou Initiate; 3 Fiora, Victorious; 3 Rengar, Trophy Hunter; 1 Vi, Peacekeeper; 2 Ruin Runner; 3 Punch First; 3 Showstopper; 3 Call to Glory; 3 Rampage; 3 Pillaged Armory") },
     { id: "ornn", name: "Ornn", label: "LDXP Sacramento 88th of 755", legend: "Ornn - Fire Below the Mountain", champion: "Ornn - Blacksmith", runes: { Calm: 9, Mind: 3 },
       bfs: ["Ornn's Forge", "Seat of Power", "Veiled Temple"],
-      list: L("2 Charm; 3 Clockwork Keeper; 3 Defy; 1 Mask of Foresight; 3 Seal of Focus; 3 Pit Crew; 3 Brutalizer; 3 Poro Snax; 1 Guardian Angel; 3 Sterak's Gage; 1 Ornn - Blacksmith; 1 Aspiring Engineer; 2 Cloth Armor; 3 Scuttle Crab; 3 Sprite Fountain; 3 Patched Porobot; 1 Plaza Guardian; 1 Temporal Breach") }
+      list: L("2 Charm; 3 Clockwork Keeper; 3 Defy; 1 Mask of Foresight; 3 Seal of Focus; 3 Pit Crew; 3 Brutalizer; 3 Poro Snax; 1 Guardian Angel; 3 Sterak's Gage; 1 Ornn - Blacksmith; 1 Aspiring Engineer; 2 Cloth Armor; 3 Scuttle Crab; 3 Sprite Fountain; 3 Patched Porobot; 1 Plaza Guardian; 1 Temporal Breach") },
+    { id: "nasus", name: "Nasus", label: "LDXP Sacramento 41st of 755", legend: "Nasus - Curator of the Sands", champion: "Nasus, Guardian of Knowledge", runes: { Calm: 5, Mind: 7 },
+      bfs: ["Ruined Monastery", "Rockfall Path", "Frozen Fortress"],
+      list: L("3 Defy; 2 Find Your Center; 3 Discipline; 3 Stupefy; 3 Ravenbloom Student; 3 Thousand-Tailed Watcher; 1 Time Warp; 1 Unchecked Power; 3 Life from Stone; 1 Hush; 3 The Empyrean; 3 Lonely Poro; 3 Bellows Breath; 3 Scuttle Crab; 1 Sprite Burst; 1 Tomb-Raider Barbara; 1 Nasus, Guardian of Knowledge; 2 Temporal Breach") }
   ];
 
   // Real tournament results from riftbound.gg's meta snapshot (2026-11-15, 18526 matches over 14 days of Radiance):
   // win rate, sample size, tier, top-8 rate, and the head-to-head matchups the free data includes.
-  var REAL = {"kennen":{"wr":0.55,"n":3704,"tier":"S","top8":0.0318,"mu":{"jayce":[0.7,126],"masteryi":[0.45,160]}},"leblanc":{"wr":0.46,"n":707,"tier":"D","top8":0.018,"mu":{"akali":[0.86,22],"riven":[0.26,179]}},"rengar":{"wr":0.49,"n":1390,"tier":"C","top8":0.0192,"mu":{"jayce":[0.29,57]}},"irelia":{"wr":0.45,"n":827,"tier":"D","top8":0.0306,"mu":{"evelynn":[0.73,12],"azir":[0.29,14]}},"akali":{"wr":0.41,"n":733,"tier":"D","top8":0.0054,"mu":{"leblanc":[0.14,22]}},"jayce":{"wr":0.56,"n":986,"tier":"S","top8":0.0182,"mu":{"masteryi":[0.8,51],"vex":[0.27,24]}},"masteryi":{"wr":0.51,"n":1135,"tier":"B","top8":0.0356,"mu":{"akali":[0.76,19],"jayce":[0.2,51]}},"azir":{"wr":0.45,"n":493,"tier":"D","top8":0.0276,"mu":{"vex":[0.21,16]}},"vex":{"wr":0.5,"n":864,"tier":"C","top8":0.0333,"mu":{"azir":[0.79,16],"reksai":[0.19,22]}},"reksai":{"wr":0.53,"n":1002,"tier":"A","top8":0.0281,"mu":{"vex":[0.81,22]}},"riven":{"wr":0.58,"n":6437,"tier":"S","top8":0.0348,"mu":{"leblanc":[0.74,179],"reksai":[0.44,286]}},"evelynn":{"wr":0.38,"n":394,"tier":"D","top8":0.0157,"mu":{"akali":[0.58,13],"masteryi":[0.18,12]}},"mordekaiser":{"wr":0.34,"n":262,"tier":null,"top8":0.0101,"mu":{"evelynn":[0.57,14],"kaisa":[0.18,30]}},"orianna":{"wr":0.36,"n":268,"tier":null,"top8":0.0244,"mu":{"kaisa":[0.37,40],"riven":[0.25,57]}},"seraphine":{"wr":0.37,"n":137,"tier":null,"top8":0,"mu":{"kennen":[0.46,13],"riven":[0,16]}},"sett":{"wr":0.52,"n":309,"tier":"A","top8":0.0513,"mu":{"rengar":[0.6,10],"jayce":[0.36,11]}},"fiora":{"wr":0.45,"n":159,"tier":null,"top8":0,"mu":{"kaisa":[0.43,23],"riven":[0.37,46]}},"volibear":{"wr":0.36,"n":151,"tier":null,"top8":0,"mu":{"kaisa":[0.56,28],"kennen":[0.2,23]}},"kaisa":{"wr":0.52,"n":4914,"tier":"B","top8":0.0295,"mu":{"azir":[0.36,93]}},"ezreal":{"wr":0.4,"n":139,"tier":null,"top8":0.0278,"mu":{}},"settkingpin":{"wr":0.52,"n":309,"tier":"A","top8":0.0513,"mu":{"rengar":[0.6,10],"jayce":[0.36,11]}},"ornn":{"wr":0.43,"n":500,"tier":"D","top8":0.0091,"mu":{}}};
+  var REAL = {"kennen":{"wr":0.55,"n":3704,"tier":"S","top8":0.0318,"mu":{"jayce":[0.7,126],"masteryi":[0.45,160]}},"leblanc":{"wr":0.46,"n":707,"tier":"D","top8":0.018,"mu":{"akali":[0.86,22],"riven":[0.26,179]}},"rengar":{"wr":0.49,"n":1390,"tier":"C","top8":0.0192,"mu":{"jayce":[0.29,57]}},"irelia":{"wr":0.45,"n":827,"tier":"D","top8":0.0306,"mu":{"evelynn":[0.73,12],"azir":[0.29,14]}},"akali":{"wr":0.41,"n":733,"tier":"D","top8":0.0054,"mu":{"leblanc":[0.14,22]}},"jayce":{"wr":0.56,"n":986,"tier":"S","top8":0.0182,"mu":{"masteryi":[0.8,51],"vex":[0.27,24]}},"masteryi":{"wr":0.51,"n":1135,"tier":"B","top8":0.0356,"mu":{"akali":[0.76,19],"jayce":[0.2,51]}},"azir":{"wr":0.45,"n":493,"tier":"D","top8":0.0276,"mu":{"vex":[0.21,16]}},"vex":{"wr":0.5,"n":864,"tier":"C","top8":0.0333,"mu":{"azir":[0.79,16],"reksai":[0.19,22]}},"reksai":{"wr":0.53,"n":1002,"tier":"A","top8":0.0281,"mu":{"vex":[0.81,22]}},"riven":{"wr":0.58,"n":6437,"tier":"S","top8":0.0348,"mu":{"leblanc":[0.74,179],"reksai":[0.44,286]}},"evelynn":{"wr":0.38,"n":394,"tier":"D","top8":0.0157,"mu":{"akali":[0.58,13],"masteryi":[0.18,12]}},"mordekaiser":{"wr":0.34,"n":262,"tier":null,"top8":0.0101,"mu":{"evelynn":[0.57,14],"kaisa":[0.18,30]}},"orianna":{"wr":0.36,"n":268,"tier":null,"top8":0.0244,"mu":{"kaisa":[0.37,40],"riven":[0.25,57]}},"seraphine":{"wr":0.37,"n":137,"tier":null,"top8":0,"mu":{"kennen":[0.46,13],"riven":[0,16]}},"sett":{"wr":0.52,"n":309,"tier":"A","top8":0.0513,"mu":{"rengar":[0.6,10],"jayce":[0.36,11]}},"fiora":{"wr":0.45,"n":159,"tier":null,"top8":0,"mu":{"kaisa":[0.43,23],"riven":[0.37,46]}},"volibear":{"wr":0.36,"n":151,"tier":null,"top8":0,"mu":{"kaisa":[0.56,28],"kennen":[0.2,23]}},"kaisa":{"wr":0.52,"n":4914,"tier":"B","top8":0.0295,"mu":{"azir":[0.36,93]}},"ezreal":{"wr":0.4,"n":139,"tier":null,"top8":0.0278,"mu":{}},"settkingpin":{"wr":0.52,"n":309,"tier":"A","top8":0.0513,"mu":{"rengar":[0.6,10],"jayce":[0.36,11]}},"ornn":{"wr":0.43,"n":500,"tier":"D","top8":0.0091,"mu":{}},"nasus":{"wr":0.42,"n":195,"tier":null,"top8":null,"mu":{}}};
   var REAL_DATE = '2026-11-15', REAL_MATCHES = 18526;
 
   /* ---------------- card data + parser ---------------- */
@@ -1332,7 +1335,7 @@ var RT = (function () {
     if (sc.empoweredMight) c.P.empoweredMight = sc.empoweredMight;
     if (sc.combatEnd) c.P.combatEnd = sc.combatEnd;
     if (sc.play) (c.P.trig.play = c.P.trig.play || []).push({ effs: sc.play });
-    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere', 'hostSave', 'freshBonus', 'levelBonus', 'pairBonus', 'hostTrig', 'mightyKw', 'empKw', 'bonusMight', 'noCombatDamage', 'gankHere', 'readyMighty', 'extraChannel', 'noMoveToBase', 'onBecomeReady', 'friendExhaustMight', 'onLeave', 'readyOnGearPlay', 'hiddenPlayMight', 'gearDeathknell'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
+    ['onExhausted', 'grantKw', 'equipAltExhaust', 'needsGearHere', 'secondDrawBonus', 'shieldHere', 'onGearMove', 'gearPlayFx', 'gearConquerFx', 'onGearExhaust', 'drawOnTripleExhaust', 'entersReadyIf', 'playToBf', 'costMod', 'cheaperExtras', 'lethalDamage', 'endOfTurn', 'entersExhausted', 'addEnergy', 'gutterWin', 'levelKw', 'heronDiscount', 'attachFromHidden', 'grantAccelerate', 'empoweredDeathknell', 'readyOnGear', 'untargetable', 'auraOthers', 'doubleDeathknell', 'onSecondCard', 'onChosenOrReady', 'goldOnEnemyDeath', 'stunNewUnits', 'ambushAnywhere', 'hostSave', 'freshBonus', 'levelBonus', 'pairBonus', 'hostTrig', 'mightyKw', 'empKw', 'bonusMight', 'noCombatDamage', 'gankHere', 'readyMighty', 'extraChannel', 'noMoveToBase', 'onBecomeReady', 'friendExhaustMight', 'onLeave', 'readyOnGearPlay', 'hiddenPlayMight', 'gearDeathknell', 'spellMight', 'banishSelf', 'channelOnEnemyDeathHere'].forEach(function (k) { if (sc[k]) c.P[k] = sc[k]; });
     if (sc.defendFx) (c.P.trig.defend = c.P.trig.defend || []).push({ effs: sc.defendFx });
     if (sc.bfhold) (c.P.trig.bfhold = c.P.trig.bfhold || []).push({ effs: sc.bfhold });
     if (sc.deathknell) c.P.trig.deathknell = [{ effs: sc.deathknell }];
@@ -1356,6 +1359,7 @@ var RT = (function () {
       if (pickedUnit) return !!k.targetsFriendly && pickedUnit.ctrl === pi;
       if (!spell || k.targetsFriendly) return false;
       if (k.maxEnergy != null && ((spell.c.energy || 0) > k.maxEnergy || (spell.c.power || 0) > k.maxPower)) return false;
+      if (k.minPower != null && (spell.c.power || 0) < k.minPower) return false;
       return true;
     });
     for (var i = 0; i < options.length; i++) {
@@ -1638,6 +1642,7 @@ var RT = (function () {
   }
   // Abandoned Hall: after a player plays a spell, they may give a unit they control there +1 Might this turn.
   async function spellPlayedHooks(G, pi) {
+    unitsOf(G, pi).forEach(function (u) { if (u.c.P.spellMight && !u.dead) { u.temp += u.c.P.spellMight; log(G, u.c.name + ' gets +' + u.c.P.spellMight + ' Might this turn (spell played).', pi); } });
     for (var bi = 0; bi < G.bfs.length; bi++) {
       if (bfNorm(G, bi) !== 'abandonedhall') continue;
       var mine = unitsAt(G, bi, pi);
@@ -1694,7 +1699,7 @@ var RT = (function () {
     if (c.type === 'Spell') {
       var sctx = { src: null, loc: null, srcName: c.name, spell: card, caster: pi };
       if (!(await reactTo(G, opp(pi), sctx, null))) { await resolveEffects(G, pi, c.P.spell, sctx); await fireLegend(G, pi, 'playSpell', {}); await spellPlayedHooks(G, pi); }
-      if (sctx.countered === 'hand') p.hand.push(card); else p.trash.push(card);
+      if (sctx.countered === 'hand') p.hand.push(card); else if (c.P.banishSelf && !sctx.countered) log(G, c.name + ' is banished.', pi); else p.trash.push(card);
     } else if (c.type === 'Gear') {
       var g = { iid: card.iid, c: c, ex: !!c.P.entersExhausted };
       p.gear.push(g);
@@ -2428,7 +2433,8 @@ var RT = (function () {
       ap.readyRunesEOT = 0;
     }
     G.players.forEach(function (pl) { pl.trash.forEach(function (x) { x.tempFlow = null; }); });
-    G.active = opp(pi);
+    if (G.extraTurn === pi) { G.extraTurn = null; log(G, G.players[pi].name + ' take' + (pi === 0 ? '' : 's') + ' an extra turn.', pi); }
+    else G.active = opp(pi);
     if (G.maxTurns && G.turnNo >= G.maxTurns) { G.winner = -1; log(G, 'Turn limit reached.'); return; }
     await startTurn(G);
   }
@@ -2506,6 +2512,12 @@ var RT = (function () {
       for (var r = 0; r < dk.length; r++) await resolveEffects(G, u.ctrl, dk[r].effs, { src: null, loc: loc, srcName: eqDK[q].c.name + ' (' + u.c.name + ')' });
     }
     if (u.flourish && u.flourish.turn === G.turnNo) addGold(G, u.flourish.pi, 1, 'Deadly Flourish');
+    // Nasus, Guardian of Knowledge: once each turn, when an enemy unit dies here, channel 1 rune exhausted.
+    G.units.forEach(function (v) {
+      if (v.ctrl !== u.ctrl && v.loc === loc && v.c.P.channelOnEnemyDeathHere && v.nasusTurn !== G.turnNo && G.players[v.ctrl].runeDeck.length) {
+        v.nasusTurn = G.turnNo; channel(G, v.ctrl, 1, true); log(G, v.c.name + ': an enemy died here, channel 1 rune exhausted.', v.ctrl);
+      }
+    });
     // Pyke, Returned: once each turn, when an enemy unit dies while Pyke is at a battlefield, play a Gold token.
     G.units.forEach(function (v) {
       if (v.ctrl !== u.ctrl && v.loc !== 'base' && v.c.P.goldOnEnemyDeath && v.goldTurn !== G.turnNo) {
@@ -2869,6 +2881,12 @@ var RT = (function () {
     p.payingUnitOrGear = c.type === 'Unit' || c.type === 'Gear'; p.payingSpell = c.type === 'Spell'; p.payingGear = c.type === 'Gear';
     pay(G, pi, cost.energy, cost.power, cost.domains);
     p.payingUnitOrGear = false; p.payingGear = false;
+    var NL = p.legend;
+    if (NL.c && NL.c.P.nasusReady && !NL.exhausted && (c.type === 'Unit' || c.type === 'Gear') && (c.energy || 0) >= 7 && p.runes.some(function (r) { return r.ex; }) &&
+        (await confirm(G, pi, NL.c.name, c.name + ' costs 7+ energy: exhaust ' + shortLegend(NL.c) + ' to ready up to 2 runes?', true))) {
+      NL.exhausted = true; var nr = p.runes.filter(function (r) { return r.ex; }).slice(0, 2); nr.forEach(function (r) { r.ex = false; });
+      log(G, NL.c.name + ': ready ' + nr.length + ' rune' + (nr.length === 1 ? '' : 's') + '.', pi);
+    }
     var extraAny = extraAnyPower(G, pi, c, opts);
     payAnyPower(G, pi, extraAny, 'extra cost'); p.payingSpell = false;
     if (p.discountNext && p.discountNext.turn === G.turnNo) { p.discountNext = null; log(G, 'Astral Heron discount used on ' + c.name + '.', pi); }
@@ -2926,7 +2944,7 @@ var RT = (function () {
           await resolveEffects(G, pi, c.P.spell, { src: null, loc: null, srcName: c.name, noReact: true });
         }
       }
-      if (sctx.countered === 'hand') p.hand.push(card); else p.trash.push(card);
+      if (sctx.countered === 'hand') p.hand.push(card); else if (c.P.banishSelf && !sctx.countered) log(G, c.name + ' is banished.', pi); else p.trash.push(card);
       if (!sctx.countered) { await fireLegend(G, pi, 'playSpell', {}); await spellPlayedHooks(G, pi); }
     } else if (c.type === 'Gear') {
       log(G, p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + '.', pi);
@@ -3385,6 +3403,35 @@ var RT = (function () {
     exhaustCost: function () { return -0.5; },
     khazix: function () { return 1; }
   });
+  Object.assign(OPS, {
+    extraTurn: async function (G, pi, e, tg, ctx) { G.extraTurn = pi; log(G, (ctx.srcName || 'Effect') + ': ' + G.players[pi].name + ' will take another turn after this one.', pi); },
+    exhaustFriendly: async function (G, pi) { unitsOf(G, pi).forEach(function (u) { u.ex = true; }); },
+    barbara: async function (G, pi, e, tg, ctx) {   // Tomb-Raider Barbara: with 7+ runes, disempower an Empowered enemy gear or kill one
+      if (G.players[pi].runes.length < 7) return;
+      var o = G.players[opp(pi)], all = o.gear.filter(function (g) { return !g.token; }).map(function (g) { return { g: g, host: null }; });
+      G.units.forEach(function (u) { if (u.ctrl !== pi) u.equips.forEach(function (g) { all.push({ g: g, host: u }); }); });
+      if (!all.length) return;
+      var v = all.map(function (x) { return (x.g.c.energy || 0) + (x.g.c.power || 0) + (x.host ? 2 : 0); });
+      G.cardsHint = all.map(function (x) { return x.g; });
+      var k = await choose(G, pi, ctx.srcName, 'Choose an enemy gear: an Empowered one is disempowered, otherwise it is killed', all.map(function (x) { return x.g.c.name + (x.g.empowered ? ' (Empowered)' : '') + (x.host ? ' on ' + x.host.c.name : ''); }), false, v.indexOf(Math.max.apply(null, v)));
+      var x = all[k || 0];
+      if (x.g.empowered) { x.g.empowered = false; log(G, ctx.srcName + ' disempowers ' + x.g.c.name + '.', pi); return; }
+      if (x.host) x.host.equips.splice(x.host.equips.indexOf(x.g), 1); else o.gear.splice(o.gear.indexOf(x.g), 1);
+      if (x.g.c.P.onLeave) await resolveEffects(G, opp(pi), x.g.c.P.onLeave, { src: null, loc: null, srcName: x.g.c.name });
+      o.trash.push({ iid: x.g.iid, c: x.g.c }); log(G, ctx.srcName + ' kills ' + x.g.c.name + '.', pi);
+    }
+  });
+  Object.assign(OPS_VALUE, {
+    extraTurn: function () { return 9; },
+    exhaustFriendly: function (G, pi) { return -0.3 * unitsOf(G, pi).filter(function (u) { return !u.ex; }).length; },
+    barbara: function (G, pi) { return G.players[pi].runes.length >= 7 && (G.players[opp(pi)].gear.some(function (g) { return !g.token; }) || G.units.some(function (u) { return u.ctrl !== pi && u.equips.length; })) ? 2 : 0; }
+  });
+  // Unchecked Power: 12 to every unit at a battlefield. Worth it when the enemy loses more there than we do.
+  OPS_VALUE.dealAllBf = function (G, pi, e) {
+    if (!e || e.n < 6) return 1;
+    var v = 0; G.units.forEach(function (u) { if (u.loc !== 'base' && !u.dead && might(u) <= e.n) v += (u.ctrl === pi ? -1 : 1) * unitValue(u); });
+    return v;
+  };
   Object.assign(CARD_SCRIPTS, {
     // Sett
     settbrawler: { sim: 'all', play: [{ op: 'buff', t: { sel: 'self' } }], conquerFx: [{ op: 'buff', t: { sel: 'self' } }],
@@ -3413,6 +3460,14 @@ var RT = (function () {
     lifefromstone: { sim: 'all', requires: function (G, pi) { return unitsOf(G, pi).some(function (u) { return !u.ex; }) ? null : 'You need a ready friendly unit to exhaust.'; }, effs: [{ op: 'exhaustCost' }, { op: 'draw', n: 1 }, { op: 'channel', n: 1 }] },
     khazixmutatinghorror: { sim: 'all', attackFx: [{ op: 'khazix' }], defendFx: [{ op: 'khazix' }] },
     bandletree: { sim: 'all' },
+    // Nasus
+    findyourcenter: { sim: 'all', costMod: function (G, pi) { return G.players[opp(pi)].points >= 5 ? -2 : 0; }, effs: [{ op: 'draw', n: 1 }, { op: 'channel', n: 1 }] },
+    ravenbloomstudent: { sim: 'all', spellMight: 1 },
+    timewarp: { sim: 'all', effs: [{ op: 'extraTurn' }], banishSelf: true },
+    uncheckedpower: { sim: 'all', effs: [{ op: 'exhaustFriendly' }, { op: 'dealAllBf', n: 12 }] },
+    hush: { sim: 'all', counter: { minPower: 2 } },
+    tombraiderbarbara: { sim: 'all', play: [{ op: 'barbara' }] },
+    nasusguardianofknowledge: { sim: 'all', channelOnEnemyDeathHere: true },
     settkingpin: { sim: 'all', bonusMight: function (G, u) { return u.loc === 'base' ? 0 : unitsAt(G, u.loc, u.ctrl).filter(function (v) { return v.buff; }).length; } },
     valleyofidols: { sim: 'all' },
     // Ezreal
@@ -3465,6 +3520,7 @@ var RT = (function () {
     ezrealprodigalexplorer: { acts: [{ label: 'Exhaust: draw 1 (after choosing enemy units or gear twice this turn)', energy: 0, exhaust: true, timing: 'reaction', effs: [{ op: 'draw', n: 1 }],
       req: function (G, pi) { var e = G.enemyChosen && G.enemyChosen[pi]; return e && e.turn === G.turnNo && e.n >= 2 ? null : 'Choose enemy units or gear twice this turn with spells or unit abilities first.'; } }] },
     volibearrelentlessstorm: { flags: { legendPlayMighty: true } },
+    nasuscuratorofthesands: { flags: { nasusReady: true } },
     kaisadaughterofthevoid: { acts: [{ label: 'Exhaust: add 1 power (any domain) for spells only', energy: 0, exhaust: true, timing: 'reaction', effs: [],
       pay: function (G, pi) { var p = G.players[pi]; p.poolPowerSpell = (p.poolPowerSpell || 0) + 1; log(G, "Kai'Sa adds 1 power for spells this turn.", pi); } }] }
   });
@@ -3584,7 +3640,12 @@ var RT = (function () {
       plan: 'Calm/Mind gear deck: Ornn\'s legend adds power for gear, Seal of Focus and Poro Snax smooth mana and draw, Ornn, Blacksmith digs gear, Pit Crew readies when you play gear, and Plaza Guardian gets cheaper for every gear you control.',
       keys: ['Ornn - Blacksmith', 'Plaza Guardian', 'Pit Crew', 'Sprite Fountain', 'Aspiring Engineer', 'Poro Snax'],
       tips: ['Play gear every turn: it fuels Plaza Guardian and readies Pit Crew.', 'Use Ornn\'s legend to pay for gear or gear abilities.', 'Crack Poro Snax when you need a card.'],
-      ai: { key: { 'Ornn - Blacksmith': 3, 'Plaza Guardian': 3, 'Pit Crew': 2, 'Sprite Fountain': 2 }, attack: 'normal', reserve: 1, reinforce: true } }
+      ai: { key: { 'Ornn - Blacksmith': 3, 'Plaza Guardian': 3, 'Pit Crew': 2, 'Sprite Fountain': 2 }, attack: 'normal', reserve: 1, reinforce: true } },
+    nasus: { style: 'Calm/Mind control', source: 'riftbound.gg (LDXP Sacramento 41st of 755)',
+      plan: 'Calm/Mind control: trade with cheap units and spells, ramp with Find Your Center and Life from Stone, then land The Empyrean (8 energy, the legend readies 2 runes) and win with Time Warp or a board wipe from Unchecked Power.',
+      keys: ['The Empyrean', 'Nasus, Guardian of Knowledge', 'Time Warp', 'Unchecked Power', 'Find Your Center'],
+      tips: ['The legend readies 2 runes whenever you play a 7+ energy unit or gear: The Empyrean effectively costs 6.', 'Keep Defy/Hush up for their key spell.', 'Unchecked Power exhausts your own units first: cast it when they have more at battlefields than you.'],
+      ai: { key: { 'The Empyrean': 3, 'Nasus, Guardian of Knowledge': 2, 'Time Warp': 2 }, attack: 'normal', reserve: 2, reinforce: true } }
   };
   function keyBonus(A, name) {
     if (!A.key) return 0;

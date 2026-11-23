@@ -24,7 +24,7 @@ const LEGENDS = ['Akali - Rogue Assassin', 'Azir - Emperor of the Sands', 'Drave
   'Master Yi - Wuju Bladesman', 'Mordekaiser - Iron Revenant', 'Orianna - Lady of Clockwork', 'Pyke - Bloodharbor Ripper',
   "Rek'sai - Void Burrower", 'Rengar - Pridestalker', 'Riven - The Exile', 'Seraphine - Starry-Eyed Songstress', 'Vex - Gloomist',
   'Viktor - Herald of the Arcane', 'Sett - The Boss', 'Fiora - Grand Duelist', 'Volibear - Relentless Storm', "Kai'Sa - Daughter of the Void",
-  'Ezreal - Prodigal Explorer', 'Ornn - Fire Below the Mountain'];
+  'Ezreal - Prodigal Explorer', 'Ornn - Fire Below the Mountain', 'Nasus - Curator of the Sands'];
 // Only what a legend's own ability needs to be used at all; no card priorities, attack style or reserve.
 const MECH = { seraphine: { seraphine: true }, azir: { equipAlways: true }, kennen: { hideEager: true }, evelynn: { hideEager: true },
   irelia: { moveDraw: true }, masteryi: { holdLone: true }, reksai: { conquerReserve: 3 } };

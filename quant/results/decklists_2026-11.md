@@ -768,3 +768,37 @@ Runes:
 9 Calm Rune [OGN-042]
 3 Mind Rune [OGN-089]
 ```
+
+## Nasus: LDXP Sacramento 41st of 755
+
+```
+Legend:
+1 Nasus - Curator of the Sands [VEN-145]
+Champion:
+1 Nasus, Guardian of Knowledge [VEN-063]
+Main Deck:
+3 Ravenbloom Student [OGN-103]
+3 Thousand-Tailed Watcher [OGN-116]
+3 The Empyrean [RAD-060]
+3 Lonely Poro [SFD-036]
+3 Scuttle Crab [UNL-053]
+1 Tomb-Raider Barbara [VEN-037]
+3 Defy [OGN-045]
+2 Find Your Center [OGN-047]
+3 Discipline [OGN-058]
+3 Stupefy [OGN-095]
+1 Time Warp [OGN-122]
+1 Unchecked Power [OGN-123]
+3 Life from Stone [RAD-029]
+1 Hush [RAD-041]
+3 Bellows Breath [SFD-080]
+1 Sprite Burst [UNL-069]
+2 Temporal Breach [VEN-066]
+Battlefields:
+1 Ruined Monastery [RAD-166]
+1 Rockfall Path [SFD-216]
+1 Frozen Fortress [UNL-212]
+Runes:
+5 Calm Rune [OGN-042]
+7 Mind Rune [OGN-089]
+```
