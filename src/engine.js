@@ -1194,7 +1194,7 @@ var RT = (function () {
   // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
-  var AI_LEVEL = 7;
+  var AI_LEVEL = 8;
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -1207,7 +1207,7 @@ var RT = (function () {
     empowerSelf: function () { return 2; },
     kayleEmpower: function () { return 2.2; },
     spendBuffMight: function () { return 0; },   // keep the buff (Sett's legend saves buffed units); the AI spends it only as a last resort
-    bounceOwn: function () { return 0; },
+    bounceOwn: function (G, pi) { var b = packTarget(G, pi); return b ? b.value : 0; },
     forgeRecycle: function () { return 0.3; },
     listShrink: function (G, pi) { return G.units.some(function (u) { return u.ctrl !== pi && u.loc !== 'base'; }) ? 1.2 : 0; },
     // custom effects of the Nov 2026 cards (without these the AI scored their spells at 0 and never cast them)
@@ -1373,6 +1373,13 @@ var RT = (function () {
       var card = options[i], what = spell ? spell.c.name : (ctx.srcName || 'that ability');
       var aiWants = pickedUnit ? unitValue(pickedUnit) >= 4 : ((spell.c.energy || 0) + (spell.c.power || 0) >= 3 ||
         ((spell.c.energy || 0) + (spell.c.power || 0) >= 2 && (spell.c.P.spell || []).some(function (e) { return isHarmful(e) && e.t && e.t.sel !== 'friendly'; })));
+      // Level 8: judge the spell by what it does, as a human would. Counter it when it is worth more to the caster than
+      // the counter costs us (removal on our unit, the trick that wins their fight, card draw...).
+      if (!pickedUnit && spell && aiLvl(G, pi) >= 8) {
+        var sv = evalEffects(G, caster, spell.c.P.spell || [], { src: null, loc: ctx.loc != null ? ctx.loc : G.showdownAt });
+        var cc = (card.c.energy || 0) + (card.c.power || 0);
+        aiWants = aiWants || (sv.good && sv.value >= 1.5 + 0.5 * cc) || (G.showdownAt != null && sv.good && sv.value >= 1);
+      }
       var text = G.players[caster].name + (caster === 0 ? ' are' : ' is') + ' ' + (pickedUnit ? 'targeting your ' + pickedUnit.c.name + ' with ' + what : 'casting ' + what) + '. Counter it with ' + card.c.name + '?';
       if (!(await confirm(G, pi, 'Reaction', text, aiWants))) continue;
       var cost = cardCost(card.c, false);
@@ -3336,13 +3343,14 @@ var RT = (function () {
   }
   Object.assign(OPS, {
     bounceOwn: async function (G, pi, e, tg, ctx) {   // Pack of Wonders: return another friendly gear, unit or hidden card to hand
+      var bestB = packTarget(G, pi, ctx.gear);
       var p = G.players[pi], opts = [];
       unitsOf(G, pi).forEach(function (u) { if (!u.token) opts.push({ k: 'u', x: u, name: u.c.name + ' (unit)' }); });
       p.gear.forEach(function (g) { if (g !== ctx.gear && !g.token && g.c.supertype !== 'Token') opts.push({ k: 'g', x: g, name: g.c.name + ' (gear)' }); });
       p.hidden.forEach(function (h) { opts.push({ k: 'h', x: h, name: h.card.c.name + ' (hidden)' }); });
       if (!opts.length) return;
-      var hurt = opts.map(function (o) { return o.k === 'u' && o.x.damage > 0 ? 1 : 0; }).indexOf(1);
-      var k = await choose(G, pi, ctx.srcName, 'Return one of these to your hand?', opts.map(function (o) { return o.name; }), true, hurt >= 0 ? hurt : null);
+      var auto = bestB ? opts.map(function (o) { return o.x; }).indexOf(bestB.x) : -1;
+      var k = await choose(G, pi, ctx.srcName, 'Return one of these to your hand?', opts.map(function (o) { return o.name; }), true, auto >= 0 ? auto : null);
       if (k == null) return;
       var o = opts[k];
       if (o.k === 'u') { removeUnit(G, o.x); o.x.dead = true; p.hand.push({ iid: o.x.iid, c: o.x.c }); updateControl(G); }
@@ -3759,6 +3767,28 @@ var RT = (function () {
         if (cost <= left && canPlay(G, pi, x.iid, false, { reaction: true }).ok) { left -= cost; tot += trickN(x.c); }
       });
     return tot;
+  }
+  // Pack of Wonders: what is worth returning to hand? Treasure Trove (it draws and ramps as it leaves, then can be played
+  // again), a unit whose "when you play me" effect is worth replaying this turn (Ezreal, Prodigy; Fizz; Bewitching Spirit;
+  // Thousand-Tailed Watcher), or a damaged unit about to die. Returns { x, value } or null.
+  function packTarget(G, pi, packGear) {
+    var p = G.players[pi], best = null, energy = energyAvail(p);
+    var consider = function (x, v) { if (v > 0.5 && (!best || v > best.value)) best = { x: x, value: v }; };
+    p.gear.forEach(function (g) {
+      if (g === packGear || g.token || g.c.supertype === 'Token' || norm(g.c.name) === 'packofwonders') return;
+      if (g.c.P.onLeave) { var lv = evalEffects(G, pi, g.c.P.onLeave, { src: null, loc: null }); consider(g, (lv.good ? lv.value : 0) + (energy >= (g.c.energy || 0) + 1 ? 0.5 : -0.5)); }
+    });
+    unitsOf(G, pi).forEach(function (u) {
+      if (u.token) return;
+      var c = u.c, cost = cardCost(c, false, G, pi, 'hand').energy;
+      if (u.damage > 0 && u.damage >= might(u) - 1) { consider(u, unitValue(u) * 0.6); return; }
+      var ev = evalEffects(G, pi, playEffects(c), { src: null, loc: 'base' });
+      if (!ev.good || ev.value < 1) return;
+      if (energy < cost + 0) return;                                        // only if we can replay it this turn
+      var holding = u.loc !== 'base' && G.bfs[u.loc] && G.bfs[u.loc].ctrl === pi && unitsAt(G, u.loc, pi).length === 1;
+      consider(u, ev.value - 0.25 * cost - (holding ? 2.5 : 0) - (u.ex ? 0 : 0.8));
+    });
+    return best;
   }
   function aiCardChoice(G, pi, card) {
     var c = card.c, A = aiOf(G, pi), p = G.players[pi], bonus = keyBonus(A, c.name), sera = false;
