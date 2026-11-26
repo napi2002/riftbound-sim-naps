@@ -722,7 +722,13 @@ var RT = (function () {
   // Ask the human (if this player is the human and the UI provided G.ask); otherwise use the automatic answer.
   // req: {type:'confirm', title, text, auto} -> bool, or {type:'target', title, text, cands:[uid], optional, auto} -> uid|null
   async function ask(G, pi, req) {
-    if (G.ask && G.human === pi && G.winner == null) return await G.ask(req, pi);
+    if (G.ask && G.human === pi && G.winner == null) {
+      var ans = await G.ask(req, pi);
+      if (G.recordHuman && req.type !== 'combat' && req.type !== 'info') recordDecision(G, pi, { k: 'ask', type: req.type, title: req.title || '', text: req.text || '',
+        options: req.options || (req.cands ? req.cands.map(function (id) { var u = G.units.filter(function (x) { return x.uid === id; })[0]; return u ? u.c.name : String(id); }) : null),
+        human: ans == null ? null : ans, bot: req.auto == null ? null : req.auto });
+      return ans;
+    }
     return req.auto;
   }
   async function confirm(G, pi, title, text, auto) {
@@ -1407,6 +1413,7 @@ var RT = (function () {
     if (idx == null) idx = 0;
     var chk = canUseGear(G, pi, iid, idx);
     if (!chk.ok) return chk;
+    if (G.probe) probeHit(G, actDesc(G, 'gear', pi, [iid, idx]));
     var p = G.players[pi], g = p.gear.filter(function (x) { return x.iid === iid; })[0], a = g.c.P.gearActs[idx];
     p.payingGear = true; pay(G, pi, a.energy || 0, a.power || 0, a.domain ? [a.domain] : []); p.payingGear = false;
     if (a.exhaust !== false) { g.ex = true; if (g.c.P.onGearExhaust) await resolveEffects(G, pi, g.c.P.onGearExhaust, { src: null, loc: g.loc, srcName: g.c.name }); }
@@ -1458,6 +1465,7 @@ var RT = (function () {
   async function equipGear(G, pi, g, hostUid) {
     var chk = canEquip(G, pi, g);
     if (!chk.ok) return chk;
+    if (G.probe) probeHit(G, actDesc(G, 'equip', pi, [g, hostUid]));
     var p = G.players[pi], ec = g.c.P.equipCost || { energy: 0, power: [], recycleTrash: 0 };
     var units = unitsOf(G, pi), best = units.slice().sort(function (a, b) { return a.equips.length - b.equips.length || might(b) - might(a); })[0];
     var hid = hostUid != null ? hostUid : await ask(G, pi, { type: 'target', title: g.c.name, text: 'Attach to which unit? (+' + g.c.P.equipBonus + ' Might)', cands: units.map(function (u) { return u.uid; }), optional: false, auto: best.uid });
@@ -1491,6 +1499,7 @@ var RT = (function () {
   }
   function hideCard(G, pi, iid, bi) {
     if (hideSpots(G, pi, iid).indexOf(bi) < 0) return { ok: false, why: "You can't hide that card there." };
+    if (G.probe) probeHit(G, actDesc(G, 'hide', pi, [iid, bi]));
     var p = G.players[pi], card = p.hand.filter(function (x) { return x.iid === iid; })[0];
     payAnyPower(G, pi, 1, 'Hide');
     p.hand.splice(p.hand.indexOf(card), 1);
@@ -1584,7 +1593,7 @@ var RT = (function () {
         var labels = opts.map(function (o) { return o.kind === 'legend' ? 'Legend: ' + o.label : (o.kind === 'hidden' ? 'Hidden: ' : o.kind === 'ambush' ? 'Ambush: ' : '') + o.card.c.name + ' (' + cardCost(o.card.c, false, G, side, o.kind === 'hidden' ? 'hidden' : 'hand').energy + ' energy)'; });
         G.cardsHint = opts.map(function (o) { return o.card; });
         var aiPick = nonCombat && side === attacker ? null : aiShowdownPick(G, side, bi, opts, winning);
-        if (aiLvl(G, side) >= 5 && !G.isClone && G.human !== side && !(nonCombat && side === attacker)) aiPick = await aiShowdownLookahead(G, side, attacker, bi, nonCombat, opts, passes, aiPick);
+        if ((aiLvl(G, side) >= 5 || (G.recordHuman && G.human === side)) && !G.isClone && (G.human !== side || G.recordHuman) && !(nonCombat && side === attacker)) aiPick = await aiShowdownLookahead(G, side, attacker, bi, nonCombat, opts, passes, aiPick);
         pick = await choose(G, side, 'Showdown at ' + bfName(G, bi), nonCombat ? (side === attacker ? 'You moved in here. Play something before you take it?' : 'The opponent moved onto ' + bfName(G, bi) + '. Respond before they take it?')
           : (side === attacker ? 'You are attacking' : 'You are defending') + ' — play something before damage?', labels, true, aiPick);
       }
@@ -2290,6 +2299,7 @@ var RT = (function () {
   async function useUnit(G, pi, uid) {
     var chk = canUseUnit(G, pi, uid);
     if (!chk.ok) return chk;
+    if (G.probe) probeHit(G, actDesc(G, 'unit', pi, [uid]));
     var u = G.units.filter(function (x) { return x.uid === uid; })[0], a = u.c.P.unitAct;
     pay(G, pi, unitActEnergy(G, u, a), a.power, [a.domain]); if (a.exhaust) await exhaustUnits(G, pi, [u]);
     if (a.exhaustFriendly) {   // Riven, Deserter: exhaust a friendly unit as the cost
@@ -2320,6 +2330,7 @@ var RT = (function () {
   async function playFlow(G, pi, iid) {
     var chk = canFlow(G, pi, iid);
     if (!chk.ok) return chk;
+    if (G.probe) probeHit(G, actDesc(G, 'flow', pi, [iid]));
     var p = G.players[pi], card = p.trash.filter(function (x) { return x.iid === iid; })[0], c = card.c, f = card.tempFlow || c.P.flow;
     card.tempFlow = null;
     pay(G, pi, f.energy, 0, []);
@@ -2869,6 +2880,7 @@ var RT = (function () {
     opts = opts || {};
     var chk = canPlay(G, pi, iid, opts.accel, opts);
     if (!chk.ok) return chk;
+    if (G.probe) probeHit(G, actDesc(G, 'play', pi, [iid, opts]));
     var p = G.players[pi], f = findInHand(p, iid), card = f.card, c = card.c;
     var cost = cardCost(c, opts.accel, G, pi, f.from);
     if (opts.seraphine) {
@@ -3004,6 +3016,7 @@ var RT = (function () {
   async function useLegend(G, pi, idx, targets, opts) {
     opts = opts || {};
     var chk = canUseLegend(G, pi, idx, opts);
+    if (chk.ok && G.probe) probeHit(G, actDesc(G, 'legend', pi, [idx]));
     if (!chk.ok) return chk;
     var p = G.players[pi], L = p.legend, a = legendActs(G, pi)[idx];
     var effs = actEffects(G, pi, a);
@@ -3026,6 +3039,7 @@ var RT = (function () {
   async function moveUnits(G, pi, uids, dest) {
     var movers = G.units.filter(function (u) { return uids.indexOf(u.uid) >= 0 && u.ctrl === pi && canMove(G, u, dest); });
     if (!movers.length) return { ok: false, why: 'No unit can move there.' };
+    if (G.probe) probeHit(G, actDesc(G, 'move', pi, [movers.map(function (u) { return u.uid; }), dest]));
     movers.forEach(function (u) { leaveBonus(G, u); u.loc = dest; });
     await exhaustUnits(G, pi, movers);
     log(G, G.players[pi].name + ' move' + (pi === 0 ? '' : 's') + ' ' + movers.map(function (u) { return u.c.name; }).join(', ') + ' to ' + locName(G, dest) + '.', pi);
@@ -3881,7 +3895,7 @@ var RT = (function () {
     var NG = cp(G);
     NG.log = []; NG.events = []; NG.onLog = null; NG.ask = null; NG.human = -1; NG.isClone = true; NG.mightyBusy = false;
     NG.rnd = (function (a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; })(seed);
-    NG.aiLevel = [2, 2];
+    NG.aiLevel = [2, 2]; NG.probe = null; NG.recordHuman = false; NG.decisions = null;
     return NG;
   }
   // Position features (mine minus the opponent's unless named otherwise), used by the learned evaluation (level 4).
@@ -4222,6 +4236,71 @@ var RT = (function () {
       if ((!effs.length && late) || (effs.length && ev.good && ev.value >= 1.5)) { await useLegend(G, pi, i, ev.targets); await wait(); }
     }
   }
+  /* ---------------- human vs bot decisions ---------------- */
+  // While a human plays (G.recordHuman), every action they take is stored next to the action the bot (level 5) would
+  // have taken in exactly the same position, plus every prompt answered (with the bot's default answer). Used to
+  // measure how human-like the bot is and to tune it on real human play (quant/human_compare.js).
+  var PROBE_STOP = { probe: true };
+  function probeHit(G, desc) { G.probe.act = desc; throw PROBE_STOP; }
+  function actDesc(G, kind, pi, a) {
+    var p = G.players[pi], nm = function (uid) { var u = G.units.filter(function (x) { return x.uid === uid; })[0]; return u ? u.c.name : '?'; };
+    var where = function (l) { return l == null || l === 'base' ? 'base' : bfName(G, l); };
+    if (kind === 'play') { var f = findInHand(p, a[0]); return { k: 'play', card: f ? f.card.c.name : '?', loc: a[1] && a[1].loc != null ? where(a[1].loc) : null }; }
+    if (kind === 'move') return { k: 'move', units: a[0].map(nm).sort(), dest: where(a[1]) };
+    if (kind === 'gear') { var g = p.gear.filter(function (x) { return x.iid === a[0]; })[0]; if (!g) G.units.forEach(function (u) { u.equips.forEach(function (e) { if (e.iid === a[0]) g = e; }); }); return { k: 'gear', card: g ? g.c.name : '?', idx: a[1] || 0 }; }
+    if (kind === 'equip') return { k: 'equip', card: a[0] && a[0].c ? a[0].c.name : '?' };
+    if (kind === 'hide') { var h = p.hand.filter(function (x) { return x.iid === a[0]; })[0]; return { k: 'hide', card: h ? h.c.name : '?', loc: where(a[1]) }; }
+    if (kind === 'unit') return { k: 'unit', card: nm(a[0]) };
+    if (kind === 'flow') { var t = p.trash.filter(function (x) { return x.iid === a[0]; })[0]; return { k: 'flow', card: t ? t.c.name : '?' }; }
+    if (kind === 'legend') return { k: 'legend', idx: a[0] };
+    return { k: kind };
+  }
+  // What would the bot do next from this exact position? Plays the bot's turn on a copy and stops at its first action.
+  async function botWouldDo(G, pi, level) {
+    var H = cloneGame(G, (G.turnNo * 92821 + (G.decisions ? G.decisions.length : 0) * 68917) | 0);
+    H.isClone = false; H.human = -1; H.aiLevel = [level || 5, level || 5]; H.probe = {};
+    try { await aiTurn(H, pi); } catch (e) { if (e !== PROBE_STOP) return { k: 'error', msg: String(e && e.message || e) }; }
+    return H.probe.act || { k: 'end' };
+  }
+  function decisionState(G, pi) {
+    return { turn: G.turnNo, pts: [G.players[pi].points, G.players[opp(pi)].points],
+      deck: G.players[pi].deckDef && G.players[pi].deckDef.id, vs: G.players[opp(pi)].deckDef && G.players[opp(pi)].deckDef.id,
+      x: evalFeatures(G, pi).map(function (v) { return Math.round(v * 100) / 100; }) };
+  }
+  function recordDecision(G, pi, d, st) {
+    if (!G.decisions) G.decisions = [];
+    var s0 = st || decisionState(G, pi); for (var k in s0) d[k] = s0[k];
+    G.decisions.push(d);
+  }
+  function sameAct(a, b) {
+    if (!a || !b || a.k !== b.k) return false;
+    if (a.k === 'move') return a.dest === b.dest && a.units.join('|') === b.units.join('|');
+    if (a.k === 'play' || a.k === 'hide') return a.card === b.card && (a.loc || 'base') === (b.loc || 'base');
+    if (a.k === 'legend') return a.idx === b.idx;
+    if (a.k === 'end') return true;
+    return a.card === b.card;
+  }
+  // Wrap the public action functions: when the human acts on their own turn, record their action and the bot's.
+  function recorded(kind, fn) {
+    return async function () {
+      var args = Array.prototype.slice.call(arguments), G = args[0], pi = kind === 'end' ? G.active : args[1];
+      if (G && G.recordHuman && !G.isClone && G.human === pi && G.active === pi && G.winner == null && G.showdownAt == null) {
+        var human = kind === 'end' ? { k: 'end' } : actDesc(G, kind, pi, kind === 'equip' ? [args[2], args[3]] : args.slice(2));
+        var bot = await botWouldDo(G, pi), st = decisionState(G, pi);
+        var res = await fn.apply(null, args);
+        if (!(res && res.ok === false)) recordDecision(G, pi, { k: 'action', human: human, bot: bot, same: sameAct(human, bot), loose: !!bot && human.k === bot.k && (human.card || '') === (bot.card || '') }, st);
+        return res;
+      }
+      return fn.apply(null, args);
+    };
+  }
+  function decisionSummary(G) {
+    var ds = G.decisions || [], acts = ds.filter(function (d) { return d.k === 'action'; }), asks = ds.filter(function (d) { return d.k === 'ask' && d.bot !== undefined; });
+    var eq = function (d) { return JSON.stringify(d.human) === JSON.stringify(d.bot); };
+    return { actions: acts.length, sameAction: acts.filter(function (d) { return d.same; }).length, sameKindCard: acts.filter(function (d) { return d.loose; }).length,
+      prompts: asks.length, samePrompt: asks.filter(eq).length };
+  }
+
   async function aiTurn(G, pi, wait) {
     wait = wait || function () { return Promise.resolve(); };
     if (G.winner != null) return;
@@ -4401,14 +4480,15 @@ var RT = (function () {
     WIN: WIN, DOMAIN_COLORS: DOMAIN_COLORS, DECKS: DECKS, FIXES: FIXES, norm: norm,
     loadCards: loadCards, cards: function () { return CARDS; }, parseCard: parseCard, richToLines: richToLines,
     evalFeatures: evalFeatures, EVAL_FEATURES: EVAL_FEATURES, killUnitForTest: killUnit, drawForTest: drawOne, leblancForTest: leblancTrigger, lookaheadForTest: aiLookahead, cloneForTest: cloneGame,
-    newGame: newGame, endTurn: endTurn, playCard: playCard, canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
+    botWouldDo: botWouldDo, decisionSummary: decisionSummary, sameAct: sameAct,
+    newGame: newGame, endTurn: recorded('end', endTurn), playCard: recorded('play', playCard), canPlay: canPlay, targetSlots: targetSlots, ambushSpots: ambushSpots,
     empoweredList: function (G, pi) {
       var out = [], L = G.players[pi].legend;
       if (L.empowered) out.push(L.c.name);
       G.units.forEach(function (u) { if (u.ctrl === pi && u.empowered) out.push(u.c.name); });
       return out;
     },
-    canUseGear: canUseGear, useGear: useGear, seraphineReady: seraphineReady, deploySpots: deploySpots,  roostSpots: roostSpots, energyAvail: energyAvail, hideSpots: hideSpots, hideCard: hideCard, canEquip: canEquip, equipGear: equipGear, equipCostText: equipCostText, canUseUnit: canUseUnit, useUnit: useUnit, canFlow: canFlow, playFlow: playFlow, legendActs: legendActs, canUseLegend: canUseLegend, useLegend: useLegend, canMove: canMove, moveUnits: moveUnits, unitsAt: unitsAt, might: might, kwOf: kwOf,
+    canUseGear: canUseGear, useGear: recorded('gear', useGear), seraphineReady: seraphineReady, deploySpots: deploySpots,  roostSpots: roostSpots, energyAvail: energyAvail, hideSpots: hideSpots, hideCard: recorded('hide', hideCard), canEquip: canEquip, equipGear: recorded('equip', equipGear), equipCostText: equipCostText, canUseUnit: canUseUnit, useUnit: recorded('unit', useUnit), canFlow: canFlow, playFlow: recorded('flow', playFlow), legendActs: legendActs, canUseLegend: canUseLegend, useLegend: recorded('legend', useLegend), canMove: canMove, moveUnits: recorded('move', moveUnits), unitsAt: unitsAt, might: might, kwOf: kwOf,
     equipBonus: equipBonus, describeEffect: describeEffect, cardCost: cardCost, aiTurn: aiTurn, deckCoverage: deckCoverage, cardDomains: cardDomains
   };
 })();

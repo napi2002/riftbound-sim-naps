@@ -235,7 +235,7 @@
     S.sel = []; S.targeting = null; S.prompt = null; S.busy = true;
     $('menu').classList.add('hidden'); $('game').classList.remove('hidden');
     S.G = null;
-    var G = await RT.newGame(deckById(S.mine), deckById(S.ai), { human: 0, ask: askHuman, onCreate: function (g) { S.G = g; } });
+    var G = await RT.newGame(deckById(S.mine), deckById(S.ai), { human: 0, ask: askHuman, onCreate: function (g) { S.G = g; g.recordHuman = true; } });
     S.G = G; S.busy = false;
     render();
     if (G.active === 1) runAI();
@@ -693,9 +693,36 @@
     $('end').innerHTML = '<div class="box"><h2>' + (G.winner === -1 ? 'Draw' : won ? 'Victory' : 'Defeat') + '</h2><p>' + G.players[0].points + ' – ' + G.players[1].points + ' after ' + G.turnNo + ' turns · ' + esc(rv.ending) + '</p>' +
       '<div class="tips"><b>Pro coach: <span class="grade g' + L(R.overall) + '">' + L(R.overall) + '</span></b><div class="gradebar">' +
       Object.keys(labels).filter(function (k) { return R.grades[k] != null; }).map(function (k) { return '<div><span class="grade g' + L(R.grades[k]) + '">' + L(R.grades[k]) + '</span><small>' + labels[k] + '</small></div>'; }).join('') + '</div>' +
-      (R.drills[0] ? '<p class="drill"><b>Next game:</b> ' + esc(R.drills[0].text) + '</p>' : '') + '</div>' +
+      (R.drills[0] ? '<p class="drill"><b>Next game:</b> ' + esc(R.drills[0].text) + '</p>' : '') + '</div>' + (saveDecisions(G), botMatchHtml(G)) +
       '<button class="btn primary" data-act="coach">Full coach review</button><button class="btn" data-act="again">Play again</button><button class="btn" data-act="menu">Back to menu</button><button class="btn" data-act="log">View log</button></div>';
     $('end').classList.remove('hidden');
+  }
+  // Human vs bot: every move you made next to the move the bot would have made in the same spot. Saved per game in
+  // this browser; "Export" downloads them all as JSON for quant/human_compare.js.
+  function saveDecisions(G) {
+    if (!G.decisions || !G.decisions.length || G.savedDecisions) return;
+    G.savedDecisions = true;
+    var all = []; try { all = JSON.parse(store.get('decisions') || '[]'); } catch (e) { all = []; }
+    all.push({ date: new Date().toISOString(), deck: S.mine, vs: S.ai, won: G.winner === 0, turns: G.turnNo, pts: [G.players[0].points, G.players[1].points], decisions: G.decisions });
+    while (all.length > 200) all.shift();
+    store.set('decisions', JSON.stringify(all));
+  }
+  function botMatchHtml(G) {
+    var m = RT.decisionSummary(G);
+    if (!m.actions) return '';
+    var miss = (G.decisions || []).filter(function (d) { return d.k === 'action' && !d.same && d.bot && d.bot.k !== 'error'; }).slice(0, 4);
+    var say = function (a) { return a.k === 'end' ? 'end the turn' : a.k === 'move' ? 'move ' + a.units.join(', ') + ' to ' + a.dest : a.k === 'legend' ? 'use the legend' : a.k === 'hide' ? 'hide ' + a.card : (a.k === 'play' ? 'play ' : 'use ') + a.card + (a.loc && a.loc !== 'base' ? ' at ' + a.loc : ''); };
+    var n = 0; try { n = JSON.parse(store.get('decisions') || '[]').length; } catch (e) { n = 0; }
+    return '<div class="tips"><b>You vs the bot:</b> the bot would have made the same move ' + m.sameAction + ' of ' + m.actions + ' times (' + Math.round(100 * m.sameAction / m.actions) + '%)' +
+      (m.prompts ? ' and the same choice on ' + m.samePrompt + ' of ' + m.prompts + ' prompts' : '') + '.' +
+      (miss.length ? '<ul>' + miss.map(function (d) { return '<li>Turn ' + d.turn + ': you chose to ' + esc(say(d.human)) + '; the bot would ' + esc(say(d.bot)) + '.</li>'; }).join('') + '</ul>' : '') +
+      '<button class="btn" data-act="exportdec">Export my decisions (' + n + ' game' + (n === 1 ? '' : 's') + ')</button></div>';
+  }
+  function exportDecisions() {
+    var data = store.get('decisions') || '[]', a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    a.download = 'riftbound-decisions-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
   function coachSheet() { if (S.coach) openSheet(Coach.html(S.coach, esc), '<button class="btn" data-act="close">Close</button>'); }
 
@@ -808,6 +835,7 @@
       if (a === 'end') endMyTurn();
       else if (a === 'log') { $('end').classList.add('hidden'); logSheet(); }
       else if (a === 'coach') { $('end').classList.add('hidden'); coachSheet(); }
+      else if (a === 'exportdec') exportDecisions();
       else if (a === 'cancel') { S.targeting = null; render(); }
       else if (a === 'trash') trashSheet();
       else if (a === 'guide') guideSheet();
