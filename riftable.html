@@ -1719,7 +1719,7 @@ var RT = (function () {
   // 2 = also follows the deck guide's sequencing rules (guides.json ai.rules), 3 = also looks ahead: each step it tries
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
-  var AI_LEVEL = 5;
+  var AI_LEVEL = 7;
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -4526,10 +4526,11 @@ var RT = (function () {
     var cands = aiCandidates(G, pi);
     if (cands.length <= 1) return cands[0];
     var best = null, bv = -Infinity;
+    var crn = aiLvl(G, pi) >= 7, nS = crn ? Math.max(3, LOOK_SAMPLES) : LOOK_SAMPLES, base = (G.turnNo * 7919 + (G.lookSeed = (G.lookSeed || 0) + 1) * 15485863) | 0;
     for (var i = 0; i < cands.length; i++) {
-      var v = 0;   // average over LOOK_SAMPLES guesses of the hidden cards
-      for (var sm = 0; sm < LOOK_SAMPLES; sm++) v += await rollout(G, pi, cands[i], (G.turnNo * 7919 + i * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0, aiLvl(G, pi) >= 4);
-      v /= LOOK_SAMPLES;
+      var v = 0;   // average over guesses of the hidden cards (level 7: the same guesses for every candidate)
+      for (var sm = 0; sm < nS; sm++) v += await rollout(G, pi, cands[i], crn ? (base + sm * 31337) | 0 : (G.turnNo * 7919 + i * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0, aiLvl(G, pi) >= 4);
+      v /= nS;
       if (v > bv + 0.25 || (best && best.kind === 'stop' && v > bv)) { bv = v; best = cands[i]; }
     }
     return best;
@@ -4577,11 +4578,11 @@ var RT = (function () {
     var idx = opts.map(function (_, i) { return i; });
     if (idx.length > 5) idx = (heur != null ? [heur] : []).concat(idx.filter(function (i) { return i !== heur; })).slice(0, 5);
     var cands = [null].concat(idx), vals = [];
-    var saved = G.showdownAt;
+    var saved = G.showdownAt, crn = aiLvl(G, side) >= 7, nS = crn ? 3 : SD_SAMPLES, base = (G.turnNo * 7919 + (G.lookSeed = (G.lookSeed || 0) + 1) * 15485863) | 0;
     for (var k = 0; k < cands.length; k++) {
       var v = 0, o = cands[k] == null ? null : opts[cands[k]];
-      for (var sm = 0; sm < SD_SAMPLES; sm++) v += await showdownRollout(G, side, attacker, bi, nonCombat, o, passes, (G.turnNo * 7919 + k * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0);
-      vals.push(v / SD_SAMPLES);
+      for (var sm = 0; sm < nS; sm++) v += await showdownRollout(G, side, attacker, bi, nonCombat, o, passes, crn ? (base + sm * 31337) | 0 : (G.turnNo * 7919 + k * 104729 + sm * 31337 + (G.lookSeed = (G.lookSeed || 0) + 1)) | 0);
+      vals.push(v / nS);
     }
     G.showdownAt = saved;
     // keep the heuristic's choice unless another line is clearly better
@@ -4750,6 +4751,78 @@ var RT = (function () {
       if (S) { await moveUnits(G, pi, S.filter(function (u) { return !u.dead; }).map(function (u) { return u.uid; }), bi); await wait(); }
     }
   }
+  // Level 6: attack search. Which units go where (and whether to attack at all) is the decision humans think hardest
+  // about; the level-5 bot used a fixed rule. Candidate plans (the rule's own plan, no attack, and for each battlefield:
+  // the cheapest winning group, a group with spare Might to play around tricks, everything, and an empty-battlefield grab
+  // combined with the best attack elsewhere) are each played out on copies through the rest of the turn and the
+  // opponent's reply (same guesses of hidden cards for every plan), and the best average result is used.
+  var ENV = (typeof process !== 'undefined' && process.env) || {};
+  var ATK_SAMPLES = +ENV.RT_ATK_SAMPLES || 6, ATK_HORIZON = ENV.RT_ATK_HORIZON != null ? +ENV.RT_ATK_HORIZON : 0, ATK_MARGIN = ENV.RT_ATK_MARGIN != null ? +ENV.RT_ATK_MARGIN : 0.5;
+  function attackPlans(G, pi) {
+    var avail = function (bi) { return unitsAt(G, 'base', pi).filter(function (u) { return !u.ex && !u.stun && canMove(G, u, bi); }); };
+    var plans = [{ name: 'rule', rule: true }, { name: 'none', steps: [] }], seen = {};
+    var add = function (name, steps) {
+      steps = steps.filter(function (st) { return st.uids.length; });
+      if (!steps.length) return;
+      var key = steps.map(function (st) { return st.dest + ':' + st.uids.slice().sort().join(','); }).sort().join('|');
+      if (seen[key]) return; seen[key] = 1; plans.push({ name: name, steps: steps });
+    };
+    var ids = function (us) { return us.map(function (u) { return u.uid; }); };
+    var grab = [], fights = [];
+    for (var bi = 0; bi < G.bfs.length; bi++) {
+      if (G.bfs[bi].ctrl === pi) continue;
+      var av = avail(bi); if (!av.length) continue;
+      if (!unitsAt(G, bi, opp(pi)).length) {
+        var weak = av.slice().sort(function (a, b) { return unitValue(a) - unitValue(b); })[0], strong = av.slice().sort(function (a, b) { return might(b, 'def') - might(a, 'def'); })[0];
+        grab.push({ bi: bi, u: weak });
+        add('grab-weak', [{ uids: [weak.uid], dest: bi }]); add('grab-strong', [{ uids: [strong.uid], dest: bi }]);
+        continue;
+      }
+      var tight = planAttack(G, pi, bi, av, 0, 0), safe = planAttack(G, pi, bi, av, 0, 2) || planAttack(G, pi, bi, av, 0, 1);
+      if (tight) { add('tight', [{ uids: ids(tight), dest: bi }]); fights.push({ bi: bi, units: tight }); }
+      if (safe) add('safe', [{ uids: ids(safe), dest: bi }]);
+      if (av.length > 1) add('all-in', [{ uids: ids(av), dest: bi }]);
+    }
+    // grab an empty battlefield with the weakest unit and fight elsewhere with the rest
+    grab.forEach(function (g) {
+      fights.forEach(function (f) {
+        if (f.bi === g.bi) return;
+        var rest = avail(f.bi).filter(function (u) { return u !== g.u; }), S = planAttack(G, pi, f.bi, rest, 0, 0);
+        if (S) add('grab+fight', [{ uids: [g.u.uid], dest: g.bi }, { uids: ids(S), dest: f.bi }]);
+      });
+    });
+    return plans.slice(0, 9);
+  }
+  async function applyAttackPlan(G, pi, plan, wait) {
+    if (plan.rule) return aiAttack(G, pi, wait);
+    for (var k = 0; k < plan.steps.length && G.winner == null; k++) {
+      var st = plan.steps[k], uids = st.uids.filter(function (id) { return G.units.some(function (u) { return u.uid === id && u.ctrl === pi && u.loc === 'base' && !u.ex && !u.stun; }); });
+      if (uids.length) { await moveUnits(G, pi, uids, st.dest); await wait(); }
+    }
+  }
+  async function attackRollout(G, pi, plan, seed) {
+    var H = cloneGame(G, seed), noop = function () { return Promise.resolve(); };
+    determinize(H, pi);
+    H.aiPreAttack = false;
+    await applyAttackPlan(H, pi, plan, noop);
+    if (H.winner == null) await finishTurnAndNext(H);
+    for (var t = 0; t < ATK_HORIZON && H.winner == null; t++) { await aiTurn(H, H.active); if (H.winner == null) await endTurn(H); }
+    return evalState(H, pi, true);
+  }
+  async function aiAttackSearch(G, pi, wait) {
+    var plans = attackPlans(G, pi);
+    if (plans.length <= 2 && !plans.some(function (p) { return p.steps && p.steps.length; })) return aiAttack(G, pi, wait);
+    var base = (G.turnNo * 7919 + (G.lookSeed = (G.lookSeed || 0) + 1) * 104729) | 0, vals = [];
+    for (var i = 0; i < plans.length; i++) {
+      var v = 0;
+      for (var sm = 0; sm < ATK_SAMPLES; sm++) v += await attackRollout(G, pi, plans[i], (base + sm * 31337) | 0);   // same guesses for every plan
+      vals.push(v / ATK_SAMPLES);
+    }
+    var best = 0;   // the rule's plan unless another is clearly better
+    for (var j = 1; j < plans.length; j++) if (vals[j] > vals[best] + ATK_MARGIN) best = j;
+    G.lastAttackPlan = plans[best].name;
+    return applyAttackPlan(G, pi, plans[best], wait);
+  }
   async function aiLegend(G, pi, wait, late) {
     var acts = legendActs(G, pi);
     for (var i = 0; i < acts.length && G.winner == null; i++) {
@@ -4784,7 +4857,7 @@ var RT = (function () {
   // What would the bot do next from this exact position? Plays the bot's turn on a copy and stops at its first action.
   async function botWouldDo(G, pi, level) {
     var H = cloneGame(G, (G.turnNo * 92821 + (G.decisions ? G.decisions.length : 0) * 68917) | 0);
-    H.isClone = false; H.human = -1; H.aiLevel = [level || 5, level || 5]; H.probe = {};
+    H.isClone = false; H.human = -1; H.aiLevel = [level || AI_LEVEL, level || AI_LEVEL]; H.probe = {};
     try { await aiTurn(H, pi); } catch (e) { if (e !== PROBE_STOP) return { k: 'error', msg: String(e && e.message || e) }; }
     return H.probe.act || { k: 'end' };
   }
@@ -4835,7 +4908,7 @@ var RT = (function () {
     G.aiPreAttack = false;
     if (G.winner == null) await aiLegend(G, pi, wait);
     if (G.winner == null) await aiLoneDefenders(G, pi, wait);
-    if (G.winner == null) await aiAttack(G, pi, wait);
+    if (G.winner == null) await (aiLvl(G, pi) >= 6 && !G.isClone ? aiAttackSearch(G, pi, wait) : aiAttack(G, pi, wait));
     if (G.winner == null) await aiPlayLoop(G, pi, wait);
     if (G.winner == null) await aiLegend(G, pi, wait, true);
     if (G.winner == null) await aiPosition(G, pi, wait);

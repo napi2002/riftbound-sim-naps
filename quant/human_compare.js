@@ -1,4 +1,4 @@
-// Human vs bot decisions: how often does the bot (AI level 5) make the move a human made in the same position?
+// Human vs bot decisions: how often does the bot (the default AI level) make the move a human made in the same position?
 // Input: one or more files exported from the game ("Export my decisions" on the end screen). Each human action was
 // stored next to the action the bot would have taken from exactly that position, plus every prompt answered next to
 // the bot's default answer.
