@@ -1026,7 +1026,8 @@ var RT = (function () {
       if (!u) return;
       pay(G, pi, 1, 0, []);
       removeUnit(G, u); if (!u.token) p.hand.push({ iid: u.iid, c: u.c }); u.dead = true;
-      makeUnit(G, pi, tokenCard({ name: 'Sand Soldier', might: 2, kw: {} }), UID++, ctx.loc, false, true);
+      var dais = makeUnit(G, pi, tokenCard({ name: 'Sand Soldier', might: 2, kw: {} }), UID++, ctx.loc, false, true);
+      await unitEntered(G, pi, dais, 'token');
       log(G, "Emperor's Dais: " + u.c.name + ' returns to hand; a 2 Might Sand Soldier takes its place.', pi);
     },
     sunken: async function (G, pi, e, tg, ctx) {
@@ -1679,7 +1680,11 @@ var RT = (function () {
       return energyAvail(p) >= ec.energy && canPay(p, ec.energy, doms.length, doms);
     });
     if (!ok.length) return;
-    G.cardsHint = ok.map(function (q) { return q.g; }); var k = await choose(G, pi, 'Weaponmaster', 'Equip one of your Equipment to ' + u.c.name + ' for 1 power less?', ok.map(function (x) { return x.g.c.name + (x.host ? ' (from ' + x.host.c.name + ')' : ''); }), true, 0);
+    // AI: the best unattached Equipment; only take one off another unit if that unit carries 2+ (spread them out).
+    var score = function (x) { return (x.g.c.P.equipBonus || 0) + (x.g.c.P.hostTrig ? 1 : 0) + (x.g.c.P.equipCost ? 0.1 * x.g.c.P.equipCost.power.length : 0); };
+    var free = ok.filter(function (x) { return !x.host; }), spare = ok.filter(function (x) { return x.host && x.host.equips.length >= 2; });
+    var pickX = (free.length ? free : spare).slice().sort(function (a, b) { return score(b) - score(a); })[0];
+    G.cardsHint = ok.map(function (q) { return q.g; }); var k = await choose(G, pi, 'Weaponmaster', 'Equip one of your Equipment to ' + u.c.name + ' for 1 power less?', ok.map(function (x) { return x.g.c.name + (x.host ? ' (from ' + x.host.c.name + ')' : ''); }), true, pickX ? ok.indexOf(pickX) : null);
     if (k == null) return;
     var x = ok[k], ec2 = x.g.c.P.equipCost || { energy: 0, power: [] }, rest = ec2.power.slice(1);
     var d2 = rest.filter(function (d) { return d !== 'any'; });
@@ -2770,8 +2775,12 @@ var RT = (function () {
       case 'xp': gainXp(G, pi, e.n, src); break;
       case 'token':
         var loc = e.here && ctx.loc != null ? ctx.loc : 'base';
-        for (var k = 0; k < e.count; k++) makeUnit(G, pi, tokenCard(e), UID++, loc, e.ready, true);
-        log(G, src + ': ' + e.count + '× ' + e.might + ' Might ' + e.name + ' token' + (e.count > 1 ? 's' : '') + ' at ' + locName(G, loc) + '.', pi); break;
+        var madeT = [];
+        for (var k = 0; k < e.count; k++) madeT.push(makeUnit(G, pi, tokenCard(e), UID++, loc, e.ready, true));
+        log(G, src + ': ' + e.count + '× ' + e.might + ' Might ' + e.name + ' token' + (e.count > 1 ? 's' : '') + ' at ' + locName(G, loc) + '.', pi);
+        // Tokens are played too: "when you play a unit" effects apply (Azir's Sand Soldiers get Weaponmaster, Vex stuns them...).
+        for (var mt = 0; mt < madeT.length; mt++) await unitEntered(G, pi, madeT[mt], 'token');
+        break;
       case 'discard':
         for (var d = 0; d < e.n && p.hand.length; d++) {
           var worst = p.hand.slice().sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
@@ -3763,6 +3772,9 @@ var RT = (function () {
         p.hand.some(function (x) { return x !== card && (x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction)); }) &&
         energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.reserve) return null;
     var hid = p.hidden.filter(function (h) { return h.card === card; })[0];
+    // Azir: once an Equipment is down this turn, keep 1 energy for the legend's Sand Soldier (it equips for free).
+    if (p.legend.c && p.legend.c.P.sandWeaponmaster && !p.legend.exhausted && p.equipTurn === G.turnNo && !sera &&
+        energyAvail(p) - cardCost(c, false, G, pi, hid ? 'hidden' : 'hand').energy < 1 && G.showdownAt == null) return null;
     // Rek'Sai: keep energy before attacking to pay for what the legend reveals on a conquer.
     if (A.conquerReserve && G.aiPreAttack && !p.legend.exhausted && G.units.some(function (u) { return u.ctrl === pi && u.loc === 'base' && !u.ex; }) &&
         energyAvail(p) - cardCost(c, false, G, pi, 'hand').energy < A.conquerReserve && bonus < 2.5) return null;
