@@ -559,9 +559,11 @@ var RT = (function () {
     { id: "masteryi", name: "Master Yi", label: "Convergence IV 24th of 272 · post-ban", legend: "Master Yi - Wuju Bladesman", champion: "Master Yi - Tempered", runes: { Calm: 5, Body: 7 },
       bfs: ["Rockfall Path", "Seat of Power", "Sigil of the Storm"],
       list: L("3 Charm; 3 Defy; 3 En Garde; 3 Discipline; 3 First Mate; 3 Pit Rookie; 2 Sabotage; 3 Lonely Poro; 2 Irelia - Fervent; 3 Punch First; 3 Scuttle Crab; 1 Master Yi - Tempered; 1 Alpha Strike; 1 Twilight Shroud; 3 Rampage; 3 Rengar - Trophy Hunter") },
-    { id: "azir", name: "Azir", label: "LDXP Sacramento 38th of 755", legend: "Azir - Emperor of the Sands", champion: "Azir - Sovereign", runes: { Calm: 7, Order: 5 },
-      bfs: ["Trifarian War Camp", "Hall of Legends", "Seat of Power"],
-      list: L("3 Defy; 3 Discipline; 3 Hidden Blade; 1 Battle Preparations; 3 Trifarian Captain; 3 Doran's Shield; 3 Brutalizer; 3 Eye of the Herald; 3 Guards!; 3 B.F. Sword; 1 Deathgrip; 1 Azir - Sovereign; 3 Arise!; 2 Back Off; 1 Vi - Peacekeeper; 3 Hand Hammer; 1 Kennen, Keeper of Balance") },
+    // MFG's Riftbound $2k (22 Nov 2026) Top 8, "Greedy"; counts from riftbound.zone's listing. Measured +3.6 points vs the
+    // field over the LDXP Sacramento 38th list (880 games each, same seeds).
+    { id: "azir", name: "Azir", label: "MFG's $2k Top 8 (Nov 22)", legend: "Azir - Emperor of the Sands", champion: "Azir - Sovereign", runes: { Calm: 7, Order: 5 },
+      bfs: ["Hall of Legends", "Seat of Power", "Trifarian War Camp"],
+      list: L("1 Azir - Sovereign; 1 Orianna - Exquisite; 1 Trifarian Captain; 1 Vi - Peacekeeper; 3 Arise!; 2 Back Off; 2 Charm; 2 Deathgrip; 2 Defy; 3 Discipline; 2 Guards!; 3 Hidden Blade; 3 B.F. Sword; 3 Brutalizer; 3 Doran's Shield; 3 Eye of the Herald; 2 Hand Hammer; 3 Soul Sword") },
     { id: "vex", name: "Vex", label: "Convergence IV 9th of 272 · post-ban", legend: "Vex - Gloomist", champion: "Vex - Apathetic", runes: { Calm: 6, Chaos: 6 },
       bfs: ["Bandle Tree", "Startipped Peak", "Bandle Scouts' Academy"],
       list: L("1 Clockwork Keeper; 3 Defy; 3 Discipline; 1 Blitzcrank - Impassive; 1 Ember Monk; 1 Rebuke; 1 Seal of Discord; 1 Life from Stone; 1 Hunting Blind; 2 Gutter Guardian; 1 Bedeviling Stranger; 1 Sterak's Gage; 3 Boots of Swiftness; 1 Edge of Night; 3 Switcheroo; 1 Mutated Mouser; 1 Back Off; 2 Evelynn - Entrancing; 1 Kha'Zix - Mutating Horror; 1 Vex - Apathetic; 3 Steel Paws; 3 Astral Heron; 3 Tornado Warrior; 1 Gust Monk") },
@@ -1153,9 +1155,19 @@ var RT = (function () {
       energyGear(p).reduce(function (s2, g) { return s2 + (g.empowered ? 2 : 1); }, 0);
   }
   function poolPowerFor(p) { return (p.poolPower || 0) + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + (p.payingSpell ? (p.poolPowerSpell || 0) : 0) + (p.payingGear ? (p.poolPowerGear || 0) : 0); }
+  // Ornn / Kai'Sa: the legend's "exhaust: add 1 power for gear / for spells" is used automatically when paying for one
+  // (like a Seal), instead of the AI firing it at the end of its turn with nothing to pay for.
+  function legendAutoPower(p) {
+    var L = p.legend, k = L && L.c && L.c.P.autoPower;
+    return k && !L.exhausted && ((k === 'gear' && p.payingGear) || (k === 'spell' && p.payingSpell)) ? 1 : 0;
+  }
+  function useLegendAutoPower(G, pi) {
+    var p = G.players[pi]; if (!legendAutoPower(p)) return false;
+    p.legend.exhausted = true; log(G, p.legend.c.name + ' adds 1 power (' + (p.legend.c.P.autoPower === 'gear' ? 'gear' : 'spell') + ').', pi); return true;
+  }
   function canPay(p, energy, power, domains) {
     var ready = energyAvail(p);
-    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length + poolPowerFor(p) +
+    var match = p.runes.filter(function (r) { return domains.indexOf(r.d) >= 0; }).length + powerGear(p, domains).length + poolPowerFor(p) + legendAutoPower(p) +
       domains.reduce(function (s2, d) { return s2 + ((p.poolDom || {})[d] || 0); }, 0);
     return ready >= energy && match >= power;
   }
@@ -1167,6 +1179,7 @@ var RT = (function () {
     while (power > 0 && p.payingGear && p.poolPowerGear > 0) { p.poolPowerGear--; power--; }
     while (power > 0 && p.poolPower > 0) { p.poolPower--; power--; }
     domains.forEach(function (d) { while (power > 0 && p.poolDom && p.poolDom[d] > 0) { p.poolDom[d]--; power--; } });
+    if (power > 0 && useLegendAutoPower(G, pi)) power--;
     var seals = powerGear(p, domains);
     seals.sort(function (a, b) { return (a.c.P.addPower === 'any') - (b.c.P.addPower === 'any'); });
     while (power > 0 && seals.length) {
@@ -1268,7 +1281,7 @@ var RT = (function () {
   // Power of any domain ("rainbow"): added power first, then Seal/Gold gear, then recycle runes.
   function anyPowerAvail(p) {
     var dom = Object.keys(p.poolDom || {}).reduce(function (s2, k) { return s2 + p.poolDom[k]; }, 0);
-    return p.runes.length + (p.poolPower || 0) + dom + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + (p.payingSpell ? (p.poolPowerSpell || 0) : 0) + (p.payingGear ? (p.poolPowerGear || 0) : 0) + p.gear.filter(function (g) { return !g.ex && g.c.P.addPower; }).length;
+    return p.runes.length + (p.poolPower || 0) + dom + (p.payingUnitOrGear ? (p.poolPowerUG || 0) : 0) + (p.payingSpell ? (p.poolPowerSpell || 0) : 0) + (p.payingGear ? (p.poolPowerGear || 0) : 0) + p.gear.filter(function (g) { return !g.ex && g.c.P.addPower; }).length + legendAutoPower(p);
   }
   function payAnyPower(G, pi, n, why) {
     var p = G.players[pi];
@@ -1279,6 +1292,7 @@ var RT = (function () {
       if (p.poolPower > 0) { p.poolPower--; continue; }
       var dk = Object.keys(p.poolDom || {}).filter(function (k) { return p.poolDom[k] > 0; })[0];
       if (dk) { p.poolDom[dk]--; continue; }
+      if (useLegendAutoPower(G, pi)) continue;
       var g = p.gear.filter(function (x) { return !x.ex && x.c.P.addPower; }).sort(function (a, b) { return !!a.c.P.consumed - !!b.c.P.consumed; })[0];
       if (g) {
         if (g.c.P.consumed) { p.gear.splice(p.gear.indexOf(g), 1); log(G, 'A Gold token is spent for 1 power' + (why ? ' (' + why + ')' : '') + '.', pi); }
@@ -1999,8 +2013,9 @@ var RT = (function () {
     if (!unitsOf(G, pi).length) return { ok: false, why: 'You have no unit to attach it to.' };
     if (energyAvail(p) < ec.energy) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + '.' };
     var needAny = ec.power.filter(function (d) { return d === 'any'; }).length, doms = ec.power.filter(function (d) { return d !== 'any'; });
-    if (doms.length && !canPay(p, ec.energy, doms.length, doms)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + '.' };
-    if (needAny && anyPowerAvail(p) < needAny + doms.length && !canEquipAlt(G, pi, g)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + (g.c.P.equipAltExhaust ? ' or another ready unit to exhaust' : '') + '.' };
+    p.payingGear = true; var okD = !doms.length || canPay(p, ec.energy, doms.length, doms), okA = !needAny || anyPowerAvail(p) >= needAny + doms.length; p.payingGear = false;
+    if (!okD) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + '.' };
+    if (!okA && !canEquipAlt(G, pi, g)) return { ok: false, why: 'Equip needs ' + equipCostText(g.c) + (g.c.P.equipAltExhaust ? ' or another ready unit to exhaust' : '') + '.' };
     if (p.trash.length < ec.recycleTrash) return { ok: false, why: 'Equip needs ' + ec.recycleTrash + ' cards in your trash.' };
     return { ok: true };
   }
@@ -2025,8 +2040,10 @@ var RT = (function () {
       var eid = await ask(G, pi, { type: 'target', title: g.c.name, text: 'Exhaust a friendly unit to pay the Equip cost', cands: ex.map(function (u) { return u.uid; }), optional: false, auto: ex[0].uid });
       await exhaustUnits(G, pi, [ex.filter(function (u) { return u.uid === eid; })[0] || ex[0]]);
     } else {
+      p.payingGear = true;
       pay(G, pi, ec.energy, doms.length, doms);
       payAnyPower(G, pi, ec.power.filter(function (d) { return d === 'any'; }).length, 'Equip');
+      p.payingGear = false;
     }
     for (var i = 0; i < ec.recycleTrash; i++) p.deck.push(p.trash.shift());
     p.gear.splice(p.gear.indexOf(g), 1);
@@ -2457,6 +2474,8 @@ var RT = (function () {
     moveTokensHere: async function (G, pi, e, tg, ctx) {
       var me = ctx.src; if (!me) return;
       var toks = G.units.filter(function (u) { return u.ctrl === pi && u.token && u.loc !== me.loc; });
+      // AI: bring tokens from base, and from battlefields only where something else stays to hold them
+      if (!(G.ask && G.human === pi)) toks = toks.filter(function (u) { return u.loc === 'base' || unitsAt(G, u.loc, pi).filter(function (x) { return toks.indexOf(x) < 0 || !x.token; }).length > 0; });
       if (!toks.length) return;
       if (!(await confirm(G, pi, me.c.name, 'Move your ' + toks.length + ' token unit' + (toks.length > 1 ? 's' : '') + ' to ' + bfName(G, me.loc) + ' to join the attack?', true))) return;
       toks.forEach(function (u) { u.loc = me.loc; });
@@ -2977,6 +2996,11 @@ var RT = (function () {
         oppDefenders: G.bfs.map(function (b, i) { return unitsAt(G, i, opp(pi)).reduce(function (s2, u) { return s2 + might(u, 'def'); }, 0); }) });
     }
     var ap = G.players[pi];
+    // Level 9: at the end of the opponent's turn, spend mana you held for tricks on Reaction spells that draw or ramp
+    // (Discipline, Stupefy, Life from Stone...) instead of wasting it, as a human would.
+    var q = opp(pi);
+    if (aiLvl(G, q) >= 9 && !G.isClone && !(G.ask && G.human === q)) await aiEndOfOppTurn(G, q);
+    if (G.winner != null) return;
     var eot = ap.gear.filter(function (g) { return g.c.P.endOfTurn; });
     for (var gi = 0; gi < eot.length && G.winner == null; gi++) await resolveEffects(G, pi, eot[gi].c.P.endOfTurn, { src: null, loc: 'base', srcName: eot[gi].c.name });
     if (G.winner != null) return;
@@ -4188,13 +4212,13 @@ var RT = (function () {
   Object.assign(LEGEND_SCRIPTS, {
     setttheboss: { flags: { settSave: true }, on: { conquer: async function (G, pi) { var L = G.players[pi].legend; if (L.exhausted) { L.exhausted = false; log(G, L.c.name + ' readies (conquer).', pi); } } } },
     fioragrandduelist: { flags: { legendMighty: true } },
-    ornnfirebelowthemountain: { acts: [{ label: 'Exhaust: add 1 power (any domain) for gear only (playing gear or gear abilities)', energy: 0, exhaust: true, timing: 'reaction', effs: [],
+    ornnfirebelowthemountain: { flags: { autoPower: 'gear' }, acts: [{ label: 'Exhaust: add 1 power (any domain) for gear only (playing gear or gear abilities)', energy: 0, exhaust: true, timing: 'reaction', effs: [],
       pay: function (G, pi) { var p = G.players[pi]; p.poolPowerGear = (p.poolPowerGear || 0) + 1; log(G, 'Ornn adds 1 power for gear this turn.', pi); } }] },
     ezrealprodigalexplorer: { acts: [{ label: 'Exhaust: draw 1 (after choosing enemy units or gear twice this turn)', energy: 0, exhaust: true, timing: 'reaction', effs: [{ op: 'draw', n: 1 }],
       req: function (G, pi) { var e = G.enemyChosen && G.enemyChosen[pi]; return e && e.turn === G.turnNo && e.n >= 2 ? null : 'Choose enemy units or gear twice this turn with spells or unit abilities first.'; } }] },
     volibearrelentlessstorm: { flags: { legendPlayMighty: true } },
     nasuscuratorofthesands: { flags: { nasusReady: true } },
-    kaisadaughterofthevoid: { acts: [{ label: 'Exhaust: add 1 power (any domain) for spells only', energy: 0, exhaust: true, timing: 'reaction', effs: [],
+    kaisadaughterofthevoid: { flags: { autoPower: 'spell' }, acts: [{ label: 'Exhaust: add 1 power (any domain) for spells only', energy: 0, exhaust: true, timing: 'reaction', effs: [],
       pay: function (G, pi) { var p = G.players[pi]; p.poolPowerSpell = (p.poolPowerSpell || 0) + 1; log(G, "Kai'Sa adds 1 power for spells this turn.", pi); } }] }
   });
 
@@ -4824,9 +4848,15 @@ var RT = (function () {
     var need = defs.reduce(function (s, u) { return s + Math.max(1, might(u, 'def') - u.damage); }, 0);
     var dD = defs.reduce(function (s, u) { return s + (dealsDamage(u) ? might(u, 'def') : 0); }, 0);
     var best = null;
+    // Azir, Sovereign: when he attacks, your token units at base join him
+    var tokJoin = function (S) {
+      if (!S.some(function (u) { return (u.c.P.trig.attack || []).some(function (t) { return t.effs.some(function (e) { return e.op === 'moveTokensHere'; }); }); })) return 0;
+      return unitsAt(G, 'base', pi).filter(function (u) { return u.token && S.indexOf(u) < 0; }).reduce(function (s, u) { return s + might(u, 'att'); }, 0);
+    };
     subsets(avail, function (S) {
-      var aD = S.reduce(function (s, u) { return s + might(u, 'att'); }, 0) + (bonus || 0);
-      var tough = S.reduce(function (s, u) { return s + Math.max(1, might(u, 'att')); }, 0) + (bonus || 0);
+      var tj = tokJoin(S);
+      var aD = S.reduce(function (s, u) { return s + might(u, 'att'); }, 0) + (bonus || 0) + tj;
+      var tough = S.reduce(function (s, u) { return s + Math.max(1, might(u, 'att')); }, 0) + (bonus || 0) + tj;
       if (aD >= need && dD + margin < tough) {
         var cost = S.reduce(function (s, u) { return s + might(u, 'att'); }, 0) + S.length * 0.1;
         if (!best || cost < best.cost) best = { cost: cost, units: S };
@@ -4945,6 +4975,8 @@ var RT = (function () {
       if (tight) { add('tight', [{ uids: ids(tight), dest: bi }]); fights.push({ bi: bi, units: tight }); }
       if (safe) add('safe', [{ uids: ids(safe), dest: bi }]);
       if (av.length > 1) add('all-in', [{ uids: ids(av), dest: bi }]);
+      av.filter(function (u) { return (u.c.P.trig.attack || []).some(function (t) { return t.effs.some(function (e) { return e.op === 'moveTokensHere'; }); }); })
+        .forEach(function (u) { add('sovereign', [{ uids: [u.uid], dest: bi }]); });
     }
     // grab an empty battlefield with the weakest unit and fight elsewhere with the rest
     grab.forEach(function (g) {
@@ -4995,6 +5027,7 @@ var RT = (function () {
       var ev = evalEffects(G, pi, effs, { src: null, loc: null });
       var A = aiOf(G, pi), keep = A.reserve && G.players[pi].hand.some(function (x) { return x.c.P.counter || (x.c.type === 'Spell' && x.c.P.kw.reaction); }) ? A.reserve : 0;
       if (!effs.length && energyAvail(G.players[pi]) - (acts[i].energy || 0) < keep) continue;
+      if (!effs.length && G.players[pi].legend.c && G.players[pi].legend.c.P.autoPower) continue;   // used automatically when paying
       if ((!effs.length && late) || (effs.length && ev.good && ev.value >= 1.5)) { await useLegend(G, pi, i, ev.targets); await wait(); }
     }
   }
@@ -5063,6 +5096,24 @@ var RT = (function () {
       prompts: asks.length, samePrompt: asks.filter(eq).length };
   }
 
+  async function aiEndOfOppTurn(G, q) {
+    var p = G.players[q];
+    for (var guard = 0; guard < 4 && G.winner == null; guard++) {
+      var best = null;
+      p.hand.forEach(function (card) {
+        var c = card.c;
+        if (c.type !== 'Spell' || !c.P.kw.reaction || c.P.counter || !canPlay(G, q, card.iid, false, { reaction: true }).ok) return;
+        if (!(c.P.spell || []).some(function (e) { return e.op === 'draw' || e.op === 'channel'; })) return;
+        var ev = evalEffects(G, q, c.P.spell, { src: null, loc: null });
+        if (!ev.good) return;
+        var v = ev.value - 0.3 * ((c.energy || 0) + (c.power || 0));
+        if (v >= 1 && (!best || v > best.v)) best = { v: v, card: card, targets: ev.targets };
+      });
+      if (!best) return;
+      var r = await playCard(G, q, best.card.iid, { reaction: true, targets: best.targets });
+      if (r && r.ok === false) return;
+    }
+  }
   async function aiTurn(G, pi, wait) {
     wait = wait || function () { return Promise.resolve(); };
     if (G.winner != null) return;
@@ -5111,7 +5162,7 @@ var RT = (function () {
   }
   // Hide one reactive card per turn when there are runes to spare.
   async function aiHide(G, pi, wait) {
-    var p = G.players[pi], eager = aiOf(G, pi).hideEager;
+    var p = G.players[pi], eager = aiOf(G, pi).hideEager && !OFF['hide_' + (p.deckDef && p.deckDef.id)];
     for (var n = 0; n < (eager ? 2 : 1); n++) {
       if (p.runes.length < (eager ? 3 : 5)) return;
       var cands = p.hand.filter(function (x) { return hideSpots(G, pi, x.iid).length; })
