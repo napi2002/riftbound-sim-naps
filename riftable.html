@@ -1345,6 +1345,7 @@ var RT = (function () {
     if (!others.length) return;
     var worst = p.hand.slice().sort(function (a, b) { return (a.c.energy || 0) - (b.c.energy || 0); })[0];
     var best = others.slice().sort(function (a, b) { return unitValue(b) - unitValue(a); })[0];
+    if (noUnitsPlayedAt(G, loc)) return;
     if (!(await confirm(G, pi, L.c.name, 'Discard a card and exhaust LeBlanc to play a ready Reflection at ' + bfName(G, loc) + ' that copies a unit there (it has Temporary)?', true))) return;
     // the player picks the discard (the AI defaults to its cheapest card)
     G.cardsHint = p.hand; var di = await choose(G, pi, L.c.name, 'Choose a card to discard', p.hand.map(function (x) { return x.c.name; }), false, p.hand.indexOf(worst));
@@ -1433,12 +1434,16 @@ var RT = (function () {
     await effectMove(G, u, ds[k]);
   }
   function reflectionOf(G, pi, src, loc) {
+    if (noUnitsPlayedAt(G, loc)) return null;
     var r = makeUnit(G, pi, src.c, UID++, loc, true, true);
     r.kwx = { temporary: true }; r.reflection = true;
     return r;
   }
+  // Rockfall Path: "Units can't be played here" (cards, tokens, Reflections, free plays).
+  function noUnitsPlayedAt(G, loc) { return loc != null && loc !== 'base' && G.bfs[loc] && bfNorm(G, loc) === 'rockfallpath'; }
   async function playFree(G, pi, card, loc, title, paid) {
     var c = card.c, p = G.players[pi];
+    if (noUnitsPlayedAt(G, loc)) { log(G, title + ": units can't be played to Rockfall Path, so " + c.name + ' is not played.', pi); return null; }
     var u = makeUnit(G, pi, c, card.iid, loc, !!c.P.kw.entersready, false);
     log(G, title + ': ' + p.name + ' play' + (pi === 0 ? '' : 's') + ' ' + c.name + ' to ' + locName(G, loc) + (paid ? '' : ' for free') + '.', pi);
 
@@ -1649,9 +1654,13 @@ var RT = (function () {
     },
     thrill: async function (G, pi, e, tg, ctx) {
       var u = tg[0];
-      G.cardsHint = G.bfs; var k = await choose(G, pi, ctx.srcName, 'Play ' + u.c.name + ' to which battlefield?', G.bfs.map(function (b) { return b.c.name; }), false,
-        G.bfs.map(function (b, i) { return i; }).filter(function (i) { return G.bfs[i].ctrl !== pi; })[0] || 0);
-      if (k == null) return;
+      var okB = G.bfs.map(function (b, i) { return i; }).filter(function (i) { return bfNorm(G, i) !== 'rockfallpath'; });   // units can't be played to Rockfall Path
+      if (!okB.length) return;
+      G.cardsHint = okB.map(function (i) { return G.bfs[i]; });
+      var kk = await choose(G, pi, ctx.srcName, 'Play ' + u.c.name + ' to which battlefield?', okB.map(function (i) { return G.bfs[i].c.name; }), false,
+        Math.max(0, okB.indexOf(okB.filter(function (i) { return G.bfs[i].ctrl !== pi; })[0])));
+      if (kk == null) return;
+      var k = okB[kk];
       removeUnit(G, u); u.dead = true; updateControl(G);
       log(G, u.c.name + ' is banished and played again.', pi);
       if (u.token) return;
@@ -2376,6 +2385,7 @@ var RT = (function () {
     },
     guards: async function (G, pi, e, tg, ctx) {
       var p = G.players[pi], loc = ctx.loc != null ? ctx.loc : 'base';
+      if (noUnitsPlayedAt(G, loc)) { log(G, (ctx.srcName || 'Effect') + ": units can't be played to Rockfall Path.", pi); return; }
       var u = makeUnit(G, pi, tokenCard({ name: 'Sand Soldier', might: 2, kw: {} }), UID++, loc, false, true);
       log(G, (ctx.srcName || 'Effect') + ': a 2 Might Sand Soldier at ' + locName(G, loc) + '.', pi);
       if (canPay(p, 0, 1, ['Order']) && (await confirm(G, pi, ctx.srcName, 'Pay 1 Order power to ready the Sand Soldier?', loc !== 'base' || G.active === pi))) { pay(G, pi, 0, 1, ['Order']); u.ex = false; log(G, 'The Sand Soldier readies.', pi); }
@@ -3171,8 +3181,18 @@ var RT = (function () {
     });
   }
   // Heuristic target choice used by the AI and as the suggested default.
+  // Temporal Breach: an enemy at Rockfall Path is gone for good; otherwise reset a damaged friendly unit in a fight, or
+  // replay one with a strong "when you play me" effect.
+  function blinkValue(G, pi, u) {
+    if (u.loc !== 'base' && bfNorm(G, u.loc) === 'rockfallpath') return u.ctrl !== pi ? unitValue(u) + 1 : -unitValue(u) - 1;
+    if (u.ctrl !== pi) return (u.buff ? 1 : 0) + (u.equips ? u.equips.length * 1.5 : 0) + Math.max(0, u.temp) * 0.3;   // strips buffs, Equipment, pumps
+    var v = u.damage > 0 && G.showdownAt != null && u.loc === G.showdownAt ? unitValue(u) * 0.6 : 0;
+    var ev = evalEffects(G, pi, playEffects(u.c), { src: null, loc: u.loc });
+    return v + (ev.good ? Math.max(0, ev.value) * 0.8 : 0) - (u.equips ? u.equips.length * 1.5 : 0) - (u.buff ? 1 : 0);
+  }
   function autoChoose(G, pi, e, cands) {
     if (!cands.length) return null;
+    if (e.op === 'blink') { var bb = cands.slice().sort(function (a, b) { return blinkValue(G, pi, b) - blinkValue(G, pi, a); })[0]; return blinkValue(G, pi, bb) > 0.5 ? bb : null; }
     var enemies = cands.filter(function (u) { return u.ctrl !== pi; });
     var friends = cands.filter(function (u) { return u.ctrl === pi; });
     var best = function (arr, f) { return arr.slice().sort(function (a, b) { return f(b) - f(a); })[0] || null; };
@@ -3309,6 +3329,7 @@ var RT = (function () {
       case 'xp': gainXp(G, pi, e.n, src); break;
       case 'token':
         var loc = e.here && ctx.loc != null ? ctx.loc : 'base';
+        if (noUnitsPlayedAt(G, loc)) { log(G, src + ": units can't be played to Rockfall Path.", pi); break; }
         var madeT = [];
         for (var k = 0; k < e.count; k++) madeT.push(makeUnit(G, pi, tokenCard(e), UID++, loc, e.ready, true));
         log(G, src + ': ' + e.count + '× ' + e.might + ' Might ' + e.name + ' token' + (e.count > 1 ? 's' : '') + ' at ' + locName(G, loc) + '.', pi);
@@ -3859,7 +3880,10 @@ var RT = (function () {
       var u = tg[0]; if (!u) return;
       var loc = u.loc, owner = u.owner; removeUnit(G, u); u.dead = true; updateControl(G);
       log(G, ctx.srcName + ' banishes ' + u.c.name + '.', pi);
-      if (!u.token) await playFree(G, owner, { iid: u.iid, c: u.c }, loc, ctx.srcName);
+      if (u.token) return;
+      // Units can't be played to Rockfall Path: a unit banished there can't come back and stays banished.
+      if (loc !== 'base' && bfNorm(G, loc) === 'rockfallpath') { log(G, u.c.name + " can't be played to Rockfall Path, so it stays banished.", pi); return; }
+      await playFree(G, owner, { iid: u.iid, c: u.c }, loc, ctx.srcName);
     }
   });
   function markEnemyChoice(G, pi) {
@@ -4350,6 +4374,7 @@ var RT = (function () {
         else if (e.op === 'buff') value += u.buff ? 0 : 1.5;
         else if (e.op === 'might') value += e.n < 0 ? 0.3 : 0.2;
         else if (e.op === 'ready') value += u.ex ? 1 : 0;
+        else if (e.op === 'blink') value += blinkValue(G, pi, u);
         else if (e.op === 'shroud' && !OFF.shroud) {   // +1 and can't be chosen by enemy spells this turn: protect the unit about to attack while they have mana up
           var oe = energyAvail(G.players[opp(pi)]);
           value += G.aiPreAttack && G.active === pi && !u.ex && !u.stun && oe >= 1 ? 0.6 + 0.25 * unitValue(u) : 0.2;

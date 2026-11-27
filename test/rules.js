@@ -91,6 +91,16 @@ async function fresh(opts) {
   check('Guardian Angel: the unit survives, healed, exhausted and recalled; the Angel is killed', !u.dead && u.loc === 'base' && u.ex && !u.damage && !u.equips.length && G.players[0].trash.some(x => x.c.name === 'Guardian Angel'), G);
   G = await fresh(); u = unit(G, 0, 'Lonely Poro', 'base'); const br = { iid: ++iid, c: card('Brutalizer'), owner: 0, ex: false, attachTurn: G.turnNo }; u.equips.push(br);
   const fresh3 = RT.might(u); br.attachTurn = G.turnNo - 1;
-  check('Brutalizer: +2 more Might on the turn it was attached', fresh3 - RT.might(u) === 2, G);  console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
+  check('Brutalizer: +2 more Might on the turn it was attached', fresh3 - RT.might(u) === 2, G);
+  // Temporal Breach: the banished unit is played again at the same location, unless that is Rockfall Path (units can't be played there)
+  for (const [bf, back] of [['Rockfall Path', false], ['Seat of Power', true]]) {
+    G = await fresh(); p = G.players[0]; G.bfs[0].c = card(bf); G.players[1].hand = [];
+    const foe = unit(G, 1, 'Stellacorn Herder', 0); G.bfs[0].ctrl = 1;
+    const tb = { iid: ++iid, c: card('Temporal Breach') }; p.hand = [tb]; p.runes.forEach(r => { r.d = 'Mind'; });
+    await RT.playCard(G, 0, tb.iid, { targets: [foe.uid] });
+    const again = G.units.some(x => x.ctrl === 1 && x.c.name === 'Stellacorn Herder' && x.loc === 0), cast = G.log.some(l => /banishes Stellacorn Herder/.test(l.t));
+    check(`Temporal Breach at ${bf}: the unit ${back ? 'is played again there' : 'stays banished'}`, cast && again === back, G);
+  }
+  console.log(fails ? fails + ' FAILED' : 'all rules checks OK');
   process.exit(fails ? 1 : 0);
 })();
