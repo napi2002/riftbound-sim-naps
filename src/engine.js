@@ -1195,6 +1195,7 @@ var RT = (function () {
   // its best few plays (and "stop playing") on copies of the game, plays out the rest of the turn and the opponent's
   // reply with the level-2 AI, and picks the play whose line ends best.
   var AI_LEVEL = 8;
+  var OFF = {}; ((typeof process !== 'undefined' && process.env && process.env.RT_OFF) || '').split(',').forEach(function (k) { if (k) OFF[k] = true; });   // experiment switches
   function aiLvl(G, pi) { return G.aiLevel ? G.aiLevel[pi] : AI_LEVEL; }
   var OPS_VALUE = {
     lookDraw: function () { return 1.8; },
@@ -1243,7 +1244,7 @@ var RT = (function () {
     lightningrush: { sim: [0], effs: [{ op: 'lookDraw', n: 3 }] },
     sealofdiscord: { sim: [0], addPower: 'Chaos', gearActs: [{ label: 'Exhaust: add 1 Chaos power now (it is also used automatically when you pay)', timing: 'reaction', run: function (G, pi) { var p = G.players[pi]; p.poolDom = p.poolDom || {}; p.poolDom.Chaos = (p.poolDom.Chaos || 0) + 1; log(G, 'Seal of Discord adds 1 Chaos power (until end of turn).', pi); } }] },
     starcrossed: { sim: [1], effs: [{ op: 'tohand', t: T('friendly') }, { op: 'tohand', t: T('enemy') }] },
-    switcheroo: { sim: [2], effs: [{ op: 'mark', t: T('enemy', 'bf') }, { op: 'swapIt', t: T('friendly', 'itloc') }] },
+    switcheroo: { sim: [2], effs: [{ op: 'switcheroo' }] },
     existentialdread: { sim: [2], effs: [{ op: 'dread', t: T('enemy', 'bf', { attacking: true }) }] },
     flash: { sim: [1], effs: [{ op: 'tobase', t: T('friendly', 'bf'), opt: true }, { op: 'tobase', t: T('friendly', 'bf'), opt: true }] },
     ridethewind: { sim: [1], effs: [{ op: 'moveUnit', t: T('friendly'), ready: true }] },
@@ -1258,7 +1259,7 @@ var RT = (function () {
     mirrorimage: { sim: [0], effs: [{ op: 'reflect', t: T('any') }] },
     sabotage: { sim: [0], effs: [{ op: 'sabotage' }] },
     thrillofthehunt: { sim: [1], effs: [{ op: 'thrill', t: T('friendly') }] },
-    rampage: { sim: [0, 1], effs: [{ op: 'mark', t: T('friendly') }, { op: 'payBonus', n: 2, domain: 'Body' }, { op: 'fight', t: T('enemy') }] },
+    rampage: { sim: [0, 1], effs: [{ op: 'rampage' }] },
     zhonyashourglass: { sim: [1], saveUnit: true },
     charm: { sim: [0], effs: [{ op: 'moveUnit', t: T('enemy') }] },
     defiantdance: { sim: [1], effs: [{ op: 'might', n: 2, t: T('any') }, { op: 'might', n: -2, t: T('any', null, { notIt: true }) }] },
@@ -3463,6 +3464,95 @@ var RT = (function () {
     var v = 0; G.units.forEach(function (u) { if (u.loc !== 'base' && !u.dead && might(u) <= e.n) v += (u.ctrl === pi ? -1 : 1) * unitValue(u); });
     return v;
   };
+  // Rampage: the best (friendly, enemy) pair to fight, with the optional Body power for +2. Returns { f, e, bonus, value }.
+  function rampagePick(G, pi) {
+    var p = G.players[pi], bonus = hasEzreal(G, pi) || canPay(p, 0, 1, ['Body']) ? 2 : 0, best = null;
+    var fs = candidates(G, pi, { op: 'might', n: 1, t: T('friendly') }, {}), es = candidates(G, pi, { op: 'deal', n: 1, t: T('enemy') }, {});
+    fs.forEach(function (f) {
+      es.forEach(function (e) {
+        var ma = might(f) + bonus + voidBonus(G, e), mb = might(e) + voidBonus(G, f);
+        var eDies = e.damage + ma >= might(e), fDies = f.damage + mb >= might(f) + bonus;
+        var v = (eDies ? unitValue(e) + 1 : 0) - (fDies ? unitValue(f) : 0) - (bonus ? 0.3 : 0);
+        if (!best || v > best.value) best = { f: f, e: e, bonus: bonus, value: v };
+      });
+    });
+    return best;
+  }
+  // Switcheroo: in a showdown, swap the Might of our weakest and their strongest unit there when that flips the fight.
+  function switcherooPick(G, pi, bi) {
+    if (bi == null) return null;
+    var mine = unitsAt(G, bi, pi), theirs = unitsAt(G, bi, opp(pi)), best = null;
+    if (!mine.length || !theirs.length) return null;
+    var atk = G.active === pi, before = fightOutcome(G, G.active, bi), wonBefore = atk ? before.attackerWins : before.defenderHolds;
+    mine.forEach(function (f) {
+      theirs.forEach(function (e) {
+        if (e.shrouded || e.c.P.untargetable) return;
+        var mf = might(f), me = might(e); if (me <= mf) return;
+        f.temp += me - mf; e.temp += mf - me;
+        var o = fightOutcome(G, G.active, bi), won = atk ? o.attackerWins : o.defenderHolds;
+        f.temp -= me - mf; e.temp -= mf - me;
+        var v = (won && !wonBefore ? 3 + unitValue(e) * 0.5 : 0) + 0.2 * (me - mf);
+        if (!best || v > best.value) best = { f: f, e: e, value: v };
+      });
+    });
+    return best;
+  }
+  Object.assign(OPS, {
+    rampage: async function (G, pi, e, tg, ctx) {   // Rampage: a friendly and an enemy unit deal their Might to each other (+2 if Body paid)
+      var b = rampagePick(G, pi), p = G.players[pi];
+      var fs = candidates(G, pi, { op: 'might', n: 1, t: T('friendly') }, {}), es = candidates(G, pi, { op: 'deal', n: 1, t: T('enemy') }, {});
+      if (!fs.length || !es.length) return;
+      var fid = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Choose a friendly unit to fight', cands: fs.map(function (u) { return u.uid; }), optional: false, auto: b ? b.f.uid : fs[0].uid });
+      var f = fs.filter(function (u) { return u.uid === fid; })[0] || fs[0];
+      var eid = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Choose an enemy unit for ' + f.c.name + ' to fight', cands: es.map(function (u) { return u.uid; }), optional: false, auto: b ? b.e.uid : es[0].uid });
+      var en = es.filter(function (u) { return u.uid === eid; })[0] || es[0];
+      var free = hasEzreal(G, pi);
+      if ((free || canPay(p, 0, 1, ['Body'])) && (await confirm(G, pi, ctx.srcName, (free ? 'Ezreal makes the extra cost free: give ' : 'Pay 1 Body power to give ') + f.c.name + ' +2 Might this turn?', true))) {
+        if (!free) pay(G, pi, 0, 1, ['Body']); f.temp += 2; log(G, ctx.srcName + ': paid extra, ' + f.c.name + ' gets +2 Might.', pi);
+      }
+      var ma = might(f) + voidBonus(G, en), mb = might(en) + voidBonus(G, f);
+      en.damage += ma; f.damage += mb;
+      log(G, f.c.name + ' and ' + en.c.name + ' deal ' + ma + ' and ' + mb + ' damage to each other.', pi);
+      await checkDeaths(G);
+    },
+    switcheroo: async function (G, pi, e, tg, ctx) {   // Switcheroo: swap the Might of two units at the same battlefield this turn
+      var bi = ctx.loc != null && ctx.loc !== 'base' ? ctx.loc : G.showdownAt, b = switcherooPick(G, pi, bi);
+      var all = G.units.filter(function (u) { return u.loc !== 'base' && !u.dead && !(u.ctrl !== pi && (u.shrouded || u.c.P.untargetable)); });
+      if (all.length < 2) return;
+      var a1 = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Choose the first unit (at a battlefield)', cands: all.map(function (u) { return u.uid; }), optional: false, auto: b ? b.f.uid : all[0].uid });
+      var u1 = all.filter(function (u) { return u.uid === a1; })[0] || all[0], rest = all.filter(function (u) { return u !== u1 && u.loc === u1.loc; });
+      if (!rest.length) return;
+      var a2 = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Swap Might with which unit there?', cands: rest.map(function (u) { return u.uid; }), optional: false, auto: b && rest.indexOf(b.e) >= 0 ? b.e.uid : rest[0].uid });
+      var u2 = rest.filter(function (u) { return u.uid === a2; })[0] || rest[0];
+      var m1 = might(u1), m2 = might(u2); u1.temp += m2 - m1; u2.temp += m1 - m2;
+      log(G, ctx.srcName + ' swaps the Might of ' + u1.c.name + ' and ' + u2.c.name + ' (' + m1 + ' <-> ' + m2 + ').', pi);
+    },
+    hunker: async function (G, pi, e, tg, ctx) {   // Hunker Down: ready a friendly unit, it can't move this turn; draw 1
+      var us = unitsOf(G, pi);
+      if (us.length) {
+        var w = us.filter(function (u) { return u.ex; }).sort(function (a, b) { return (a.loc === 'base') - (b.loc === 'base') || unitValue(b) - unitValue(a); })[0] || us[0];
+        var id = await ask(G, pi, { type: 'target', title: ctx.srcName, text: 'Ready a friendly unit (it can\'t move this turn)', cands: us.map(function (u) { return u.uid; }), optional: false, auto: w.uid });
+        var u = us.filter(function (x) { return x.uid === id; })[0] || w;
+        var was = u.ex; u.ex = false; u.noMove = true; log(G, ctx.srcName + ' readies ' + u.c.name + '; it can\'t move this turn.', pi);
+        if (was) await becameReady(G, u);
+      }
+      drawOne(G, pi); log(G, ctx.srcName + ': draw 1.', pi);
+    }
+  });
+  Object.assign(OPS_VALUE, {
+    rampage: function (G, pi) { var b = rampagePick(G, pi); return b ? b.value : -1; },
+    switcheroo: function (G, pi) { var b = switcherooPick(G, pi, G.showdownAt); return b ? b.value : 0; },
+    hunker: function (G, pi) { return 1.6 + (unitsOf(G, pi).some(function (u) { return u.ex; }) ? 0.4 : 0); },
+    // Imperial Decree: in a fight where both sides deal damage, every damaged unit dies; worth it when they lose more there.
+    decree: function (G, pi) {
+      var bi = G.showdownAt; if (bi == null || OFF.decree) return 0;
+      var mine = unitsAt(G, bi, pi), theirs = unitsAt(G, bi, opp(pi));
+      var dmg = function (us, role) { return us.reduce(function (s2, u) { return s2 + (dealsDamage(u) ? might(u, role) : 0); }, 0); };
+      var myRole = G.active === pi ? 'att' : 'def', thRole = myRole === 'att' ? 'def' : 'att';
+      if (!dmg(mine, myRole) || !dmg(theirs, thRole)) return 0;
+      return 0.8 * (theirs.reduce(function (s2, u) { return s2 + unitValue(u); }, 0) - mine.reduce(function (s2, u) { return s2 + unitValue(u); }, 0));
+    }
+  });
   Object.assign(CARD_SCRIPTS, {
     // Sett
     settbrawler: { sim: 'all', play: [{ op: 'buff', t: { sel: 'self' } }], conquerFx: [{ op: 'buff', t: { sel: 'self' } }],
@@ -3480,7 +3570,8 @@ var RT = (function () {
     clockworkkeeper: { sim: 'all', play: [{ op: 'payDraw', domain: 'Calm' }] },
     sealoffocus: { sim: 'all', addPower: 'Calm', gearActs: [{ label: 'Exhaust: add 1 Calm power now (it is also used automatically when you pay)', timing: 'reaction', run: function (G, pi) { var p = G.players[pi]; p.poolDom = p.poolDom || {}; p.poolDom.Calm = (p.poolDom.Calm || 0) + 1; log(G, 'Seal of Focus adds 1 Calm power (until end of turn).', pi); } }] },
     pitcrew: { sim: 'all', readyOnGearPlay: true },
-    porosnax: { sim: 'all', gearActs: [{ label: '1 energy + 1 Calm power, exhaust, kill this: draw 1', energy: 1, power: 1, domain: 'Calm', killSelf: true, effs: [{ op: 'draw', n: 1 }] }] },
+    porosnax: { sim: 'all', gearActs: [{ label: '1 energy + 1 Calm power, exhaust, kill this: draw 1', energy: 1, power: 1, domain: 'Calm', killSelf: true, effs: [{ op: 'draw', n: 1 }],
+      aiValue: function (G, pi) { var p = G.players[pi]; if (OFF.porosnax) return -1; return p.hand.length <= 1 ? 2.6 : p.hand.length <= 2 && !G.aiPreAttack ? 2.2 : 0; } }] },   // crack it when low on cards (cost already counted)
     ornnblacksmith: { sim: 'all', play: [{ op: 'lookGear', n: 4 }], holdFx: [{ op: 'lookGear', n: 4 }] },
     aspiringengineer: { sim: 'all', play: [{ op: 'recurGear' }] },
     spritefountain: { sim: 'all', gearPlayFx: [{ op: 'token', count: 1, ready: true, might: 3, name: 'Sprite', kw: { temporary: true }, here: false }],
@@ -3515,6 +3606,7 @@ var RT = (function () {
     portableportal: { sim: 'all', gearPlayFx: [{ op: 'payReadyHere', domain: 'Body' }], gankHere: true },
     fioraworthy: { sim: 'all', readyMighty: true },
     riposte: { sim: 'all', counter: { mightToFriendly: true } },
+    hunkerdown: { sim: 'all', effs: [{ op: 'hunker' }] },
     rivendeserter: { sim: 'all', friendExhaustMight: true,
       unitAct: { label: 'Exhaust a friendly unit: ready a unit (once each turn)', energy: 0, power: 0, domain: 'Calm', exhaust: false, exhaustFriendly: true,
         req: function (G, u) { return u.actTurn === G.turnNo ? 'Already used this turn.' : !unitsOf(G, u.ctrl).some(function (x) { return !x.ex; }) ? 'No ready friendly unit to exhaust.' : !G.units.some(function (x) { return x.ex; }) ? 'No exhausted unit to ready.' : null; },
@@ -3732,6 +3824,10 @@ var RT = (function () {
         else if (e.op === 'buff') value += u.buff ? 0 : 1.5;
         else if (e.op === 'might') value += e.n < 0 ? 0.3 : 0.2;
         else if (e.op === 'ready') value += u.ex ? 1 : 0;
+        else if (e.op === 'shroud' && !OFF.shroud) {   // +1 and can't be chosen by enemy spells this turn: protect the unit about to attack while they have mana up
+          var oe = energyAvail(G.players[opp(pi)]);
+          value += G.aiPreAttack && G.active === pi && !u.ex && !u.stun && oe >= 1 ? 0.6 + 0.25 * unitValue(u) : 0.2;
+        }
         return;
       }
       if (OPS_VALUE[e.op]) { value += OPS_VALUE[e.op](G, pi, e); return; }
@@ -3755,7 +3851,7 @@ var RT = (function () {
       if (e.op === 'might') { if (e.n > 0 && (e.t.sel === 'friendly' || e.t.sel === 'any')) n += e.n; return true; }
       if (e.op === 'engarde') { n += 2; return true; }
       if (e.op === 'shroud') { n += 1; return true; }
-      return e.op === 'draw';
+      return e.op === 'draw' || e.op === 'spendBuffCost';
     });
     return ok ? n : 0;
   }
